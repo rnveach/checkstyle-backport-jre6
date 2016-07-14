@@ -377,8 +377,16 @@ public class CustomImportOrderCheckTest extends BaseCheckTestSupport {
             method.setAccessible(true);
             actual = method.invoke(t, (DetailAST) null);
         }
-        catch (NoSuchMethodException | InstantiationException
-                  | IllegalAccessException | InvocationTargetException ignored) {
+        catch (NoSuchMethodException ignored) {
+            actual = null;
+        }
+        catch (InstantiationException ignored) {
+            actual = null;
+        }
+        catch (IllegalAccessException ignored) {
+            actual = null;
+        }
+        catch (InvocationTargetException ignored) {
             actual = null;
         }
 

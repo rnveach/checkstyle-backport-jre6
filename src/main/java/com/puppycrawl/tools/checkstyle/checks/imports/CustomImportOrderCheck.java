@@ -356,10 +356,10 @@ public class CustomImportOrderCheck extends AbstractCheck {
     private static final Pattern GROUP_SEPARATOR_PATTERN = Pattern.compile("\\s*###\\s*");
 
     /** List of order declaration customizing by user. */
-    private final List<String> customImportOrderRules = new ArrayList<>();
+    private final List<String> customImportOrderRules = new ArrayList<String>();
 
     /** Contains objects with import attributes. */
-    private final List<ImportDetails> importToGroupList = new ArrayList<>();
+    private final List<ImportDetails> importToGroupList = new ArrayList<ImportDetails>();
 
     /** RegExp for SAME_PACKAGE group imports. */
     private String samePackageDomainsRegExp = "";

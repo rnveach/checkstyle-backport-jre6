@@ -331,7 +331,13 @@ public final class CommonUtils {
         try {
             return constructor.newInstance(parameters);
         }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+        catch (InstantiationException ex) {
+            throw new IllegalStateException(ex);
+        }
+        catch (IllegalAccessException ex) {
+            throw new IllegalStateException(ex);
+        }
+        catch (InvocationTargetException ex) {
             throw new IllegalStateException(ex);
         }
     }
@@ -366,7 +372,10 @@ public final class CommonUtils {
             final URL url = new URL(filename);
             uri = url.toURI();
         }
-        catch (final URISyntaxException | MalformedURLException ignored) {
+        catch (final URISyntaxException ignored) {
+            uri = null;
+        }
+        catch (final MalformedURLException ignored) {
             uri = null;
         }
 

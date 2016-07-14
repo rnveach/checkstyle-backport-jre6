@@ -93,7 +93,7 @@ public class UniquePropertiesCheckTest extends BaseFileSetCheckTestSupport {
      */
     @Test
     public void testNotFoundKey() {
-        final List<String> testStrings = new ArrayList<>(3);
+        final List<String> testStrings = new ArrayList<String>(3);
         testStrings.add("");
         testStrings.add("0 = 0");
         testStrings.add("445");
@@ -114,7 +114,7 @@ public class UniquePropertiesCheckTest extends BaseFileSetCheckTestSupport {
                 getPath("InputUniquePropertiesCheckNotExisting.properties");
         final File file = new File(fileName);
         final SortedSet<LocalizedMessage> messages =
-                check.process(file, Collections.emptyList());
+                check.process(file, Collections.<String>emptyList());
         assertEquals("Wrong messages count: " + messages.size(),
                 1, messages.size());
         final LocalizedMessage message = messages.iterator().next();
@@ -138,7 +138,7 @@ public class UniquePropertiesCheckTest extends BaseFileSetCheckTestSupport {
         final Method method = uniqueProperties.getClass().getDeclaredMethod("put", Object.class,
                 Object.class);
         final Object result = method.invoke(uniqueProperties, 1, "value");
-        final Map<Object, Object> table = new HashMap<>();
+        final Map<Object, Object> table = new HashMap<Object, Object>();
         final Object expected = table.put(1, "value");
         assertEquals(expected, result);
         final Object result2 = method.invoke(uniqueProperties, 1, "value");

@@ -129,8 +129,9 @@ public class BaseCheckTestSupport {
         // process each of the lines
         final ByteArrayInputStream inputStream =
                 new ByteArrayInputStream(stream.toByteArray());
-        try (final LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+        final LineNumberReader lnr = new LineNumberReader(
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        try {
 
             int previousLineNumber = 0;
             for (int i = 0; i < expected.length; i++) {
@@ -151,6 +152,9 @@ public class BaseCheckTestSupport {
             assertEquals("unexpected output: " + lnr.readLine(),
                     expected.length, errs);
             assertEquals("unexpected warnings " + theWarnings, 0, theWarnings.size());
+        }
+        finally {
+            lnr.close();
         }
 
         checker.destroy();
@@ -221,9 +225,10 @@ public class BaseCheckTestSupport {
     }
 
     protected Integer[] getLinesWithWarn(String fileName) throws IOException {
-        final List<Integer> result = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                new FileInputStream(fileName), StandardCharsets.UTF_8))) {
+        final List<Integer> result = new ArrayList<Integer>();
+        final BufferedReader br = new BufferedReader(new InputStreamReader(
+                new FileInputStream(fileName), StandardCharsets.UTF_8));
+        try {
             int lineNumber = 1;
             while (true) {
                 final String line = br.readLine();
@@ -235,6 +240,9 @@ public class BaseCheckTestSupport {
                 }
                 lineNumber++;
             }
+        }
+        finally {
+            br.close();
         }
         return result.toArray(new Integer[result.size()]);
     }

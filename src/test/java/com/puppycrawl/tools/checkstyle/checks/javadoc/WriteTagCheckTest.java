@@ -215,8 +215,9 @@ public class WriteTagCheckTest extends BaseCheckTestSupport {
         // process each of the lines
         final ByteArrayInputStream localStream =
             new ByteArrayInputStream(stream.toByteArray());
-        try (final LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(localStream, StandardCharsets.UTF_8))) {
+        final LineNumberReader lnr = new LineNumberReader(
+                new InputStreamReader(localStream, StandardCharsets.UTF_8));
+        try {
 
             for (int i = 0; i < expected.length; i++) {
                 final String expectedResult = messageFileName + ":" + expected[i];
@@ -226,6 +227,9 @@ public class WriteTagCheckTest extends BaseCheckTestSupport {
 
             assertTrue("unexpected output: " + lnr.readLine(),
                     expected.length >= errs);
+        }
+        finally {
+            lnr.close();
         }
         checker.destroy();
     }

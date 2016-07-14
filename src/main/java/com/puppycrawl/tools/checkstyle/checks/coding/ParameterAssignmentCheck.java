@@ -53,7 +53,7 @@ public final class ParameterAssignmentCheck extends AbstractCheck {
     public static final String MSG_KEY = "parameter.assignment";
 
     /** Stack of methods' parameters. */
-    private final Deque<Set<String>> parameterNamesStack = new ArrayDeque<>();
+    private final Deque<Set<String>> parameterNamesStack = new ArrayDeque<Set<String>>();
     /** Current set of parameters. */
     private Set<String> parameterNames;
 

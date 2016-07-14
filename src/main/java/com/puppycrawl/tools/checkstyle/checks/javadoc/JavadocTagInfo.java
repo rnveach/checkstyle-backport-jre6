@@ -351,10 +351,10 @@ public enum JavadocTagInfo {
 
     static {
         final ImmutableMap.Builder<String, JavadocTagInfo> textToTagBuilder =
-            new ImmutableMap.Builder<>();
+            new ImmutableMap.Builder<String, JavadocTagInfo>();
 
         final ImmutableMap.Builder<String, JavadocTagInfo> nameToTagBuilder =
-            new ImmutableMap.Builder<>();
+            new ImmutableMap.Builder<String, JavadocTagInfo>();
 
         for (final JavadocTagInfo tag : JavadocTagInfo.values()) {
             textToTagBuilder.put(tag.text, tag);

@@ -45,7 +45,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 @Deprecated
 public abstract class AbstractTypeAwareCheck extends AbstractCheck {
     /** Stack of maps for type params. */
-    private final Deque<Map<String, AbstractClassInfo>> typeParams = new ArrayDeque<>();
+    private final Deque<Map<String, AbstractClassInfo>> typeParams = new ArrayDeque<Map<String, AbstractClassInfo>>();
 
     /** Imports details. **/
     private final Set<String> imports = Sets.newHashSet();

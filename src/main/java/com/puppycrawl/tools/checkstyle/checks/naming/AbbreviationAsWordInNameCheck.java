@@ -103,7 +103,7 @@ public class AbbreviationAsWordInNameCheck extends AbstractCheck {
     /**
      * Set of allowed abbreviation to ignore in check.
      */
-    private Set<String> allowedAbbreviations = new HashSet<>();
+    private Set<String> allowedAbbreviations = new HashSet<String>();
 
     /** Allows to ignore variables with 'final' modifier. */
     private boolean ignoreFinal = true;
@@ -353,7 +353,7 @@ public class AbbreviationAsWordInNameCheck extends AbstractCheck {
      * @return The list of children one level below on the current parent node.
      */
     private static List<DetailAST> getChildren(final DetailAST node) {
-        final List<DetailAST> result = new LinkedList<>();
+        final List<DetailAST> result = new LinkedList<DetailAST>();
         DetailAST curNode = node.getFirstChild();
         while (curNode != null) {
             result.add(curNode);

@@ -183,7 +183,7 @@ public class JavaNCSSCheck extends AbstractCheck {
 
     @Override
     public void beginTree(DetailAST rootAST) {
-        counters = new ArrayDeque<>();
+        counters = new ArrayDeque<Counter>();
 
         //add a counter for the file
         counters.push(new Counter());

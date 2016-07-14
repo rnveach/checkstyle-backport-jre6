@@ -68,7 +68,7 @@ public class SuppressWarningsHolder
     private static final String ALL_WARNING_MATCHING_ID = "all";
 
     /** A map from check source names to suppression aliases. */
-    private static final Map<String, String> CHECK_ALIAS_MAP = new HashMap<>();
+    private static final Map<String, String> CHECK_ALIAS_MAP = new HashMap<String, String>();
 
     /**
      * A thread-local holder for the list of suppression entries for the last
@@ -77,7 +77,7 @@ public class SuppressWarningsHolder
     private static final ThreadLocal<List<Entry>> ENTRIES = new ThreadLocal<List<Entry>>() {
         @Override
         protected List<Entry> initialValue() {
-            return new LinkedList<>();
+            return new LinkedList<Entry>();
         }
     };
 

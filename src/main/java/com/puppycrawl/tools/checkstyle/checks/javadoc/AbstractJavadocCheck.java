@@ -81,7 +81,7 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
         new ThreadLocal<Map<String, ParseStatus>>() {
             @Override
             protected Map<String, ParseStatus> initialValue() {
-                return new HashMap<>();
+                return new HashMap<String, ParseStatus>();
             }
         };
 

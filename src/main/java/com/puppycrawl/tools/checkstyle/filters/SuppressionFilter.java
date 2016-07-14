@@ -125,7 +125,10 @@ public class SuppressionFilter extends AutomaticBean implements Filter, External
             final URL url = uriByFilename.toURL();
             sourceInput = url.openStream();
         }
-        catch (CheckstyleException | IOException ignored) {
+        catch (CheckstyleException ignored) {
+            suppressionSourceExists = false;
+        }
+        catch (IOException ignored) {
             suppressionSourceExists = false;
         }
         finally {

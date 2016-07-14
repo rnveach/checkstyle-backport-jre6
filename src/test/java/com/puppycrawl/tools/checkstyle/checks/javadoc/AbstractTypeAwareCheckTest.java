@@ -61,7 +61,7 @@ public class AbstractTypeAwareCheckTest extends BaseCheckTestSupport {
         final Method isSubclass = check.getClass().getSuperclass()
                 .getDeclaredMethod("isSubclass", Class.class, Class.class);
         isSubclass.setAccessible(true);
-        assertFalse((boolean) isSubclass.invoke(check, null, null));
+        assertFalse((Boolean) isSubclass.invoke(check, null, null));
     }
 
     @Test

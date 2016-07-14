@@ -41,7 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 public class MainFrameModel {
 
     /** Lines to position map. */
-    private final List<Integer> linesToPosition = new ArrayList<>();
+    private final List<Integer> linesToPosition = new ArrayList<Integer>();
 
     /** Parse tree model. */
     private final ParseTreeTableModel parseTreeTableModel;
@@ -158,7 +158,13 @@ public class MainFrameModel {
                 }
                 text = sb.toString();
             }
-            catch (IOException | ANTLRException ex) {
+            catch (IOException ex) {
+                final String exceptionMsg = String.format(Locale.ROOT,
+                    "%s occurred while opening file %s.",
+                    ex.getClass().getSimpleName(), file.getPath());
+                throw new CheckstyleException(exceptionMsg, ex);
+            }
+            catch (ANTLRException ex) {
                 final String exceptionMsg = String.format(Locale.ROOT,
                     "%s occurred while opening file %s.",
                     ex.getClass().getSimpleName(), file.getPath());

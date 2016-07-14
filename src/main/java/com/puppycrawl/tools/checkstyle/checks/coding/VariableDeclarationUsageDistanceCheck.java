@@ -444,7 +444,7 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
             dist = 0;
         }
 
-        return new SimpleEntry<>(variableUsageAst, dist);
+        return new SimpleEntry<DetailAST, Integer>(variableUsageAst, dist);
     }
 
     /**
@@ -523,7 +523,7 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
                 variableUsageAst = null;
             }
         }
-        return new SimpleEntry<>(variableUsageAst, dist);
+        return new SimpleEntry<DetailAST, Integer>(variableUsageAst, dist);
     }
 
     /**
@@ -535,7 +535,7 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
      */
     private static Entry<List<DetailAST>, Integer>
         searchVariableUsageExpressions(final DetailAST variableAst, final DetailAST statementAst) {
-        final List<DetailAST> variableUsageExpressions = new ArrayList<>();
+        final List<DetailAST> variableUsageExpressions = new ArrayList<DetailAST>();
         int distance = 0;
         DetailAST currentStatementAst = statementAst;
         while (currentStatementAst != null
@@ -553,7 +553,7 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
             }
             currentStatementAst = currentStatementAst.getNextSibling();
         }
-        return new SimpleEntry<>(variableUsageExpressions, distance);
+        return new SimpleEntry<List<DetailAST>, Integer>(variableUsageExpressions, distance);
     }
 
     /**
@@ -616,7 +616,7 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
         if (!isVariableInOperatorExpr(block, variable)) {
             DetailAST currentNode = block.getLastChild();
             final List<DetailAST> variableUsageExpressions =
-                    new ArrayList<>();
+                    new ArrayList<DetailAST>();
 
             while (currentNode != null
                     && currentNode.getType() == TokenTypes.LITERAL_ELSE) {
@@ -676,7 +676,7 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
         DetailAST currentNode = block
                 .findFirstToken(TokenTypes.CASE_GROUP);
         final List<DetailAST> variableUsageExpressions =
-                new ArrayList<>();
+                new ArrayList<DetailAST>();
 
         // Checking variable usage inside all CASE blocks.
         while (currentNode.getType() == TokenTypes.CASE_GROUP) {
@@ -716,7 +716,7 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
             DetailAST block, DetailAST variable) {
         DetailAST currentNode = block.getFirstChild();
         final List<DetailAST> variableUsageExpressions =
-                new ArrayList<>();
+                new ArrayList<DetailAST>();
 
         // Checking variable usage inside TRY block.
         if (isChild(currentNode, variable)) {

@@ -325,7 +325,7 @@ public class VisibilityModifierCheck
 
     /** List of ignore annotations canonical names. */
     private List<String> ignoreAnnotationCanonicalNames =
-        new ArrayList<>(DEFAULT_IGNORE_ANNOTATIONS);
+        new ArrayList<String>(DEFAULT_IGNORE_ANNOTATIONS);
 
     /** Whether protected members are allowed. */
     private boolean protectedAllowed;
@@ -340,7 +340,7 @@ public class VisibilityModifierCheck
     private boolean allowPublicFinalFields;
 
     /** List of immutable classes canonical names. */
-    private List<String> immutableClassCanonicalNames = new ArrayList<>(DEFAULT_IMMUTABLE_TYPES);
+    private List<String> immutableClassCanonicalNames = new ArrayList<String>(DEFAULT_IMMUTABLE_TYPES);
 
     /**
      * Set the list of ignore annotations.
@@ -613,7 +613,7 @@ public class VisibilityModifierCheck
      */
     private static Set<String> getModifiers(DetailAST defAST) {
         final AST modifiersAST = defAST.findFirstToken(TokenTypes.MODIFIERS);
-        final Set<String> modifiersSet = new HashSet<>();
+        final Set<String> modifiersSet = new HashSet<String>();
         if (modifiersAST != null) {
             AST modifier = modifiersAST.getFirstChild();
             while (modifier != null) {
@@ -705,7 +705,7 @@ public class VisibilityModifierCheck
      * @return a list of type parameters class names.
      */
     private static List<String> getTypeArgsClassNames(DetailAST typeArgs) {
-        final List<String> typeClassNames = new ArrayList<>();
+        final List<String> typeClassNames = new ArrayList<String>();
         DetailAST type = typeArgs.findFirstToken(TokenTypes.TYPE_ARGUMENT);
         boolean isCanonicalName = isCanonicalName(type);
         String typeName = getTypeName(type, isCanonicalName);
@@ -836,7 +836,7 @@ public class VisibilityModifierCheck
      * @return the list of short names of classes.
      */
     private static List<String> getClassShortNames(List<String> canonicalClassNames) {
-        final List<String> shortNames = new ArrayList<>();
+        final List<String> shortNames = new ArrayList<String>();
         for (String canonicalClassName : canonicalClassNames) {
             final String shortClassName = canonicalClassName
                     .substring(canonicalClassName.lastIndexOf('.') + 1,

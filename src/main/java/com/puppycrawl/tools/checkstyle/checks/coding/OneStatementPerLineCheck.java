@@ -78,7 +78,7 @@ public final class OneStatementPerLineCheck extends AbstractCheck {
     /**
      * Counts number of semicolons in nested lambdas.
      */
-    private final Deque<Integer> countOfSemiInLambda = new ArrayDeque<>();
+    private final Deque<Integer> countOfSemiInLambda = new ArrayDeque<Integer>();
 
     /**
      * Hold the line-number where the last statement ended.

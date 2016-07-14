@@ -42,7 +42,7 @@ public abstract class AbstractComplexityCheck
     private static final BigInteger INITIAL_VALUE = BigInteger.ONE;
 
     /** Stack of values - all but the current value. */
-    private final Deque<BigInteger> valueStack = new ArrayDeque<>();
+    private final Deque<BigInteger> valueStack = new ArrayDeque<BigInteger>();
 
     /** The current value. */
     private BigInteger currentValue = BigInteger.ZERO;

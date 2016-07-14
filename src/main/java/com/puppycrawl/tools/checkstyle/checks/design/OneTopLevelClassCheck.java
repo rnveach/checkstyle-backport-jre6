@@ -98,7 +98,7 @@ public class OneTopLevelClassCheck extends AbstractCheck {
     private boolean publicTypeFound;
 
     /** Mapping between type names and line numbers of the type declarations.*/
-    private final SortedMap<Integer, String> lineNumberTypeMap = new TreeMap<>();
+    private final SortedMap<Integer, String> lineNumberTypeMap = new TreeMap<Integer, String>();
 
     @Override
     public int[] getDefaultTokens() {

@@ -187,7 +187,12 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
                         "TokenStreamRecognitionException", fileName);
                 throw new CheckstyleException(exceptionMsg, tre);
             }
-            catch (RecognitionException | TokenStreamException ex) {
+            catch (RecognitionException ex) {
+                final String exceptionMsg = String.format(Locale.ROOT, msg,
+                        ex.getClass().getSimpleName(), fileName);
+                throw new CheckstyleException(exceptionMsg, ex);
+            }
+            catch (TokenStreamException ex) {
                 final String exceptionMsg = String.format(Locale.ROOT, msg,
                         ex.getClass().getSimpleName(), fileName);
                 throw new CheckstyleException(exceptionMsg, ex);
@@ -470,7 +475,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
         final Set<String> orinaryChecksResources = getExternalResourceLocations(ordinaryChecks);
         final Set<String> commentChecksResources = getExternalResourceLocations(commentChecks);
         final int resultListSize = orinaryChecksResources.size() + commentChecksResources.size();
-        final Set<String> resourceLocations = new HashSet<>(resultListSize);
+        final Set<String> resourceLocations = new HashSet<String>(resultListSize);
         resourceLocations.addAll(orinaryChecksResources);
         resourceLocations.addAll(commentChecksResources);
         return resourceLocations;
@@ -713,7 +718,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
             lines++;
             columns = 0;
         }
-        return new SimpleEntry<>(lines, columns);
+        return new SimpleEntry<Integer, Integer>(lines, columns);
     }
 
     /**

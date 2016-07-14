@@ -63,7 +63,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
                 .build();
 
     /** Stack of contexts. */
-    private final Deque<Context> contextStack = new ArrayDeque<>();
+    private final Deque<Context> contextStack = new ArrayDeque<Context>();
 
     /** User-configured class names to ignore. */
     private Set<String> excludedClasses = DEFAULT_EXCLUDED_CLASSES;

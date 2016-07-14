@@ -226,7 +226,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         final DebugAuditAdapter auditAdapter = new DebugAuditAdapter();
         checker.addListener(auditAdapter);
 
-        final List<File> files = new ArrayList<>();
+        final List<File> files = new ArrayList<File>();
         final File file = new File("file.pdf");
         files.add(file);
         final File otherFile = new File("file.java");
@@ -256,7 +256,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         final DebugAuditAdapter auditAdapter = new DebugAuditAdapter();
         checker.addListener(auditAdapter);
 
-        final List<File> allIgnoredFiles = new ArrayList<>();
+        final List<File> allIgnoredFiles = new ArrayList<File>();
         final File ignoredFile = new File("file.pdf");
         allIgnoredFiles.add(ignoredFile);
         final String[] fileExtensions = {"java", "xml", "properties"};
@@ -363,7 +363,7 @@ public class CheckerTest extends BaseCheckTestSupport {
     public void testDestroyCacheWithWrongFileNameLength() throws Exception {
         final Checker checker = new Checker();
         final PackageObjectFactory factory = new PackageObjectFactory(
-            new HashSet<>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         checker.setModuleFactory(factory);
         checker.configure(new DefaultConfiguration("default config"));
         // We set wrong file name length in order to reproduce IOException on OS Linux, OS Windows.
@@ -460,7 +460,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.setCacheFile(temporaryFolder.newFile().getPath());
         checker.setupChild(createCheckConfig(TranslationCheck.class));
         final File file = temporaryFolder.newFile("file.java");
-        final List<File> files = new ArrayList<>();
+        final List<File> files = new ArrayList<File>();
         files.add(file);
         checker.process(files);
     }
@@ -580,7 +580,7 @@ public class CheckerTest extends BaseCheckTestSupport {
     @Test
     public void testCacheIoExceptionWhenReadingExternalResource() throws Exception {
         final SuppressionFilter mock = PowerMockito.mock(SuppressionFilter.class);
-        final Set<String> mockResourceLocations = new HashSet<>(1);
+        final Set<String> mockResourceLocations = new HashSet<String>(1);
         mockResourceLocations.add("http://mock.sourceforge.net/suppressions_none.xml");
         when(mock.getExternalResourceLocations()).thenReturn(mockResourceLocations);
 
@@ -722,7 +722,7 @@ public class CheckerTest extends BaseCheckTestSupport {
 
         @Override
         public Set<String> getExternalResourceLocations() {
-            final Set<String> externalResourceLocation = new HashSet<>(1);
+            final Set<String> externalResourceLocation = new HashSet<String>(1);
             externalResourceLocation.add("non_existing_external_resource.xml");
             return externalResourceLocation;
         }
@@ -749,7 +749,7 @@ public class CheckerTest extends BaseCheckTestSupport {
 
         @Override
         public Set<String> getExternalResourceLocations() {
-            final Set<String> locations = new HashSet<>();
+            final Set<String> locations = new HashSet<String>();
             locations.add(firstExternalResourceLocation);
             // Attempt to change the behaviour of the check dynamically
             if (secondExternalResourceLocation != null) {

@@ -107,7 +107,7 @@ public class AbstractJavadocCheckTest extends BaseCheckTestSupport {
     @Test
     public void testCheckReuseAfterParseErrorWithFollowingAntlrErrorInTwoFiles() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(TempCheck.class);
-        final Map<String, List<String>> expectedMessages = new LinkedHashMap<>(2);
+        final Map<String, List<String>> expectedMessages = new LinkedHashMap<String, List<String>>(2);
         expectedMessages.put(getPath("InputParsingErrors.java"), asList(
             "4: " + getCheckMessage(MSG_JAVADOC_MISSED_HTML_CLOSE, 4, "unclosedTag"),
             "8: " + getCheckMessage(MSG_JAVADOC_WRONG_SINGLETON_TAG, 35, "img")

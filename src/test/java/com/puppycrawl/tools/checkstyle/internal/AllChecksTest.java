@@ -197,7 +197,7 @@ public class AllChecksTest extends BaseCheckTestSupport {
 
     @Test
     public void testAllCheckstyleMessages() throws Exception {
-        final Map<String, List<String>> usedMessages = new TreeMap<>();
+        final Map<String, List<String>> usedMessages = new TreeMap<String, List<String>>();
 
         // test validity of messages from checks
         for (Class<?> module : CheckUtil.getCheckstyleModules()) {
@@ -240,7 +240,7 @@ public class AllChecksTest extends BaseCheckTestSupport {
         List<String> packageMessages = usedMessages.get(packageName);
 
         if (packageMessages == null) {
-            packageMessages = new ArrayList<>();
+            packageMessages = new ArrayList<String>();
             usedMessages.put(packageName, packageMessages);
         }
 
@@ -295,7 +295,7 @@ public class AllChecksTest extends BaseCheckTestSupport {
      * @return a set of simple names.
      */
     private static Set<String> getSimpleNames(Set<Class<?>> checks) {
-        final Set<String> checksNames = new HashSet<>();
+        final Set<String> checksNames = new HashSet<String>();
         for (Class<?> check : checks) {
             checksNames.add(check.getSimpleName().replace("Check", ""));
         }

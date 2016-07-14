@@ -54,10 +54,14 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         final DefaultConfiguration checkConfig =
                 createCheckConfig(ConstantNameCheck.class);
         final File file = temporaryFolder.newFile("file.java");
-        try (final Writer writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+        final Writer writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
+        try {
             final String content = "public class Main { public static final int k = 5 + 4; }";
             writer.write(content);
+        }
+        finally {
+            writer.close();
         }
         final String[] expected1 = {
             "1:45: Name 'k' must match pattern '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.",
@@ -70,10 +74,14 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         final DefaultConfiguration checkConfig =
                 createCheckConfig(ConstantNameCheck.class);
         final File file = temporaryFolder.newFile("file.pdf");
-        try (final BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+        final BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
+        try {
             final String content = "public class Main { public static final int k = 5 + 4; }";
             writer.write(content);
+        }
+        finally {
+            writer.close();
         }
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
@@ -163,7 +171,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
-        final List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<String>();
         lines.add(" class a {} ");
         treeWalker.processFiltered(file, lines);
     }
@@ -177,7 +185,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
-        final List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<String>();
         lines.add(" classD a {} ");
 
         try {
@@ -198,7 +206,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
-        final List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
 
         try {

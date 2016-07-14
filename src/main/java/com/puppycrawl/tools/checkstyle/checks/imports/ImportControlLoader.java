@@ -59,7 +59,7 @@ final class ImportControlLoader extends AbstractLoader {
         "com/puppycrawl/tools/checkstyle/checks/imports/import_control_1_1.dtd";
 
     /** The map to lookup the resource name by the id. */
-    private static final Map<String, String> DTD_RESOURCE_BY_ID = new HashMap<>();
+    private static final Map<String, String> DTD_RESOURCE_BY_ID = new HashMap<String, String>();
 
     /** Name for attribute 'pkg'. */
     private static final String PKG_ATTRIBUTE_NAME = "pkg";
@@ -71,7 +71,7 @@ final class ImportControlLoader extends AbstractLoader {
     private static final String ALLOW_ELEMENT_NAME = "allow";
 
     /** Used to hold the {@link PkgControl} objects. */
-    private final Deque<PkgControl> stack = new ArrayDeque<>();
+    private final Deque<PkgControl> stack = new ArrayDeque<PkgControl>();
 
     static {
         DTD_RESOURCE_BY_ID.put(DTD_PUBLIC_ID_1_0, DTD_RESOURCE_NAME_1_0);
@@ -171,7 +171,11 @@ final class ImportControlLoader extends AbstractLoader {
             loader.parseInputSource(source);
             return loader.getRoot();
         }
-        catch (final ParserConfigurationException | SAXException ex) {
+        catch (final ParserConfigurationException ex) {
+            throw new CheckstyleException("unable to parse " + uri
+                    + " - " + ex.getMessage(), ex);
+        }
+        catch (final SAXException ex) {
             throw new CheckstyleException("unable to parse " + uri
                     + " - " + ex.getMessage(), ex);
         }

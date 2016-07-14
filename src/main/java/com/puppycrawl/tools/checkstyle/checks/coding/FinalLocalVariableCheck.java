@@ -114,11 +114,11 @@ public class FinalLocalVariableCheck extends AbstractCheck {
     };
 
     /** Scope Deque. */
-    private final Deque<ScopeData> scopeStack = new ArrayDeque<>();
+    private final Deque<ScopeData> scopeStack = new ArrayDeque<ScopeData>();
 
     /** Uninitialized variables of previous scope. */
     private final Deque<Deque<DetailAST>> prevScopeUninitializedVariables =
-            new ArrayDeque<>();
+            new ArrayDeque<Deque<DetailAST>>();
 
     /** Controls whether to check enhanced for-loop variable. */
     private boolean validateEnhancedForLoopVariable;
@@ -303,7 +303,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
     private void storePrevScopeUninitializedVariableData() {
         final ScopeData scopeData = scopeStack.peek();
         final Deque<DetailAST> prevScopeUnitializedVariableData =
-                new ArrayDeque<>();
+                new ArrayDeque<DetailAST>();
         for (DetailAST variable : scopeData.uninitializedVariables) {
             prevScopeUnitializedVariableData.push(variable);
         }
@@ -624,10 +624,10 @@ public class FinalLocalVariableCheck extends AbstractCheck {
      */
     private static class ScopeData {
         /** Contains variable definitions. */
-        private final Map<String, FinalVariableCandidate> scope = new HashMap<>();
+        private final Map<String, FinalVariableCandidate> scope = new HashMap<String, FinalVariableCandidate>();
 
         /** Contains definitions of uninitialized variables. */
-        private final Deque<DetailAST> uninitializedVariables = new ArrayDeque<>();
+        private final Deque<DetailAST> uninitializedVariables = new ArrayDeque<DetailAST>();
 
         /**
          * Searches for final local variable candidate for ast in the scope.

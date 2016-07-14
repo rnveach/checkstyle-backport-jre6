@@ -41,7 +41,7 @@ import com.google.common.base.Joiner;
  **/
 public final class FullIdent {
     /** The list holding subsequent elements of identifier. **/
-    private final List<String> elements = new ArrayList<>();
+    private final List<String> elements = new ArrayList<String>();
     /** The line number. **/
     private int lineNo;
     /** The column number. **/

@@ -133,7 +133,7 @@ public class SuppressWarningsHolderTest extends BaseCheckTestSupport {
 
         final Object entryInstance = entryConstructor.newInstance("MockEntry", 100, 100, 350, 350);
 
-        final List<Object> entriesList = new ArrayList<>();
+        final List<Object> entriesList = new ArrayList<Object>();
         entriesList.add(entryInstance);
 
         final ThreadLocal<?> threadLocal = mock(ThreadLocal.class);
@@ -162,7 +162,7 @@ public class SuppressWarningsHolderTest extends BaseCheckTestSupport {
 
         final Object entryInstance = entryConstr.newInstance("all", 100, 100, 350, 350);
 
-        final List<Object> entriesList = new ArrayList<>();
+        final List<Object> entriesList = new ArrayList<Object>();
         entriesList.add(entryInstance);
 
         final ThreadLocal<?> threadLocal = mock(ThreadLocal.class);

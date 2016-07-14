@@ -153,8 +153,9 @@ public class BaseCheckTestSupport {
         // process each of the lines
         final ByteArrayInputStream inputStream =
                 new ByteArrayInputStream(stream.toByteArray());
-        try (final LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+        final LineNumberReader lnr = new LineNumberReader(
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        try {
 
             for (int i = 0; i < expected.length; i++) {
                 final String expectedResult = messageFileName + ":" + expected[i];
@@ -164,6 +165,9 @@ public class BaseCheckTestSupport {
 
             assertEquals("unexpected output: " + lnr.readLine(),
                     expected.length, errs);
+        }
+        finally {
+            lnr.close();
         }
 
         checker.destroy();
@@ -227,10 +231,11 @@ public class BaseCheckTestSupport {
         final ByteArrayInputStream inputStream =
                 new ByteArrayInputStream(stream.toByteArray());
 
-        try (final LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+        final LineNumberReader lnr = new LineNumberReader(
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        try {
 
-            final Map<String, List<String>> actualViolations = new HashMap<>();
+            final Map<String, List<String>> actualViolations = new HashMap<String, List<String>>();
             for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= errorCount;
                     line = lnr.readLine()) {
                 // have at least 2 characters before the splitting colon,
@@ -242,13 +247,16 @@ public class BaseCheckTestSupport {
                 List<String> actualViolationsPerFile =
                     actualViolations.get(actualViolationFileName);
                 if (actualViolationsPerFile == null) {
-                    actualViolationsPerFile = new ArrayList<>();
+                    actualViolationsPerFile = new ArrayList<String>();
                     actualViolations.put(actualViolationFileName, actualViolationsPerFile);
                 }
                 actualViolationsPerFile.add(actualViolationMessage);
             }
 
             return actualViolations;
+        }
+        finally {
+            lnr.close();
         }
     }
 

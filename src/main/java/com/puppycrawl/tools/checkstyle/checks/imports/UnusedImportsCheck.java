@@ -235,7 +235,7 @@ public class UnusedImportsCheck extends AbstractCheck {
      * @return a set of classes referenced in the javadoc block
      */
     private static Set<String> collectReferencesFromJavadoc(TextBlock textBlock) {
-        final Set<String> references = new HashSet<>();
+        final Set<String> references = new HashSet<String>();
         // process all the @link type tags
         // INLINE tags inside BLOCKs get hidden when using ALL
         for (final JavadocTag tag
@@ -272,7 +272,7 @@ public class UnusedImportsCheck extends AbstractCheck {
      * @return A list of references found in this tag
      */
     private static Set<String> processJavadocTag(JavadocTag tag) {
-        final Set<String> references = new HashSet<>();
+        final Set<String> references = new HashSet<String>();
         final String identifier = tag.getFirstArg().trim();
         for (Pattern pattern : new Pattern[]
         {FIRST_CLASS_NAME, ARGUMENT_NAME}) {
@@ -289,7 +289,7 @@ public class UnusedImportsCheck extends AbstractCheck {
      * @return A list of texts which matched the pattern
      */
     private static Set<String> matchPattern(String identifier, Pattern pattern) {
-        final Set<String> references = new HashSet<>();
+        final Set<String> references = new HashSet<String>();
         final Matcher matcher = pattern.matcher(identifier);
         while (matcher.find()) {
             references.add(matcher.group(1));

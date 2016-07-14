@@ -100,7 +100,7 @@ public final class ConfigurationLoader {
     /** Property resolver. **/
     private final PropertyResolver overridePropsResolver;
     /** The loaded configurations. **/
-    private final Deque<DefaultConfiguration> configStack = new ArrayDeque<>();
+    private final Deque<DefaultConfiguration> configStack = new ArrayDeque<DefaultConfiguration>();
 
     /** Flags if modules with the severity 'ignore' should be omitted. */
     private final boolean omitIgnoredModules;
@@ -237,7 +237,13 @@ public final class ConfigurationLoader {
                     ex.getMessage(), ex.getLineNumber(), ex.getColumnNumber());
             throw new CheckstyleException(message, ex);
         }
-        catch (final ParserConfigurationException | IOException | SAXException ex) {
+        catch (final ParserConfigurationException ex) {
+            throw new CheckstyleException(UNABLE_TO_PARSE_EXCEPTION_PREFIX, ex);
+        }
+        catch (final IOException ex) {
+            throw new CheckstyleException(UNABLE_TO_PARSE_EXCEPTION_PREFIX, ex);
+        }
+        catch (final SAXException ex) {
             throw new CheckstyleException(UNABLE_TO_PARSE_EXCEPTION_PREFIX, ex);
         }
     }

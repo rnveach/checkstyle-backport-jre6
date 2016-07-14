@@ -53,7 +53,7 @@ public class ClassResolver {
     public ClassResolver(ClassLoader loader, String pkg, Set<String> imports) {
         this.loader = loader;
         this.pkg = pkg;
-        this.imports = new HashSet<>(imports);
+        this.imports = new HashSet<String>(imports);
         this.imports.add("java.lang.*");
     }
 
@@ -169,7 +169,10 @@ public class ClassResolver {
             safeLoad(name);
             return true;
         }
-        catch (final ClassNotFoundException | NoClassDefFoundError ignored) {
+        catch (final ClassNotFoundException ignored) {
+            return false;
+        }
+        catch (final NoClassDefFoundError ignored) {
             return false;
         }
     }

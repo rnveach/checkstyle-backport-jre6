@@ -224,8 +224,9 @@ public class XMLLoggerTest {
         final ByteArrayInputStream inStream =
             new ByteArrayInputStream(bytes);
         final List<String> lineList = Lists.newArrayList();
-        try (final BufferedReader reader = new BufferedReader(
-                new InputStreamReader(inStream, StandardCharsets.UTF_8))) {
+        final BufferedReader reader = new BufferedReader(
+                new InputStreamReader(inStream, StandardCharsets.UTF_8));
+        try {
             while (true) {
                 final String line = reader.readLine();
                 if (line == null) {
@@ -233,6 +234,9 @@ public class XMLLoggerTest {
                 }
                 lineList.add(line);
             }
+        }
+        finally {
+            reader.close();
         }
         return lineList.toArray(new String[lineList.size()]);
     }

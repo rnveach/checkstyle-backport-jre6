@@ -171,7 +171,8 @@ public class CommitValidationTest {
 
     private static List<RevCommit> getCommitsToCheck() throws Exception {
         final List<RevCommit> commits;
-        try (Repository repo = new FileRepositoryBuilder().findGitDir().build()) {
+        final Repository repo = new FileRepositoryBuilder().findGitDir().build();
+        try {
             final RevCommitsPair revCommitsPair = resolveRevCommitsPair(repo);
             if (COMMITS_RESOLUTION_MODE == CommitsResolutionMode.BY_COUNTER) {
                 commits = getCommitsByCounter(revCommitsPair.getFirst());
@@ -182,11 +183,14 @@ public class CommitValidationTest {
                 commits.addAll(getCommitsByLastCommitAuthor(revCommitsPair.getSecond()));
             }
         }
+        finally {
+            repo.close();
+        }
         return commits;
     }
 
     private static List<RevCommit> filterValidCommits(List<RevCommit> revCommits) {
-        final List<RevCommit> filteredCommits = new LinkedList<>();
+        final List<RevCommit> filteredCommits = new LinkedList<RevCommit>();
         for (RevCommit commit : revCommits) {
             final String commitAuthor = commit.getAuthorIdent().getName();
             if (!USERS_EXCLUDED_FROM_VALIDATION.contains(commitAuthor)) {
@@ -198,8 +202,8 @@ public class CommitValidationTest {
 
     private static RevCommitsPair resolveRevCommitsPair(Repository repo) {
         RevCommitsPair revCommitIteratorPair;
-
-        try (RevWalk revWalk = new RevWalk(repo)) {
+        final RevWalk revWalk = new RevWalk(repo);
+        try {
             final Iterator<RevCommit> first;
             final Iterator<RevCommit> second;
             final ObjectId headId = repo.resolve(Constants.HEAD);
@@ -209,14 +213,22 @@ public class CommitValidationTest {
                 final RevCommit firstParent = headCommit.getParent(0);
                 final RevCommit secondParent = headCommit.getParent(1);
 
-                try (Git git = new Git(repo)) {
+                final Git git = new Git(repo);
+                try {
                     first = git.log().add(firstParent).call().iterator();
                     second = git.log().add(secondParent).call().iterator();
                 }
+                finally {
+                    git.close();
+                }
             }
             else {
-                try (Git git = new Git(repo)) {
+                final Git git = new Git(repo);
+                try {
                     first = git.log().call().iterator();
+                }
+                finally {
+                    git.close();
                 }
                 second = Collections.emptyIterator();
             }
@@ -225,8 +237,14 @@ public class CommitValidationTest {
                     new RevCommitsPair(new OmitMergeCommitsIterator(first),
                             new OmitMergeCommitsIterator(second));
         }
-        catch (GitAPIException | IOException ex) {
+        catch (GitAPIException ex) {
             revCommitIteratorPair = new RevCommitsPair();
+        }
+        catch (IOException ex) {
+            revCommitIteratorPair = new RevCommitsPair();
+        }
+        finally {
+            revWalk.close();
         }
 
         return revCommitIteratorPair;
@@ -244,7 +262,7 @@ public class CommitValidationTest {
 
     private static List<RevCommit> getCommitsByLastCommitAuthor(
             Iterator<RevCommit> previousCommitsIterator) {
-        final List<RevCommit> commits = new LinkedList<>();
+        final List<RevCommit> commits = new LinkedList<RevCommit>();
 
         if (previousCommitsIterator.hasNext()) {
             final RevCommit lastCommit = previousCommitsIterator.next();

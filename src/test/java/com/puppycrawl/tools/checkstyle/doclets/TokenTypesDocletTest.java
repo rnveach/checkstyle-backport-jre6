@@ -91,11 +91,11 @@ public class TokenTypesDocletTest {
         // modifiers public, static, final and type int, because they are referenced statically in
         // a lot of different places, must not be changed and an int value is used to encrypt
         // a token type.
-        final ListBuffer<String[]> options = new ListBuffer<>();
+        final ListBuffer<String[]> options = new ListBuffer<String[]>();
         options.add(new String[] {"-doclet", "TokenTypesDoclet"});
         options.add(new String[] {"-destfile", "target/tokentypes.properties"});
 
-        final ListBuffer<String> names = new ListBuffer<>();
+        final ListBuffer<String> names = new ListBuffer<String>();
         names.add(getPath("InputTokenTypesDocletNotConstants.java"));
 
         final Context context = new Context();
@@ -108,10 +108,10 @@ public class TokenTypesDocletTest {
 
     @Test
     public void testEmptyJavadoc() throws Exception {
-        final ListBuffer<String[]> options = new ListBuffer<>();
+        final ListBuffer<String[]> options = new ListBuffer<String[]>();
         options.add(new String[] {"-destfile", "target/tokentypes.properties"});
 
-        final ListBuffer<String> names = new ListBuffer<>();
+        final ListBuffer<String> names = new ListBuffer<String>();
         names.add(getPath("InputTokenTypesDocletEmptyJavadoc.java"));
 
         final Context context = new Context();
@@ -132,10 +132,10 @@ public class TokenTypesDocletTest {
 
     @Test
     public void testCorrect() throws Exception {
-        final ListBuffer<String[]> options = new ListBuffer<>();
+        final ListBuffer<String[]> options = new ListBuffer<String[]>();
         options.add(new String[] {"-destfile", "target/tokentypes.properties"});
 
-        final ListBuffer<String> names = new ListBuffer<>();
+        final ListBuffer<String> names = new ListBuffer<String>();
         names.add(getPath("InputTokenTypesDocletCorrect.java"));
 
         final Context context = new Context();
@@ -188,7 +188,7 @@ public class TokenTypesDocletTest {
 
     private static class TestMessager extends Messager {
 
-        private final List<String> messages = new ArrayList<>();
+        private final List<String> messages = new ArrayList<String>();
 
         TestMessager(Context context) {
             super(context, "");

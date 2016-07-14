@@ -168,8 +168,7 @@ public class AutomaticBean
             // finally we can set the bean property
             beanUtils.copyProperty(this, key, value);
         }
-        catch (final InvocationTargetException | IllegalAccessException
-                | NoSuchMethodException ex) {
+        catch (final InvocationTargetException ex) {
             // There is no way to catch IllegalAccessException | NoSuchMethodException
             // as we do PropertyUtils.getPropertyDescriptor before beanUtils.copyProperty
             // so we have to join these exceptions with InvocationTargetException
@@ -178,7 +177,22 @@ public class AutomaticBean
                     "Cannot set property '%s' to '%s' in module %s", key, value, moduleName);
             throw new CheckstyleException(message, ex);
         }
-        catch (final IllegalArgumentException | ConversionException ex) {
+        catch (final IllegalAccessException ex) {
+            final String message = String.format(Locale.ROOT,
+                    "Cannot set property '%s' to '%s' in module %s", key, value, moduleName);
+            throw new CheckstyleException(message, ex);
+        }
+        catch (final NoSuchMethodException ex) {
+            final String message = String.format(Locale.ROOT,
+                    "Cannot set property '%s' to '%s' in module %s", key, value, moduleName);
+            throw new CheckstyleException(message, ex);
+        }
+        catch (final IllegalArgumentException ex) {
+            final String message = String.format(Locale.ROOT, "illegal value '%s' for property "
+                    + "'%s' of module %s", value, key, moduleName);
+            throw new CheckstyleException(message, ex);
+        }
+        catch (final ConversionException ex) {
             final String message = String.format(Locale.ROOT, "illegal value '%s' for property "
                     + "'%s' of module %s", value, key, moduleName);
             throw new CheckstyleException(message, ex);

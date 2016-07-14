@@ -62,9 +62,10 @@ public class BaseIndentationCheckSupport extends BaseCheckTestSupport {
     private static Integer[] getLinesWithWarnAndCheckComments(String aFileName,
             final int tabWidth)
                     throws IOException {
-        final List<Integer> result = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                new FileInputStream(aFileName), StandardCharsets.UTF_8))) {
+        final List<Integer> result = new ArrayList<Integer>();
+        final BufferedReader br = new BufferedReader(new InputStreamReader(
+                new FileInputStream(aFileName), StandardCharsets.UTF_8));
+        try {
             int lineNumber = 1;
             for (String line = br.readLine(); line != null; line = br.readLine()) {
                 final Matcher match = LINE_WITH_COMMENT_REGEX.matcher(line);
@@ -104,6 +105,9 @@ public class BaseIndentationCheckSupport extends BaseCheckTestSupport {
                 }
                 lineNumber++;
             }
+        }
+        finally {
+            br.close();
         }
         return result.toArray(new Integer[result.size()]);
     }

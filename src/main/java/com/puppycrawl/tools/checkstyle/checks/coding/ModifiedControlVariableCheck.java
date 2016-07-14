@@ -113,7 +113,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
                     TokenTypes.INC, TokenTypes.ASSIGN);
 
     /** Stack of block parameters. */
-    private final Deque<Deque<String>> variableStack = new ArrayDeque<>();
+    private final Deque<Deque<String>> variableStack = new ArrayDeque<Deque<String>>();
 
     /** Controls whether to skip enhanced for-loop variable. */
     private boolean skipEnhancedForLoopVariable;
@@ -166,7 +166,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
     public void beginTree(DetailAST rootAST) {
         // clear data
         variableStack.clear();
-        variableStack.push(new ArrayDeque<>());
+        variableStack.push(new ArrayDeque<String>());
     }
 
     @Override
@@ -250,7 +250,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
      * Enters an inner class, which requires a new variable set.
      */
     private void enterBlock() {
-        variableStack.push(new ArrayDeque<>());
+        variableStack.push(new ArrayDeque<String>());
     }
 
     /**
@@ -349,7 +349,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
      * @return set of variables initialized in for loop
      */
     private static Set<String> getForInitVariables(DetailAST ast) {
-        final Set<String> initializedVariables = new HashSet<>();
+        final Set<String> initializedVariables = new HashSet<String>();
         final DetailAST forInitAST = ast.findFirstToken(TokenTypes.FOR_INIT);
 
         for (DetailAST parameterDefAST = forInitAST.findFirstToken(TokenTypes.VARIABLE_DEF);
@@ -371,7 +371,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
      * @return names of variables change in iterating part of for
      */
     private static Set<String> getForIteratorVariables(DetailAST ast) {
-        final Set<String> iteratorVariables = new HashSet<>();
+        final Set<String> iteratorVariables = new HashSet<String>();
         final DetailAST forIteratorAST = ast.findFirstToken(TokenTypes.FOR_ITERATOR);
         final DetailAST forUpdateListAST = forIteratorAST.findFirstToken(TokenTypes.ELIST);
 
@@ -394,7 +394,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
      * @return all child of given ast
      */
     private static List<DetailAST> findChildrenOfExpressionType(DetailAST ast) {
-        final List<DetailAST> foundExpressions = new LinkedList<>();
+        final List<DetailAST> foundExpressions = new LinkedList<DetailAST>();
         if (ast != null) {
             for (DetailAST iteratingExpressionAST = ast.findFirstToken(TokenTypes.EXPR);
                  iteratingExpressionAST != null;

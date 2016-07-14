@@ -394,7 +394,7 @@ public class RedundantModifierCheck
      * @return List of annotations
      */
     private static List<DetailAST> getMethodAnnotationsList(DetailAST methodDef) {
-        final List<DetailAST> annotationsList = new ArrayList<>();
+        final List<DetailAST> annotationsList = new ArrayList<DetailAST>();
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
         DetailAST modifier = modifiers.getFirstChild();
         while (modifier != null) {

@@ -34,7 +34,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 public class FileContentsHolder
     extends AbstractCheck {
     /** The current file contents. */
-    private static final ThreadLocal<FileContents> FILE_CONTENTS = new ThreadLocal<>();
+    private static final ThreadLocal<FileContents> FILE_CONTENTS = new ThreadLocal<FileContents>();
 
     /**
      * @return the current file contents.

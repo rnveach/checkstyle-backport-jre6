@@ -341,7 +341,7 @@ public class JavadocStyleCheck
      */
     private void checkHtmlTags(final DetailAST ast, final TextBlock comment) {
         final int lineNo = comment.getStartLineNo();
-        final Deque<HtmlTag> htmlStack = new ArrayDeque<>();
+        final Deque<HtmlTag> htmlStack = new ArrayDeque<HtmlTag>();
         final String[] text = comment.getText();
 
         final TagParser parser = new TagParser(text, lineNo);
@@ -405,7 +405,7 @@ public class JavadocStyleCheck
      * @param token the current HTML tag name that has been closed.
      */
     private void checkUnclosedTags(Deque<HtmlTag> htmlStack, String token) {
-        final Deque<HtmlTag> unclosedTags = new ArrayDeque<>();
+        final Deque<HtmlTag> unclosedTags = new ArrayDeque<HtmlTag>();
         HtmlTag lastOpenTag = htmlStack.pop();
         while (!token.equalsIgnoreCase(lastOpenTag.getId())) {
             // Find unclosed elements. Put them on a stack so the

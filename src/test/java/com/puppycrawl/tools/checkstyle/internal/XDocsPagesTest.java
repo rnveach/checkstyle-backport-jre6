@@ -408,7 +408,7 @@ public class XDocsPagesTest {
         }
 
         // remove undocumented properties
-        for (String p : new HashSet<>(properties)) {
+        for (String p : new HashSet<String>(properties)) {
             if (UNDOCUMENTED_PROPERTIES.contains(clss.getSimpleName() + "." + p)) {
                 properties.remove(p);
             }
@@ -448,7 +448,7 @@ public class XDocsPagesTest {
             Assert.assertFalse(fileName + " section '" + sectionName
                     + "' should have token properties last", didTokens);
 
-            final List<Node> columns = new ArrayList<>(XmlUtil.getChildrenElements(row));
+            final List<Node> columns = new ArrayList<Node>(XmlUtil.getChildrenElements(row));
 
             final String propertyName = columns.get(0).getTextContent();
             Assert.assertTrue(fileName + " section '" + sectionName
@@ -611,7 +611,7 @@ public class XDocsPagesTest {
             Object instance) throws Exception {
         final Class<?> clss = instance.getClass();
         final Set<Field> fields = CheckUtil.getCheckMessages(clss);
-        final Set<String> list = new TreeSet<>();
+        final Set<String> list = new TreeSet<String>();
 
         for (Field field : fields) {
             // below is required for package/private classes
@@ -747,7 +747,7 @@ public class XDocsPagesTest {
     }
 
     private static Set<String> getProperties(Class<?> clss) {
-        final Set<String> result = new TreeSet<>();
+        final Set<String> result = new TreeSet<String>();
         final PropertyDescriptor[] map = PropertyUtils.getPropertyDescriptors(clss);
 
         for (PropertyDescriptor p : map) {
@@ -771,7 +771,7 @@ public class XDocsPagesTest {
 
             for (int position = 0; position < sources.getLength(); position++) {
                 final Node row = sources.item(position);
-                final List<Node> columns = new ArrayList<>(
+                final List<Node> columns = new ArrayList<Node>(
                         XmlUtil.findChildElementsByTag(row, "td"));
 
                 if (columns.isEmpty()) {

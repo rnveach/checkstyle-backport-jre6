@@ -61,7 +61,7 @@ public final class ReturnCountCheck extends AbstractCheck {
     public static final String MSG_KEY = "return.count";
 
     /** Stack of method contexts. */
-    private final Deque<Context> contextStack = new ArrayDeque<>();
+    private final Deque<Context> contextStack = new ArrayDeque<Context>();
 
     /** The format string of the regexp. */
     private String format = "^equals$";

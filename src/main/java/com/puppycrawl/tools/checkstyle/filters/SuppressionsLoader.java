@@ -147,7 +147,12 @@ public final class SuppressionsLoader
         catch (final FileNotFoundException ex) {
             throw new CheckstyleException(UNABLE_TO_FIND_ERROR_MESSAGE + sourceName, ex);
         }
-        catch (final ParserConfigurationException | SAXException ex) {
+        catch (final ParserConfigurationException ex) {
+            final String message = String.format(Locale.ROOT, "Unable to parse %s - %s",
+                    sourceName, ex.getMessage());
+            throw new CheckstyleException(message, ex);
+        }
+        catch (final SAXException ex) {
             final String message = String.format(Locale.ROOT, "Unable to parse %s - %s",
                     sourceName, ex.getMessage());
             throw new CheckstyleException(message, ex);

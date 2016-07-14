@@ -240,7 +240,13 @@ public final class AstTreeStringPrinter {
                 result = TreeWalker.parse(contents);
             }
         }
-        catch (RecognitionException | TokenStreamException ex) {
+        catch (RecognitionException ex) {
+            final String exceptionMsg = String.format(Locale.ROOT,
+                "%s occurred during the analysis of file %s.",
+                ex.getClass().getSimpleName(), text.getFile().getPath());
+            throw new CheckstyleException(exceptionMsg, ex);
+        }
+        catch (TokenStreamException ex) {
             final String exceptionMsg = String.format(Locale.ROOT,
                 "%s occurred during the analysis of file %s.",
                 ex.getClass().getSimpleName(), text.getFile().getPath());

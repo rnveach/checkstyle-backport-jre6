@@ -96,7 +96,7 @@ public final class CheckUtil {
 
             final NodeList nodeList = document.getElementsByTagName("module");
 
-            final Set<String> checksReferencedInCheckstyleChecksXml = new HashSet<>();
+            final Set<String> checksReferencedInCheckstyleChecksXml = new HashSet<String>();
             for (int i = 0; i < nodeList.getLength(); i++) {
                 final Node currentNode = nodeList.item(i);
                 if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -120,7 +120,7 @@ public final class CheckUtil {
      * @throws IOException if the attempt to read class path resources failed.
      */
     public static Set<Class<?>> getCheckstyleChecks() throws IOException {
-        final Set<Class<?>> checkstyleChecks = new HashSet<>();
+        final Set<Class<?>> checkstyleChecks = new HashSet<Class<?>>();
 
         final ClassLoader loader = Thread.currentThread()
                 .getContextClassLoader();
@@ -148,7 +148,7 @@ public final class CheckUtil {
      * @throws IOException if the attempt to read class path resources failed.
      */
     public static Set<Class<?>> getCheckstyleModules() throws IOException {
-        final Set<Class<?>> checkstyleModules = new HashSet<>();
+        final Set<Class<?>> checkstyleModules = new HashSet<Class<?>>();
 
         final ClassLoader loader = Thread.currentThread()
                 .getContextClassLoader();
@@ -217,7 +217,7 @@ public final class CheckUtil {
      * @throws ClassNotFoundException if the attempt to read a protected class fails.
      */
     public static Set<Field> getCheckMessages(Class<?> module) throws ClassNotFoundException {
-        final Set<Field> checkstyleMessages = new HashSet<>();
+        final Set<Field> checkstyleMessages = new HashSet<Field>();
 
         // get all fields from current class
         final Field[] fields = module.getDeclaredFields();

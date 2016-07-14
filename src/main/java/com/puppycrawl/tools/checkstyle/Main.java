@@ -210,7 +210,7 @@ public final class Main {
      * @return list of violations
      */
     private static List<String> validateCli(CommandLine cmdLine, List<File> filesToProcess) {
-        final List<String> result = new ArrayList<>();
+        final List<String> result = new ArrayList<String>();
 
         if (filesToProcess.isEmpty()) {
             result.add("Files to process must be specified, found 0.");

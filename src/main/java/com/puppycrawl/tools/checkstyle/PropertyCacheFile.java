@@ -218,7 +218,11 @@ final class PropertyCacheFile {
 
             return DatatypeConverter.printHexBinary(digest.digest());
         }
-        catch (final IOException | NoSuchAlgorithmException ex) {
+        catch (final IOException ex) {
+            // rethrow as unchecked exception
+            throw new IllegalStateException("Unable to calculate hashcode.", ex);
+        }
+        catch (final NoSuchAlgorithmException ex) {
             // rethrow as unchecked exception
             throw new IllegalStateException("Unable to calculate hashcode.", ex);
         }

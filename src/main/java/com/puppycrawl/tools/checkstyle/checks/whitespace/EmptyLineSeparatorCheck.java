@@ -353,7 +353,7 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
         if (lastToken != null) {
             lastTokenLineNo = lastToken.getLineNo();
         }
-        final List<Integer> emptyLines = new ArrayList<>();
+        final List<Integer> emptyLines = new ArrayList<Integer>();
         final FileContents fileContents = getFileContents();
 
         for (int lineNo = ast.getLineNo(); lineNo < lastTokenLineNo; lineNo++) {
@@ -370,7 +370,7 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
      * @return list of empty lines to log.
      */
     private static List<Integer> getEmptyLinesToLog(List<Integer> emptyLines) {
-        final List<Integer> emptyLinesToLog = new ArrayList<>();
+        final List<Integer> emptyLinesToLog = new ArrayList<Integer>();
         if (emptyLines.size() > 1) {
             int previousEmptyLineNo = emptyLines.get(0);
             for (int emptyLineNo : emptyLines) {

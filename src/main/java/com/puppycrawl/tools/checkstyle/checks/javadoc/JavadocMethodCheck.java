@@ -630,7 +630,7 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      */
     private static List<JavadocTag> getMultilineArgTags(final Matcher argMultilineStart,
             final int column, final String[] lines, final int lineIndex, final int tagLine) {
-        final List<JavadocTag> tags = new ArrayList<>();
+        final List<JavadocTag> tags = new ArrayList<JavadocTag>();
         final String param1 = argMultilineStart.group(1);
         final String param2 = argMultilineStart.group(2);
         int remIndex = lineIndex + 1;
@@ -661,7 +661,7 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
             final String[] lines, final int lineIndex, final int tagLine) {
         final String param1 = noargMultilineStart.group(1);
         final int col = noargMultilineStart.start(1) - 1;
-        final List<JavadocTag> tags = new ArrayList<>();
+        final List<JavadocTag> tags = new ArrayList<JavadocTag>();
         int remIndex = lineIndex + 1;
         while (remIndex < lines.length) {
             final Matcher multilineCont = MATCH_JAVADOC_MULTILINE_CONT

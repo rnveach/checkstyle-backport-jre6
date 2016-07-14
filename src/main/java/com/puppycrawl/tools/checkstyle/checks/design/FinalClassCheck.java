@@ -82,7 +82,7 @@ public class FinalClassCheck
 
     @Override
     public void beginTree(DetailAST rootAST) {
-        classes = new ArrayDeque<>();
+        classes = new ArrayDeque<ClassDesc>();
         packageName = "";
     }
 
@@ -151,7 +151,7 @@ public class FinalClassCheck
         if (classExtend.findFirstToken(TokenTypes.IDENT) == null) {
             // Name specified with packages, have to traverse DOT
             final DetailAST firstChild = classExtend.findFirstToken(TokenTypes.DOT);
-            final List<String> qualifiedNameParts = new LinkedList<>();
+            final List<String> qualifiedNameParts = new LinkedList<String>();
 
             qualifiedNameParts.add(0, firstChild.findFirstToken(TokenTypes.IDENT).getText());
             DetailAST traverse = firstChild.findFirstToken(TokenTypes.DOT);

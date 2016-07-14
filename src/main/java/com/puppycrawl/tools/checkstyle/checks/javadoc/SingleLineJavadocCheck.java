@@ -69,7 +69,7 @@ public class SingleLineJavadocCheck extends AbstractJavadocCheck {
     /**
      * Allows to specify a list of tags to be ignored by check.
      */
-    private List<String> ignoredTags = new ArrayList<>();
+    private List<String> ignoredTags = new ArrayList<String>();
 
     /** Whether inline tags must be ignored. **/
     private boolean ignoreInlineTags = true;
