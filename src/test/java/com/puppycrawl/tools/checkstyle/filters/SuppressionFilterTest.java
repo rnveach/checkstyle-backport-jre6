@@ -72,7 +72,6 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
         EqualsVerifier
                 .forClass(SuppressionFilter.class)
                 .usingGetClass()
-                .withIgnoredFields("file", "optional", "configuration")
                 .suppress(Warning.NONFINAL_FIELDS)
                 .verify();
     }
