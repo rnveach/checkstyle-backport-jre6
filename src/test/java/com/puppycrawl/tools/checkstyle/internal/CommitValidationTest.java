@@ -243,9 +243,6 @@ public class CommitValidationTest {
         catch (IOException ex) {
             revCommitIteratorPair = new RevCommitsPair();
         }
-        finally {
-            revWalk.close();
-        }
 
         return revCommitIteratorPair;
     }
