@@ -214,7 +214,7 @@ public class SuppressWarningsHolderTest extends BaseCheckTestSupport {
     }
 
     @Test
-    public void testGetAllAnnotationValuesWrongArg() throws ReflectiveOperationException {
+    public void testGetAllAnnotationValuesWrongArg() throws Exception {
         final SuppressWarningsHolder holder = new SuppressWarningsHolder();
         final Method getAllAnnotationValues = holder.getClass()
                 .getDeclaredMethod("getAllAnnotationValues", DetailAST.class);
@@ -244,7 +244,7 @@ public class SuppressWarningsHolderTest extends BaseCheckTestSupport {
     }
 
     @Test
-    public void testGetAnnotationValuesWrongArg() throws ReflectiveOperationException {
+    public void testGetAnnotationValuesWrongArg() throws Exception {
         final SuppressWarningsHolder holder = new SuppressWarningsHolder();
         final Method getAllAnnotationValues = holder.getClass()
                 .getDeclaredMethod("getAnnotationValues", DetailAST.class);
@@ -268,7 +268,7 @@ public class SuppressWarningsHolderTest extends BaseCheckTestSupport {
     }
 
     @Test
-    public void testGetAnnotationTargetWrongArg() throws ReflectiveOperationException {
+    public void testGetAnnotationTargetWrongArg() throws Exception {
         final SuppressWarningsHolder holder = new SuppressWarningsHolder();
         final Method getAnnotationTarget = holder.getClass()
                 .getDeclaredMethod("getAnnotationTarget", DetailAST.class);

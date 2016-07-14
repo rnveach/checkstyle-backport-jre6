@@ -185,7 +185,7 @@ public class JavadocUtilsTest {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertUtilsClassHasPrivateConstructor(JavadocUtils.class);
     }
 

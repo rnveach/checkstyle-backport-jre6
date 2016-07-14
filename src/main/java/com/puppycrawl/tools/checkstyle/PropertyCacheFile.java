@@ -30,9 +30,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
@@ -47,6 +44,9 @@ import com.google.common.io.Closeables;
 import com.google.common.io.Flushables;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**

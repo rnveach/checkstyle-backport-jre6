@@ -29,7 +29,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,6 +38,7 @@ import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**

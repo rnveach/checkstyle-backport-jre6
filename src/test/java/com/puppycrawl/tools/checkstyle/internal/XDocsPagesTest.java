@@ -19,14 +19,13 @@
 
 package com.puppycrawl.tools.checkstyle.internal;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets.UTF_8;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Field;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -58,6 +57,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 
 public class XDocsPagesTest {
     private static final File JAVA_SOURCES_DIRECTORY = new File("src/main/java");

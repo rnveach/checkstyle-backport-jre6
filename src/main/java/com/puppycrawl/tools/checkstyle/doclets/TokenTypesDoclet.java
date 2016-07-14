@@ -24,8 +24,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.FieldDoc;

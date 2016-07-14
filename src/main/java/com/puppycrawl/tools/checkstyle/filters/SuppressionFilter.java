@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -33,6 +32,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
 import com.puppycrawl.tools.checkstyle.api.Filter;
 import com.puppycrawl.tools.checkstyle.api.FilterSet;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**

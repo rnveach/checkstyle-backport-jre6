@@ -17,15 +17,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.puppycrawl.tools.checkstyle.api;
+package com.puppycrawl.tools.checkstyle.jre6.file;
 
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+public final class Files {
+    private Files() {
+    }
 
-import org.junit.Test;
+    public static void createDirectories(Path directory) {
+        directory.getFile().mkdirs();
+    }
 
-public class JavadocTokenTypesTest {
-    @Test
-    public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(JavadocTokenTypes.class);
+    public static boolean exists(Path path) {
+        return path.getFile().exists();
+    }
+
+    public static void delete(Path path) {
+        path.getFile().delete();
     }
 }

@@ -33,7 +33,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public class AnnotationUtilityTest {
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         try {
             assertUtilsClassHasPrivateConstructor(AnnotationUtility.class);
         }

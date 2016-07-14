@@ -19,7 +19,8 @@
 
 package com.puppycrawl.tools.checkstyle.api;
 
-import java.util.Objects;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * Immutable line and column numbers.
@@ -63,10 +64,10 @@ public class LineColumn implements Comparable<LineColumn> {
     @Override
     public int compareTo(LineColumn lineColumn) {
         if (line == lineColumn.line) {
-            return Integer.compare(column, lineColumn.column);
+            return Integer7.compare(column, lineColumn.column);
         }
         else {
-            return Integer.compare(line, lineColumn.line);
+            return Integer7.compare(line, lineColumn.line);
         }
     }
 

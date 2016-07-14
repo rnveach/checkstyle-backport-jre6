@@ -19,8 +19,9 @@
 
 package com.puppycrawl.tools.checkstyle.checks;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 /**
  * Represents the options for line separator settings.

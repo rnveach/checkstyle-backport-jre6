@@ -20,11 +20,11 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.google.common.collect.Sets;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * <p>

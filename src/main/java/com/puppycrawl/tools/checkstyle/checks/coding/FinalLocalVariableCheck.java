@@ -25,11 +25,11 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
 
 /**

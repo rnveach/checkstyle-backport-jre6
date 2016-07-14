@@ -23,7 +23,6 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -37,6 +36,8 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.Filter;
 import com.puppycrawl.tools.checkstyle.api.TextBlock;
 import com.puppycrawl.tools.checkstyle.checks.FileContentsHolder;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
@@ -372,10 +373,10 @@ public class SuppressWithNearbyCommentFilter
         @Override
         public int compareTo(Tag other) {
             if (firstLine == other.firstLine) {
-                return Integer.compare(lastLine, other.lastLine);
+                return Integer7.compare(lastLine, other.lastLine);
             }
 
-            return Integer.compare(firstLine, other.firstLine);
+            return Integer7.compare(firstLine, other.firstLine);
         }
 
         @Override

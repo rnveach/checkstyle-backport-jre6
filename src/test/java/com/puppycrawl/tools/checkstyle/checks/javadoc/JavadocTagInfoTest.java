@@ -89,7 +89,7 @@ public class JavadocTagInfoTest {
     }
 
     @Test
-    public void testOthers() throws ReflectiveOperationException {
+    public void testOthers() throws Exception {
         final JavadocTagInfo[] tags = {
             JavadocTagInfo.CODE,
             JavadocTagInfo.DOC_ROOT,
@@ -134,7 +134,7 @@ public class JavadocTagInfoTest {
     }
 
     @Test
-    public void testDeprecated() throws ReflectiveOperationException {
+    public void testDeprecated() throws Exception {
         final DetailAST ast = new DetailAST();
         final DetailAST astParent = new DetailAST();
         astParent.setType(TokenTypes.LITERAL_CATCH);
@@ -167,7 +167,7 @@ public class JavadocTagInfoTest {
     }
 
     @Test
-    public void testSerial() throws ReflectiveOperationException {
+    public void testSerial() throws Exception {
         final DetailAST ast = new DetailAST();
         final DetailAST astParent = new DetailAST();
         astParent.setType(TokenTypes.LITERAL_CATCH);

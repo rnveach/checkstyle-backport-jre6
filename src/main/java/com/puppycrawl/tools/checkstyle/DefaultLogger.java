@@ -23,12 +23,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 /**
  * Simple plain logger for text output.

@@ -30,7 +30,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +49,7 @@ import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.AbstractViolationReporter;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class BaseCheckTestSupport {

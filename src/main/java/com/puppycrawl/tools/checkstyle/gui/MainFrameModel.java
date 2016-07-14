@@ -33,6 +33,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 /**
  * Model for checkstyle frame.
@@ -154,7 +155,7 @@ public class MainFrameModel {
                 // insert the contents of the file to the text area
                 for (final String element : sourceLines) {
                     linesToPosition.add(sb.length());
-                    sb.append(element).append(System.lineSeparator());
+                    sb.append(element).append(System7.lineSeparator());
                 }
                 text = sb.toString();
             }

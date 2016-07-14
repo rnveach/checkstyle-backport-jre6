@@ -47,7 +47,7 @@ public class TokenTypesDocletTest {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertUtilsClassHasPrivateConstructor(TokenTypesDoclet.class);
     }
 

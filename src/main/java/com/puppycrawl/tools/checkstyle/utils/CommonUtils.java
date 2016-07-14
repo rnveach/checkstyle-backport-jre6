@@ -28,8 +28,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -38,6 +36,8 @@ import org.apache.commons.beanutils.ConversionException;
 
 import com.google.common.base.CharMatcher;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 /**
  * Contains utility methods.

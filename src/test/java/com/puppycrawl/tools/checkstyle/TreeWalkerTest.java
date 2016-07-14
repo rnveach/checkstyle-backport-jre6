@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +42,7 @@ import com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocPackageCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.TypeNameCheck;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class TreeWalkerTest extends BaseCheckTestSupport {

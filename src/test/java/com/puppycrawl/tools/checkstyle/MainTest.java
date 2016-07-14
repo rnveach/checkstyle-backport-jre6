@@ -54,6 +54,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 public class MainTest {
     private static final String USAGE = String.format(Locale.ROOT,
@@ -131,7 +132,7 @@ public class MainTest {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertUtilsClassHasPrivateConstructor(Main.class);
     }
 
@@ -142,7 +143,7 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                assertEquals("Checkstyle version: null" + System.lineSeparator(),
+                assertEquals("Checkstyle version: null" + System7.lineSeparator(),
                         systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
@@ -173,7 +174,7 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                assertEquals("Must specify a config XML file." + System.lineSeparator(),
+                assertEquals("Must specify a config XML file." + System7.lineSeparator(),
                         systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
@@ -189,7 +190,7 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 assertEquals("Files to process must be specified, found 0."
-                    + System.lineSeparator(), systemOut.getLog());
+                    + System7.lineSeparator(), systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
@@ -420,7 +421,7 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 assertEquals("Could not find file 'nonexisting.properties'."
-                        + System.lineSeparator(), systemOut.getLog());
+                        + System7.lineSeparator(), systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
@@ -655,7 +656,7 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 assertEquals("Printing AST is allowed for only one file."
-                    + System.lineSeparator(), systemOut.getLog());
+                    + System7.lineSeparator(), systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
@@ -782,7 +783,7 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 assertEquals("Option '-t' cannot be used with other options."
-                    + System.lineSeparator(), systemOut.getLog());
+                    + System7.lineSeparator(), systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
@@ -798,7 +799,7 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 assertEquals("Option '-t' cannot be used with other options."
-                    + System.lineSeparator(), systemOut.getLog());
+                    + System7.lineSeparator(), systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
@@ -814,7 +815,7 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 assertEquals("Option '-t' cannot be used with other options."
-                    + System.lineSeparator(), systemOut.getLog());
+                    + System7.lineSeparator(), systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
@@ -831,7 +832,7 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 assertEquals("Option '-t' cannot be used with other options."
-                    + System.lineSeparator(), systemOut.getLog());
+                    + System7.lineSeparator(), systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });

@@ -17,15 +17,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.puppycrawl.tools.checkstyle.api;
+package com.puppycrawl.tools.checkstyle.jre6.charset;
 
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+import java.nio.charset.Charset;
 
-import org.junit.Test;
+public final class StandardCharsets {
+    public static final Charset UTF_8 = Charset.forName("UTF-8");
+    public static final Charset US_ASCII = Charset.forName("US-ASCII");
 
-public class JavadocTokenTypesTest {
-    @Test
-    public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(JavadocTokenTypes.class);
+    private StandardCharsets() {
     }
 }

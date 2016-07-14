@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -31,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**

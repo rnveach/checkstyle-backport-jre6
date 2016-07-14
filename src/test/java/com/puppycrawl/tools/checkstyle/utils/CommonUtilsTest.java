@@ -54,7 +54,7 @@ public class CommonUtilsTest {
     private static final String PATH_DENORMALIZER = "/levelDown/.././";
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertUtilsClassHasPrivateConstructor(CommonUtils.class);
     }
 

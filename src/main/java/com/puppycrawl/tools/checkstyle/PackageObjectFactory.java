@@ -157,10 +157,7 @@ public class PackageObjectFactory implements ModuleFactory {
             declaredConstructor.setAccessible(true);
             instance = declaredConstructor.newInstance();
         }
-        catch (final ReflectiveOperationException exception) {
-            LOG.debug(IGNORING_EXCEPTION_MESSAGE, exception);
-        }
-        catch (final NoClassDefFoundError exception) {
+        catch (final Exception exception) {
             LOG.debug(IGNORING_EXCEPTION_MESSAGE, exception);
         }
         return instance;

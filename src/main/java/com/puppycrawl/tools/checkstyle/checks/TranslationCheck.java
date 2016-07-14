@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
@@ -46,6 +45,7 @@ import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**

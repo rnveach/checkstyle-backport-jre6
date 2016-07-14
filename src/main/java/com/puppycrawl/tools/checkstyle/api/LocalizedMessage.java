@@ -33,10 +33,12 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Objects;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
+
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * Represents a message that can be localised. The translations come from
@@ -371,14 +373,14 @@ public final class LocalizedMessage
 
     @Override
     public int compareTo(LocalizedMessage other) {
-        int result = Integer.compare(lineNo, other.lineNo);
+        int result = Integer7.compare(lineNo, other.lineNo);
 
         if (lineNo == other.lineNo) {
             if (columnNo == other.columnNo) {
                 result = getMessage().compareTo(other.getMessage());
             }
             else {
-                result = Integer.compare(columnNo, other.columnNo);
+                result = Integer7.compare(columnNo, other.columnNo);
             }
         }
         return result;

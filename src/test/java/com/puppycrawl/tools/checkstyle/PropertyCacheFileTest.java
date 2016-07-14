@@ -32,8 +32,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
@@ -46,6 +44,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyCacheFile.class, PropertyCacheFileTest.class })

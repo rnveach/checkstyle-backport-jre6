@@ -17,15 +17,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.puppycrawl.tools.checkstyle.api;
+package com.puppycrawl.tools.checkstyle.jre6.lang;
 
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+public final class System7 {
+    private System7() {
+    }
 
-import org.junit.Test;
+    private static String lineSeparator = System.getProperty("line.separator");
 
-public class JavadocTokenTypesTest {
-    @Test
-    public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(JavadocTokenTypes.class);
+    public static String lineSeparator() {
+        return lineSeparator;
     }
 }

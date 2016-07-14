@@ -20,7 +20,6 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -29,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;

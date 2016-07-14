@@ -41,7 +41,7 @@ public class AstTreeStringPrinterTest {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertUtilsClassHasPrivateConstructor(AstTreeStringPrinter.class);
     }
 

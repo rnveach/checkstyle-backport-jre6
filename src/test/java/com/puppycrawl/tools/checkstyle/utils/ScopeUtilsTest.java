@@ -30,7 +30,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public class ScopeUtilsTest {
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertUtilsClassHasPrivateConstructor(ScopeUtils.class);
     }
 

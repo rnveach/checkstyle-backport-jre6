@@ -17,15 +17,45 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.puppycrawl.tools.checkstyle.api;
+package com.puppycrawl.tools.checkstyle.jre6.util;
 
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+import java.util.NoSuchElementException;
 
-import org.junit.Test;
+public final class Optional<T> {
+    private static final Optional<?> EMPTY = new Optional<Object>();
 
-public class JavadocTokenTypesTest {
-    @Test
-    public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(JavadocTokenTypes.class);
+    private final T value;
+
+    private Optional() {
+        this.value = null;
+    }
+
+    private Optional(T value) {
+        this.value = Objects.requireNonNull(value);
+    }
+
+    public static <T> Optional<T> empty() {
+        @SuppressWarnings("unchecked")
+        final Optional<T> t = (Optional<T>) EMPTY;
+        return t;
+    }
+
+    public static <T> Optional<T> of(T value) {
+        return new Optional<T>(value);
+    }
+
+    public static <T> Optional<T> ofNullable(T value) {
+        return (Optional<T>) (value == null ? empty() : of(value));
+    }
+
+    public T get() {
+        if (value == null) {
+            throw new NoSuchElementException("No value present");
+        }
+        return value;
+    }
+
+    public boolean isPresent() {
+        return value != null;
     }
 }

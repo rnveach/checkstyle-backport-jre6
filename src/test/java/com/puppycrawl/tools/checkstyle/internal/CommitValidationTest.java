@@ -38,12 +38,12 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 
 /**
  * Validate commit message has proper structure.
@@ -230,7 +230,7 @@ public class CommitValidationTest {
                 finally {
                     git.close();
                 }
-                second = Collections.emptyIterator();
+                second = Collections7.emptyIterator();
             }
 
             revCommitIteratorPair =
@@ -314,8 +314,8 @@ public class CommitValidationTest {
         private final Iterator<RevCommit> second;
 
         RevCommitsPair() {
-            first = Collections.emptyIterator();
-            second = Collections.emptyIterator();
+            first = Collections7.emptyIterator();
+            second = Collections7.emptyIterator();
         }
 
         RevCommitsPair(Iterator<RevCommit> first, Iterator<RevCommit> second) {

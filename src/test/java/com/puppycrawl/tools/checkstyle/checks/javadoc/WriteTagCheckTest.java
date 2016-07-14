@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +40,7 @@ import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
