@@ -13,13 +13,6 @@
   -->
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Used for making releases. -->
-  <parent>
-    <artifactId>oss-parent</artifactId>
-    <groupId>org.sonatype.oss</groupId>
-    <version>9</version>
-  </parent>
-
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
   <version>7.0</version>
@@ -86,11 +79,6 @@
 
   <!-- that repositories are required for testing plugin's snapshot version -->
   <pluginRepositories>
-    <pluginRepository>
-      <id>nexus-codehaus-snapshot</id>
-      <name>Codehaus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/codehaus-snapshots/</url>
-    </pluginRepository>
     <pluginRepository>
       <id>sevntu-maven</id>
       <name>sevntu-maven</name>
@@ -203,6 +191,14 @@
       <classifier>runtime</classifier>
     </dependency>
   </dependencies>
+
+  <distributionManagement>
+    <repository>
+      <id>internal.repo</id>
+      <name>Temporary Staging Repository</name>
+      <url>file://${cs.maven.directory}</url>
+    </repository>
+  </distributionManagement>
 
   <build>
     <pluginManagement>
@@ -471,6 +467,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>2.8.2</version>
+        <configuration>
+          <altDeploymentRepository>internal.repo::default::file://${cs.maven.directory}</altDeploymentRepository>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -479,20 +478,6 @@
         <configuration>
           <generateBackupPoms>false</generateBackupPoms>
         </configuration>
-      </plugin>
-      <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>1.6.7</version>
-          <extensions>true</extensions>
-          <configuration>
-              <!-- serverId is ID of a <server> section from Maven's settings.xml
-                   to pick authentication information from
-              -->
-              <serverId>sonatype-nexus-staging</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
-          </configuration>
       </plugin>
 
       <plugin>
