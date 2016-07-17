@@ -20,10 +20,10 @@
 package com.puppycrawl.tools.checkstyle.jre6.lang;
 
 public final class System7 {
+    private static String lineSeparator = System.getProperty("line.separator");
+
     private System7() {
     }
-
-    private static String lineSeparator = System.getProperty("line.separator");
 
     public static String lineSeparator() {
         return lineSeparator;
