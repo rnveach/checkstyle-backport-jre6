@@ -77,7 +77,7 @@ public class CommitValidationTest {
     private static final String ISSUE_COMMIT_MESSAGE_REGEX_PATTERN = "^Issue #\\d+: .*$";
     private static final String PR_COMMIT_MESSAGE_REGEX_PATTERN = "^Pull #\\d+: .*$";
     private static final String OTHER_COMMIT_MESSAGE_REGEX_PATTERN =
-            "^(minor|config|infra|doc|spelling): .*$";
+            "^(minor|config|infra|doc|spelling|release): .*$";
 
     private static final String ACCEPTED_COMMIT_MESSAGE_REGEX_PATTERN =
               "(" + ISSUE_COMMIT_MESSAGE_REGEX_PATTERN + ")|"
