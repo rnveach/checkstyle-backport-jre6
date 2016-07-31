@@ -15,7 +15,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>7.0</version>
+  <version>7.1</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -67,7 +67,7 @@
     <projectVersion>${project.version}</projectVersion>
     <antlr4.version>4.5.3</antlr4.version>
     <maven.site.plugin.version>3.5.1</maven.site.plugin.version>
-    <maven.findbugs.plugin.version>3.0.3</maven.findbugs.plugin.version>
+    <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
     <maven.pmd.plugin.version>3.6</maven.pmd.plugin.version>
     <maven.jacoco.plugin.version>0.7.7.201606060606</maven.jacoco.plugin.version>
     <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
@@ -348,7 +348,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>6.19</version>
+            <version>7.0</version>
           </dependency>
         </dependencies>
         <!-- Specifying configuration here will take effect on the execution of "mvn checkstyle:checkstyle",
@@ -580,7 +580,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.10</version>
+        <version>1.11</version>
         <executions>
           <execution>
             <id>add-source</id>
@@ -963,7 +963,7 @@
         <artifactId>maven-report</artifactId>
         <version>0.1</version>
         <configuration>
-          <sonarHostURL>https://nemo.sonarqube.org</sonarHostURL>
+          <sonarHostURL>https://sonarqube.com</sonarHostURL>
         </configuration>
       </plugin>
 
@@ -1058,7 +1058,7 @@
             by sonar's developers. It is not allowed to open issue against sonar's maven report plugin
             at sonar's issue tracker: http://jira.codehaus.org/browse/MSONAR
             Sonar's mailing lists: http://www.mojohaus.org/sonar-maven-plugin/mail-lists.html-->
-            <excludedLink>https://nemo.sonarqube.org/project/index/com.puppycrawl.tools:checkstyle</excludedLink>
+            <excludedLink>https://sonarqube.com/project/index/com.puppycrawl.tools:checkstyle</excludedLink>
             <!-- skip validating SNAPSHOTs on sourceforge when ${projectVersion} is SNAPSHOT-->
             <excludedLink>http://downloads.sourceforge.net/project/checkstyle/checkstyle/*-SNAPSHOT/checkstyle-*-SNAPSHOT-all.jar</excludedLink>
             <!-- skip validating released "-all" jar on sourceforge as it is uploaded after site generation-->
@@ -1079,8 +1079,26 @@
             <!-- Too unstable sites to keep validate them -->
             <excludedLink>http://tide.olympe.in/*</excludedLink>
             <excludedLink>http://dl.acm.org/*</excludedLink>
+            <!-- permanent SSLHandshakeException -->
+            <excludedLink>https://www.codacy.com/</excludedLink>
+            <!-- permanent SSLException -->
+            <excludedLink>https://button.flattr.com/flattr-badge-large.png</excludedLink>
           </excludedLinks>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.2</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependency-updates-report</report>
+              <report>plugin-updates-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
 
     </plugins>

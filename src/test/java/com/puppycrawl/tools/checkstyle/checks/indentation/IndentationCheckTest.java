@@ -181,17 +181,23 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
     @Test
     public void testGetRequiredTokens() {
         final IndentationCheck checkObj = new IndentationCheck();
+        final int[] requiredTokens = checkObj.getRequiredTokens();
         final HandlerFactory handlerFactory = new HandlerFactory();
         final int[] expected = handlerFactory.getHandledTypes();
-        assertArrayEquals(expected, checkObj.getRequiredTokens());
+        Arrays.sort(expected);
+        Arrays.sort(requiredTokens);
+        assertArrayEquals(expected, requiredTokens);
     }
 
     @Test
     public void testGetAcceptableTokens() {
         final IndentationCheck checkObj = new IndentationCheck();
+        final int[] acceptableTokens = checkObj.getAcceptableTokens();
         final HandlerFactory handlerFactory = new HandlerFactory();
         final int[] expected = handlerFactory.getHandledTypes();
-        assertArrayEquals(expected, checkObj.getAcceptableTokens());
+        Arrays.sort(expected);
+        Arrays.sort(acceptableTokens);
+        assertArrayEquals(expected, acceptableTokens);
     }
 
     @Test
@@ -1681,6 +1687,16 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("tabWidth", "4");
         checkConfig.addAttribute("basicOffset", "4");
         final String fileName = getPath("InputTwoStatementsPerLine.java");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verifyWarns(checkConfig, fileName, expected);
+    }
+
+    @Test
+    public void testMethodChaining() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(IndentationCheck.class);
+        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addAttribute("basicOffset", "4");
+        final String fileName = getPath("InputChainedMethods.java");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
     }
