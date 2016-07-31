@@ -3,10 +3,11 @@
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
   <versioning>
-    <release>7.0</release>
+    <release>7.1</release>
     <versions>
       <version>7.0</version>
+      <version>7.1</version>
     </versions>
-    <lastUpdated>20160717172447</lastUpdated>
+    <lastUpdated>20160731135923</lastUpdated>
   </versioning>
 </metadata>
