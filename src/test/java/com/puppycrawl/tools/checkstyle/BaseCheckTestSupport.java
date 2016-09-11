@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -156,11 +157,17 @@ public class BaseCheckTestSupport {
         final LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         try {
+            final List<String> actuals = Lists.newArrayList();
+            String line;
+            while (((line = lnr.readLine()) != null) && (actuals.size() < expected.length)) {
+                actuals.add(line);
+            }
+            Collections.sort(actuals);
+            Arrays.sort(expected);
 
             for (int i = 0; i < expected.length; i++) {
                 final String expectedResult = messageFileName + ":" + expected[i];
-                final String actual = lnr.readLine();
-                assertEquals("error message " + i, expectedResult, actual);
+                assertEquals("error message " + i, expectedResult, actuals.get(i));
             }
 
             assertEquals("unexpected output: " + lnr.readLine(),
