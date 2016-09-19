@@ -7,6 +7,12 @@ checking Java source code for adherence to a Code Standard or set of validation 
 This project is a specialized fork of Checkstyle to support older runtime environments of users who can't upgrade.
 This project tries to provide all the functionality of current checkstyle version for those older environments.
 
+Downloading and Using
+=====================
+
+Documentation on how to use backport as a standalone utility or as part of maven can be found here:
+https://rnveach.github.io/checkstyle-backport-jre6 
+
 Licensing
 =========
 
