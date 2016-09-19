@@ -1,13 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-	<title>rnveach/checkstyle-backport-jre6 @ GitHub</title>
+    <title>rnveach/checkstyle-backport-jre6 @ GitHub</title>
 
-	<script type="text/Javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/Javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 
 <style type="text/css">
 body {
@@ -91,13 +91,13 @@ hr {
 }
 
 div.spoiler div.name {
-	cursor: pointer;
+    cursor: pointer;
     height:auto;
     width:auto;
 }
 
 div.spoiler div.text {
-	display: none;
+    display: none;
 }
 
 img.jumpingImage {
@@ -141,46 +141,46 @@ img.darkShadowed {
 </script>
 
 <script type="text/Javascript">
-		$(document).ready(function() {
+        $(document).ready(function() {
 
-			// Configure spoilers. Spoilers are configured by their classes:
-			// openOnHover color_on_hover pre_opened_spoiler
-			var fadeTime = 300;
+            // Configure spoilers. Spoilers are configured by their classes:
+            // openOnHover color_on_hover pre_opened_spoiler
+            var fadeTime = 300;
 
-			// Set the toggle operarions (spoilers fading)
-			$("div.spoiler div.name span").toggle(
-			function() {
-				$(this).parent("div.name").parent("div.spoiler").children("div.text").fadeIn(fadeTime);
-			}
-			,function() {
-				$(this).parent("div.name").parent("div.spoiler").children("div.text").fadeOut(fadeTime);
-			});
+            // Set the toggle operarions (spoilers fading)
+            $("div.spoiler div.name span").toggle(
+            function() {
+                $(this).parent("div.name").parent("div.spoiler").children("div.text").fadeIn(fadeTime);
+            }
+            ,function() {
+                $(this).parent("div.name").parent("div.spoiler").children("div.text").fadeOut(fadeTime);
+            });
 
-			// Set mouseOver operations (coloring/opening on hover)
-			$("div.spoiler div.name span").mouseover(function() {
+            // Set mouseOver operations (coloring/opening on hover)
+            $("div.spoiler div.name span").mouseover(function() {
 
-			    var openOnHover = $(this).parent("div.name").parent("div.spoiler").hasClass("openOnHower");
-		        var color_on_hover = $(this).parent("div.name").parent("div.spoiler").hasClass("color_on_hover");
+                var openOnHover = $(this).parent("div.name").parent("div.spoiler").hasClass("openOnHower");
+                var color_on_hover = $(this).parent("div.name").parent("div.spoiler").hasClass("color_on_hover");
 
-				if (color_on_hover) {
-				    $(this).children().css("color", "#1D4875");
-			    }
-				if (openOnHover) {
-					 $(this).parent("div.name").parent("div.spoiler").children("div.text").fadeIn(fadeTime);
-				}
+                if (color_on_hover) {
+                    $(this).children().css("color", "#1D4875");
+                }
+                if (openOnHover) {
+                     $(this).parent("div.name").parent("div.spoiler").children("div.text").fadeIn(fadeTime);
+                }
 
-			}).mouseout(function() {
-				var color_on_hover = $(this).parent("div.name").parent("div.spoiler").hasClass("color_on_hover");
-				if (color_on_hover) {
-					$(this).children().css("color", "#242630");
-	 		    }
-			});
+            }).mouseout(function() {
+                var color_on_hover = $(this).parent("div.name").parent("div.spoiler").hasClass("color_on_hover");
+                if (color_on_hover) {
+                    $(this).children().css("color", "#242630");
+                 }
+            });
 
-		    // Open spoilers with 'pre-opened' class
-			$(".pre_opened_spoiler").children("div.text").fadeIn(fadeTime);
-			// End configure spoilers
-		});
-	</script>
+            // Open spoilers with 'pre-opened' class
+            $(".pre_opened_spoiler").children("div.text").fadeIn(fadeTime);
+            // End configure spoilers
+        });
+    </script>
 
 <body>
   <a href="http://github.com/rnveach/checkstyle-backport-jre6">
@@ -190,7 +190,7 @@ img.darkShadowed {
   <div id="container">
 
     <h1><a href="http://github.com/rnveach/checkstyle-backport-jre6">Checkstyle-Backport-JRE6</a></h1>
-	Licence is <a href="https://www.gnu.org/licenses/lgpl-2.1.en.html">GNU LESSER GENERAL PUBLIC LICENSE Version 2.1.</a>
+    Licence is <a href="https://www.gnu.org/licenses/lgpl-2.1.en.html">GNU LESSER GENERAL PUBLIC LICENSE Version 2.1.</a>
       </span></p>
 
     <h2>Description</h2>
@@ -201,12 +201,30 @@ We are strongly convinced that it is much more easier and convenient to catch mi
       <br/>
       <br/>
 This project is a backport of Checkstyle to be used with older Java runtime environments, like Java 6, for users who can't upgrade to newer versions.
+Backport is managed unofficially by the community, and not by the Checkstyle team.
 <br/>
 <br/>
 </div>
 
+    <h2>Releases</h2>
+
+    Backport tries to update as soon as new, official Checkstyle releases come out, but we may fall behind a few days for various reasons.
+    The current list of Backport releases that are supported can be found at
+    <a href="https://github.com/rnveach/checkstyle-backport-jre6/releases">here</a>.
+
+	<h2>Standalone Use</h2>
+
+    <i>Coming soon...</i>
+
     <h2>Maven Use</h2>
+
+    Though this page is a simple GithubIO site, it is backport's way of giving out releases and so doubles as our fully functional maven repository.
+    Below is an example on how to setup Maven to use backport's repository:
+
     <pre style="border-bottom-style: dashed; border-top-style: dashed; border-left-color: #E8F2FC; border-top-color: #E8F2FC; border-left-style: dashed; border-right-color: #E8F2FC; border-right-style: dashed; border-bottom-color: #E8F2FC; border-bottom-width: medium; border-right-width: medium; border-left-width: medium; border-top-width: medium; width:85%;">
+&lt;project&gt;
+    ...
+
     &lt;pluginRepositories&gt;
         &lt;pluginRepository&gt;
             &lt;id&gt;checkstyle-backport-jre6-maven&lt;/id&gt;
@@ -215,6 +233,8 @@ This project is a backport of Checkstyle to be used with older Java runtime envi
         &lt;/pluginRepository&gt;
     &lt;/pluginRepositories&gt;
 
+    ...
+
     &lt;dependencies&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;com.puppycrawl.tools&lt;/groupId&gt;
@@ -222,8 +242,13 @@ This project is a backport of Checkstyle to be used with older Java runtime envi
             &lt;version&gt;XXX&lt;/version&gt;
         &lt;/dependency&gt;
     &lt;/dependencies&gt;
+
+    ...
+&lt;/project&gt;
     </pre>
-    <b>Note</b>: Remember to replace version's <i>XXX</i> with the version of the release you wish to use.
+    <b>Note</b>: Remember to replace version's <i>XXX</i> with the version of the
+    <a href="https://github.com/rnveach/checkstyle-backport-jre6/releases">release</a> you wish to use. You only
+	need to use the numerical version (<i>XX.X</i>), not the full project name.
     <br/>
     <br/>
 
