@@ -21,12 +21,12 @@ package com.puppycrawl.tools.checkstyle.checks;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -48,7 +48,7 @@ public abstract class AbstractTypeAwareCheck extends AbstractCheck {
     private final Deque<Map<String, AbstractClassInfo>> typeParams = new ArrayDeque<Map<String, AbstractClassInfo>>();
 
     /** Imports details. **/
-    private final Set<String> imports = Sets.newHashSet();
+    private final Set<String> imports = new HashSet<String>();
 
     /** Full identifier for package of the method. **/
     private FullIdent packageFullIdent;
@@ -227,6 +227,7 @@ public abstract class AbstractTypeAwareCheck extends AbstractCheck {
      * @return the resolved class or {@code null}
      *          if unable to resolve the class.
      */
+    // -@cs[ForbidWildcardAsReturnType] The class is deprecated and will be removed soon.
     protected final Class<?> resolveClass(String resolvableClassName,
             String className) {
         try {
@@ -243,6 +244,7 @@ public abstract class AbstractTypeAwareCheck extends AbstractCheck {
      * @param className name of surrounding class.
      * @return {@code Class} for a ident.
      */
+    // -@cs[ForbidWildcardAsReturnType] The class is deprecated and will be removed soon.
     protected final Class<?> tryLoadClass(Token ident, String className) {
         final Class<?> clazz = resolveClass(ident.getText(), className);
         if (clazz == null) {
@@ -304,7 +306,7 @@ public abstract class AbstractTypeAwareCheck extends AbstractCheck {
         final DetailAST params =
             ast.findFirstToken(TokenTypes.TYPE_PARAMETERS);
 
-        final Map<String, AbstractClassInfo> paramsMap = Maps.newHashMap();
+        final Map<String, AbstractClassInfo> paramsMap = new HashMap<String, AbstractClassInfo>();
         typeParams.push(paramsMap);
 
         if (params != null) {
@@ -406,6 +408,7 @@ public abstract class AbstractTypeAwareCheck extends AbstractCheck {
         /**
          * @return {@code Class} associated with an object.
          */
+        // -@cs[ForbidWildcardAsReturnType] The class is deprecated and will be removed soon.
         public abstract Class<?> getClazz();
 
         /**

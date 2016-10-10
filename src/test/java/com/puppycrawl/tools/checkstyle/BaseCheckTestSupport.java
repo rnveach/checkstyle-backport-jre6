@@ -38,15 +38,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public class BaseCheckTestSupport {
     protected final ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -108,8 +107,9 @@ public class BaseCheckTestSupport {
 
     protected static void verifyAst(String expectedTextPrintFileName, String actualJavaFileName,
             boolean withComments) throws Exception {
-        final String expectedContents = Files.toString(new File(expectedTextPrintFileName),
-                Charsets.UTF_8).replaceAll("\\\\r\\\\n", "\\\\n");
+        final String expectedContents = new String(Files7.readAllBytes(
+            Paths.get(expectedTextPrintFileName)), StandardCharsets.UTF_8)
+            .replaceAll("\\\\r\\\\n", "\\\\n");
         final String actualContents = AstTreeStringPrinter.printFileAst(
                 new File(actualJavaFileName), withComments).replaceAll("\\\\r\\\\n", "\\\\n");
 
@@ -147,7 +147,7 @@ public class BaseCheckTestSupport {
                           String... expected)
             throws Exception {
         stream.flush();
-        final List<File> theFiles = Lists.newArrayList();
+        final List<File> theFiles = new ArrayList<File>();
         Collections.addAll(theFiles, processedFiles);
         final int errs = checker.process(theFiles);
 
@@ -157,7 +157,7 @@ public class BaseCheckTestSupport {
         final LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         try {
-            final List<String> actuals = Lists.newArrayList();
+            final List<String> actuals = new ArrayList<String>();
             String line;
             while (((line = lnr.readLine()) != null) && (actuals.size() < expected.length)) {
                 actuals.add(line);
@@ -185,7 +185,7 @@ public class BaseCheckTestSupport {
                           Map<String, List<String>> expectedViolations)
             throws Exception {
         stream.flush();
-        final List<File> theFiles = Lists.newArrayList();
+        final List<File> theFiles = new ArrayList<File>();
         Collections.addAll(theFiles, processedFiles);
         final int errs = checker.process(theFiles);
 

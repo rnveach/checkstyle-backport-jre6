@@ -20,6 +20,7 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,6 @@ import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.beanutils.ConversionException;
 
-import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
@@ -77,12 +77,14 @@ public class SuppressionCommentFilter
     private static final String DEFAULT_CHECK_FORMAT = ".*";
 
     /** Tagged comments. */
-    private final List<Tag> tags = Lists.newArrayList();
+    private final List<Tag> tags = new ArrayList<Tag>();
 
     /** Whether to look in comments of the C type. */
     private boolean checkC = true;
 
     /** Whether to look in comments of the C++ type. */
+    // -@cs[AbbreviationAsWordInName] we can not change it as,
+    // Check property is a part of API (used in configurations)
     private boolean checkCPP = true;
 
     /** Parsed comment regexp that turns checkstyle reporting off. */
@@ -170,6 +172,8 @@ public class SuppressionCommentFilter
      * Set whether to look in C++ comments.
      * @param checkCpp {@code true} if C++ comments are checked.
      */
+    // -@cs[AbbreviationAsWordInName] We can not change it as,
+    // check's property is a part of API (used in configurations).
     public void setCheckCPP(boolean checkCpp) {
         checkCPP = checkCpp;
     }

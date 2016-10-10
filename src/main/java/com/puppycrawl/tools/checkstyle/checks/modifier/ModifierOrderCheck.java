@@ -19,10 +19,10 @@
 
 package com.puppycrawl.tools.checkstyle.checks.modifier;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -41,6 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
   <li><span class="code">private</span></li>
   <li><span class="code">abstract</span></li>
+  <li><span class="code">default</span></li>
   <li><span class="code">static</span></li>
   <li><span class="code">final</span></li>
   <li><span class="code">transient</span></li>
@@ -84,8 +85,8 @@ public class ModifierOrderCheck
      * 8.3.1 and 8.4.3 of the JLS.
      */
     private static final String[] JLS_ORDER = {
-        "public", "protected", "private", "abstract", "static", "final",
-        "transient", "volatile", "synchronized", "native", "strictfp", "default",
+        "public", "protected", "private", "abstract", "default", "static",
+        "final", "transient", "volatile", "synchronized", "native", "strictfp",
     };
 
     @Override
@@ -105,7 +106,7 @@ public class ModifierOrderCheck
 
     @Override
     public void visitToken(DetailAST ast) {
-        final List<DetailAST> mods = Lists.newArrayList();
+        final List<DetailAST> mods = new ArrayList<DetailAST>();
         DetailAST modifier = ast.getFirstChild();
         while (modifier != null) {
             mods.add(modifier);

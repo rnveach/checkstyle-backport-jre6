@@ -34,8 +34,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 
 public class JavadocParseTreeTest {
     private final BaseErrorListener errorListener = new FailOnErrorListener();
@@ -62,7 +63,7 @@ public class JavadocParseTreeTest {
 
     private static String getFileContent(File filename)
             throws IOException {
-        return Files.toString(filename, Charsets.UTF_8);
+        return new String(Files7.readAllBytes(new Path(filename)), StandardCharsets.UTF_8);
     }
 
     private static String getPath(String filename) throws IOException {

@@ -89,6 +89,8 @@
         <!-- beginProcessing() is kind of c-tor -->
         <Class name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpMultilineCheck" />
         <Class name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck" />
+        <!--Uses setters to set fields values-->
+        <Class name="com.puppycrawl.tools.checkstyle.api.AbstractCheck" />
       </Or>
       <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" />
     </Match>
@@ -102,5 +104,12 @@
         <Class name="com.puppycrawl.tools.checkstyle.PropertyCacheFile$1" />
         <Method name="apply" />
         <Bug pattern="NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE" />
+    </Match>
+    <Match>
+        <!-- Temporary disabled. Have to deal with Javadoc nodes as well
+         See https://github.com/checkstyle/checkstyle/issues/3432-->
+        <Class name="com.puppycrawl.tools.checkstyle.gui.JTreeTable" />
+        <Method name="makeCodeSelection"/>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
     </Match>
 </FindBugsFilter>

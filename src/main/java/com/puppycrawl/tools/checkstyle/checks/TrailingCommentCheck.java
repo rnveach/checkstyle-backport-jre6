@@ -19,12 +19,12 @@
 
 package com.puppycrawl.tools.checkstyle.checks;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TextBlock;
@@ -32,7 +32,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * <p>
- * The check to ensure that requires that comments be the only thing on a line.
+ * The check to ensure that comments are the only thing on a line.
  * For the case of // comments that means that the only thing that should
  * precede it is whitespace.
  * It doesn't check comments if they do not end line, i.e. it accept
@@ -158,7 +158,7 @@ public class TrailingCommentCheck extends AbstractCheck {
                 .getCppComments();
         final Map<Integer, List<TextBlock>> cComments = getFileContents()
                 .getCComments();
-        final Set<Integer> lines = Sets.newHashSet();
+        final Set<Integer> lines = new HashSet<Integer>();
         lines.addAll(cppComments.keySet());
         lines.addAll(cComments.keySet());
 

@@ -58,4 +58,8 @@ public final class Optional<T> {
     public boolean isPresent() {
         return value != null;
     }
+
+    public T orElse(T other) {
+        return value != null ? value : other;
+    }
 }

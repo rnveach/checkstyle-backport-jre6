@@ -249,33 +249,33 @@ public class VisibilityModifierCheck
 
     /** Default immutable types canonical names. */
     private static final List<String> DEFAULT_IMMUTABLE_TYPES = ImmutableList.of(
-        "java.lang.String",
-        "java.lang.Integer",
-        "java.lang.Byte",
-        "java.lang.Character",
-        "java.lang.Short",
-        "java.lang.Boolean",
-        "java.lang.Long",
-        "java.lang.Double",
-        "java.lang.Float",
-        "java.lang.StackTraceElement",
-        "java.math.BigInteger",
-        "java.math.BigDecimal",
-        "java.io.File",
-        "java.util.Locale",
-        "java.util.UUID",
-        "java.net.URL",
-        "java.net.URI",
-        "java.net.Inet4Address",
-        "java.net.Inet6Address",
-        "java.net.InetSocketAddress"
+            "java.lang.String",
+            "java.lang.Integer",
+            "java.lang.Byte",
+            "java.lang.Character",
+            "java.lang.Short",
+            "java.lang.Boolean",
+            "java.lang.Long",
+            "java.lang.Double",
+            "java.lang.Float",
+            "java.lang.StackTraceElement",
+            "java.math.BigInteger",
+            "java.math.BigDecimal",
+            "java.io.File",
+            "java.util.Locale",
+            "java.util.UUID",
+            "java.net.URL",
+            "java.net.URI",
+            "java.net.Inet4Address",
+            "java.net.Inet6Address",
+            "java.net.InetSocketAddress"
     );
 
     /** Default ignore annotations canonical names. */
     private static final List<String> DEFAULT_IGNORE_ANNOTATIONS = ImmutableList.of(
-        "org.junit.Rule",
-        "org.junit.ClassRule",
-        "com.google.common.annotations.VisibleForTesting"
+            "org.junit.Rule",
+            "org.junit.ClassRule",
+            "com.google.common.annotations.VisibleForTesting"
     );
 
     /** Name for 'public' access modifier. */

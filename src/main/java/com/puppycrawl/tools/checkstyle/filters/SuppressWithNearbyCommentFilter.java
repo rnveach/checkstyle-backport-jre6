@@ -20,6 +20,7 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,6 @@ import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.beanutils.ConversionException;
 
-import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
@@ -89,12 +89,14 @@ public class SuppressWithNearbyCommentFilter
     private static final String DEFAULT_INFLUENCE_FORMAT = "0";
 
     /** Tagged comments. */
-    private final List<Tag> tags = Lists.newArrayList();
+    private final List<Tag> tags = new ArrayList<Tag>();
 
     /** Whether to look for trigger in C-style comments. */
     private boolean checkC = true;
 
     /** Whether to look for trigger in C++-style comments. */
+    // -@cs[AbbreviationAsWordInName] We can not change it as,
+    // check's property is a part of API (used in configurations).
     private boolean checkCPP = true;
 
     /** Parsed comment regexp that marks checkstyle suppression region. */
@@ -181,6 +183,8 @@ public class SuppressWithNearbyCommentFilter
      * Set whether to look in C++ comments.
      * @param checkCpp {@code true} if C++ comments are checked.
      */
+    // -@cs[AbbreviationAsWordInName] We can not change it as,
+    // check's property is a part of API (used in configurations).
     public void setCheckCPP(boolean checkCpp) {
         checkCPP = checkCpp;
     }

@@ -20,14 +20,15 @@
 package com.puppycrawl.tools.checkstyle;
 
 import java.lang.reflect.Constructor;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 
@@ -68,7 +69,7 @@ public class PackageObjectFactory implements ModuleFactory {
         }
 
         //create a copy of the given set, but retain ordering
-        packages = Sets.newLinkedHashSet(packageNames);
+        packages = new LinkedHashSet<String>(packageNames);
         this.moduleClassLoader = moduleClassLoader;
     }
 
@@ -90,9 +91,9 @@ public class PackageObjectFactory implements ModuleFactory {
             instance = createObjectWithIgnoringProblems(nameCheck, getAllPossibleNames(nameCheck));
             if (instance == null) {
 
-                final String attemptedNames = joinPackageNamesWithClassName(name)
+                final String attemptedNames = joinPackageNamesWithClassName(name, packages)
                         + STRING_SEPARATOR + nameCheck + STRING_SEPARATOR
-                        + joinPackageNamesWithClassName(nameCheck);
+                        + joinPackageNamesWithClassName(nameCheck, packages);
                 final LocalizedMessage exceptionMessage = new LocalizedMessage(0,
                     Definitions.CHECKSTYLE_BUNDLE, UNABLE_TO_INSTANTIATE_EXCEPTION_MESSAGE,
                     new String[] {name, attemptedNames}, null, getClass(), null);
@@ -127,7 +128,7 @@ public class PackageObjectFactory implements ModuleFactory {
      * @return all possible name for a class.
      */
     private Set<String> getAllPossibleNames(String name) {
-        final Set<String> names = Sets.newHashSet();
+        final Set<String> names = new HashSet<String>();
         for (String packageName : packages) {
             names.add(packageName + name);
         }
@@ -137,9 +138,10 @@ public class PackageObjectFactory implements ModuleFactory {
     /**
      * Creates a string by joining package names with a class name.
      * @param className name of the class for joining.
+     * @param packages packages names.
      * @return a string which is obtained by joining package names with a class name.
      */
-    private String joinPackageNamesWithClassName(String className) {
+    private static String joinPackageNamesWithClassName(String className, Set<String> packages) {
         final Joiner joiner = Joiner.on(className + STRING_SEPARATOR).skipNulls();
         return joiner.join(packages) + className;
     }

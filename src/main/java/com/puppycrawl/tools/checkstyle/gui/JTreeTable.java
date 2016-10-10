@@ -25,6 +25,8 @@ import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EventObject;
 import java.util.List;
 
@@ -38,9 +40,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.tree.TreePath;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Ints;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 /**
  * This example shows how to create a simple JTreeTable component,
@@ -128,7 +128,8 @@ public class JTreeTable extends JTable {
      * Do expansion of a tree node.
      */
     private void expandSelectedNode() {
-        final TreePath selected = makeCodeSelection();
+        final TreePath selected = tree.getSelectionPath();
+        makeCodeSelection();
 
         if (tree.isExpanded(selected)) {
             tree.collapsePath(selected);
@@ -141,13 +142,11 @@ public class JTreeTable extends JTable {
 
     /**
      * Make selection of code in a text area.
-     * @return selected TreePath.
      */
-    private TreePath makeCodeSelection() {
-        final TreePath selected = tree.getSelectionPath();
-        final DetailAST ast = (DetailAST) selected.getLastPathComponent();
-        new CodeSelector(ast, editor, linePositionMap).select();
-        return selected;
+    private void makeCodeSelection() {
+        // temporary disabled. Have to deal with Javadoc nodes as well
+        // see https://github.com/checkstyle/checkstyle/issues/3432
+        new CodeSelector(null, editor, linePositionMap);
     }
 
     /**
@@ -240,7 +239,8 @@ public class JTreeTable extends JTable {
      * @param linePositionMap Line position map.
      */
     public void setLinePositionMap(List<Integer> linePositionMap) {
-        this.linePositionMap = ImmutableList.copyOf(linePositionMap);
+        final List<Integer> copy = new ArrayList<Integer>(linePositionMap);
+        this.linePositionMap = Collections.unmodifiableList(copy);
     }
 
     /**

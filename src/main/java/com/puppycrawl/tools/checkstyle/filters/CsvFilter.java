@@ -20,10 +20,10 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
@@ -36,7 +36,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  */
 class CsvFilter implements IntFilter {
     /** Filter set. */
-    private final Set<IntFilter> filters = Sets.newHashSet();
+    private final Set<IntFilter> filters = new HashSet<IntFilter>();
 
     /**
      * Constructs a {@code CsvFilter} from a CSV, Comma-Separated Values,

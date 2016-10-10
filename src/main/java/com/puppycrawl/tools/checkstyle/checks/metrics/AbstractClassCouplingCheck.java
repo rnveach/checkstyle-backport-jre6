@@ -20,11 +20,13 @@
 package com.puppycrawl.tools.checkstyle.checks.metrics;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -41,26 +43,26 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     /** Class names to ignore. */
     private static final Set<String> DEFAULT_EXCLUDED_CLASSES =
                 ImmutableSet.<String>builder()
-                // primitives
-                .add("boolean", "byte", "char", "double", "float", "int")
-                .add("long", "short", "void")
-                // wrappers
-                .add("Boolean", "Byte", "Character", "Double", "Float")
-                .add("Integer", "Long", "Short", "Void")
-                // java.lang.*
-                .add("Object", "Class")
-                .add("String", "StringBuffer", "StringBuilder")
-                // Exceptions
-                .add("ArrayIndexOutOfBoundsException", "Exception")
-                .add("RuntimeException", "IllegalArgumentException")
-                .add("IllegalStateException", "IndexOutOfBoundsException")
-                .add("NullPointerException", "Throwable", "SecurityException")
-                .add("UnsupportedOperationException")
-                // java.util.*
-                .add("List", "ArrayList", "Deque", "Queue", "LinkedList")
-                .add("Set", "HashSet", "SortedSet", "TreeSet")
-                .add("Map", "HashMap", "SortedMap", "TreeMap")
-                .build();
+            // primitives
+            .add("boolean", "byte", "char", "double", "float", "int")
+            .add("long", "short", "void")
+            // wrappers
+            .add("Boolean", "Byte", "Character", "Double", "Float")
+            .add("Integer", "Long", "Short", "Void")
+            // java.lang.*
+            .add("Object", "Class")
+            .add("String", "StringBuffer", "StringBuilder")
+            // Exceptions
+            .add("ArrayIndexOutOfBoundsException", "Exception")
+            .add("RuntimeException", "IllegalArgumentException")
+            .add("IllegalStateException", "IndexOutOfBoundsException")
+            .add("NullPointerException", "Throwable", "SecurityException")
+            .add("UnsupportedOperationException")
+            // java.util.*
+            .add("List", "ArrayList", "Deque", "Queue", "LinkedList")
+            .add("Set", "HashSet", "SortedSet", "TreeSet")
+            .add("Map", "HashMap", "SortedMap", "TreeMap")
+            .build();
 
     /** Stack of contexts. */
     private final Deque<Context> contextStack = new ArrayDeque<Context>();
@@ -113,7 +115,8 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      * @param excludedClasses the list of classes to ignore.
      */
     public final void setExcludedClasses(String... excludedClasses) {
-        this.excludedClasses = ImmutableSet.copyOf(excludedClasses);
+        this.excludedClasses = new HashSet<String>();
+        Collections.addAll(this.excludedClasses, excludedClasses);
     }
 
     @Override
@@ -201,7 +204,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
          * Set of referenced classes.
          * Sorted by name for predictable error messages in unit tests.
          */
-        private final Set<String> referencedClassNames = Sets.newTreeSet();
+        private final Set<String> referencedClassNames = new TreeSet<String>();
         /** Own class name. */
         private final String className;
         /* Location of own class. (Used to log violations) */

@@ -199,12 +199,18 @@ public class CommonUtilsTest {
     @Test(expected = IllegalStateException.class)
     public void testCloseWithException() {
         CommonUtils.close(new Closeable() {
-
             @Override
             public void close() throws IOException {
                 throw new IOException("Test IOException");
             }
         });
+    }
+
+    @Test
+    public void testGetFileExtensionForFileNameWithoutExtension() {
+        final String fileNameWithoutExtension = "file";
+        final String extension = CommonUtils.getFileExtension(fileNameWithoutExtension);
+        assertEquals("", extension);
     }
 
     @Test

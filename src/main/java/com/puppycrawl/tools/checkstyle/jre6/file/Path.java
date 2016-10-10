@@ -28,6 +28,10 @@ public class Path {
         this.fileName = fileName;
     }
 
+    public Path(File file) {
+        this.fileName = file.getAbsolutePath();
+    }
+
     public Path getParent() {
         final String parent = this.getFile().getParent();
 
@@ -56,5 +60,10 @@ public class Path {
 
     public Object getFileName() {
         return getFile().getName();
+    }
+
+    @Override
+    public String toString() {
+        return getFile().getAbsolutePath();
     }
 }

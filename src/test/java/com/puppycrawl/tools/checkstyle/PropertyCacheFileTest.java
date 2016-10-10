@@ -44,7 +44,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-import com.puppycrawl.tools.checkstyle.jre6.file.Files;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 @RunWith(PowerMockRunner.class)
@@ -109,8 +109,8 @@ public class PropertyCacheFileTest {
             fail("Exception is not expected!");
         }
 
-        if (Files.exists(Paths.get(filePath))) {
-            Files.delete(Paths.get(filePath));
+        if (Files7.exists(Paths.get(filePath))) {
+            Files7.delete(Paths.get(filePath));
         }
     }
 

@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -42,7 +43,6 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
@@ -71,13 +71,13 @@ public class CheckstyleAntTask extends Task {
     private static final String TIME_SUFFIX = " ms.";
 
     /** Contains the filesets to process. */
-    private final List<FileSet> fileSets = Lists.newArrayList();
+    private final List<FileSet> fileSets = new ArrayList<FileSet>();
 
     /** Contains the formatters to log to. */
-    private final List<Formatter> formatters = Lists.newArrayList();
+    private final List<Formatter> formatters = new ArrayList<Formatter>();
 
     /** Contains the Properties to override. */
-    private final List<Property> overrideProps = Lists.newArrayList();
+    private final List<Property> overrideProps = new ArrayList<Property>();
 
     /** Class path to locate class files. */
     private Path classpath;
@@ -226,6 +226,8 @@ public class CheckstyleAntTask extends Task {
      * @param url the URL of the configuration to use
      * @deprecated please use setConfigUrl instead
      */
+    // -@cs[AbbreviationAsWordInName] Should be removed at 7.0 version,
+    // we keep for some time to avoid braking compatibility.
     @Deprecated
     public void setConfigURL(URL url) {
         setConfigUrl(url);
@@ -503,7 +505,7 @@ public class CheckstyleAntTask extends Task {
      * @return the list of files included via the filesets.
      */
     protected List<File> scanFileSets() {
-        final List<File> list = Lists.newArrayList();
+        final List<File> list = new ArrayList<File>();
         if (fileName != null) {
             // oops we've got an additional one to process, don't
             // forget it. No sweat, it's fully resolved via the setter.

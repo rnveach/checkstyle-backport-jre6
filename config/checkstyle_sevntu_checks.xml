@@ -11,8 +11,14 @@
     <module name="SuppressionFilter">
         <property name="file" value="${project.basedir}/config/sevntu_suppressions.xml"/>
     </module>
+    <module name="SuppressWithNearbyCommentFilter">
+        <property name="commentFormat" value="-@cs\[(\w{8,})\] \w[\(\)\-\.\'\`\,\:\;\w ]{10,}"/>
+        <property name="checkFormat" value="$1"/>
+        <property name="influenceFormat" value="3"/>
+    </module>
 
     <module name="TreeWalker">
+        <module name="FileContentsHolder"/>
         <module name="StaticMethodCandidate"/>
         <module name="UselessSingleCatchCheck"/>
         <module name="NestedSwitchCheck"/>
@@ -29,7 +35,17 @@
         <module name="ForbidThrowAnonymousExceptionsCheck"/>
         <module name="ForbidReturnInFinallyBlock"/>
         <module name="ForbidInstantiation">
-            <property name="forbiddenClasses" value="java.lang.NullPointerException,java.util.Vector,java.util.Stack"/>
+            <property name="forbiddenClasses" value="java.lang.NullPointerException,
+             java.util.Vector, java.util.Stack,com.google.collect.Iterables,
+             com.google.common.primitives.Ints,com.google.common.base.String,
+             com.google.common.base.Function,com.google.common.base.Supplier,
+             com.google.common.base.Charsets,com.google.common.base.MoreObjects,
+             com.google.common.base.Optional,com.google.common.base.Equivalence,
+             com.google.common.base.Preconditions,com.google.common.base.Predicate,
+             com.google.common.io.CharSource,com.google.common.annotations.Beta,
+             com.google.common.collect.Queues,com.google.common.collect.Sets,
+             com.google.common.collect.Lists,com.google.common.annotations.GwtCompatible,
+             com.google.common.io.Files,com.google.common.collect.TreeTraverser"/>
         </module>
         <module name="ForbidCCommentsInMethods"/>
         <module name="FinalizeImplementationCheck"/>
@@ -86,8 +102,24 @@
             <property name="requiredParameters" value="value"/>
         </module>
         <module name="ForbidCertainImports">
-            <property name="packageNameRegexp" value="^.*(api|utils).*$"/>
-            <property name="forbiddenImportsRegexp" value="^.*checks.*|java\.util\.Vector|java\.util\.Stack$"/>
+            <property name="packageNameRegexp" value=".+"/>
+            <property name="forbiddenImportsRegexp" value="java\.util\.Stack|java\.util\.Vector|
+            com\.google\.collect\.Iterables|com\.google\.common\.annotations\.Beta|
+            com\.google\.common\.base\.Predicate|com\.google\.common\.base\.String||
+            com\.google\.common\.base\.Function|com\.google\.common\.base\.Supplier|
+            com\.google\.common\.base\.Charsets|com\.google\.common\.base\.MoreObjects|
+            com\.google\.common\.base\.Equivalence|com\.google\.common\.base\.Preconditions|
+            com\.google\.common\.base\.Optional|com\.google\.common\.io\.CharSource|
+            com\.google\.common\.primitives.*|com\.google\.common\.collect\.Sets|
+            com\.google\.common\.collect\.Queues|com\.google\.common\.collect\.Lists|
+            com\.google\.common\.annotations\.GwtCompatible|com\.google\.common\.io\.Files|
+            com\.google\.common\.collect\.TreeTraverser"/>
+            <property name="forbiddenImportsExcludesRegexp" value=""/>
+        </module>
+        <module name="ForbidCertainImports">
+            <property name="packageNameRegexp" value=".+\.checkstyle\.api.*|.+\.checkstyle\.utils.*"/>
+            <property name="forbiddenImportsRegexp" value=".+\.checks\..+"/>
+            <property name="forbiddenImportsExcludesRegexp" value=""/>
         </module>
         <module name="LineLengthExtended">
             <property name="max" value="100"/>

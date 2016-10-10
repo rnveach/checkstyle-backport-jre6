@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
@@ -44,7 +45,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -246,6 +246,7 @@ public final class Main {
      * @param filesToProcess List of files to process found from the command line.
      * @return list of violations
      */
+    // -@cs[CyclomaticComplexity] Breaking apart will damage encapsulation
     private static List<String> validateCli(CommandLine cmdLine, List<File> filesToProcess) {
         final List<String> result = new ArrayList<String>();
 
@@ -515,7 +516,7 @@ public final class Main {
      */
     private static List<File> getFilesToProcess(List<Pattern> patternsToExclude,
             String... filesToProcess) {
-        final List<File> files = Lists.newLinkedList();
+        final List<File> files = new LinkedList<File>();
         for (String element : filesToProcess) {
             files.addAll(listFiles(new File(element), patternsToExclude));
         }
@@ -534,7 +535,7 @@ public final class Main {
     private static List<File> listFiles(File node, List<Pattern> patternsToExclude) {
         // could be replaced with org.apache.commons.io.FileUtils.list() method
         // if only we add commons-io library
-        final List<File> result = Lists.newLinkedList();
+        final List<File> result = new LinkedList<File>();
 
         if (node.canRead()) {
             if (node.isDirectory()) {

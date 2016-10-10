@@ -29,12 +29,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
@@ -45,6 +45,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * Enter a description of class XMLLoggerTest.java.
  * @author Rick Giles
  */
+// -@cs[AbbreviationAsWordInName] Test should be named as its main class.
 public class XMLLoggerTest {
     private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
@@ -223,7 +224,7 @@ public class XMLLoggerTest {
         final byte[] bytes = outStream.toByteArray();
         final ByteArrayInputStream inStream =
             new ByteArrayInputStream(bytes);
-        final List<String> lineList = Lists.newArrayList();
+        final List<String> lineList = new ArrayList<String>();
         final BufferedReader reader = new BufferedReader(
                 new InputStreamReader(inStream, StandardCharsets.UTF_8));
         try {

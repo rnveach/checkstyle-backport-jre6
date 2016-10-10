@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -29,8 +30,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -143,6 +142,8 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      * Controls whether to allow documented exceptions that are not declared if
      * they are a subclass of java.lang.RuntimeException.
      */
+    // -@cs[AbbreviationAsWordInName] We can not change it as,
+    // check's property is part of API (used in configurations).
     private boolean allowUndeclaredRTE;
 
     /**
@@ -249,6 +250,8 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      *
      * @param flag a {@code Boolean} value
      */
+    // -@cs[AbbreviationAsWordInName] We can not change it as,
+    // check's property is part of API (used in configurations).
     public void setAllowUndeclaredRTE(boolean flag) {
         allowUndeclaredRTE = flag;
     }
@@ -562,7 +565,7 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      */
     private static List<JavadocTag> getMethodTags(TextBlock comment) {
         final String[] lines = comment.getText();
-        final List<JavadocTag> tags = Lists.newArrayList();
+        final List<JavadocTag> tags = new ArrayList<JavadocTag>();
         int currentLine = comment.getStartLineNo() - 1;
         final int startColumnNumber = comment.getStartColNo();
 
@@ -688,7 +691,7 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      */
     private static List<DetailAST> getParameters(DetailAST ast) {
         final DetailAST params = ast.findFirstToken(TokenTypes.PARAMETERS);
-        final List<DetailAST> returnValue = Lists.newArrayList();
+        final List<DetailAST> returnValue = new ArrayList<DetailAST>();
 
         DetailAST child = params.getFirstChild();
         while (child != null) {
@@ -708,7 +711,7 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      * @return the list of exception nodes for ast.
      */
     private List<ExceptionInfo> getThrows(DetailAST ast) {
-        final List<ExceptionInfo> returnValue = Lists.newArrayList();
+        final List<ExceptionInfo> returnValue = new ArrayList<ExceptionInfo>();
         final DetailAST throwsAST = ast
                 .findFirstToken(TokenTypes.LITERAL_THROWS);
         if (throwsAST != null) {
@@ -877,7 +880,7 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
             List<ExceptionInfo> throwsList, boolean reportExpectedTags) {
         // Loop over the tags, checking to see they exist in the throws.
         // The foundThrows used for performance only
-        final Set<String> foundThrows = Sets.newHashSet();
+        final Set<String> foundThrows = new HashSet<String>();
         final ListIterator<JavadocTag> tagIt = tags.listIterator();
         while (tagIt.hasNext()) {
             final JavadocTag tag = tagIt.next();
@@ -918,8 +921,8 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
                 if (!exceptionInfo.isFound()) {
                     final Token token = exceptionInfo.getName();
                     log(token.getLineNo(), token.getColumnNo(),
-                            MSG_EXPECTED_TAG,
-                            JavadocTagInfo.THROWS.getText(), token.getText());
+                        MSG_EXPECTED_TAG,
+                        JavadocTagInfo.THROWS.getText(), token.getText());
                 }
             }
         }

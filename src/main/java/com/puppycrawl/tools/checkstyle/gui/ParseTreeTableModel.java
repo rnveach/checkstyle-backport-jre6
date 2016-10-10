@@ -26,6 +26,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.gui.MainFrameModel.ParseMode;
 
 /**
  * The model that backs the parse tree in the GUI.
@@ -62,6 +63,14 @@ public class ParseTreeTableModel implements TreeModel {
     }
 
     /**
+     * Set parse mode.
+     * @param mode ParseMode enum
+     */
+    protected void setParseMode(ParseMode mode) {
+        pModel.setParseMode(mode);
+    }
+
+    /**
      * @return the number of available column.
      */
     public int getColumnCount() {
@@ -80,6 +89,8 @@ public class ParseTreeTableModel implements TreeModel {
      * @param column the column number
      * @return the type for column number {@code column}.
      */
+    // -@cs[ForbidWildcardAsReturnType] We need to satisfy javax.swing.table.AbstractTableModel
+    // public Class<?> getColumnClass(int columnIndex) {...}
     public Class<?> getColumnClass(int column) {
         return pModel.getColumnClass(column);
     }

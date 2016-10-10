@@ -38,15 +38,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.powermock.api.mockito.PowerMockito;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -95,7 +93,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.fireFileStarted("Some File Name");
         checker.fireFileFinished("Some File Name");
 
-        final SortedSet<LocalizedMessage> messages = Sets.newTreeSet();
+        final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
         messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
@@ -127,7 +125,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         assertTrue("Checker.fireFileFinished() doesn't call listener", auditAdapter.wasCalled());
 
         auditAdapter.resetListener();
-        final SortedSet<LocalizedMessage> messages = Sets.newTreeSet();
+        final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
         messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
@@ -168,7 +166,7 @@ public class CheckerTest extends BaseCheckTestSupport {
                 auditAdapter.wasCalled());
 
         aa2.resetListener();
-        final SortedSet<LocalizedMessage> messages = Sets.newTreeSet();
+        final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
         messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
@@ -185,7 +183,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.addFilter(filter);
 
         filter.resetFilter();
-        final SortedSet<LocalizedMessage> messages = Sets.newTreeSet();
+        final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
         messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
@@ -202,7 +200,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.removeFilter(filter);
 
         f2.resetFilter();
-        final SortedSet<LocalizedMessage> messages = Sets.newTreeSet();
+        final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
         messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
@@ -280,7 +278,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.setSeverity("ignore");
 
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         checker.setModuleFactory(factory);
 
         checker.setFileExtensions((String[]) null);
@@ -322,7 +320,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         checker.setModuleFactory(factory);
 
         checker.finishLocalSetup();
@@ -332,7 +330,7 @@ public class CheckerTest extends BaseCheckTestSupport {
     public void testSetupChildExceptions() {
         final Checker checker = new Checker();
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         checker.setModuleFactory(factory);
 
         final Configuration config = new DefaultConfiguration("java.lang.String");
@@ -349,7 +347,7 @@ public class CheckerTest extends BaseCheckTestSupport {
     public void testSetupChildListener() throws Exception {
         final Checker checker = new Checker();
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         checker.setModuleFactory(factory);
 
         final Configuration config = new DefaultConfiguration(
@@ -366,9 +364,8 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.configure(new DefaultConfiguration("default config"));
         // We set wrong file name length in order to reproduce IOException on OS Linux, OS Windows.
         // The maximum file name length which is allowed in most UNIX, Windows file systems is 255.
-        // See https://en.wikipedia.org/wiki/Filename
-        final int wrongFileNameLength = 300;
-        checker.setCacheFile(Strings.padEnd("fileName", wrongFileNameLength, 'e'));
+        // See https://en.wikipedia.org/wiki/Filename;
+        checker.setCacheFile(String.format(Locale.ENGLISH, "%0300d", 0));
         try {
             checker.destroy();
             fail("Exception did not happen");
@@ -534,12 +531,13 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Error expectedError = new IOError(new InternalError(errorMessage));
         when(mock.lastModified()).thenThrow(expectedError);
         final Checker checker = new Checker();
-        final List<File> filesToProcess = Lists.newArrayList();
+        final List<File> filesToProcess = new ArrayList<File>();
         filesToProcess.add(mock);
         try {
             checker.process(filesToProcess);
             fail("IOError is expected!");
         }
+        // -@cs[IllegalCatchExtended] Testing for catch Error is part of 100% coverage.
         catch (Error error) {
             assertThat(error.getCause(), instanceOf(IOError.class));
             assertThat(error.getCause().getCause(), instanceOf(InternalError.class));

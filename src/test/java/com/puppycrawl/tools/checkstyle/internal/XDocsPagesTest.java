@@ -28,6 +28,7 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +48,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
@@ -57,12 +57,13 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public class XDocsPagesTest {
-    private static final File JAVA_SOURCES_DIRECTORY = new File("src/main/java");
-    private static final String AVAILABLE_CHECKS_PATH = "src/xdocs/checks.xml";
-    private static final File AVAILABLE_CHECKS_FILE = new File(AVAILABLE_CHECKS_PATH);
+    private static final Path JAVA_SOURCES_DIRECTORY = Paths.get("src/main/java");
+    private static final Path AVAILABLE_CHECKS_PATH = Paths.get("src/xdocs/checks.xml");
     private static final String CHECK_FILE_NAME = ".+Check.java$";
     private static final String CHECK_SUFFIX = "Check.java";
     private static final String LINK_TEMPLATE =
@@ -118,22 +119,22 @@ public class XDocsPagesTest {
             "SuppressionCommentFilter.fileContents"
     );
 
-    private static final Set<String> SUN_CHECKS = ImmutableSet.copyOf(CheckUtil
-            .getConfigSunStyleChecks());
-    private static final Set<String> GOOGLE_CHECKS = ImmutableSet.copyOf(CheckUtil
-            .getConfigGoogleStyleChecks());
+    private static final Set<String> SUN_CHECKS = Collections.unmodifiableSet(
+        new HashSet<String>(CheckUtil.getConfigSunStyleChecks()));
+    private static final Set<String> GOOGLE_CHECKS = Collections.unmodifiableSet(
+        new HashSet<String>(CheckUtil.getConfigGoogleStyleChecks()));
 
     @Test
     public void testAllChecksPresentOnAvailableChecksPage() throws IOException {
-        final String availableChecks = Files.toString(AVAILABLE_CHECKS_FILE, UTF_8);
-        for (File file : Files.fileTreeTraverser().preOrderTraversal(JAVA_SOURCES_DIRECTORY)) {
+        final String availableChecks = new String(Files7.readAllBytes(AVAILABLE_CHECKS_PATH), UTF_8);
+        for (File file : Files.fileTreeTraverser().preOrderTraversal(JAVA_SOURCES_DIRECTORY.getFile())) {
             final String fileName = file.getName();
             if (fileName.matches(CHECK_FILE_NAME)
                     && !CHECKS_ON_PAGE_IGNORE_LIST.contains(fileName)) {
                 final String checkName = fileName.replace(CHECK_SUFFIX, "");
                 if (!isPresent(availableChecks, checkName)) {
                     Assert.fail(checkName + " is not correctly listed on Available Checks page"
-                            + " - add it to " + AVAILABLE_CHECKS_PATH);
+                        + " - add it to " + AVAILABLE_CHECKS_PATH);
                 }
             }
         }
@@ -147,9 +148,8 @@ public class XDocsPagesTest {
     @Test
     public void testAllXmlExamples() throws Exception {
         for (Path path : XDocUtil.getXdocsFilePaths()) {
-            final File file = path.toFile();
-            final String input = Files.toString(file, UTF_8);
-            final String fileName = file.getName();
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
+            final String fileName = path.getFileName().toString();
 
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("source");
@@ -171,7 +171,7 @@ public class XDocsPagesTest {
     }
 
     private static void buildAndValidateXml(String fileName, String unserializedSource)
-            throws IOException, ParserConfigurationException {
+            throws IOException, ParserConfigurationException, CheckstyleException {
         // not all examples come with the full xml structure
         String code = unserializedSource;
 
@@ -214,7 +214,7 @@ public class XDocsPagesTest {
     }
 
     private static void validateCheckstyleXml(String fileName, String code,
-            String unserializedSource) throws IOException {
+            String unserializedSource) throws IOException, CheckstyleException {
         // can't process non-existent examples, or out of context snippets
         if (!code.contains("com.mycompany") && !code.contains("checkstyle-packages")
                 && !code.contains("MethodLimit") && !code.contains("<suppress ")
@@ -243,8 +243,8 @@ public class XDocsPagesTest {
                 }
             }
             catch (CheckstyleException ex) {
-                Assert.fail(fileName + " has invalid Checkstyle xml (" + ex.getMessage() + "): "
-                        + unserializedSource);
+                throw new CheckstyleException(fileName + " has invalid Checkstyle xml ("
+                        + ex.getMessage() + "): " + unserializedSource, ex);
             }
         }
     }
@@ -254,14 +254,13 @@ public class XDocsPagesTest {
         final ModuleFactory moduleFactory = TestUtils.getPackageObjectFactory();
 
         for (Path path : XDocUtil.getXdocsConfigFilePaths(XDocUtil.getXdocsFilePaths())) {
-            final File file = path.toFile();
-            final String fileName = file.getName();
+            final String fileName = path.getFileName().toString();
 
             if ("config_reporting.xml".equals(fileName)) {
                 continue;
             }
 
-            final String input = Files.toString(file, UTF_8);
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("section");
             String lastSectioName = null;
@@ -296,13 +295,13 @@ public class XDocsPagesTest {
 
     private static void validateCheckSection(ModuleFactory moduleFactory, String fileName,
             String sectionName, Node section) throws Exception {
-        Object instance = null;
+        final Object instance;
 
         try {
             instance = moduleFactory.createModule(sectionName);
         }
         catch (CheckstyleException ex) {
-            Assert.fail(fileName + " couldn't find class: " + sectionName);
+            throw new CheckstyleException(fileName + " couldn't find class: " + sectionName, ex);
         }
 
         int subSectionPos = 0;
@@ -769,9 +768,8 @@ public class XDocsPagesTest {
     @Test
     public void testAllStyleRules() throws Exception {
         for (Path path : XDocUtil.getXdocsStyleFilePaths(XDocUtil.getXdocsFilePaths())) {
-            final File file = path.toFile();
-            final String fileName = file.getName();
-            final String input = Files.toString(file, UTF_8);
+            final String fileName = path.getFileName().toString();
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("tr");
             String lastRuleName = null;

@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -39,12 +40,11 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.google.common.io.Flushables;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-import com.puppycrawl.tools.checkstyle.jre6.file.Files;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
@@ -138,7 +138,7 @@ final class PropertyCacheFile {
     public void persist() throws IOException {
         final Path directory = Paths.get(fileName).getParent();
         if (directory != null) {
-            Files.createDirectories(directory);
+            Files7.createDirectories(directory);
         }
         FileOutputStream out = null;
         try {
@@ -247,7 +247,7 @@ final class PropertyCacheFile {
      * @return a set of {@link ExternalResource}.
      */
     private static Set<ExternalResource> loadExternalResources(Set<String> resourceLocations) {
-        final Set<ExternalResource> resources = Sets.newHashSet();
+        final Set<ExternalResource> resources = new HashSet<ExternalResource>();
         for (String location : resourceLocations) {
             String contentHashSum = null;
             try {

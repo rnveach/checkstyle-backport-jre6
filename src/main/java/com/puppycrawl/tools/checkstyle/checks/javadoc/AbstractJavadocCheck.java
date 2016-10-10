@@ -250,15 +250,15 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
 
         DetailNode curNode = root;
         while (curNode != null) {
-            final boolean waitsFor = Ints.contains(defaultTokenTypes, curNode.getType());
+            final boolean waitsForProcessing = shouldBeProcessed(defaultTokenTypes, curNode);
 
-            if (waitsFor) {
+            if (waitsForProcessing) {
                 visitJavadocToken(curNode);
             }
             DetailNode toVisit = JavadocUtils.getFirstChild(curNode);
             while (curNode != null && toVisit == null) {
 
-                if (waitsFor) {
+                if (waitsForProcessing) {
                     leaveJavadocToken(curNode);
                 }
 
@@ -269,6 +269,16 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
             }
             curNode = toVisit;
         }
+    }
+
+    /**
+     * Checks whether the current node should be processed by the check.
+     * @param defaultTokenTypes default token types.
+     * @param curNode current node.
+     * @return true if the current node should be processed by the check.
+     */
+    private boolean shouldBeProcessed(int[] defaultTokenTypes, DetailNode curNode) {
+        return Ints.contains(defaultTokenTypes, curNode.getType());
     }
 
 }

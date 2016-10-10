@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.BriefUtLogger;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
@@ -120,9 +119,9 @@ public class BaseCheckTestSupport {
             Integer... warnsExpected)
             throws Exception {
         stream.flush();
-        final List<File> theFiles = Lists.newArrayList();
+        final List<File> theFiles = new ArrayList<File>();
         Collections.addAll(theFiles, processedFiles);
-        final List<Integer> theWarnings = Lists.newArrayList();
+        final List<Integer> theWarnings = new ArrayList<Integer>();
         Collections.addAll(theWarnings, warnsExpected);
         final int errs = checker.process(theFiles);
 

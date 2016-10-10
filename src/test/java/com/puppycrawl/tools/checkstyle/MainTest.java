@@ -52,10 +52,10 @@ import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 public class MainTest {
@@ -751,8 +751,8 @@ public class MainTest {
 
     @Test
     public void testPrintTreeJavadocOption() throws Exception {
-        final String expected = Files.toString(new File(
-                getPath("astprinter/expectedInputJavadocComment.txt")), Charsets.UTF_8)
+        final String expected = Files7.toString(new File(
+                getPath("astprinter/expectedInputJavadocComment.txt")), StandardCharsets.UTF_8)
                     .replaceAll("\\\\r\\\\n", "\\\\n");
 
         exit.checkAssertionAfterwards(new Assertion() {
@@ -767,9 +767,9 @@ public class MainTest {
 
     @Test
     public void testPrintFullTreeOption() throws Exception {
-        final String expected = Files.toString(new File(
+        final String expected = Files7.toString(new File(
                 getPath("astprinter/expectedInputAstTreeStringPrinterJavadoc.txt")),
-                Charsets.UTF_8).replaceAll("\\\\r\\\\n", "\\\\n");
+                StandardCharsets.UTF_8).replaceAll("\\\\r\\\\n", "\\\\n");
 
         exit.checkAssertionAfterwards(new Assertion() {
             @Override

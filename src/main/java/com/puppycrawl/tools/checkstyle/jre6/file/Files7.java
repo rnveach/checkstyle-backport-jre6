@@ -19,8 +19,14 @@
 
 package com.puppycrawl.tools.checkstyle.jre6.file;
 
-public final class Files {
-    private Files() {
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
+
+public final class Files7 {
+    private Files7() {
     }
 
     public static void createDirectories(Path directory) {
@@ -33,5 +39,31 @@ public final class Files {
 
     public static void delete(Path path) {
         path.getFile().delete();
+    }
+
+    public static byte[] readAllBytes(Path path) throws IOException {
+        final RandomAccessFile f = new RandomAccessFile(path.getFile(), "r");
+        try {
+            final byte[] result = new byte[(int) f.length()];
+            f.readFully(result);
+            return result;
+        }
+        finally {
+            f.close();
+        }
+    }
+
+    public static void write(Path path, byte[] bytes) throws IOException {
+        final FileOutputStream stream = new FileOutputStream(path.toFile());
+        try {
+            stream.write(bytes);
+        }
+        finally {
+            stream.close();
+        }
+    }
+
+    public static String toString(File file, Charset charset) throws IOException {
+        return new String(readAllBytes(new Path(file)), charset.name());
     }
 }

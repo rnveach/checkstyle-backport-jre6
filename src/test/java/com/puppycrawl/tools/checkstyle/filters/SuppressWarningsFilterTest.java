@@ -21,13 +21,14 @@ package com.puppycrawl.tools.checkstyle.filters;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
 import com.puppycrawl.tools.checkstyle.BriefUtLogger;
 import com.puppycrawl.tools.checkstyle.Checker;
@@ -155,8 +156,8 @@ public class SuppressWarningsFilterTest
     }
 
     private static String[] removeSuppressed(String[] from, String... remove) {
-        final Collection<String> coll =
-            Lists.newArrayList(Arrays.asList(from));
+        final Collection<String> coll = new ArrayList<String>();
+        Collections.addAll(coll, from);
         coll.removeAll(Arrays.asList(remove));
         return coll.toArray(new String[coll.size()]);
     }

@@ -15,7 +15,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>7.1.1</version>
+  <version>7.1.2</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -101,22 +101,7 @@
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
-      <version>1.9.2</version>
-      <!--Upgrading to commons-collections 3.2.2 to fix security vulnerability CVE-2015-6420.
-       This change can be reverted when upgrading to commons-beanutils 1.9.3
-       https://issues.apache.org/jira/browse/BEANUTILS-482-->
-      <exclusions>
-        <exclusion>
-          <groupId>commons-collections</groupId>
-          <artifactId>commons-collections</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- remove commons-collections dependency after commons-beanutils 1.9.3 -->
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>3.2.2</version>
+      <version>1.9.3</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -145,7 +130,7 @@
     <dependency>
       <groupId>com.github.stefanbirkner</groupId>
       <artifactId>system-rules</artifactId>
-      <version>1.16.0</version>
+      <version>1.16.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -349,7 +334,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>7.1</version>
+            <version>7.1.1</version>
           </dependency>
         </dependencies>
         <!-- Specifying configuration here will take effect on the execution of "mvn checkstyle:checkstyle",
@@ -840,7 +825,7 @@
       <plugin>
         <groupId>edu.illinois</groupId>
         <artifactId>nondex-maven-plugin</artifactId>
-        <version>1.0.1</version>
+        <version>1.1.1</version>
       </plugin>
     </plugins>
   </build>
@@ -895,6 +880,7 @@
           </reportSet>
         </reportSets>
         <configuration>
+          <quiet>true</quiet>
           <formats>
             <format>xml</format>
             <format>html</format>
@@ -1707,6 +1693,7 @@
             <artifactId>cobertura-maven-plugin</artifactId>
             <version>2.7</version>
             <configuration>
+              <quiet>true</quiet>
               <formats>
                 <format>xml</format>
                 <format>html</format>

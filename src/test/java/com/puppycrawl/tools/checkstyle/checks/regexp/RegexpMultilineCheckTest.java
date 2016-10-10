@@ -32,10 +32,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import com.puppycrawl.tools.checkstyle.BaseFileSetCheckTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
@@ -121,7 +122,8 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         };
 
         final File file = temporaryFolder.newFile();
-        Files.write("first line \r\n second line \n\r third line", file, Charsets.UTF_8);
+        Files7.write(new Path(file),
+            "first line \r\n second line \n\r third line".getBytes(StandardCharsets.UTF_8));
 
         verify(checkConfig, file.getPath(), expected);
     }
@@ -133,8 +135,17 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
     }
 
     @Test
-    public void testEmptyFormat() throws Exception {
+    public void testNullFormat() throws Exception {
         checkConfig.addAttribute("format", null);
+        final String[] expected = {
+            "0: " + getCheckMessage(MSG_EMPTY),
+        };
+        verify(checkConfig, getPath("InputSemantic.java"), expected);
+    }
+
+    @Test
+    public void testEmptyFormat() throws Exception {
+        checkConfig.addAttribute("format", "");
         final String[] expected = {
             "0: " + getCheckMessage(MSG_EMPTY),
         };
@@ -151,7 +162,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         };
 
         final File file = temporaryFolder.newFile();
-        Files.write(makeLargeXyString(), file, Charsets.UTF_8);
+        Files7.write(new Path(file), makeLargeXyString().toString().getBytes(StandardCharsets.UTF_8));
 
         verify(checkConfig, file.getPath(), expected);
     }
@@ -166,7 +177,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         };
 
         final File file = temporaryFolder.newFile();
-        Files.write("", file, Charsets.UTF_8);
+        Files7.write(new Path(file), "".getBytes(StandardCharsets.UTF_8));
 
         verify(checkConfig, file.getPath(), expected);
     }

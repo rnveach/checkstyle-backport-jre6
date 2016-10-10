@@ -20,9 +20,9 @@
 package com.puppycrawl.tools.checkstyle.api;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
@@ -34,7 +34,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 public class FilterSet
     implements Filter {
     /** Filter set. */
-    private final Set<Filter> filters = Sets.newHashSet();
+    private final Set<Filter> filters = new HashSet<Filter>();
 
     /**
      * Adds a Filter to the set.

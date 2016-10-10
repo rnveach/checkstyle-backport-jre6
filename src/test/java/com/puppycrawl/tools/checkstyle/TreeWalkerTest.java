@@ -173,7 +173,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         final TreeWalker treeWalker = new TreeWalker();
         treeWalker.configure(createCheckConfig(TypeNameCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
@@ -187,7 +187,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         final TreeWalker treeWalker = new TreeWalker();
         treeWalker.configure(createCheckConfig(TypeNameCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
@@ -208,7 +208,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         final TreeWalker treeWalker = new TreeWalker();
         treeWalker.configure(createCheckConfig(TypeNameCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");

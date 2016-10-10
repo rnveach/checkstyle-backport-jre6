@@ -26,8 +26,9 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public class DetailNodeTreeStringPrinterTest {
 
@@ -45,9 +46,9 @@ public class DetailNodeTreeStringPrinterTest {
         final String actual = DetailNodeTreeStringPrinter.printFileAst(
             new File(getPath("InputJavadocComment.javadoc")))
                 .replaceAll("\\\\r\\\\n", "\\\\n");
-        final String expected = Files.toString(new File(
-                getPath("expectedInputJavadocComment.txt")), Charsets.UTF_8)
-                .replaceAll("\\\\r\\\\n", "\\\\n");
+        final String expected = new String(Files7.readAllBytes(Paths.get(
+            getPath("expectedInputJavadocComment.txt"))), StandardCharsets.UTF_8)
+            .replaceAll("\\\\r\\\\n", "\\\\n");
         Assert.assertEquals(expected, actual);
     }
 

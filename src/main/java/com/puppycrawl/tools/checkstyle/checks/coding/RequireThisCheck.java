@@ -19,16 +19,17 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
-import com.google.common.collect.Sets;
+
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -199,10 +200,10 @@ public class RequireThisCheck extends AbstractCheck {
 
     @Override
     public void beginTree(DetailAST rootAST) {
-        frames = Maps.newHashMap();
+        frames = new HashMap<DetailAST, AbstractFrame>();
         current = null;
 
-        final Deque<AbstractFrame> frameStack = Lists.newLinkedList();
+        final Deque<AbstractFrame> frameStack = new LinkedList<AbstractFrame>();
         DetailAST curNode = rootAST;
         while (curNode != null) {
             collectDeclarations(frameStack, curNode);
@@ -413,6 +414,8 @@ public class RequireThisCheck extends AbstractCheck {
      * @param ast IDENT ast to check.
      * @return the class frame where violation is found or null otherwise.
      */
+    // -@cs[CyclomaticComplexity] Method already invokes too many methods that fully explain
+    // a logic, additional abstraction will not make logic/algorithm more readable.
     private AbstractFrame getClassFrameWhereViolationIsFound(DetailAST ast) {
         AbstractFrame frameWhereViolationIsFound = null;
         final AbstractFrame variableDeclarationFrame = findFrame(ast, false);
@@ -681,8 +684,8 @@ public class RequireThisCheck extends AbstractCheck {
      */
     private static Set<DetailAST> getAllTokensOfType(DetailAST ast, int tokenType) {
         DetailAST vertex = ast;
-        final Set<DetailAST> result = Sets.newHashSet();
-        final Deque<DetailAST> stack = Queues.newArrayDeque();
+        final Set<DetailAST> result = new HashSet<DetailAST>();
+        final Deque<DetailAST> stack = new ArrayDeque<DetailAST>();
         while (vertex != null || !stack.isEmpty()) {
             if (!stack.isEmpty()) {
                 vertex = stack.pop();
@@ -712,8 +715,8 @@ public class RequireThisCheck extends AbstractCheck {
     private static Set<DetailAST> getAllTokensOfType(DetailAST ast, int tokenType,
                                                      int endLineNumber) {
         DetailAST vertex = ast;
-        final Set<DetailAST> result = Sets.newHashSet();
-        final Deque<DetailAST> stack = Queues.newArrayDeque();
+        final Set<DetailAST> result = new HashSet<DetailAST>();
+        final Deque<DetailAST> stack = new ArrayDeque<DetailAST>();
         while (vertex != null || !stack.isEmpty()) {
             if (!stack.isEmpty()) {
                 vertex = stack.pop();
@@ -744,8 +747,8 @@ public class RequireThisCheck extends AbstractCheck {
     private static Set<DetailAST> getAllTokensWhichAreEqualToCurrent(DetailAST ast, DetailAST token,
                                                                      int endLineNumber) {
         DetailAST vertex = ast;
-        final Set<DetailAST> result = Sets.newHashSet();
-        final Deque<DetailAST> stack = Queues.newArrayDeque();
+        final Set<DetailAST> result = new HashSet<DetailAST>();
+        final Deque<DetailAST> stack = new ArrayDeque<DetailAST>();
         while (vertex != null || !stack.isEmpty()) {
             if (!stack.isEmpty()) {
                 vertex = stack.pop();
@@ -908,7 +911,7 @@ public class RequireThisCheck extends AbstractCheck {
         protected AbstractFrame(AbstractFrame parent, DetailAST ident) {
             this.parent = parent;
             frameNameIdent = ident;
-            varIdents = Sets.newHashSet();
+            varIdents = new HashSet<DetailAST>();
         }
 
         /**
@@ -1078,10 +1081,10 @@ public class RequireThisCheck extends AbstractCheck {
          */
         ClassFrame(AbstractFrame parent, DetailAST ident) {
             super(parent, ident);
-            instanceMembers = Sets.newHashSet();
-            instanceMethods = Sets.newHashSet();
-            staticMembers = Sets.newHashSet();
-            staticMethods = Sets.newHashSet();
+            instanceMembers = new HashSet<DetailAST>();
+            instanceMethods = new HashSet<DetailAST>();
+            staticMembers = new HashSet<DetailAST>();
+            staticMethods = new HashSet<DetailAST>();
         }
 
         @Override
