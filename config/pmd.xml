@@ -43,6 +43,12 @@
       <property name="violationSuppressXPath" value="//MethodDeclaration[@Name='isNotRelevantSituation' and ../../..[@Image='WhitespaceAroundCheck']] | //MethodDeclaration[@Name='validateCli' and ../../..[@Image='Main']] | //ClassOrInterfaceDeclaration[@Image='JavadocMethodCheck' or @Image='JavadocStyleCheck']"/>
     </properties>
   </rule>
+  <rule ref="rulesets/java/codesize.xml/TooManyFields">
+    <properties>
+      <!-- Unable to split fields out of class. -->
+      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='Checker']"/>
+    </properties>
+  </rule>
   <rule ref="rulesets/java/codesize.xml/TooManyMethods">
     <properties>
       <property name="maxmethods" value="20"/>
@@ -93,8 +99,6 @@
     <exclude name="OnlyOneReturn"/>
     <!-- opposite to UnnecessaryConstructor -->
     <exclude name="AtLeastOneConstructor"/>
-    <!-- deprecated by PMD -->
-    <exclude name="BooleanInversion"/>
     <!-- that rule is too buggy, too much false positives-->
     <exclude name="DataflowAnomalyAnalysis"/>
     <!-- turning local variables to fields create design problems and extend scope of variable -->
@@ -148,7 +152,7 @@
   <rule ref="rulesets/java/design.xml/ConfusingTernary">
     <properties>
      <!-- false positives on IF_ELSE-IF-ELSE-IF -->
-    <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='XMLLogger']//MethodDeclarator[@Image='isReference'] | //ClassOrInterfaceDeclaration[@Image='DetailAST']//MethodDeclarator[@Image='addPreviousSibling'] | //ClassOrInterfaceDeclaration[@Image='AnnotationLocationCheck']//MethodDeclarator[@Image='checkAnnotations'] | //ClassOrInterfaceDeclaration[@Image='PkgControl']//MethodDeclarator[@Image='checkAccess'] | //ClassOrInterfaceDeclaration[@Image='HandlerFactory']//MethodDeclarator[@Image='getHandler']"/>
+    <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='XMLLogger']//MethodDeclarator[@Image='isReference'] | //ClassOrInterfaceDeclaration[@Image='DetailAST']//MethodDeclarator[@Image='addPreviousSibling'] | //ClassOrInterfaceDeclaration[@Image='AnnotationLocationCheck']//MethodDeclarator[@Image='checkAnnotations'] | //ClassOrInterfaceDeclaration[@Image='ImportControl']//MethodDeclarator[@Image='checkAccess'] | //ClassOrInterfaceDeclaration[@Image='HandlerFactory']//MethodDeclarator[@Image='getHandler']"/>
     </properties>
   </rule>
   <rule ref="rulesets/java/design.xml/AccessorClassGeneration">
@@ -210,12 +214,6 @@
   </rule>
 
   <rule ref="rulesets/java/migrating.xml"/>
-  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseTestAnnotation">
-    <properties>
-      <!-- False positive of PMD. Non-test methods can be named as 'test' -->
-      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='PackageObjectFactory']"/>
-    </properties>
-  </rule>
 
   <rule ref="rulesets/java/naming.xml">
     <!-- we use CheckstyleCustomShortVariable, to control lenght (will be fixed in PMD 5.4) and skip Override methods -->
@@ -247,7 +245,7 @@
   <rule ref="rulesets/java/naming.xml/AbstractNaming">
     <properties>
      <!-- We can not brake compatibility with previous versions -->
-     <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='Check']"/>
+     <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='Check' or @Image='AbstractClassNameCheck']"/>
     </properties>
   </rule>
   <rule ref="rulesets/java/naming.xml/LongVariable">

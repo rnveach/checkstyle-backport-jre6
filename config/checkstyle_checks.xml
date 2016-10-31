@@ -18,6 +18,11 @@
 
   <property name="fileExtensions" value="java, properties, xml, g, g4"/>
 
+  <!-- BeforeExecutionFileFilters is required for sources that are based on java9 -->
+  <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value="module\-info\.java$" />
+  </module>
+
   <!-- Filters -->
   <module name="SeverityMatchFilter">
     <!-- report all violations except ignore -->
@@ -157,11 +162,7 @@
 
     <!-- Class Design -->
     <module name="DesignForExtension">
-      <!--
-        We should postpone DesignForExtension Check enforcement till next major release
-        as it will seriously brake backward compatibility with existing usage of our library
-      -->
-      <property name="severity" value="ignore"/>
+      <property name="ignoredAnnotations" value="Override, Test, Before, After, BeforeClass, AfterClass"/>
     </module>
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>

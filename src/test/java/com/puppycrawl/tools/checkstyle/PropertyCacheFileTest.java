@@ -21,20 +21,22 @@ package com.puppycrawl.tools.checkstyle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -83,17 +85,54 @@ public class PropertyCacheFileTest {
     }
 
     @Test
+    public void testConfigHashOnReset() throws IOException {
+        final Configuration config = new DefaultConfiguration("myName");
+        final String filePath = temporaryFolder.newFile().getPath();
+        final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
+
+        cache.load();
+
+        final String hash = cache.get(PropertyCacheFile.CONFIG_HASH_KEY);
+        assertNotNull(hash);
+
+        cache.reset();
+
+        assertEquals(hash, cache.get(PropertyCacheFile.CONFIG_HASH_KEY));
+    }
+
+    @Test
+    public void testConfigHashRemainsOnResetExternalResources() throws IOException {
+        final Configuration config = new DefaultConfiguration("myName");
+        final String filePath = temporaryFolder.newFile().getPath();
+        final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
+
+        // create cache with one file
+        cache.load();
+        cache.put("myFile", 1);
+
+        final String hash = cache.get(PropertyCacheFile.CONFIG_HASH_KEY);
+        assertNotNull(hash);
+
+        // apply new external resource to clear cache
+        final Set<String> resources = new HashSet<String>();
+        resources.add("dummy");
+        cache.putExternalResources(resources);
+
+        assertEquals(hash, cache.get(PropertyCacheFile.CONFIG_HASH_KEY));
+        assertFalse(cache.isInCache("myFile", 1));
+    }
+
+    @Test
     public void testCacheDirectoryDoesNotExistAndShouldBeCreated() throws IOException {
         final Configuration config = new DefaultConfiguration("myName");
         final String filePath = String.format(Locale.getDefault(), "%s%2$stemp%2$scache.temp",
             temporaryFolder.getRoot(), File.separator);
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
-        try {
-            cache.persist();
-        }
-        catch (FileNotFoundException ex) {
-            fail("Exception is not expected. Cache directory should be created successfully!");
-        }
+
+        // no exception expected, cache directory should be created
+        cache.persist();
+
+        assertTrue("cache exists in directory", new File(filePath).exists());
     }
 
     @Test
@@ -102,12 +141,8 @@ public class PropertyCacheFileTest {
         final String filePath = "temp.cache";
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
 
-        try {
-            cache.persist();
-        }
-        catch (FileNotFoundException ex) {
-            fail("Exception is not expected!");
-        }
+        // no exception expected
+        cache.persist();
 
         if (Files7.exists(Paths.get(filePath))) {
             Files7.delete(Paths.get(filePath));
