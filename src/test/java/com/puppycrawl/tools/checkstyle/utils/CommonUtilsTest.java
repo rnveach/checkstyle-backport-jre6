@@ -81,14 +81,26 @@ public class CommonUtilsTest {
         assertEquals(3, CommonUtils.lengthMinusTrailingWhitespace(" 23 \t "));
     }
 
-    @Test(expected = ConversionException.class)
+    @Test
     public void testBadRegex() {
-        CommonUtils.createPattern("[");
+        try {
+            CommonUtils.createPattern("[");
+            fail("exception expected");
+        }
+        catch (ConversionException ex) {
+            assertEquals("Failed to initialise regular expression [", ex.getMessage());
+        }
     }
 
-    @Test(expected = ConversionException.class)
+    @Test
     public void testBadRegex2() {
-        CommonUtils.createPattern("[", Pattern.MULTILINE);
+        try {
+            CommonUtils.createPattern("[", Pattern.MULTILINE);
+            fail("exception expected");
+        }
+        catch (ConversionException ex) {
+            assertEquals("Failed to initialise regular expression [", ex.getMessage());
+        }
     }
 
     @Test
@@ -196,14 +208,20 @@ public class CommonUtilsTest {
         assertTrue(closeable.closed);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testCloseWithException() {
-        CommonUtils.close(new Closeable() {
-            @Override
-            public void close() throws IOException {
-                throw new IOException("Test IOException");
-            }
-        });
+        try {
+            CommonUtils.close(new Closeable() {
+                @Override
+                public void close() throws IOException {
+                    throw new IOException("Test IOException");
+                }
+            });
+            fail("exception expected");
+        }
+        catch (IllegalStateException ex) {
+            assertEquals("Cannot close the stream", ex.getMessage());
+        }
     }
 
     @Test

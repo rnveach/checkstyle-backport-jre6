@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * <p>
@@ -62,11 +61,8 @@ public final class AbstractClassNameCheck extends AbstractCheck {
     /** Whether to ignore checking the name. */
     private boolean ignoreName;
 
-    /** The format string of the regexp. */
-    private String format = "^Abstract.+$";
-
     /** The regexp to match against. */
-    private Pattern regexp = Pattern.compile(format);
+    private Pattern format = Pattern.compile("^Abstract.+$");
 
     /**
      * Whether to ignore checking for the {@code abstract} modifier.
@@ -85,13 +81,11 @@ public final class AbstractClassNameCheck extends AbstractCheck {
     }
 
     /**
-     * Set the format to the specified regular expression.
-     * @param format a {@code String} value
-     * @throws org.apache.commons.beanutils.ConversionException unable to parse format
+     * Set the format for the specified regular expression.
+     * @param pattern the new pattern
      */
-    public void setFormat(String format) {
-        this.format = format;
-        regexp = CommonUtils.createPattern(format);
+    public void setFormat(Pattern pattern) {
+        format = pattern;
     }
 
     @Override
@@ -125,7 +119,7 @@ public final class AbstractClassNameCheck extends AbstractCheck {
             // if class has abstract modifier
             if (!ignoreName && !isMatchingClassName(className)) {
                 log(ast.getLineNo(), ast.getColumnNo(),
-                    MSG_ILLEGAL_ABSTRACT_CLASS_NAME, className, format);
+                    MSG_ILLEGAL_ABSTRACT_CLASS_NAME, className, format.pattern());
             }
         }
         else if (!ignoreModifier && isMatchingClassName(className)) {
@@ -150,6 +144,6 @@ public final class AbstractClassNameCheck extends AbstractCheck {
      * @return true if class name matches format of abstract class names.
      */
     private boolean isMatchingClassName(String className) {
-        return regexp.matcher(className).find();
+        return format.matcher(className).find();
     }
 }

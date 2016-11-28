@@ -35,7 +35,6 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.AnnotationUtility;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
 
 /**
@@ -303,17 +302,13 @@ public class VisibilityModifierCheck
         PROTECTED_ACCESS_MODIFIER,
     };
 
-    /**
-     * Pattern for public members that should be ignored.  Note:
+    /** Regexp for public members that should be ignored. Note:
      * Earlier versions of checkstyle used ^f[A-Z][a-zA-Z0-9]*$ as the
      * default to allow CMP for EJB 1.1 with the default settings.
      * With EJB 2.0 it is not longer necessary to have public access
      * for persistent fields.
      */
-    private String publicMemberFormat = "^serialVersionUID$";
-
-    /** Regexp for public members that should be ignored. */
-    private Pattern publicMemberPattern = Pattern.compile(publicMemberFormat);
+    private Pattern publicMemberPattern = Pattern.compile("^serialVersionUID$");
 
     /** List of ignore annotations short names. */
     private final List<String> ignoreAnnotationShortNames =
@@ -370,12 +365,9 @@ public class VisibilityModifierCheck
      * Set the pattern for public members to ignore.
      * @param pattern
      *        pattern for public members to ignore.
-     * @throws org.apache.commons.beanutils.ConversionException
-     *         if unable to create Pattern object
      */
-    public void setPublicMemberPattern(String pattern) {
-        publicMemberPattern = CommonUtils.createPattern(pattern);
-        publicMemberFormat = pattern;
+    public void setPublicMemberPattern(Pattern pattern) {
+        publicMemberPattern = pattern;
     }
 
     /**

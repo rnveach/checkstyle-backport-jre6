@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * <p>
@@ -63,10 +62,8 @@ public final class ReturnCountCheck extends AbstractCheck {
     /** Stack of method contexts. */
     private final Deque<Context> contextStack = new ArrayDeque<Context>();
 
-    /** The format string of the regexp. */
-    private String format = "^equals$";
     /** The regexp to match against. */
-    private Pattern regexp = Pattern.compile(format);
+    private Pattern format = Pattern.compile("^equals$");
 
     /** Maximum allowed number of return statements. */
     private int max = 2;
@@ -101,13 +98,11 @@ public final class ReturnCountCheck extends AbstractCheck {
     }
 
     /**
-     * Set the format to the specified regular expression.
-     * @param format a {@code String} value
-     * @throws org.apache.commons.beanutils.ConversionException unable to parse format
+     * Set the format for the specified regular expression.
+     * @param pattern a pattern.
      */
-    public void setFormat(String format) {
-        this.format = format;
-        regexp = CommonUtils.createPattern(format);
+    public void setFormat(Pattern pattern) {
+        format = pattern;
     }
 
     /**
@@ -173,7 +168,7 @@ public final class ReturnCountCheck extends AbstractCheck {
     private void visitMethodDef(DetailAST ast) {
         contextStack.push(context);
         final DetailAST methodNameAST = ast.findFirstToken(TokenTypes.IDENT);
-        final boolean check = !regexp.matcher(methodNameAST.getText()).find();
+        final boolean check = !format.matcher(methodNameAST.getText()).find();
         context = new Context(check);
     }
 

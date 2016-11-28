@@ -147,6 +147,20 @@ java -cp checkstyle-${projectVersion}-all.jar com.puppycrawl.tools.checkstyle.gu
       types like IDENT (an identifier) near the leaves of the tree.  </p>
 
       <p>
+       In the bottom of frame you can find buttons "Open File", "Reload File"
+       and dropdown list with parse modes to choose. First one opens file
+       choose window. After choosing file tree that corresponds to java source
+       file builds in frame. Notice that only files with ".java" extension
+       can be opened. Second one reloads chosen file from file system and
+       rebuilds source code tree. Dropdown list allow to choose one of three
+       parse modes: "PLAIN JAVA", "JAVA WITH COMMENTS", "JAVA WITH JAVADOC AND COMMENTS".
+       "PLAIN JAVA" mode uses to show java source code without comments. In
+       "JAVA WITH COMMENTS" you can see also comments blocks on the tree. When
+       "JAVA WITH JAVADOC AND COMMENTS" chosen javadoc tree builds and attaches
+       for every comment block, that contains javadoc.
+      </p>
+
+      <p>
         Notice: text of a tree node and its children is selected automaticaly
         after either pressing "Enter" or double-clicking on it, so there is no
         need to make selection manually.
@@ -317,6 +331,38 @@ public class MethodLimitCheck extends AbstractCheck
         </li>
 
       </ul>
+
+    </section>
+
+    <section name="Comment Tokens in AST">
+
+      <p>
+        Before <a href="releasenotes.html#Release_6.0">Checkstyle 6.0</a>, there was no comments in AST tree
+        as commnents are not a code and ignored by complier, so it was not a primary focus of Checkstyle.
+        But more and more requests appear to do validation of code vs javadoc or comments.
+        So there was a simple solution to receive plain text of file in Check, do own parsing and searching for required comments in file.
+      </p>
+      <p>
+        Since 6.0, there is a new method in AbstractCheck class that allow you to see or not comment nodes in AST Tree -
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/api/AbstractCheck.html#isCommentNodesRequired--">
+        isCommentNodesRequired()</a>. It should return TRUE if Check want to see comments in AST Tree.
+      </p>
+      <p>
+        It is done as optional because it is change for a AST Tree structure, and non of existing Checks ready for this.
+        Checkstyle does not do re-parse file one more time, comments were already in grammar and parsed, but skipped during AST nodes creation.
+      </p>
+      <p>
+        Before execution, all Checks are divided into 2 groups (base on isCommentNodesRequired method): "java only Checks", "comments Checks".
+        Checkstyle execute "java only Checks" first, as all them finish, append to AST Tree missed comment AST nodes and call "comments Checks".
+        All Javadoc Checks that are child of AbstractJavadocCheck are "comments Checks".
+      </p>
+      <p>
+        Comment tokens:
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#SINGLE_LINE_COMMENT">SINGLE_LINE_COMMENT</a>,
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#BLOCK_COMMENT_BEGIN">BLOCK_COMMENT_BEGIN</a>,
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#BLOCK_COMMENT_END">BLOCK_COMMENT_END</a>,
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMMENT_CONTENT">COMMENT_CONTENT</a>.
+      </p>
 
     </section>
 

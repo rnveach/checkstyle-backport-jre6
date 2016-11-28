@@ -14,9 +14,11 @@
 
   <metadata name="com.atlas-sw.eclipse" value="I like Sydney"/>
 
+  <property name="cacheFile" value="${checkstyle.cache.file}"/>
+
   <property name="severity" value="error"/>
 
-  <property name="fileExtensions" value="java, properties, xml, g, g4"/>
+  <property name="fileExtensions" value="java, properties, xml, vm, g, g4"/>
 
   <!-- BeforeExecutionFileFilters is required for sources that are based on java9 -->
   <module name="BeforeExecutionExclusionFileFilter">
@@ -252,7 +254,7 @@
       <property name="file" value="${checkstyle.importcontrol.file}"/>
     </module>
     <module name="ImportOrder">
-      <property name="groups" value="/^javax?\./,org"/>
+      <property name="groups" value="/^java\./,javax,org"/>
       <property name="ordered" value="true"/>
       <property name="separated" value="true"/>
       <property name="option" value="top"/>

@@ -37,6 +37,7 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -57,6 +58,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.checks.javadoc.AbstractJavadocCheck;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
@@ -113,6 +115,8 @@ public class XDocsPagesTest {
     );
 
     private static final Set<String> CHECK_PROPERTIES = getProperties(AbstractCheck.class);
+    private static final Set<String> JAVADOC_CHECK_PROPERTIES =
+            getProperties(AbstractJavadocCheck.class);
     private static final Set<String> FILESET_PROPERTIES = getProperties(AbstractFileSetCheck.class);
 
     private static final List<String> UNDOCUMENTED_PROPERTIES = Arrays.asList(
@@ -174,7 +178,9 @@ public class XDocsPagesTest {
     private static void buildAndValidateXml(String fileName, String unserializedSource)
             throws IOException, ParserConfigurationException, CheckstyleException {
         // not all examples come with the full xml structure
-        String code = unserializedSource;
+        String code = unserializedSource
+            // don't corrupt our own cachefile
+            .replace("target/cachefile", "target/cachefile-test");
 
         if (!hasFileSetClass(code)) {
             code = "<module name=\"TreeWalker\">\n" + code + "\n</module>";
@@ -396,9 +402,30 @@ public class XDocsPagesTest {
         final Set<String> properties = getProperties(instance.getClass());
         final Class<?> clss = instance.getClass();
 
+        fixCapturedProperties(sectionName, instance, clss, properties);
+
+        if (subSection != null) {
+            Assert.assertTrue(fileName + " section '" + sectionName
+                    + "' should have no properties to show", !properties.isEmpty());
+
+            validatePropertySectionProperties(fileName, sectionName, subSection, instance,
+                    properties);
+        }
+
+        Assert.assertTrue(fileName + " section '" + sectionName + "' should show properties: "
+                + properties, properties.isEmpty());
+    }
+
+    private static void fixCapturedProperties(String sectionName, Object instance, Class<?> clss,
+            Set<String> properties) {
         // remove global properties that don't need documentation
         if (hasParentModule(sectionName)) {
-            properties.removeAll(CHECK_PROPERTIES);
+            if (AbstractJavadocCheck.class.isAssignableFrom(clss)) {
+                properties.removeAll(JAVADOC_CHECK_PROPERTIES);
+            }
+            else if (AbstractCheck.class.isAssignableFrom(clss)) {
+                properties.removeAll(CHECK_PROPERTIES);
+            }
         }
         else if (AbstractFileSetCheck.class.isAssignableFrom(clss)) {
             properties.removeAll(FILESET_PROPERTIES);
@@ -430,21 +457,27 @@ public class XDocsPagesTest {
             }
         }
 
-        if (subSection != null) {
-            Assert.assertTrue(fileName + " section '" + sectionName
-                    + "' should have no properties to show", !properties.isEmpty());
+        if (AbstractJavadocCheck.class.isAssignableFrom(clss)) {
+            final AbstractJavadocCheck check = (AbstractJavadocCheck) instance;
 
-            validatePropertySectionProperties(fileName, sectionName, subSection, instance,
-                    properties);
+            final int[] acceptableJavadocTokens = check.getAcceptableJavadocTokens();
+            Arrays.sort(acceptableJavadocTokens);
+            final int[] defaultJavadocTokens = check.getDefaultJavadocTokens();
+            Arrays.sort(defaultJavadocTokens);
+            final int[] requiredJavadocTokens = check.getRequiredJavadocTokens();
+            Arrays.sort(requiredJavadocTokens);
+
+            if (!Arrays.equals(acceptableJavadocTokens, defaultJavadocTokens)
+                    || !Arrays.equals(acceptableJavadocTokens, requiredJavadocTokens)) {
+                properties.add("javadocTokens");
+            }
         }
-
-        Assert.assertTrue(fileName + " section '" + sectionName + "' should show properties: "
-                + properties, properties.isEmpty());
     }
 
     private static void validatePropertySectionProperties(String fileName, String sectionName,
             Node subSection, Object instance, Set<String> properties) throws Exception {
         boolean skip = true;
+        boolean didJavadocTokens = false;
         boolean didTokens = false;
 
         for (Node row : XmlUtil.getChildrenElements(XmlUtil.getFirstChildElement(subSection))) {
@@ -464,25 +497,18 @@ public class XDocsPagesTest {
 
             if ("tokens".equals(propertyName)) {
                 final AbstractCheck check = (AbstractCheck) instance;
-
-                Assert.assertEquals(fileName + " section '" + sectionName
-                        + "' should have the basic token description", "tokens to check", columns
-                        .get(1).getTextContent());
-                Assert.assertEquals(
-                        fileName + " section '" + sectionName
-                                + "' should have all the acceptable tokens",
-                        "subset of tokens "
-                                + CheckUtil.getTokenText(check.getAcceptableTokens(),
-                                        check.getRequiredTokens()), columns.get(2).getTextContent()
-                                .replaceAll("\\s+", " ").trim());
-                Assert.assertEquals(
-                        fileName + " section '" + sectionName
-                                + "' should have all the default tokens",
-                        CheckUtil.getTokenText(check.getDefaultTokens(), check.getRequiredTokens()),
-                        columns.get(3).getTextContent().replaceAll("\\s+", " ").trim());
+                validatePropertySectionPropertyTokens(fileName, sectionName, check, columns);
                 didTokens = true;
             }
+            else if ("javadocTokens".equals(propertyName)) {
+                final AbstractJavadocCheck check = (AbstractJavadocCheck) instance;
+                validatePropertySectionPropertyJavadocTokens(fileName, sectionName, check, columns);
+                didJavadocTokens = true;
+            }
             else {
+                Assert.assertFalse(fileName + " section '" + sectionName
+                        + "' should have javadoc token properties next to last, before tokens",
+                        didJavadocTokens);
                 Assert.assertFalse(fileName + " section '" + sectionName
                         + "' should have a description for " + propertyName, columns.get(1)
                         .getTextContent().trim().isEmpty());
@@ -517,6 +543,43 @@ public class XDocsPagesTest {
         }
     }
 
+    private static void validatePropertySectionPropertyTokens(String fileName, String sectionName,
+            AbstractCheck check, List<Node> columns) {
+        Assert.assertEquals(fileName + " section '" + sectionName
+                + "' should have the basic token description", "tokens to check", columns.get(1)
+                .getTextContent());
+        Assert.assertEquals(
+                fileName + " section '" + sectionName + "' should have all the acceptable tokens",
+                "subset of tokens "
+                        + CheckUtil.getTokenText(check.getAcceptableTokens(),
+                                check.getRequiredTokens()), columns.get(2).getTextContent()
+                        .replaceAll("\\s+", " ").trim());
+        Assert.assertEquals(fileName + " section '" + sectionName
+                + "' should have all the default tokens",
+                CheckUtil.getTokenText(check.getDefaultTokens(), check.getRequiredTokens()),
+                columns.get(3).getTextContent().replaceAll("\\s+", " ").trim());
+    }
+
+    private static void validatePropertySectionPropertyJavadocTokens(String fileName,
+            String sectionName, AbstractJavadocCheck check, List<Node> columns) {
+        Assert.assertEquals(fileName + " section '" + sectionName
+                + "' should have the basic token javadoc description", "javadoc tokens to check",
+                columns.get(1).getTextContent());
+        Assert.assertEquals(
+                fileName + " section '" + sectionName
+                        + "' should have all the acceptable javadoc tokens",
+                "subset of javadoc tokens "
+                        + CheckUtil.getJavadocTokenText(check.getAcceptableJavadocTokens(),
+                                check.getRequiredJavadocTokens()), columns.get(2).getTextContent()
+                        .replaceAll("\\s+", " ").trim());
+        Assert.assertEquals(
+                fileName + " section '" + sectionName
+                        + "' should have all the default javadoc tokens",
+                CheckUtil.getJavadocTokenText(check.getDefaultJavadocTokens(),
+                        check.getRequiredJavadocTokens()), columns.get(3).getTextContent()
+                        .replaceAll("\\s+", " ").trim());
+    }
+
     private static String getCheckPropertyExpectedTypeName(Class<?> clss, Object instance,
             String propertyName) {
         final String instanceName = instance.getClass().getSimpleName();
@@ -544,6 +607,9 @@ public class XDocsPagesTest {
             else {
                 result = "String Set";
             }
+        }
+        else if (clss == Pattern.class) {
+            result = "Regular Expression";
         }
         else if (clss != String.class) {
             Assert.fail("Unknown property type: " + clss.getSimpleName());
@@ -587,6 +653,16 @@ public class XDocsPagesTest {
                         .replace(".0", "");
                 if (result.isEmpty()) {
                     result = "{}";
+                }
+            }
+            else if (clss == Pattern.class) {
+                if (value != null) {
+                    result = '"' + value.toString().replace("\n", "\\n").replace("\t", "\\t")
+                            .replace("\r", "\\r").replace("\f", "\\f") + '"';
+                }
+
+                if ("\"$^\"".equals(result)) {
+                    result += " (empty)";
                 }
             }
 

@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * <p> Ensures that exceptions (classes with names conforming to some regular
@@ -54,30 +53,26 @@ public final class MutableExceptionCheck extends AbstractCheck {
     /** Stack of checking information for classes. */
     private final Deque<Boolean> checkingStack = new ArrayDeque<Boolean>();
     /** Pattern for class name that is being extended. */
-    private String extendedClassNameFormat = DEFAULT_FORMAT;
+    private Pattern extendedClassNameFormat = Pattern.compile(DEFAULT_FORMAT);
     /** Should we check current class or not. */
     private boolean checking;
-    /** The format string of the regexp. */
-    private String format = DEFAULT_FORMAT;
     /** The regexp to match against. */
-    private Pattern regexp = Pattern.compile(format);
+    private Pattern format = Pattern.compile(DEFAULT_FORMAT);
 
     /**
      * Sets the format of extended class name to the specified regular expression.
      * @param extendedClassNameFormat a {@code String} value
      */
-    public void setExtendedClassNameFormat(String extendedClassNameFormat) {
+    public void setExtendedClassNameFormat(Pattern extendedClassNameFormat) {
         this.extendedClassNameFormat = extendedClassNameFormat;
     }
 
     /**
-     * Set the format to the specified regular expression.
-     * @param format a {@code String} value
-     * @throws org.apache.commons.beanutils.ConversionException unable to parse format
+     * Set the format for the specified regular expression.
+     * @param pattern the new pattern
      */
-    public void setFormat(String format) {
-        this.format = format;
-        regexp = CommonUtils.createPattern(format);
+    public void setFormat(Pattern pattern) {
+        format = pattern;
     }
 
     @Override
@@ -153,7 +148,7 @@ public final class MutableExceptionCheck extends AbstractCheck {
      */
     private boolean isNamedAsException(DetailAST ast) {
         final String className = ast.findFirstToken(TokenTypes.IDENT).getText();
-        return regexp.matcher(className).find();
+        return format.matcher(className).find();
     }
 
     /**
@@ -169,7 +164,7 @@ public final class MutableExceptionCheck extends AbstractCheck {
                 currentNode = currentNode.getLastChild();
             }
             final String extendedClassName = currentNode.getText();
-            return extendedClassName.matches(extendedClassNameFormat);
+            return extendedClassNameFormat.matcher(extendedClassName).matches();
         }
         return false;
     }

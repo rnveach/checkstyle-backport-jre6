@@ -25,7 +25,6 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * <p>
@@ -71,22 +70,18 @@ public class PackageNameCheck
      */
     public static final String MSG_KEY = "name.invalidPattern";
 
-    /** The format string of the regexp. */
+    /** The regexp to match against. */
     // Uppercase letters seem rather uncommon, but they're allowed in
     // http://docs.oracle.com/javase/specs/
     //  second_edition/html/packages.doc.html#40169
-    private String format = "^[a-z]+(\\.[a-zA-Z_][a-zA-Z0-9_]*)*$";
-    /** The regexp to match against. */
-    private Pattern regexp = Pattern.compile(format);
+    private Pattern format = Pattern.compile("^[a-z]+(\\.[a-zA-Z_][a-zA-Z0-9_]*)*$");
 
     /**
-     * Set the format to the specified regular expression.
-     * @param format a {@code String} value
-     * @throws org.apache.commons.beanutils.ConversionException unable to parse format
+     * Set the format for the specified regular expression.
+     * @param pattern the new pattern
      */
-    public final void setFormat(String format) {
-        this.format = format;
-        regexp = CommonUtils.createPattern(format);
+    public void setFormat(Pattern pattern) {
+        format = pattern;
     }
 
     @Override
@@ -108,12 +103,12 @@ public class PackageNameCheck
     public void visitToken(DetailAST ast) {
         final DetailAST nameAST = ast.getLastChild().getPreviousSibling();
         final FullIdent full = FullIdent.createFullIdent(nameAST);
-        if (!regexp.matcher(full.getText()).find()) {
+        if (!format.matcher(full.getText()).find()) {
             log(full.getLineNo(),
                 full.getColumnNo(),
                 MSG_KEY,
                 full.getText(),
-                format);
+                format.pattern());
         }
     }
 }

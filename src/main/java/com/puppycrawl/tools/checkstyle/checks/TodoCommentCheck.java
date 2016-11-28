@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * <p>
@@ -61,14 +60,9 @@ public class TodoCommentCheck
     public static final String MSG_KEY = "todo.match";
 
     /**
-     * Format of 'todo' comment.
-     */
-    private String format = "TODO:";
-
-    /**
      * Regular expression pattern compiled from format.
      */
-    private Pattern regexp = Pattern.compile(format);
+    private Pattern format = Pattern.compile("TODO:");
 
     @Override
     public boolean isCommentNodesRequired() {
@@ -76,15 +70,12 @@ public class TodoCommentCheck
     }
 
     /**
-     * Setter for 'todo' comment format.
-     * @param format
-     *        format of 'todo' comment.
-     * @throws org.apache.commons.beanutils.ConversionException
-     *         if unable to create Pattern object.
+     * Setter for 'todo' comment pattern.
+     * @param pattern
+     *        pattern of 'todo' comment.
      */
-    public void setFormat(String format) {
-        this.format = format;
-        regexp = CommonUtils.createPattern(format);
+    public void setFormat(Pattern pattern) {
+        format = pattern;
     }
 
     @Override
@@ -107,8 +98,8 @@ public class TodoCommentCheck
         final String[] lines = ast.getText().split("\n");
 
         for (int i = 0; i < lines.length; i++) {
-            if (regexp.matcher(lines[i]).find()) {
-                log(ast.getLineNo() + i, MSG_KEY, format);
+            if (format.matcher(lines[i]).find()) {
+                log(ast.getLineNo() + i, MSG_KEY, format.pattern());
             }
         }
     }

@@ -131,11 +131,6 @@ public class MyClass {
         In Javadoc comment every whitespace matters, and Javadoc Checks need all those whitespaces and newline nodes to verify format and content of the Javadoc comment.
         Because of that Javadoc grammar includes all whitespaces, newlines to the parse tree
         (<a href="apidocs/com/puppycrawl/tools/checkstyle/api/JavadocTokenTypes.html#WS">WS</a>, <a href="apidocs/com/puppycrawl/tools/checkstyle/api/JavadocTokenTypes.html#NEWLINE">NEWLINE</a>).
-        As you may notice there is also <a href="apidocs/com/puppycrawl/tools/checkstyle/api/JavadocTokenTypes.html#CHAR">CHAR</a> javadoc token that presents single character.
-        It is quite useless and is used for building only <a href="apidocs/com/puppycrawl/tools/checkstyle/api/JavadocTokenTypes.html#TEXT">TEXT</a> node which consists of
-        <a href="apidocs/com/puppycrawl/tools/checkstyle/api/JavadocTokenTypes.html#CHAR">CHAR</a> and
-        <a href="apidocs/com/puppycrawl/tools/checkstyle/api/JavadocTokenTypes.html#WS">WS</a> nodes, but it is implementation nuance.
-        (In future we will try to resolve this. See <a href="https://github.com/checkstyle/checkstyle/issues/3170">Github Issue #3170</a>).
       </p>
     </section>
 
@@ -165,10 +160,6 @@ CLASS_DEF -> CLASS_DEF [5:0]
 |   |   |       |--NEWLINE -> \n [1:0]
 |   |   |       |--LEADING_ASTERISK ->  * [2:0]
 |   |   |       |--TEXT ->  My  [2:2]
-|   |   |       |   |--WS ->   [2:2]
-|   |   |       |   |--CHAR -> M [2:3]
-|   |   |       |   |--CHAR -> y [2:4]
-|   |   |       |   `--WS ->   [2:5]
 |   |   |       |--HTML_ELEMENT -> <b>class</b> [2:6]
 |   |   |       |   `--HTML_TAG -> <b>class</b> [2:6]
 |   |   |       |       |--HTML_ELEMENT_OPEN -> <b> [2:6]
@@ -176,18 +167,12 @@ CLASS_DEF -> CLASS_DEF [5:0]
 |   |   |       |       |   |--HTML_TAG_NAME -> b [2:7]
 |   |   |       |       |   `--CLOSE -> > [2:8]
 |   |   |       |       |--TEXT -> class [2:9]
-|   |   |       |       |   |--CHAR -> c [2:9]
-|   |   |       |       |   |--CHAR -> l [2:10]
-|   |   |       |       |   |--CHAR -> a [2:11]
-|   |   |       |       |   |--CHAR -> s [2:12]
-|   |   |       |       |   `--CHAR -> s [2:13]
 |   |   |       |       `--HTML_ELEMENT_CLOSE -> </b> [2:14]
 |   |   |       |           |--OPEN -> < [2:14]
 |   |   |       |           |--SLASH -> / [2:15]
 |   |   |       |           |--HTML_TAG_NAME -> b [2:16]
 |   |   |       |           `--CLOSE -> > [2:17]
 |   |   |       |--TEXT -> . [2:18]
-|   |   |       |   `--CHAR -> . [2:18]
 |   |   |       |--NEWLINE -> \n [2:19]
 |   |   |       |--LEADING_ASTERISK ->  * [3:0]
 |   |   |       |--WS ->   [3:2]
@@ -225,10 +210,6 @@ CLASS_DEF -> CLASS_DEF [5:0]
 JAVADOC ->  * My <b>class</b>.\r\n * @see AbstractClass<EOF> [0:0]
 |--LEADING_ASTERISK ->  * [0:0]
 |--TEXT ->  My  [0:2]
-|   |--WS ->   [0:2]
-|   |--CHAR -> M [0:3]
-|   |--CHAR -> y [0:4]
-|   `--WS ->   [0:5]
 |--HTML_ELEMENT -> <b>class</b> [0:6]
 |   `--HTML_TAG -> <b>class</b> [0:6]
 |       |--HTML_ELEMENT_OPEN -> <b> [0:6]
@@ -236,18 +217,12 @@ JAVADOC ->  * My <b>class</b>.\r\n * @see AbstractClass<EOF> [0:0]
 |       |   |--HTML_TAG_NAME -> b [0:7]
 |       |   `--CLOSE -> > [0:8]
 |       |--TEXT -> class [0:9]
-|       |   |--CHAR -> c [0:9]
-|       |   |--CHAR -> l [0:10]
-|       |   |--CHAR -> a [0:11]
-|       |   |--CHAR -> s [0:12]
-|       |   `--CHAR -> s [0:13]
 |       `--HTML_ELEMENT_CLOSE -> </b> [0:14]
 |           |--OPEN -> < [0:14]
 |           |--SLASH -> / [0:15]
 |           |--HTML_TAG_NAME -> b [0:16]
 |           `--CLOSE -> > [0:17]
 |--TEXT -> . [0:18]
-|   `--CHAR -> . [0:18]
 |--NEWLINE -> \r\n [0:19]
 |--LEADING_ASTERISK ->  * [1:0]
 |--WS ->   [1:2]
@@ -398,10 +373,6 @@ JAVADOC -> <acronym title="as soon as possible">ASAP</acronym><EOF> [0:0]
 |       |   |   `--ATTR_VALUE -> "as soon as possible" [0:15]
 |       |   `--CLOSE -> > [0:37]
 |       |--TEXT -> ASAP [0:38]
-|       |   |--CHAR -> A [0:38]
-|       |   |--CHAR -> S [0:39]
-|       |   |--CHAR -> A [0:40]
-|       |   `--CHAR -> P [0:41]
 |       `--HTML_ELEMENT_CLOSE -> </acronym> [0:42]
 |           |--OPEN -> < [0:42]
 |           |--SLASH -> / [0:43]
@@ -449,12 +420,6 @@ JAVADOC -> <p> First\r\n<p> Second<EOF> [0:0]
 |       |--P_HTML_TAG_NAME -> p [0:1]
 |       `--CLOSE -> > [0:2]
 |--TEXT ->  First [0:3]
-|   |--WS ->   [0:3]
-|   |--CHAR -> F [0:4]
-|   |--CHAR -> i [0:5]
-|   |--CHAR -> r [0:6]
-|   |--CHAR -> s [0:7]
-|   `--CHAR -> t [0:8]
 |--NEWLINE -> \r\n [0:9]
 |--HTML_ELEMENT -> <p> [1:0]
 |   `--P_TAG_OPEN -> <p> [1:0]
@@ -462,13 +427,6 @@ JAVADOC -> <p> First\r\n<p> Second<EOF> [0:0]
 |       |--P_HTML_TAG_NAME -> p [1:1]
 |       `--CLOSE -> > [1:2]
 |--TEXT ->  Second [1:3]
-|   |--WS ->   [1:3]
-|   |--CHAR -> S [1:4]
-|   |--CHAR -> e [1:5]
-|   |--CHAR -> c [1:6]
-|   |--CHAR -> o [1:7]
-|   |--CHAR -> n [1:8]
-|   `--CHAR -> d [1:9]
 `--EOF -> <EOF> [1:10]
           ]]></source>
         </td>
@@ -482,13 +440,6 @@ JAVADOC -> <p> First </p>\r\n<p> Second </p><EOF> [0:0]
 |       |   |--P_HTML_TAG_NAME -> p [0:1]
 |       |   `--CLOSE -> > [0:2]
 |       |--TEXT ->  First  [0:3]
-|       |   |--WS ->   [0:3]
-|       |   |--CHAR -> F [0:4]
-|       |   |--CHAR -> i [0:5]
-|       |   |--CHAR -> r [0:6]
-|       |   |--CHAR -> s [0:7]
-|       |   |--CHAR -> t [0:8]
-|       |   `--WS ->   [0:9]
 |       `--P_TAG_CLOSE -> </p> [0:10]
 |           |--OPEN -> < [0:10]
 |           |--SLASH -> / [0:11]
@@ -502,14 +453,6 @@ JAVADOC -> <p> First </p>\r\n<p> Second </p><EOF> [0:0]
 |       |   |--P_HTML_TAG_NAME -> p [1:1]
 |       |   `--CLOSE -> > [1:2]
 |       |--TEXT ->  Second  [1:3]
-|       |   |--WS ->   [1:3]
-|       |   |--CHAR -> S [1:4]
-|       |   |--CHAR -> e [1:5]
-|       |   |--CHAR -> c [1:6]
-|       |   |--CHAR -> o [1:7]
-|       |   |--CHAR -> n [1:8]
-|       |   |--CHAR -> d [1:9]
-|       |   `--WS ->   [1:10]
 |       `--P_TAG_CLOSE -> </p> [1:11]
 |           |--OPEN -> < [1:11]
 |           |--SLASH -> / [1:12]
@@ -528,11 +471,68 @@ JAVADOC -> <p> First </p>\r\n<p> Second </p><EOF> [0:0]
     </section>
 
     <section name="Checkstyle SDK GUI">
-      Not implemented yet. See <a href="https://github.com/checkstyle/checkstyle/issues/408">Github Issue #408</a>.
+      <p>
+       Checkstyle GUI allows to showing javadoc tree in java files. To run in use
+      </p>
+      <source>
+java -cp checkstyle-${projectVersion}-all.jar com.puppycrawl.tools.checkstyle.gui.Main
+      </source>
+      <p>
+       and choose "JAVA WITH JAVADOC MODE" in dropdown list in bottom of frame.
+      </p>
+      <p>
+       Now you can see parsed javadoc tree as child of comment block.
+      </p>
+      <p>
+        <img alt="screenshot" src="images/gui_javadoc_screenshot.png"/>
+      </p>
+      <p>
+       Notice that only files with ".java" extension can be opened.
+      </p>
+      <p>
+       For detail reference you can see
+       <a href="http://checkstyle.sourceforge.net/writingchecks.html#The_Checkstyle_SDK_Gui">Checkstyle GUI documentation</a>.
+      </p>
     </section>
 
     <section name="Customize token types in Javadoc Checks">
-      Not implemented yet. See <a href="https://github.com/checkstyle/checkstyle/issues/2427">Github Issue #2427</a>.
+      <p>
+        There are four methods in AbstractJavadocCheck class to control the processed
+        <a href="apidocs/index.html">JavadocTokenTypes</a> -
+        one setter
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/checks/javadoc/AbstractJavadocCheck.html#setJavadocTokens-java.lang.String...-">
+        setTokens()</a>, which is used to define a custom set (which is different
+        from the default one) of the processed JavadocTokenTypes via config file and
+        three getters, which have to be overridden:
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/checks/javadoc/AbstractJavadocCheck.html#getDefaultJavadocTokens--">
+        getDefaultJavadocTokens()</a>,
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/checks/javadoc/AbstractJavadocCheck.html#getAcceptableJavadocTokens--">
+        getAcceptableJavadocTokens()</a>,
+        <a href="apidocs/com/puppycrawl/tools/checkstyle/checks/javadoc/AbstractJavadocCheck.html#getRequiredJavadocTokens--">
+        getRequiredJavadocTokens()</a>.
+      </p>
+
+      <ul>
+
+        <li>
+          getDefaultJavadocTokens() - returns a set of JavadocTokenTypes which are processed in
+          <a href="apidocs/com/puppycrawl/tools/checkstyle/checks/javadoc/AbstractJavadocCheck.html#visitToken-com.puppycrawl.tools.checkstyle.api.DetailAST-">
+          visitToken()</a> method by default.
+        </li>
+
+        <li>
+          getRequiredJavadocTokens() - returns a set of JavadocTokenTypes which Check must be subscribed to for
+          a valid execution. If the user wants to specify a custom set of JavadocTokenTypes then
+          this set must contain all the JavadocTokenTypes from RequiredJavadocTokens.
+        </li>
+
+        <li>
+          getAcceptableJavadocTokens() - returns a set, which contains all the JavadocTokenTypes that
+          can be processed by the check. Both DefaultJavadocTokens and RequiredJavadocTokens and any custom
+          set of JavadocTokenTypes are subsets of AcceptableJavadocTokens.
+        </li>
+
+      </ul>
     </section>
 
     <section name="Integrating new Javadoc Check">
@@ -542,7 +542,7 @@ JAVADOC -> <p> First </p>\r\n<p> Second </p><EOF> [0:0]
     <section name="Declare check's external resource locations">
         See <a href="writingchecks.html#Declare_checks_external_resource_locations">Declare check's external resource locations</a>.
     </section>
-    
+
     <section name="Known API issues">
         <a href="https://github.com/checkstyle/checkstyle/issues/3507">Javadoc: Column number of DetailNode is always 0 for first line #3507</a>.
     </section>

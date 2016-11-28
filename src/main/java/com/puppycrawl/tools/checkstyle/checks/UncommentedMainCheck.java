@@ -26,7 +26,6 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * Detects uncommented main methods. Basically detects
@@ -49,11 +48,8 @@ public class UncommentedMainCheck
      */
     public static final String MSG_KEY = "uncommented.main";
 
-    /** The pattern to exclude classes from the check. */
-    private String excludedClasses = "^$";
     /** Compiled regexp to exclude classes from check. */
-    private Pattern excludedClassesPattern =
-            CommonUtils.createPattern(excludedClasses);
+    private Pattern excludedClasses = Pattern.compile("^$");
     /** Current class name. */
     private String currentClass;
     /** Current package. */
@@ -63,11 +59,10 @@ public class UncommentedMainCheck
 
     /**
      * Set the excluded classes pattern.
-     * @param excludedClasses a {@code String} value
+     * @param excludedClasses a pattern
      */
-    public void setExcludedClasses(String excludedClasses) {
+    public void setExcludedClasses(Pattern excludedClasses) {
         this.excludedClasses = excludedClasses;
-        excludedClassesPattern = CommonUtils.createPattern(excludedClasses);
     }
 
     @Override
@@ -169,7 +164,7 @@ public class UncommentedMainCheck
      * @return true if check passed, false otherwise
      */
     private boolean checkClassName() {
-        return !excludedClassesPattern.matcher(currentClass).find();
+        return !excludedClasses.matcher(currentClass).find();
     }
 
     /**

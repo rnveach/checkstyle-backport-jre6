@@ -186,8 +186,8 @@
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^Abstract.+$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^Abstract.+$"</code></td>
           </tr>
           <tr>
             <td>ignoreModifier</td>
@@ -291,10 +291,10 @@
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td>
-              <a href="property_types.html#regexp">regular expression</a>
+              <a href="property_types.html#regexp">Regular Expression</a>
             </td>
             <td>
-              <code>^(e|t|ex|[a-z][a-z][a-zA-Z]+)$</code>
+              <code>"^(e|t|ex|[a-z][a-z][a-zA-Z]+)$"</code>
             </td>
           </tr>
         </table>
@@ -373,8 +373,8 @@
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[A-Z]$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[A-Z]$"</code></td>
           </tr>
         </table>
       </subsection>
@@ -442,8 +442,8 @@
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"</code></td>
           </tr>
           <tr>
             <td>applyToPublic</td>
@@ -543,8 +543,8 @@
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[A-Z]$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[A-Z]$"</code></td>
           </tr>
         </table>
       </subsection>
@@ -608,8 +608,8 @@
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[a-z][a-zA-Z0-9]*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
           </tr>
           <tr>
           <td>tokens</td>
@@ -690,8 +690,8 @@
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[a-z][a-zA-Z0-9]*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
           </tr>
           <tr>
             <td>allowOneCharVarInForLoop</td>
@@ -785,8 +785,8 @@ for (int i = 1; i &lt; 10; i++) {}
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[a-z][a-zA-Z0-9]*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
           </tr>
           <tr>
             <td>applyToPublic</td>
@@ -890,8 +890,8 @@ for (int i = 1; i &lt; 10; i++) {}
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[a-z][a-zA-Z0-9]*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
           </tr>
           <tr>
             <td>allowClassName</td>
@@ -1010,8 +1010,8 @@ class MyClass {
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[A-Z]$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[A-Z]$"</code></td>
           </tr>
         </table>
       </subsection>
@@ -1078,8 +1078,8 @@ class MyClass {
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$"</code></td>
           </tr>
         </table>
       </subsection>
@@ -1145,7 +1145,8 @@ class MyClass {
       <subsection name="Description">
         <p>
           Checks that method and <code>catch</code> parameter names conform to a format specified
-          by the format property.
+          by the format property. By using <code>scope</code> and <code>excludeScope</code> properties
+          it is possible to specify different formats for methods at different visibility levels.
         </p>
       </subsection>
 
@@ -1160,8 +1161,8 @@ class MyClass {
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[a-z][a-zA-Z0-9]*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
           </tr>
           <tr>
             <td>ignoreOverridden</td>
@@ -1178,6 +1179,18 @@ public boolean equals(Object o) {
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td>scope</td>
+            <td>Visibility scope of methods where parameters are checked.</td>
+            <td><a href="property_types.html#scope">scope</a></td>
+            <td><code>anoninner</code></td>
+          </tr>
+          <tr>
+            <td>excludeScope</td>
+            <td>Visibility scope of methods where parameters are not checked.</td>
+            <td><a href="property_types.html#scope">scope</a></td>
+            <td><code>null</code></td>
           </tr>
         </table>
       </subsection>
@@ -1205,6 +1218,25 @@ public boolean equals(Object o) {
         <source>
 &lt;module name="ParameterName"&gt;
     &lt;property name="format" value="^[a-z][a-zA-Z0-9]+$"/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          The following configuration checks that the parameters always start with two
+          lowercase characters and, in addition, that public method parameters cannot be one character
+          long:
+        </p>
+        <source>
+&lt;module name=&quot;ParameterName&quot;&gt;
+    &lt;property name=&quot;format&quot; value=&quot;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&quot;/&gt;
+    &lt;property name=&quot;excludeScope&quot; value=&quot;public&quot;/&gt;
+    &lt;message key=&quot;name.invalidPattern&quot;
+        value=&quot;Parameter name ''{0}'' must match pattern ''{1}''.&quot;/&gt;
+&lt;/module&gt;
+&lt;module name=&quot;ParameterName&quot;&gt;
+&lt;property name=&quot;format&quot; value=&quot;^[a-z][a-z0-9][a-zA-Z0-9]*$&quot;/&gt;
+    &lt;property name=&quot;scope&quot; value=&quot;public&quot;/&gt;
+    &lt;message key=&quot;name.invalidPattern&quot;
+        value=&quot;Parameter name ''{0}'' must match pattern ''{1}''&quot;/&gt;
 &lt;/module&gt;
         </source>
       </subsection>
@@ -1266,8 +1298,8 @@ public boolean equals(Object o) {
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[a-z][a-zA-Z0-9]*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
           </tr>
           <tr>
             <td>applyToPublic</td>
@@ -1360,8 +1392,8 @@ public boolean equals(Object o) {
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
-            <td><a href="property_types.html#regexp">regular expression</a></td>
-            <td><code>^[A-Z][a-zA-Z0-9]*$</code></td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>"^[A-Z][a-zA-Z0-9]*$"</code></td>
           </tr>
           <tr>
             <td>applyToPublic</td>
