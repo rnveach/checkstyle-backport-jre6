@@ -56,7 +56,7 @@ public class SeverityLevelTest {
         }
         catch (IllegalArgumentException ex) {
             assertEquals(
-                    "No enum constant com.puppycrawl.tools.checkstyle.api.SeverityLevel.UNKNOWN",
+                    "No enum const class com.puppycrawl.tools.checkstyle.api.SeverityLevel.UNKNOWN",
                     ex.getMessage());
         }
     }

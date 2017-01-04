@@ -28,7 +28,6 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -58,6 +57,10 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
     protected String getUriString(String filename) {
         return super.getUriString("checks" + File.separator
                 + "imports" + File.separator + filename);
+    }
+
+    private static String getResourcePath(String filename) {
+        return "/com/puppycrawl/tools/checkstyle/checks/imports/" + filename;
     }
 
     @Test
@@ -97,15 +100,14 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
     public void testWrong() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
         checkConfig.addAttribute("file", getPath("import-control_wrong.xml"));
-        final String[] expected = {"1:47: " + getCheckMessage(MSG_UNKNOWN_PKG)};
-
+        final String[] expected = {"1:1: " + getCheckMessage(MSG_UNKNOWN_PKG)};
         verify(checkConfig, getPath("InputImportControl.java"), expected);
     }
 
     @Test
     public void testMissing() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
-        final String[] expected = {"1:47: " + getCheckMessage(MSG_MISSING_FILE)};
+        final String[] expected = {"1:1: " + getCheckMessage(MSG_MISSING_FILE)};
         verify(checkConfig, getPath("InputImportControl.java"), expected);
     }
 
@@ -113,7 +115,7 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
     public void testEmpty() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
         checkConfig.addAttribute("file", "   ");
-        final String[] expected = {"1:47: " + getCheckMessage(MSG_MISSING_FILE)};
+        final String[] expected = {"1:1: " + getCheckMessage(MSG_MISSING_FILE)};
         verify(checkConfig, getPath("InputImportControl.java"), expected);
     }
 
@@ -121,7 +123,7 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
     public void testNull() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
         checkConfig.addAttribute("file", null);
-        final String[] expected = {"1:47: " + getCheckMessage(MSG_MISSING_FILE)};
+        final String[] expected = {"1:1: " + getCheckMessage(MSG_MISSING_FILE)};
         verify(checkConfig, getPath("InputImportControl.java"), expected);
     }
 
@@ -135,8 +137,8 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
             fail("Test should fail if exception was not thrown");
         }
         catch (CheckstyleException ex) {
-            final String message = getInvocationTargetExceptionMessage(ex);
-            assertTrue(message.startsWith("Unable to load "));
+            final String message = getCheckstyleExceptionMessage(ex);
+            assertTrue(message.startsWith("Unable to find: "));
         }
     }
 
@@ -150,7 +152,7 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
             fail("Test should fail if exception was not thrown");
         }
         catch (CheckstyleException ex) {
-            final String message = getInvocationTargetExceptionMessage(ex);
+            final String message = getCheckstyleExceptionMessage(ex);
             assertTrue(message.startsWith("Unable to load "));
         }
     }
@@ -228,7 +230,7 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
     public void testUrlBlank() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
         checkConfig.addAttribute("url", "");
-        final String[] expected = {"1:47: " + getCheckMessage(MSG_MISSING_FILE)};
+        final String[] expected = {"1:1: " + getCheckMessage(MSG_MISSING_FILE)};
 
         verify(checkConfig, getPath("InputImportControl.java"), expected);
     }
@@ -237,7 +239,7 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
     public void testUrlNull() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
         checkConfig.addAttribute("url", null);
-        final String[] expected = {"1:47: " + getCheckMessage(MSG_MISSING_FILE)};
+        final String[] expected = {"1:1: " + getCheckMessage(MSG_MISSING_FILE)};
 
         verify(checkConfig, getPath("InputImportControl.java"), expected);
     }
@@ -253,7 +255,7 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
             fail("Test should fail if exception was not thrown");
         }
         catch (final CheckstyleException ex) {
-            final String message = getInvocationTargetExceptionMessage(ex);
+            final String message = getCheckstyleExceptionMessage(ex);
             assertTrue(message.startsWith("Unable to load "));
         }
     }
@@ -269,8 +271,58 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
             fail("Test should fail if exception was not thrown");
         }
         catch (final CheckstyleException ex) {
-            final String message = getInvocationTargetExceptionMessage(ex);
-            assertTrue(message.startsWith("Syntax error in url "));
+            final String message = getCheckstyleExceptionMessage(ex);
+            assertTrue(message.startsWith("Unable to find: "));
+        }
+    }
+
+    @Test
+    public void testResource() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
+        checkConfig.addAttribute("file", getResourcePath("import-control_one.xml"));
+        final String[] expected = {"5:1: " + getCheckMessage(MSG_DISALLOWED, "java.io.File")};
+
+        verify(checkConfig, getPath("InputImportControl.java"), expected);
+    }
+
+    @Test
+    public void testResourceUnableToLoad() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
+        checkConfig.addAttribute("file", getResourcePath("import-control_unknown.xml"));
+
+        try {
+            final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+            verify(checkConfig, getPath("InputImportControl.java"), expected);
+            fail("Test should fail if exception was not thrown");
+        }
+        catch (final CheckstyleException ex) {
+            final String message = getCheckstyleExceptionMessage(ex);
+            assertTrue(message.startsWith("Unable to find: "));
+        }
+    }
+
+    @Test
+    public void testUrlInFileProperty() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
+        checkConfig.addAttribute("file", getUriString("import-control_one.xml"));
+        final String[] expected = {"5:1: " + getCheckMessage(MSG_DISALLOWED, "java.io.File")};
+
+        verify(checkConfig, getPath("InputImportControl.java"), expected);
+    }
+
+    @Test
+    public void testUrlInFilePropertyUnableToLoad() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
+        checkConfig.addAttribute("file", "https://UnableToLoadThisURL");
+
+        try {
+            final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+            verify(checkConfig, getPath("InputImportControl.java"), expected);
+            fail("Test should fail if exception was not thrown");
+        }
+        catch (final CheckstyleException ex) {
+            final String message = getCheckstyleExceptionMessage(ex);
+            assertTrue(message.startsWith("Unable to load "));
         }
     }
 
@@ -329,8 +381,7 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
      * @param exception Exception
      * @return String message of original exception
      */
-    private static String getInvocationTargetExceptionMessage(CheckstyleException exception) {
-        return ((InvocationTargetException) exception.getCause().getCause())
-            .getTargetException().getMessage();
+    private static String getCheckstyleExceptionMessage(CheckstyleException exception) {
+        return exception.getCause().getCause().getCause().getMessage();
     }
 }

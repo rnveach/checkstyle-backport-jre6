@@ -57,7 +57,7 @@ public class ScopeTest {
             fail("exception expected");
         }
         catch (IllegalArgumentException ex) {
-            assertEquals("No enum constant com.puppycrawl.tools.checkstyle.api.Scope.UNKNOWN",
+            assertEquals("No enum const class com.puppycrawl.tools.checkstyle.api.Scope.UNKNOWN",
                     ex.getMessage());
         }
     }

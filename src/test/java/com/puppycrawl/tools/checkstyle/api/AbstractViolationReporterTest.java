@@ -112,6 +112,7 @@ public class AbstractViolationReporterTest extends BaseCheckTestSupport {
 
         try {
             emptyCheck.log(0, "msgKey", "TestParam");
+            emptyCheck.log(0, "msgKey", "TestParam");
             fail("exception expected");
         }
         catch (IllegalArgumentException ex) {

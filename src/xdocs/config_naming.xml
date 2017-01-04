@@ -561,6 +561,10 @@
       <subsection name="Example of Usage">
         <ul>
           <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+InterfaceTypeParameterName">
+            Google Style</a>
+          </li>
+          <li>
             <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+InterfaceTypeParameterName">
             Checkstyle Style</a>
           </li>
@@ -1183,13 +1187,13 @@ public boolean equals(Object o) {
           <tr>
             <td>scope</td>
             <td>Visibility scope of methods where parameters are checked.</td>
-            <td><a href="property_types.html#scope">scope</a></td>
+            <td><a href="property_types.html#scope">Scope</a></td>
             <td><code>anoninner</code></td>
           </tr>
           <tr>
             <td>excludeScope</td>
             <td>Visibility scope of methods where parameters are not checked.</td>
-            <td><a href="property_types.html#scope">scope</a></td>
+            <td><a href="property_types.html#scope">Scope</a></td>
             <td><code>null</code></td>
           </tr>
         </table>

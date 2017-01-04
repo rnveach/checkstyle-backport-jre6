@@ -24,7 +24,6 @@ import java.util.Map;
 
 import antlr.ASTFactory;
 import antlr.collections.AST;
-
 import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
@@ -243,7 +242,7 @@ public class ParseTreeTablePModel {
      * @return true if editable
      */
     public boolean isCellEditable(int column) {
-        return getColumnClass(column).equals(ParseTreeTablePModel.class);
+        return false;
     }
 
     /**

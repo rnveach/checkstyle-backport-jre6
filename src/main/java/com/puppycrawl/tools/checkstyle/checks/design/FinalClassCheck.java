@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.base.Joiner;
-
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;

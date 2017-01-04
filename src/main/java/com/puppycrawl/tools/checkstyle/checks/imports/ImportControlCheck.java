@@ -19,7 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.checks.imports;
 
-import java.io.File;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
@@ -32,7 +31,6 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * Check that controls what packages can be imported in each package. Useful
@@ -78,13 +76,13 @@ public class ImportControlCheck extends AbstractCheck implements ExternalResourc
     /** The root package controller. */
     private ImportControl root;
     /** The package doing the import. */
-    private String inPkg;
+    private String packageName;
 
     /**
      * The package controller for the current file. Used for performance
      * optimisation.
      */
-    private ImportControl currentLeaf;
+    private ImportControl currentImportControl;
 
     @Override
     public int[] getDefaultTokens() {
@@ -104,39 +102,28 @@ public class ImportControlCheck extends AbstractCheck implements ExternalResourc
 
     @Override
     public void beginTree(final DetailAST rootAST) {
-        currentLeaf = null;
+        currentImportControl = null;
     }
 
     @Override
     public void visitToken(final DetailAST ast) {
         if (ast.getType() == TokenTypes.PACKAGE_DEF) {
-            final DetailAST nameAST = ast.getLastChild().getPreviousSibling();
-            final FullIdent full = FullIdent.createFullIdent(nameAST);
             if (root == null) {
-                log(nameAST, MSG_MISSING_FILE);
+                log(ast, MSG_MISSING_FILE);
             }
             else {
-                inPkg = full.getText();
-                currentLeaf = root.locateFinest(inPkg);
-                if (currentLeaf == null) {
-                    log(nameAST, MSG_UNKNOWN_PKG);
+                packageName = getPackageText(ast);
+                currentImportControl = root.locateFinest(packageName);
+                if (currentImportControl == null) {
+                    log(ast, MSG_UNKNOWN_PKG);
                 }
             }
         }
-        else if (currentLeaf != null) {
-            final FullIdent imp;
-            if (ast.getType() == TokenTypes.IMPORT) {
-                imp = FullIdent.createFullIdentBelow(ast);
-            }
-            else {
-                // know it is a static import
-                imp = FullIdent.createFullIdent(ast
-                        .getFirstChild().getNextSibling());
-            }
-            final AccessResult access = currentLeaf.checkAccess(imp.getText(),
-                    inPkg);
+        else if (currentImportControl != null) {
+            final String importText = getImportText(ast);
+            final AccessResult access = currentImportControl.checkAccess(packageName, importText);
             if (access != AccessResult.ALLOWED) {
-                log(ast, MSG_DISALLOWED, imp.getText());
+                log(ast, MSG_DISALLOWED, importText);
             }
         }
     }
@@ -147,20 +134,49 @@ public class ImportControlCheck extends AbstractCheck implements ExternalResourc
     }
 
     /**
+     * Returns package text.
+     * @param ast PACKAGE_DEF ast node
+     * @return String that represents full package name
+     */
+    private static String getPackageText(DetailAST ast) {
+        final DetailAST nameAST = ast.getLastChild().getPreviousSibling();
+        return FullIdent.createFullIdent(nameAST).getText();
+    }
+
+    /**
+     * Returns import text.
+     * @param ast ast node that represents import
+     * @return String that represents importing class
+     */
+    private static String getImportText(DetailAST ast) {
+        final FullIdent imp;
+        if (ast.getType() == TokenTypes.IMPORT) {
+            imp = FullIdent.createFullIdentBelow(ast);
+        }
+        else {
+            // know it is a static import
+            imp = FullIdent.createFullIdent(ast
+                    .getFirstChild().getNextSibling());
+        }
+        return imp.getText();
+    }
+
+    /**
      * Set the name for the file containing the import control
-     * configuration. It will cause the file to be loaded.
-     * @param name the name of the file to load.
+     * configuration. It can also be a URL or resource in the classpath.
+     * It will cause the file to be loaded.
+     * @param uri the uri of the file to load.
      * @throws ConversionException on error loading the file.
      */
-    public void setFile(final String name) {
+    public void setFile(URI uri) {
         // Handle empty param
-        if (!CommonUtils.isBlank(name)) {
+        if (uri != null) {
             try {
-                root = ImportControlLoader.load(new File(name).toURI());
-                fileLocation = name;
+                root = ImportControlLoader.load(uri);
+                fileLocation = uri.toString();
             }
             catch (final CheckstyleException ex) {
-                throw new ConversionException(UNABLE_TO_LOAD + name, ex);
+                throw new ConversionException(UNABLE_TO_LOAD + uri, ex);
             }
         }
     }
@@ -168,26 +184,12 @@ public class ImportControlCheck extends AbstractCheck implements ExternalResourc
     /**
      * Set the parameter for the url containing the import control
      * configuration. It will cause the url to be loaded.
-     * @param url the url of the file to load.
+     * @param uri the uri of the file to load.
      * @throws ConversionException on error loading the file.
+     * @deprecated use {@link #setFile(URI uri)} to load URLs instead
      */
-    public void setUrl(final String url) {
-        // Handle empty param
-        if (!CommonUtils.isBlank(url)) {
-            final URI uri;
-            try {
-                uri = URI.create(url);
-            }
-            catch (final IllegalArgumentException ex) {
-                throw new ConversionException("Syntax error in url " + url, ex);
-            }
-            try {
-                root = ImportControlLoader.load(uri);
-                fileLocation = url;
-            }
-            catch (final CheckstyleException ex) {
-                throw new ConversionException(UNABLE_TO_LOAD + url, ex);
-            }
-        }
+    @Deprecated
+    public void setUrl(URI uri) {
+        setFile(uri);
     }
 }

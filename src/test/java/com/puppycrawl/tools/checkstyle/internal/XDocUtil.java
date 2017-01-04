@@ -39,7 +39,7 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public final class XDocUtil {
-    private static final String DIRECTORY_PATH = "src/xdocs";
+    public static final String DIRECTORY_PATH = "src/xdocs";
 
     private XDocUtil() {
     }

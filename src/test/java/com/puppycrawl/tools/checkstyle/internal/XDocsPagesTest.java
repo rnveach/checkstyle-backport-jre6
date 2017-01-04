@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,6 +59,8 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.api.Scope;
+import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.AbstractJavadocCheck;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
@@ -71,7 +74,7 @@ public class XDocsPagesTest {
     private static final String LINK_TEMPLATE =
             "(?s).*<a href=\"config_\\w+\\.html#%1$s\">%1$s</a>.*";
 
-    private static final List<String> CHECKS_ON_PAGE_IGNORE_LIST = Arrays.asList(
+    private static final List<String> MODULES_ON_PAGE_IGNORE_LIST = Arrays.asList(
             "AbstractAccessControlNameCheck.java",
             "AbstractCheck.java",
             "AbstractClassCouplingCheck.java",
@@ -120,14 +123,22 @@ public class XDocsPagesTest {
     private static final Set<String> FILESET_PROPERTIES = getProperties(AbstractFileSetCheck.class);
 
     private static final List<String> UNDOCUMENTED_PROPERTIES = Arrays.asList(
+            "Checker.classLoader",
+            "Checker.classloader",
+            "Checker.moduleClassLoader",
+            "Checker.moduleFactory",
+            "TreeWalker.classLoader",
+            "TreeWalker.moduleFactory",
+            "TreeWalker.cacheFile",
+            "TreeWalker.upChild",
             "SuppressWithNearbyCommentFilter.fileContents",
             "SuppressionCommentFilter.fileContents"
     );
 
-    private static final Set<String> SUN_CHECKS = Collections.unmodifiableSet(
-        new HashSet<String>(CheckUtil.getConfigSunStyleChecks()));
-    private static final Set<String> GOOGLE_CHECKS = Collections.unmodifiableSet(
-        new HashSet<String>(CheckUtil.getConfigGoogleStyleChecks()));
+    private static final Set<String> SUN_MODULES = Collections.unmodifiableSet(
+        new HashSet<String>(CheckUtil.getConfigSunStyleModules()));
+    private static final Set<String> GOOGLE_MODULES = Collections.unmodifiableSet(
+        new HashSet<String>(CheckUtil.getConfigGoogleStyleModules()));
 
     @Test
     public void testAllChecksPresentOnAvailableChecksPage() throws IOException {
@@ -135,7 +146,7 @@ public class XDocsPagesTest {
         for (File file : Files.fileTreeTraverser().preOrderTraversal(JAVA_SOURCES_DIRECTORY.getFile())) {
             final String fileName = file.getName();
             if (fileName.matches(CHECK_FILE_NAME)
-                    && !CHECKS_ON_PAGE_IGNORE_LIST.contains(fileName)) {
+                    && !MODULES_ON_PAGE_IGNORE_LIST.contains(fileName)) {
                 final String checkName = fileName.replace(CHECK_SUFFIX, "");
                 if (!isPresent(availableChecks, checkName)) {
                     Assert.fail(checkName + " is not correctly listed on Available Checks page"
@@ -300,6 +311,30 @@ public class XDocsPagesTest {
         }
     }
 
+    @Test
+    public void testAllCheckSectionsEx() throws Exception {
+        final ModuleFactory moduleFactory = TestUtils.getPackageObjectFactory();
+
+        final Path path = Paths.get(XDocUtil.DIRECTORY_PATH + "/config.xml");
+        final String fileName = path.getFileName().toString();
+
+        final String input = new String(Files7.readAllBytes(path), UTF_8);
+        final Document document = XmlUtil.getRawXml(fileName, input, input);
+        final NodeList sources = document.getElementsByTagName("section");
+
+        for (int position = 0; position < sources.getLength(); position++) {
+            final Node section = sources.item(position);
+            final String sectionName = section.getAttributes().getNamedItem("name")
+                    .getNodeValue();
+
+            if (!"Checker".equals(sectionName) && !"TreeWalker".equals(sectionName)) {
+                continue;
+            }
+
+            validateCheckSection(moduleFactory, fileName, sectionName, section);
+        }
+    }
+
     private static void validateCheckSection(ModuleFactory moduleFactory, String fileName,
             String sectionName, Node section) throws Exception {
         final Object instance;
@@ -427,7 +462,7 @@ public class XDocsPagesTest {
                 properties.removeAll(CHECK_PROPERTIES);
             }
         }
-        else if (AbstractFileSetCheck.class.isAssignableFrom(clss)) {
+        if (AbstractFileSetCheck.class.isAssignableFrom(clss)) {
             properties.removeAll(FILESET_PROPERTIES);
 
             // override
@@ -525,8 +560,8 @@ public class XDocsPagesTest {
                         propertyName);
                 final Class<?> clss = descriptor.getPropertyType();
                 final String expectedTypeName =
-                        getCheckPropertyExpectedTypeName(clss, instance, propertyName);
-                final String expectedValue = getCheckPropertyExpectedValue(clss, instance,
+                        getModulePropertyExpectedTypeName(clss, instance, propertyName);
+                final String expectedValue = getModulePropertyExpectedValue(clss, instance,
                         propertyName);
 
                 if (expectedTypeName != null) {
@@ -580,7 +615,8 @@ public class XDocsPagesTest {
                         .replaceAll("\\s+", " ").trim());
     }
 
-    private static String getCheckPropertyExpectedTypeName(Class<?> clss, Object instance,
+    /** @noinspection IfStatementWithTooManyBranches */
+    private static String getModulePropertyExpectedTypeName(Class<?> clss, Object instance,
             String propertyName) {
         final String instanceName = instance.getClass().getSimpleName();
         String result = null;
@@ -608,8 +644,17 @@ public class XDocsPagesTest {
                 result = "String Set";
             }
         }
+        else if (clss == URI.class) {
+            result = "URI";
+        }
         else if (clss == Pattern.class) {
             result = "Regular Expression";
+        }
+        else if (clss == SeverityLevel.class) {
+            result = "Severity";
+        }
+        else if (clss == Scope.class) {
+            result = "Scope";
         }
         else if (clss != String.class) {
             Assert.fail("Unknown property type: " + clss.getSimpleName());
@@ -623,7 +668,7 @@ public class XDocsPagesTest {
         return result;
     }
 
-    private static String getCheckPropertyExpectedValue(Class<?> clss, Object instance,
+    private static String getModulePropertyExpectedValue(Class<?> clss, Object instance,
             String propertyName) throws Exception {
         final Field field = getField(instance.getClass(), propertyName);
         String result = null;
@@ -655,6 +700,11 @@ public class XDocsPagesTest {
                     result = "{}";
                 }
             }
+            else if (clss == URI.class) {
+                if (value != null) {
+                    result = '"' + value.toString() + '"';
+                }
+            }
             else if (clss == Pattern.class) {
                 if (value != null) {
                     result = '"' + value.toString().replace("\n", "\\n").replace("\t", "\\t")
@@ -664,6 +714,9 @@ public class XDocsPagesTest {
                 if ("\"$^\"".equals(result)) {
                     result += " (empty)";
                 }
+            }
+            else if (value != null && (clss == SeverityLevel.class || clss == Scope.class)) {
+                result = value.toString().toLowerCase(Locale.ENGLISH);
             }
 
             if (clss != String.class && clss != String[].class && result == null) {
@@ -755,17 +808,23 @@ public class XDocsPagesTest {
         Assert.assertTrue(fileName + " section '" + sectionName
                 + "' has unknown text in 'Example of Usage': " + text, text.isEmpty());
 
+        boolean hasCheckstyle = false;
+        boolean hasGoogle = false;
+        boolean hasSun = false;
+
         for (Node node : XmlUtil.findChildElementsByTag(subSection, "a")) {
             final String url = node.getAttributes().getNamedItem("href").getTextContent();
             final String linkText = node.getTextContent().trim();
             String expectedUrl = null;
 
             if ("Checkstyle Style".equals(linkText)) {
+                hasCheckstyle = true;
                 expectedUrl = "https://github.com/search?q="
                         + "path%3Aconfig+filename%3Acheckstyle_checks.xml+"
                         + "repo%3Acheckstyle%2Fcheckstyle+" + sectionName;
             }
             else if ("Google Style".equals(linkText)) {
+                hasGoogle = true;
                 expectedUrl = "https://github.com/search?q="
                         + "path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+"
                         + "repo%3Acheckstyle%2Fcheckstyle+"
@@ -773,9 +832,10 @@ public class XDocsPagesTest {
 
                 Assert.assertTrue(fileName + " section '" + sectionName
                         + "' should be in google_checks.xml or not reference 'Google Style'",
-                        GOOGLE_CHECKS.contains(sectionName));
+                        GOOGLE_MODULES.contains(sectionName));
             }
             else if ("Sun Style".equals(linkText)) {
+                hasSun = true;
                 expectedUrl = "https://github.com/search?q="
                         + "path%3Asrc%2Fmain%2Fresources+filename%3Asun_checks.xml+"
                         + "repo%3Acheckstyle%2Fcheckstyle+"
@@ -783,12 +843,21 @@ public class XDocsPagesTest {
 
                 Assert.assertTrue(fileName + " section '" + sectionName
                         + "' should be in sun_checks.xml or not reference 'Sun Style'",
-                        SUN_CHECKS.contains(sectionName));
+                        SUN_MODULES.contains(sectionName));
             }
 
             Assert.assertEquals(fileName + " section '" + sectionName
                     + "' should have matching url", expectedUrl, url);
         }
+
+        Assert.assertTrue(fileName + " section '" + sectionName
+                + "' should have a checkstyle section", hasCheckstyle);
+        Assert.assertTrue(fileName + " section '" + sectionName
+                + "' should have a google section since it is in it's config", hasGoogle
+                || !GOOGLE_MODULES.contains(sectionName));
+        Assert.assertTrue(fileName + " section '" + sectionName
+                + "' should have a sun section since it is in it's config",
+                hasSun || !SUN_MODULES.contains(sectionName));
     }
 
     private static void validatePackageSection(String fileName, String sectionName,
@@ -849,6 +918,15 @@ public class XDocsPagesTest {
             final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("tr");
+            Set<String> styleChecks = null;
+
+            if (path.toFile().getName().contains("google")) {
+                styleChecks = new HashSet<String>(GOOGLE_MODULES);
+            }
+            else if (path.toFile().getName().contains("sun")) {
+                styleChecks = new HashSet<String>();
+            }
+
             String lastRuleName = null;
 
             for (int position = 0; position < sources.getLength(); position++) {
@@ -875,11 +953,19 @@ public class XDocsPagesTest {
                             fileName, ruleName);
                 }
 
-                validateStyleChecks(XmlUtil.findChildElementsByTag(columns.get(2), "a"),
-                        XmlUtil.findChildElementsByTag(columns.get(3), "a"), fileName, ruleName);
+                validateStyleModules(XmlUtil.findChildElementsByTag(columns.get(2), "a"),
+                        XmlUtil.findChildElementsByTag(columns.get(3), "a"), styleChecks, fileName,
+                        ruleName);
 
                 lastRuleName = ruleName;
             }
+
+            // these modules aren't documented, but are added to the config
+            styleChecks.remove("TreeWalker");
+            styleChecks.remove("Checker");
+
+            Assert.assertTrue(fileName + " requires the following check(s) to appear: "
+                    + styleChecks, styleChecks.isEmpty());
         }
     }
 
@@ -916,22 +1002,24 @@ public class XDocsPagesTest {
         }
     }
 
-    private static void validateStyleChecks(Set<Node> checks, Set<Node> configs, String fileName,
-            String ruleName) {
+    private static void validateStyleModules(Set<Node> checks, Set<Node> configs,
+            Set<String> styleChecks, String fileName, String ruleName) {
         final Iterator<Node> itrChecks = checks.iterator();
         final Iterator<Node> itrConfigs = configs.iterator();
 
         while (itrChecks.hasNext()) {
-            final Node check = itrChecks.next();
-            final String checkName = check.getTextContent().trim();
+            final Node module = itrChecks.next();
+            final String moduleName = module.getTextContent().trim();
 
-            if (!check.getAttributes().getNamedItem("href").getTextContent()
+            if (!module.getAttributes().getNamedItem("href").getTextContent()
                     .startsWith("config_")) {
                 continue;
             }
 
-            Assert.assertTrue(fileName + " rule '" + ruleName + "' check '" + checkName
-                    + "' shouldn't end with 'Check'", !checkName.endsWith("Check"));
+            Assert.assertTrue(fileName + " rule '" + ruleName + "' module '" + moduleName
+                    + "' shouldn't end with 'Check'", !moduleName.endsWith("Check"));
+
+            styleChecks.remove(moduleName);
 
             for (String configName : new String[] {"config", "test"}) {
                 Node config = null;
@@ -940,11 +1028,11 @@ public class XDocsPagesTest {
                     config = itrConfigs.next();
                 }
                 catch (NoSuchElementException ignore) {
-                    Assert.fail(fileName + " rule '" + ruleName + "' check '" + checkName
+                    Assert.fail(fileName + " rule '" + ruleName + "' module '" + moduleName
                             + "' is missing the config link: " + configName);
                 }
 
-                Assert.assertEquals(fileName + " rule '" + ruleName + "' check '" + checkName
+                Assert.assertEquals(fileName + " rule '" + ruleName + "' module '" + moduleName
                         + "' has mismatched config/test links", configName, config.getTextContent()
                         .trim());
 
@@ -954,22 +1042,22 @@ public class XDocsPagesTest {
                 if ("config".equals(configName)) {
                     final String expectedUrl = "https://github.com/search?q="
                             + "path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+"
-                            + "repo%3Acheckstyle%2Fcheckstyle+" + checkName;
+                            + "repo%3Acheckstyle%2Fcheckstyle+" + moduleName;
 
-                    Assert.assertEquals(fileName + " rule '" + ruleName + "' check '" + checkName
+                    Assert.assertEquals(fileName + " rule '" + ruleName + "' module '" + moduleName
                             + "' should have matching " + configName + " url", expectedUrl,
                             configUrl);
                 }
                 else if ("test".equals(configName)) {
-                    Assert.assertTrue(fileName + " rule '" + ruleName + "' check '" + checkName
+                    Assert.assertTrue(fileName + " rule '" + ruleName + "' module '" + moduleName
                             + "' should have matching " + configName + " url",
                             configUrl.startsWith("https://github.com/checkstyle/checkstyle/"
                                     + "blob/master/src/it/java/com/google/checkstyle/test/"));
-                    Assert.assertTrue(fileName + " rule '" + ruleName + "' check '" + checkName
+                    Assert.assertTrue(fileName + " rule '" + ruleName + "' module '" + moduleName
                             + "' should have matching " + configName + " url",
-                            configUrl.endsWith("/" + checkName + "Test.java"));
+                            configUrl.endsWith("/" + moduleName + "Test.java"));
 
-                    Assert.assertTrue(fileName + " rule '" + ruleName + "' check '" + checkName
+                    Assert.assertTrue(fileName + " rule '" + ruleName + "' module '" + moduleName
                             + "' should have a test that exists", new File(configUrl.substring(53)
                             .replace('/', File.separatorChar)).exists());
                 }

@@ -147,12 +147,12 @@ public class AllChecksTest extends BaseCheckTestSupport {
     }
 
     @Test
-    public void testAllChecksAreReferencedInConfigFile() throws Exception {
-        final Set<String> checksReferencedInConfig = CheckUtil.getConfigCheckStyleChecks();
-        final Set<String> checksNames = getSimpleNames(CheckUtil.getCheckstyleChecks());
+    public void testAllModulesAreReferencedInConfigFile() throws Exception {
+        final Set<String> modulesReferencedInConfig = CheckUtil.getConfigCheckStyleModules();
+        final Set<String> moduleNames = getSimpleNames(CheckUtil.getCheckstyleModules());
 
-        for (String check : checksNames) {
-            if (!checksReferencedInConfig.contains(check)) {
+        for (String check : moduleNames) {
+            if (!modulesReferencedInConfig.contains(check)) {
                 final String errorMessage = String.format(Locale.ROOT,
                         "%s is not referenced in checkstyle_checks.xml", check);
                 Assert.fail(errorMessage);
@@ -166,6 +166,10 @@ public class AllChecksTest extends BaseCheckTestSupport {
         final Set<String> checkstyleModulesNames = getSimpleNames(CheckUtil.getCheckstyleModules());
         final Set<String> modulesNamesWhichHaveXdocs = XDocUtil.getModulesNamesWhichHaveXdoc();
 
+        // these are documented on non-'config_' pages
+        checkstyleModulesNames.remove("TreeWalker");
+        checkstyleModulesNames.remove("Checker");
+
         for (String moduleName : checkstyleModulesNames) {
             if (!modulesNamesWhichHaveXdocs.contains(moduleName)) {
                 final String missingModuleMessage = String.format(Locale.ROOT,
@@ -178,7 +182,7 @@ public class AllChecksTest extends BaseCheckTestSupport {
 
     @Test
     public void testAllCheckstyleModulesInCheckstyleConfig() throws Exception {
-        final Set<String> configChecks = CheckUtil.getConfigCheckStyleChecks();
+        final Set<String> configChecks = CheckUtil.getConfigCheckStyleModules();
 
         for (String moduleName : getSimpleNames(CheckUtil.getCheckstyleModules())) {
             Assert.assertTrue("checkstyle_checks.xml is missing module: " + moduleName,
@@ -187,11 +191,20 @@ public class AllChecksTest extends BaseCheckTestSupport {
     }
 
     @Test
-    public void testAllCheckstyleModulesHaveMessage() throws Exception {
+    public void testAllCheckstyleChecksHaveMessage() throws Exception {
         for (Class<?> module : CheckUtil.getCheckstyleChecks()) {
-            Assert.assertFalse(module.getSimpleName()
-                    + " should have atleast one 'MSG_*' field for error messages", CheckUtil
-                    .getCheckMessages(module).isEmpty());
+            final String name = module.getSimpleName();
+
+            if ("FileContentsHolder".equals(name)) {
+                Assert.assertTrue(name
+                        + " should not have any 'MSG_*' field for error messages", CheckUtil
+                        .getCheckMessages(module).isEmpty());
+            }
+            else {
+                Assert.assertFalse(name
+                        + " should have atleast one 'MSG_*' field for error messages", CheckUtil
+                        .getCheckMessages(module).isEmpty());
+            }
         }
     }
 
@@ -199,7 +212,7 @@ public class AllChecksTest extends BaseCheckTestSupport {
     public void testAllCheckstyleMessages() throws Exception {
         final Map<String, List<String>> usedMessages = new TreeMap<String, List<String>>();
 
-        // test validity of messages from checks
+        // test validity of messages from modules
         for (Class<?> module : CheckUtil.getCheckstyleModules()) {
             for (Field message : CheckUtil.getCheckMessages(module)) {
                 Assert.assertEquals(module.getSimpleName() + "." + message.getName()
@@ -290,14 +303,21 @@ public class AllChecksTest extends BaseCheckTestSupport {
     }
 
     /**
-     * Removes 'Check' suffix from each class name in the set.
+     * Retrieves a list of class names, removing 'Check' from the end if the class is
+     * a checkstyle check.
      * @param checks class instances.
      * @return a set of simple names.
      */
     private static Set<String> getSimpleNames(Set<Class<?>> checks) {
         final Set<String> checksNames = new HashSet<String>();
         for (Class<?> check : checks) {
-            checksNames.add(check.getSimpleName().replace("Check", ""));
+            String name = check.getSimpleName();
+
+            if (name.endsWith("Check")) {
+                name = name.substring(0, name.length() - 5);
+            }
+
+            checksNames.add(name);
         }
         return checksNames;
     }

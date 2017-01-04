@@ -15,7 +15,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>7.3</version>
+  <version>7.4</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -27,7 +27,7 @@
   <inceptionYear>2016</inceptionYear>
   <licenses>
     <license>
-      <name>GNU Lesser General Public License</name>
+      <name>LGPL-2.1</name>
       <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</url>
     </license>
   </licenses>
@@ -157,12 +157,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <projectVersion>${project.version}</projectVersion>
     <antlr4.version>4.5.3</antlr4.version>
-    <maven.site.plugin.version>3.5.1</maven.site.plugin.version>
+    <maven.site.plugin.version>3.6</maven.site.plugin.version>
     <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
     <maven.pmd.plugin.version>3.7</maven.pmd.plugin.version>
     <maven.jacoco.plugin.version>0.7.7.201606060606</maven.jacoco.plugin.version>
     <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
-    <maven.sevntu.checkstyle.plugin.version>1.22.0</maven.sevntu.checkstyle.plugin.version>
+    <maven.sevntu.checkstyle.plugin.version>1.23.0</maven.sevntu.checkstyle.plugin.version>
     <maven.versions.plugin.version>2.3</maven.versions.plugin.version>
     <java.version>1.6</java.version>
     <tools.jar.version>${java.version}.0</tools.jar.version>
@@ -425,7 +425,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>7.2</version>
+            <version>7.3</version>
           </dependency>
         </dependencies>
         <!-- Specifying configuration here will take effect on the execution of "mvn checkstyle:checkstyle",
@@ -481,7 +481,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.2</version>
       </plugin>
 
       <plugin>
@@ -1166,6 +1166,8 @@
             <excludedLink>https://www.codacy.com/</excludedLink>
             <!-- permanent SSLException -->
             <excludedLink>https://button.flattr.com/flattr-badge-large.png</excludedLink>
+            <!-- permanent SSLException -->
+            <excludedLink>https://git-scm.com</excludedLink>
           </excludedLinks>
         </configuration>
       </plugin>
@@ -1227,19 +1229,19 @@
 
     <profile>
       <!-- To be used during development. Run the command-->
-      <!-- mvn -Psite-only site -->
-      <id>site-only</id>
+      <!-- mvn -Pno-validations site -->
+      <id>no-validations</id>
       <properties>
         <skipTests>true</skipTests>
-        <linkcheck.skip>true</linkcheck.skip>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <checkstyle.ant.skip>true</checkstyle.ant.skip>
         <checkstyle.skip>true</checkstyle.skip>
         <pmd.skip>true</pmd.skip>
+        <findbugs.skip>true</findbugs.skip>
         <xml.skip>true</xml.skip>
         <forbiddenapis.skip>true</forbiddenapis.skip>
-        <findbugs.skip>true</findbugs.skip>
-        <checkstyle.ant.skip>true</checkstyle.ant.skip>
         <cobertura.skip>true</cobertura.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <linkcheck.skip>true</linkcheck.skip>
       </properties>
     </profile>
 
@@ -1249,15 +1251,16 @@
       <id>assembly</id>
       <properties>
         <skipTests>true</skipTests>
-        <linkcheck.skip>true</linkcheck.skip>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <checkstyle.ant.skip>true</checkstyle.ant.skip>
         <checkstyle.skip>true</checkstyle.skip>
         <pmd.skip>true</pmd.skip>
+        <findbugs.skip>true</findbugs.skip>
         <xml.skip>true</xml.skip>
         <forbiddenapis.skip>true</forbiddenapis.skip>
-        <findbugs.skip>true</findbugs.skip>
-        <checkstyle.ant.skip>true</checkstyle.ant.skip>
         <cobertura.skip>true</cobertura.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <linkcheck.skip>true</linkcheck.skip>
+        <!-- difference from "no-validations" -->
         <maven.site.skip>true</maven.site.skip>
       </properties>
 
@@ -1363,11 +1366,6 @@
                     <branchRate>79</branchRate>
                     <lineRate>97</lineRate>
                   </regex>
-                  <regex>
-                    <pattern>com.puppycrawl.tools.checkstyle.gui.ParseTreeTablePModel</pattern>
-                    <branchRate>41</branchRate>
-                    <lineRate>44</lineRate>
-                  </regex>
                 </regexes>
               </check>
               <instrumentation>
@@ -1404,6 +1402,31 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>pitest-checks-sizes</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>1.1.11</version>
+            <configuration>
+              <targetClasses>
+                <param>com.puppycrawl.tools.checkstyle.checks.sizes.*</param>
+              </targetClasses>
+              <targetTests>
+                <param>com.puppycrawl.tools.checkstyle.checks.sizes.*</param>
+              </targetTests>
+              <mutationThreshold>88</mutationThreshold>
+              <timeoutFactor>10</timeoutFactor>
+              <timeoutConstant>50000</timeoutConstant>
+              <threads>4</threads>
+            </configuration>
           </plugin>
         </plugins>
       </build>

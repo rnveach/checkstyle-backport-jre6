@@ -27,7 +27,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import antlr.NoViableAltException;
-
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;

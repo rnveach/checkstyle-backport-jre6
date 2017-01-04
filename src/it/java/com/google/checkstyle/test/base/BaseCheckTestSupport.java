@@ -82,7 +82,7 @@ public class BaseCheckTestSupport {
      * @param clazz check class.
      * @return {@link DefaultConfiguration} instance.
      */
-    protected static DefaultConfiguration createCheckConfig(Class<?> clazz) {
+    private static DefaultConfiguration createCheckConfig(Class<?> clazz) {
         return new DefaultConfiguration(clazz.getName());
     }
 
@@ -258,13 +258,42 @@ public class BaseCheckTestSupport {
      * @throws CheckstyleException if exception occurs during configuration loading.
      */
     protected static Configuration getCheckConfig(String checkName) throws CheckstyleException {
+        final Configuration result;
         final List<Configuration> configs = getCheckConfigs(checkName);
-        if (configs.isEmpty()) {
-            return null;
+        if (configs.size() == 1) {
+            result = configs.get(0);
         }
         else {
-            return configs.get(0);
+            throw new IllegalStateException("multiple instances of the same Check are detected");
         }
+        return result;
+    }
+
+    /**
+     * Returns {@link Configuration} instance for the given check name.
+     * This implementation uses {@link BaseCheckTestSupport#getConfiguration()} method inside.
+     * @param checkName check name.
+     * @return {@link Configuration} instance for the given check name.
+     * @throws CheckstyleException if exception occurs during configuration loading.
+     */
+    protected static Configuration getCheckConfig(String checkName, String checkId)
+            throws CheckstyleException {
+        Configuration result;
+        final List<Configuration> configs = getCheckConfigs(checkName);
+        if (configs.size() == 1) {
+            result = configs.get(0);
+        }
+        else {
+            result = null;
+
+            for (Configuration conf : configs) {
+                if (conf.getAttribute("id").equals(checkId)) {
+                    result = conf;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     /**

@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import antlr.CommonHiddenStreamToken;
-
 import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -172,6 +171,15 @@ public class NoWhitespaceAfterCheckTest
             "100:43: " + getCheckMessage(MSG_KEY, "]"),
         };
         verify(checkConfig, getPath("InputNoWhitespaceAfterArrayDeclarations2.java"), expected);
+    }
+
+    @Test
+    public void testSynchronized() throws Exception {
+        checkConfig.addAttribute("tokens", "LITERAL_SYNCHRONIZED");
+        final String[] expected = {
+            "14:21: " + getCheckMessage(MSG_KEY, "synchronized"),
+        };
+        verify(checkConfig, getPath("InputNoWhitespaceAfterSynchronized.java"), expected);
     }
 
     @Test

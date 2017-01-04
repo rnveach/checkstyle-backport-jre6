@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import antlr.collections.AST;
-
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;

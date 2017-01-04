@@ -575,7 +575,7 @@
                                 <br />
                                 We can detect URL with protocol type as http://, https:// etc.
                                 <br />
-                                <a href="http://googlewebtoolkit.blogspot.com/2008/07/getting-to-really-know-gwt-part-1-jsni.html">JSNI</a>
+                                <a href="https://webtoolkit.googleblog.com/2008/07/getting-to-really-know-gwt-part-1-jsni.html">JSNI</a>
                                 could not be detected right now, but might be possible after comments and
                                 javadoc support appear in Checkstyle
                             </td>
@@ -616,6 +616,12 @@
                                     src="images/ok_green.png"
                                     alt="" />
                                 <a href="config_whitespace.html#SeparatorWrap">SeparatorWrap</a>
+                                <br />
+                                <br />
+                                <img
+                                    src="images/ok_green.png"
+                                    alt="" />
+                                <a href="config_whitespace.html#MethodParamPad">MethodParamPad</a>
                             </td>
                             <td>
                                 <a
@@ -629,6 +635,12 @@
                                 <br />
                                 <a
                                     href="https://github.com/checkstyle/checkstyle/blob/master/src/it/java/com/google/checkstyle/test/chapter4formatting/rule451wheretobreak/SeparatorWrapTest.java">test</a>
+                                <br />
+                                <a
+                                    href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+MethodParamPad">config</a>
+                                <br />
+                                <a
+                                    href="https://github.com/checkstyle/checkstyle/blob/master/src/it/java/com/google/checkstyle/test/chapter4formatting/rule451wheretobreak/MethodParamPadTest.java">test</a>
                             </td>
                         </tr>
                         <tr>
@@ -701,6 +713,20 @@
                                     alt="" />
                                 <a
                                     href="config_whitespace.html#GenericWhitespace">GenericWhitespace</a>
+                                <br />
+                                <br />
+                                <img
+                                    src="images/ok_green.png"
+                                    alt="" />
+                                <a
+                                    href="config_whitespace.html#MethodParamPad">MethodParamPad</a>
+                                <br />
+                                <br />
+                                <img
+                                    src="images/ok_green.png"
+                                    alt="" />
+                                <a
+                                    href="config_whitespace.html#ParenPad">ParenPad</a>
                             </td>
                             <td>
                                 <a
@@ -714,6 +740,18 @@
                                 <br />
                                 <a
                                     href="https://github.com/checkstyle/checkstyle/blob/master/src/it/java/com/google/checkstyle/test/chapter4formatting/rule462horizontalwhitespace/GenericWhitespaceTest.java">test</a>
+                                <br />
+                                <a
+                                    href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+MethodParamPad">config</a>
+                                <br />
+                                <a
+                                    href="https://github.com/checkstyle/checkstyle/blob/master/src/it/java/com/google/checkstyle/test/chapter4formatting/rule462horizontalwhitespace/MethodParamPadTest.java">test</a>
+                                <br />
+                                <a
+                                    href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+ParenPad">config</a>
+                                <br />
+                                <a
+                                    href="https://github.com/checkstyle/checkstyle/blob/master/src/it/java/com/google/checkstyle/test/chapter4formatting/rule462horizontalwhitespace/ParenPadTest.java">test</a>
                             </td>
                         </tr>
                         <tr>

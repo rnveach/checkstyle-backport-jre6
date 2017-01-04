@@ -1,7 +1,7 @@
 package com.google.checkstyle.test.chapter4formatting.rule485annotations;
 
 @MyAnnotation2 @MyAnnotation1 //warn
-class InputCorrectAnnotationIndentation
+class InputAnnotationLocation
 {
 
     @MyAnnotation2 @MyAnnotation1
@@ -18,7 +18,7 @@ class InputCorrectAnnotationIndentation
 
     @MyAnnotation2
         @MyAnnotation1 //warn
-    public InputCorrectAnnotationIndentation() {}
+    public InputAnnotationLocation() {}
 
     @MyAnnotationWithParam("foo")
     @MyAnnotation2 void foo1() {}

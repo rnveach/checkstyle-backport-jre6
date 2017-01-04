@@ -65,6 +65,9 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
     /** Logger for Checker. */
     private static final Log LOG = LogFactory.getLog(Checker.class);
 
+    /** Message to use when an exception occurs and should be printed as a violation. */
+    private static final String EXCEPTION_MSG = "general.exception";
+
     /** Maintains error count. */
     private final SeverityLevelCounter counter = new SeverityLevelCounter(
             SeverityLevel.ERROR);
@@ -123,6 +126,9 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /** Cache file. **/
     private PropertyCacheFile cache;
+
+    /** Controls whether exceptions should halt execution or not. */
+    private boolean haltOnException = true;
 
     /**
      * Creates a new {@code Checker} instance.
@@ -304,8 +310,9 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      * @param file a file to process.
      * @return a sorted set of messages to be logged.
      * @throws CheckstyleException if error condition within Checkstyle occurs.
+     * @noinspection ProhibitedExceptionThrown
      */
-    private SortedSet<LocalizedMessage> processFile(File file) throws CheckstyleException {
+    private SortedSet<LocalizedMessage> processFile(File file) throws Exception {
         final SortedSet<LocalizedMessage> fileMessages = new TreeSet<LocalizedMessage>();
         try {
             final FileText theText = new FileText(file.getAbsoluteFile(), charset);
@@ -316,8 +323,20 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
         catch (final IOException ioe) {
             LOG.debug("IOException occurred.", ioe);
             fileMessages.add(new LocalizedMessage(0,
-                    Definitions.CHECKSTYLE_BUNDLE, "general.exception",
+                    Definitions.CHECKSTYLE_BUNDLE, EXCEPTION_MSG,
                     new String[] {ioe.getMessage()}, null, getClass(), null));
+        }
+        // -@cs[IllegalCatch] There is no other way to obey haltOnException field
+        catch (Exception ex) {
+            if (haltOnException) {
+                throw ex;
+            }
+
+            LOG.debug("Exception occurred.", ex);
+            fileMessages.add(new LocalizedMessage(0,
+                    Definitions.CHECKSTYLE_BUNDLE, EXCEPTION_MSG,
+                    new String[] {ex.getClass().getName() + ": " + ex.getMessage()},
+                    null, getClass(), null));
         }
         return fileMessages;
     }
@@ -590,6 +609,14 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
             throw new UnsupportedEncodingException(message);
         }
         this.charset = charset;
+    }
+
+    /**
+     * Sets the field haltOnException.
+     * @param haltOnException the new value.
+     */
+    public void setHaltOnException(boolean haltOnException) {
+        this.haltOnException = haltOnException;
     }
 
     /**

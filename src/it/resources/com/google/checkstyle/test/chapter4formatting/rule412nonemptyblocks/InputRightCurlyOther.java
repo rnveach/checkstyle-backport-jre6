@@ -17,7 +17,7 @@ class InputRightCurlyOther
                 } else if (x < 0) {  //ok
                 
                     ;
-                }
+                } //warn
                 else
                 {
                     break;
@@ -29,7 +29,7 @@ class InputRightCurlyOther
                 default:
                     break;
                 } //ok
-            }
+            } //warn
             catch (Exception e)
             {
                 break;
@@ -76,7 +76,7 @@ class InputRightCurlyOther
         boolean flag = true;
         if (flag) {
             System.identityHashCode("heh");
-            flag = !flag; } System.
+            flag = !flag; } System. //warn
               identityHashCode("Xe-xe");
         
        
@@ -94,7 +94,7 @@ class FooCtor
     public FooCtor()
     {
         i = 1;
-    }} //warn
+    }} //ok
 
 /**
 * Test input for closing brace if that brace terminates 
@@ -105,7 +105,7 @@ class FooMethod
     public void fooMethod()
     {
         int i = 1;
-    }} //warn
+    }} //ok
 
 /**
 * Test input for closing brace if that brace terminates 
@@ -119,7 +119,7 @@ class FooInner
         {
             
         }
-    }} //warn
+    }} //ok
 
 class EnumContainer {
     private enum Suit { CLUBS, HEARTS, SPADES, DIAMONDS } // ok

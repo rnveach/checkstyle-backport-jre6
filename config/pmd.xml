@@ -52,8 +52,9 @@
   <rule ref="rulesets/java/codesize.xml/TooManyMethods">
     <properties>
       <property name="maxmethods" value="20"/>
-      <!-- Reducing the number of methods requires making excess hierarchy or duplicating code, or making existing methods too complex. -->
-      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='RequireThisCheck']"/>
+      <!-- Reducing the number of methods in RequireThisCheck requires making excess hierarchy or duplicating code, or making existing methods too complex. -->
+      <!-- PackageObjectFactory has many boilerplate methods. -->
+      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='RequireThisCheck' or @Image='PackageObjectFactory']"/>
     </properties>
   </rule>
   <rule ref="rulesets/java/codesize.xml/ExcessiveClassLength">
@@ -186,10 +187,17 @@
     <properties>
       <!-- default is 3 but we try to use single point of exit from method and that require extra IFs -->
       <property name="problemDepth" value="4"/>
+      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='ClassResolver']//MethodDeclarator[@Image='resolve']"/>
     </properties>
   </rule>
 
   <rule ref="rulesets/java/empty.xml"/>
+  <rule ref="rulesets/java/empty.xml/EmptyCatchBlock">
+    <properties>
+      <property name="allowCommentedBlocks" value="true"/>
+    </properties>
+  </rule>
+
   <rule ref="rulesets/java/finalizers.xml"/>
   <rule ref="rulesets/java/imports.xml"/>
   <rule ref="rulesets/java/javabeans.xml">
@@ -287,6 +295,13 @@
   </rule>
 
   <rule ref="rulesets/java/strings.xml"/>
+  <rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals">
+    <properties>
+      <!-- Annotations like '@SuppressWarnings' don't need to be checked, it is better to keep their strings
+           connected to the annotation instead of separating. -->
+      <property name="skipAnnotations" value="true"/>
+    </properties>
+  </rule>
   <rule ref="rulesets/java/sunsecure.xml/MethodReturnsInternalArray">
     <properties>
       <!--It's not important when array is empty-->
