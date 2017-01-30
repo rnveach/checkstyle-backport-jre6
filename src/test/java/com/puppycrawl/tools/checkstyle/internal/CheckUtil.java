@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -66,6 +66,28 @@ public final class CheckUtil {
 
     public static Set<String> getConfigGoogleStyleModules() {
         return getCheckStyleModulesReferencedInConfig("src/main/resources/google_checks.xml");
+    }
+
+    /**
+     * Retrieves a list of class names, removing 'Check' from the end if the class is
+     * a checkstyle check.
+     * @param checks class instances.
+     * @return a set of simple names.
+     */
+    public static Set<String> getSimpleNames(Set<Class<?>> checks) {
+        final Set<String> result = new HashSet<String>();
+
+        for (Class<?> check : checks) {
+            String name = check.getSimpleName();
+
+            if (name.endsWith("Check")) {
+                name = name.substring(0, name.length() - 5);
+            }
+
+            result.add(name);
+        }
+
+        return result;
     }
 
     /**
@@ -358,6 +380,16 @@ public final class CheckUtil {
 
             return result.toString();
         }
+    }
+
+    public static Set<String> getTokenTextSet(int... tokens) {
+        final Set<String> result = new HashSet<String>();
+
+        for (int token : tokens) {
+            result.add(TokenUtils.getTokenName(token));
+        }
+
+        return result;
     }
 
     public static String getJavadocTokenText(int[] tokens, int... subtractions) {

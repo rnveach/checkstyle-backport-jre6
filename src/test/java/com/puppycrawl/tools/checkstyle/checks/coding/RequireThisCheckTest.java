@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -137,7 +137,11 @@ public class RequireThisCheckTest extends BaseCheckTestSupport {
     public void testWithAnonymousClass() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(RequireThisCheck.class);
         checkConfig.addAttribute("validateOnlyOverlapping", "false");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = {
+            "19:25: " + getCheckMessage(MSG_METHOD, "doSideEffect", ""),
+            "23:24: " + getCheckMessage(MSG_VARIABLE, "bar", "InputRequireThis3."),
+            "46:17: " + getCheckMessage(MSG_VARIABLE, "foobar", ""),
+        };
         verify(checkConfig,
                 getPath("InputRequireThis3.java"),
                 expected);

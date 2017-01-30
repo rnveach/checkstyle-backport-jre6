@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -186,4 +186,22 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
             expected);
     }
 
+    @Test
+    public void testImportsFromJavaLang() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
+        final String[] expected = {
+            "3:8: " + getCheckMessage(MSG_KEY, "java.lang.String"),
+            "4:8: " + getCheckMessage(MSG_KEY, "java.lang.Math"),
+            "5:8: " + getCheckMessage(MSG_KEY, "java.lang.Class"),
+            "6:8: " + getCheckMessage(MSG_KEY, "java.lang.Exception"),
+            "7:8: " + getCheckMessage(MSG_KEY, "java.lang.Runnable"),
+            "8:8: " + getCheckMessage(MSG_KEY, "java.lang.RuntimeException"),
+            "9:8: " + getCheckMessage(MSG_KEY, "java.lang.ProcessBuilder"),
+            "10:8: " + getCheckMessage(MSG_KEY, "java.lang.Double"),
+            "11:8: " + getCheckMessage(MSG_KEY, "java.lang.Integer"),
+            "12:8: " + getCheckMessage(MSG_KEY, "java.lang.Float"),
+            "13:8: " + getCheckMessage(MSG_KEY, "java.lang.Short"),
+        };
+        verify(checkConfig, getPath("InputUnusedImportFromJavaLang.java"), expected);
+    }
 }

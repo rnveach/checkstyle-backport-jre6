@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -354,6 +354,46 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
         verify(checker, pathToEmptyFile, pathToEmptyFile, expected);
         // One more time to use cache.
         verify(checker, pathToEmptyFile, pathToEmptyFile, expected);
+    }
+
+    @Test
+    public void testPathRegexMatches() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
+        checkConfig.addAttribute("file", getResourcePath("import-control_one.xml"));
+        checkConfig.addAttribute("path", "^.*[\\\\/]src[\\\\/]test[\\\\/].*$");
+        final String[] expected = {"5:1: " + getCheckMessage(MSG_DISALLOWED, "java.io.File")};
+
+        verify(checkConfig, getPath("InputImportControl.java"), expected);
+    }
+
+    @Test
+    public void testPathRegexMatchesPartially() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
+        checkConfig.addAttribute("file", getResourcePath("import-control_one.xml"));
+        checkConfig.addAttribute("path", "[\\\\/]InputImportControl\\.java");
+        final String[] expected = {"5:1: " + getCheckMessage(MSG_DISALLOWED, "java.io.File")};
+
+        verify(checkConfig, getPath("InputImportControl.java"), expected);
+    }
+
+    @Test
+    public void testPathRegexDoesntMatch() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
+        checkConfig.addAttribute("file", getResourcePath("import-control_one.xml"));
+        checkConfig.addAttribute("path", "^.*[\\\\/]src[\\\\/]main[\\\\/].*$");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getPath("InputImportControl.java"), expected);
+    }
+
+    @Test
+    public void testPathRegexDoesntMatchPartially() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
+        checkConfig.addAttribute("file", getResourcePath("import-control_one.xml"));
+        checkConfig.addAttribute("path", "[\\\\/]NoMatch\\.java");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getPath("InputImportControl.java"), expected);
     }
 
     private Checker createMockCheckerWithCache(DefaultConfiguration checkConfig)

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -50,7 +50,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.google.common.io.Files;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
@@ -62,38 +61,15 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.AbstractJavadocCheck;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public class XDocsPagesTest {
-    private static final Path JAVA_SOURCES_DIRECTORY = Paths.get("src/main/java");
     private static final Path AVAILABLE_CHECKS_PATH = Paths.get("src/xdocs/checks.xml");
-    private static final String CHECK_FILE_NAME = ".+Check.java$";
-    private static final String CHECK_SUFFIX = "Check.java";
     private static final String LINK_TEMPLATE =
             "(?s).*<a href=\"config_\\w+\\.html#%1$s\">%1$s</a>.*";
-
-    private static final List<String> MODULES_ON_PAGE_IGNORE_LIST = Arrays.asList(
-            "AbstractAccessControlNameCheck.java",
-            "AbstractCheck.java",
-            "AbstractClassCouplingCheck.java",
-            "AbstractComplexityCheck.java",
-            "AbstractFileSetCheck.java",
-            "AbstractFormatCheck.java",
-            "AbstractHeaderCheck.java",
-            "AbstractIllegalCheck.java",
-            "AbstractIllegalMethodCheck.java",
-            "AbstractJavadocCheck.java",
-            "AbstractNameCheck.java",
-            "AbstractNestedDepthCheck.java",
-            "AbstractOptionCheck.java",
-            "AbstractParenPadCheck.java",
-            "AbstractSuperCheck.java",
-            "AbstractTypeAwareCheck.java",
-            "AbstractTypeParameterNameCheck.java",
-            "FileSetCheck.java"
-    );
 
     private static final List<String> XML_FILESET_LIST = Arrays.asList(
             "TreeWalker",
@@ -141,17 +117,13 @@ public class XDocsPagesTest {
         new HashSet<String>(CheckUtil.getConfigGoogleStyleModules()));
 
     @Test
-    public void testAllChecksPresentOnAvailableChecksPage() throws IOException {
+    public void testAllChecksPresentOnAvailableChecksPage() throws Exception {
         final String availableChecks = new String(Files7.readAllBytes(AVAILABLE_CHECKS_PATH), UTF_8);
-        for (File file : Files.fileTreeTraverser().preOrderTraversal(JAVA_SOURCES_DIRECTORY.getFile())) {
-            final String fileName = file.getName();
-            if (fileName.matches(CHECK_FILE_NAME)
-                    && !MODULES_ON_PAGE_IGNORE_LIST.contains(fileName)) {
-                final String checkName = fileName.replace(CHECK_SUFFIX, "");
-                if (!isPresent(availableChecks, checkName)) {
-                    Assert.fail(checkName + " is not correctly listed on Available Checks page"
-                        + " - add it to " + AVAILABLE_CHECKS_PATH);
-                }
+
+        for (String checkName : CheckUtil.getSimpleNames(CheckUtil.getCheckstyleChecks())) {
+            if (!isPresent(availableChecks, checkName)) {
+                Assert.fail(checkName + " is not correctly listed on Available Checks page"
+                    + " - add it to " + AVAILABLE_CHECKS_PATH);
             }
         }
     }
@@ -656,6 +628,9 @@ public class XDocsPagesTest {
         else if (clss == Scope.class) {
             result = "Scope";
         }
+        else if (clss == AccessModifier[].class) {
+            result = "Access Modifier Set";
+        }
         else if (clss != String.class) {
             Assert.fail("Unknown property type: " + clss.getSimpleName());
         }
@@ -717,6 +692,9 @@ public class XDocsPagesTest {
             }
             else if (value != null && (clss == SeverityLevel.class || clss == Scope.class)) {
                 result = value.toString().toLowerCase(Locale.ENGLISH);
+            }
+            else if (value != null && clss == AccessModifier[].class) {
+                result = Arrays.toString((Object[]) value).replace("[", "").replace("]", "");
             }
 
             if (clss != String.class && clss != String[].class && result == null) {

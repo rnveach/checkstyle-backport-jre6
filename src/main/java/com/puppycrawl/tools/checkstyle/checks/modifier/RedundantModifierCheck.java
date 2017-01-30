@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -278,7 +278,8 @@ public class RedundantModifierCheck
                 checkFinal = checkFinal || classModifiers.branchContains(TokenTypes.FINAL);
                 parent = null;
             }
-            else if (parent.getType() == TokenTypes.LITERAL_NEW) {
+            else if (parent.getType() == TokenTypes.LITERAL_NEW
+                    || parent.getType() == TokenTypes.ENUM_CONSTANT_DEF) {
                 checkFinal = true;
                 parent = null;
             }

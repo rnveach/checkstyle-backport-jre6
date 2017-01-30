@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import antlr.collections.AST;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 /**
  * Contains utility methods for the checks.
@@ -424,5 +426,35 @@ public final class CheckUtils {
             returnValue = parameterDefAst.branchContains(TokenTypes.LITERAL_THIS);
         }
         return returnValue;
+    }
+
+    /**
+     * Returns {@link AccessModifier} based on the information about access modifier
+     * taken from the given token of type {@link TokenTypes#MODIFIERS}.
+     * @param modifiersToken token of type {@link TokenTypes#MODIFIERS}.
+     * @return {@link AccessModifier}.
+     */
+    public static AccessModifier getAccessModifierFromModifiersToken(DetailAST modifiersToken) {
+        if (modifiersToken == null || modifiersToken.getType() != TokenTypes.MODIFIERS) {
+            throw new IllegalArgumentException("expected non-null AST-token with type 'MODIFIERS'");
+        }
+
+        // default access modifier
+        AccessModifier accessModifier = AccessModifier.PACKAGE;
+        for (AST token = modifiersToken.getFirstChild(); token != null;
+             token = token.getNextSibling()) {
+
+            final int tokenType = token.getType();
+            if (tokenType == TokenTypes.LITERAL_PUBLIC) {
+                accessModifier = AccessModifier.PUBLIC;
+            }
+            else if (tokenType == TokenTypes.LITERAL_PROTECTED) {
+                accessModifier = AccessModifier.PROTECTED;
+            }
+            else if (tokenType == TokenTypes.LITERAL_PRIVATE) {
+                accessModifier = AccessModifier.PRIVATE;
+            }
+        }
+        return accessModifier;
     }
 }

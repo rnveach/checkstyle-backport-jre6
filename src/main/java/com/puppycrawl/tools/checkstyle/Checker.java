@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -309,7 +309,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      * Processes a file with all FileSetChecks.
      * @param file a file to process.
      * @return a sorted set of messages to be logged.
-     * @throws CheckstyleException if error condition within Checkstyle occurs.
+     * @throws Exception if error condition within Checkstyle occurs.
      * @noinspection ProhibitedExceptionThrown
      */
     private SortedSet<LocalizedMessage> processFile(File file) throws Exception {

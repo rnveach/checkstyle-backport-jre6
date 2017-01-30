@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -175,7 +175,7 @@ public class RightCurlyCheck extends AbstractCheck {
         final Details details = getDetails(ast);
         final DetailAST rcurly = details.rcurly;
 
-        if (rcurly != null && rcurly.getType() == TokenTypes.RCURLY) {
+        if (rcurly != null) {
             final String violation;
             if (shouldStartLine) {
                 final String targetSourceLine = getLines()[rcurly.getLineNo() - 1];
@@ -340,10 +340,11 @@ public class RightCurlyCheck extends AbstractCheck {
                     shouldCheckLastRcurly = true;
                     nextToken = getNextToken(ast);
                     lcurly = ast.getLastChild();
-                    rcurly = lcurly.getLastChild();
                 }
                 else {
                     lcurly = nextToken.getPreviousSibling();
+                }
+                if (lcurly.getType() == TokenTypes.SLIST) {
                     rcurly = lcurly.getLastChild();
                 }
                 break;
@@ -352,7 +353,9 @@ public class RightCurlyCheck extends AbstractCheck {
                 shouldCheckLastRcurly = true;
                 nextToken = getNextToken(ast);
                 lcurly = ast.getFirstChild();
-                rcurly = lcurly.getLastChild();
+                if (lcurly.getType() == TokenTypes.SLIST) {
+                    rcurly = lcurly.getLastChild();
+                }
                 break;
             case TokenTypes.CLASS_DEF:
                 final DetailAST child = ast.getLastChild();
@@ -370,7 +373,9 @@ public class RightCurlyCheck extends AbstractCheck {
             case TokenTypes.LITERAL_DO:
                 nextToken = ast.findFirstToken(TokenTypes.DO_WHILE);
                 lcurly = ast.findFirstToken(TokenTypes.SLIST);
-                rcurly = lcurly.getLastChild();
+                if (lcurly != null) {
+                    rcurly = lcurly.getLastChild();
+                }
                 break;
             default:
                 // ATTENTION! We have default here, but we expect case TokenTypes.METHOD_DEF,

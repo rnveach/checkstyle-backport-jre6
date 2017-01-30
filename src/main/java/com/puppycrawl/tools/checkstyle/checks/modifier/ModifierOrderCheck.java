@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2016 the original author or authors.
+// Copyright (C) 2001-2017 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -192,8 +192,7 @@ public class ModifierOrderCheck
         DetailAST modifier;
         do {
             modifier = modifierIterator.next();
-        }
-        while (modifierIterator.hasNext() && modifier.getType() == TokenTypes.ANNOTATION);
+        } while (modifierIterator.hasNext() && modifier.getType() == TokenTypes.ANNOTATION);
         return modifier;
     }
 

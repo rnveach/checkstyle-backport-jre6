@@ -2,7 +2,7 @@
 # Attention, there is no "-x" to avoid problems on Travis
 set -e
 
-case "$GOAL" in
+case $1 in
 
 nondex)
   # exclude ConfigurationLoaderTest till https://github.com/TestingResearchIllinois/NonDex/issues/112
@@ -45,6 +45,10 @@ releasenotes-gen)
 
 pr-description)
   .ci/travis/xtr_pr-description.sh
+  ;;
+
+check-chmod)
+  .ci/travis/checkchmod.sh
   ;;
 
 all-sevntu-checks)
