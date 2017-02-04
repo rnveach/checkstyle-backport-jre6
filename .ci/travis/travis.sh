@@ -34,9 +34,11 @@ sonarqube)
   ;;
 
 release-dry-run)
-  mvn release:prepare -DdryRun=true --batch-mode -Darguments='-DskipTests -DskipITs \
-    -Dcobertura.skip=true -Dpmd.skip=true -Dfindbugs.skip=true  -Dxml.skip=true \
-    -Dcheckstyle.ant.skip=true -Dcheckstyle.skip=true -Dgpg.skip=true'
+  if [ $(git log -1 | grep -E "\[maven-release-plugin\] prepare release" | cat | wc -l) -lt 1 ]; then
+    mvn release:prepare -DdryRun=true --batch-mode -Darguments='-DskipTests -DskipITs \
+      -Dcobertura.skip=true -Dpmd.skip=true -Dfindbugs.skip=true  -Dxml.skip=true \
+      -Dcheckstyle.ant.skip=true -Dcheckstyle.skip=true -Dgpg.skip=true'
+  fi
   ;;
 
 releasenotes-gen)
@@ -70,7 +72,7 @@ no-exception-test-checkstyle-sevntu-checkstyle)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-guava)
@@ -81,7 +83,7 @@ no-exception-test-guava)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-guava-with-google-checks)
@@ -93,7 +95,7 @@ no-exception-test-guava-with-google-checks)
   mvn clean install -Pno-validations
   sed -i.'' 's/warning/ignore/' src/main/resources/google_checks.xml
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties ../../src/main/resources/google_checks.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg ../../src/main/resources/google_checks.xml
   ;;
 
 no-exception-test-hibernate)
@@ -104,7 +106,7 @@ no-exception-test-hibernate)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-findbugs)
@@ -115,7 +117,7 @@ no-exception-test-findbugs)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-spring-framework)
@@ -126,7 +128,7 @@ no-exception-test-spring-framework)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-hbase)
@@ -137,7 +139,7 @@ no-exception-test-hbase)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-Pmd-elasticsearch-lombok-ast)
@@ -150,7 +152,7 @@ no-exception-test-Pmd-elasticsearch-lombok-ast)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-alot-of-project1)
@@ -166,7 +168,7 @@ no-exception-test-alot-of-project1)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy projects-for-travis.properties checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --checkstyleCfg checks-nonjavadoc-error.xml
   ;;
 
 *)

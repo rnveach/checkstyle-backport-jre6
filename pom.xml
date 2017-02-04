@@ -15,7 +15,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>7.5</version>
+  <version>7.5.1</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -429,7 +429,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>7.4</version>
+            <version>7.5</version>
           </dependency>
         </dependencies>
         <!-- Specifying configuration here will take effect on the execution of "mvn checkstyle:checkstyle",
