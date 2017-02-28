@@ -74,8 +74,12 @@ public class ParameterNameCheck extends AbstractNameCheck {
     private boolean ignoreOverridden;
 
     /** Access modifiers of methods which should be checked. */
-    private AccessModifier[] accessModifiers = new AccessModifier[] {AccessModifier.PUBLIC,
-        AccessModifier.PROTECTED, AccessModifier.PACKAGE, AccessModifier.PRIVATE, };
+    private AccessModifier[] accessModifiers = {
+        AccessModifier.PUBLIC,
+        AccessModifier.PROTECTED,
+        AccessModifier.PACKAGE,
+        AccessModifier.PRIVATE,
+    };
 
     /**
      * Creates a new {@code ParameterNameCheck} instance.

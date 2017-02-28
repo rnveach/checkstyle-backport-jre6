@@ -42,27 +42,27 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
 public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     /** Class names to ignore. */
     private static final Set<String> DEFAULT_EXCLUDED_CLASSES =
-                ImmutableSet.<String>builder()
-            // primitives
-            .add("boolean", "byte", "char", "double", "float", "int")
-            .add("long", "short", "void")
-            // wrappers
-            .add("Boolean", "Byte", "Character", "Double", "Float")
-            .add("Integer", "Long", "Short", "Void")
-            // java.lang.*
-            .add("Object", "Class")
-            .add("String", "StringBuffer", "StringBuilder")
-            // Exceptions
-            .add("ArrayIndexOutOfBoundsException", "Exception")
-            .add("RuntimeException", "IllegalArgumentException")
-            .add("IllegalStateException", "IndexOutOfBoundsException")
-            .add("NullPointerException", "Throwable", "SecurityException")
-            .add("UnsupportedOperationException")
-            // java.util.*
-            .add("List", "ArrayList", "Deque", "Queue", "LinkedList")
-            .add("Set", "HashSet", "SortedSet", "TreeSet")
-            .add("Map", "HashMap", "SortedMap", "TreeMap")
-            .build();
+            ImmutableSet.of(
+                // primitives
+                "boolean", "byte", "char", "double", "float", "int",
+                "long", "short", "void",
+                // wrappers
+                "Boolean", "Byte", "Character", "Double", "Float",
+                "Integer", "Long", "Short", "Void",
+                // java.lang.*
+                "Object", "Class",
+                "String", "StringBuffer", "StringBuilder",
+                // Exceptions
+                "ArrayIndexOutOfBoundsException", "Exception",
+                "RuntimeException", "IllegalArgumentException",
+                "IllegalStateException", "IndexOutOfBoundsException",
+                "NullPointerException", "Throwable", "SecurityException",
+                "UnsupportedOperationException",
+                // java.util.*
+                "List", "ArrayList", "Deque", "Queue", "LinkedList",
+                "Set", "HashSet", "SortedSet", "TreeSet",
+                "Map", "HashMap", "SortedMap", "TreeMap"
+            );
 
     /** Stack of contexts. */
     private final Deque<Context> contextStack = new ArrayDeque<Context>();

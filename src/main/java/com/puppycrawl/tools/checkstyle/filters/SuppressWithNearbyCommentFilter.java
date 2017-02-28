@@ -227,11 +227,11 @@ public class SuppressWithNearbyCommentFilter
         tags.clear();
         final FileContents contents = getFileContents();
         if (checkCPP) {
-            tagSuppressions(contents.getCppComments().values());
+            tagSuppressions(contents.getSingleLineComments().values());
         }
         if (checkC) {
             final Collection<List<TextBlock>> cComments =
-                contents.getCComments().values();
+                contents.getBlockComments().values();
             for (final List<TextBlock> element : cComments) {
                 tagSuppressions(element);
             }

@@ -221,11 +221,11 @@ public class SuppressionCommentFilter
         tags.clear();
         final FileContents contents = getFileContents();
         if (checkCPP) {
-            tagSuppressions(contents.getCppComments().values());
+            tagSuppressions(contents.getSingleLineComments().values());
         }
         if (checkC) {
             final Collection<List<TextBlock>> cComments = contents
-                    .getCComments().values();
+                    .getBlockComments().values();
             for (List<TextBlock> element : cComments) {
                 tagSuppressions(element);
             }

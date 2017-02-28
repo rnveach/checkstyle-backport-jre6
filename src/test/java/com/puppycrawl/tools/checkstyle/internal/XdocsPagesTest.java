@@ -66,7 +66,7 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
-public class XDocsPagesTest {
+public class XdocsPagesTest {
     private static final Path AVAILABLE_CHECKS_PATH = Paths.get("src/xdocs/checks.xml");
     private static final String LINK_TEMPLATE =
             "(?s).*<a href=\"config_\\w+\\.html#%1$s\">%1$s</a>.*";
@@ -135,7 +135,7 @@ public class XDocsPagesTest {
 
     @Test
     public void testAllXmlExamples() throws Exception {
-        for (Path path : XDocUtil.getXdocsFilePaths()) {
+        for (Path path : XdocUtil.getXdocsFilePaths()) {
             final String input = new String(Files7.readAllBytes(path), UTF_8);
             final String fileName = path.getFileName().toString();
 
@@ -243,7 +243,7 @@ public class XDocsPagesTest {
     public void testAllCheckSections() throws Exception {
         final ModuleFactory moduleFactory = TestUtils.getPackageObjectFactory();
 
-        for (Path path : XDocUtil.getXdocsConfigFilePaths(XDocUtil.getXdocsFilePaths())) {
+        for (Path path : XdocUtil.getXdocsConfigFilePaths(XdocUtil.getXdocsFilePaths())) {
             final String fileName = path.getFileName().toString();
 
             if ("config_reporting.xml".equals(fileName)) {
@@ -287,7 +287,7 @@ public class XDocsPagesTest {
     public void testAllCheckSectionsEx() throws Exception {
         final ModuleFactory moduleFactory = TestUtils.getPackageObjectFactory();
 
-        final Path path = Paths.get(XDocUtil.DIRECTORY_PATH + "/config.xml");
+        final Path path = Paths.get(XdocUtil.DIRECTORY_PATH + "/config.xml");
         final String fileName = path.getFileName().toString();
 
         final String input = new String(Files7.readAllBytes(path), UTF_8);
@@ -891,7 +891,7 @@ public class XDocsPagesTest {
 
     @Test
     public void testAllStyleRules() throws Exception {
-        for (Path path : XDocUtil.getXdocsStyleFilePaths(XDocUtil.getXdocsFilePaths())) {
+        for (Path path : XdocUtil.getXdocsStyleFilePaths(XdocUtil.getXdocsFilePaths())) {
             final String fileName = path.getFileName().toString();
             final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);

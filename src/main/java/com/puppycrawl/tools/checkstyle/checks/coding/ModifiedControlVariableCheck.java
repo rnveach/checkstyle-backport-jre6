@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -109,8 +110,13 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
 
     /** Operations which can change control variable in update part of the loop. */
     private static final Set<Integer> MUTATION_OPERATIONS =
-            Sets.newHashSet(TokenTypes.POST_INC, TokenTypes.POST_DEC, TokenTypes.DEC,
-                    TokenTypes.INC, TokenTypes.ASSIGN);
+            ImmutableSet.of(
+                TokenTypes.POST_INC,
+                TokenTypes.POST_DEC,
+                TokenTypes.DEC,
+                TokenTypes.INC,
+                TokenTypes.ASSIGN
+            );
 
     /** Stack of block parameters. */
     private final Deque<Deque<String>> variableStack = new ArrayDeque<Deque<String>>();

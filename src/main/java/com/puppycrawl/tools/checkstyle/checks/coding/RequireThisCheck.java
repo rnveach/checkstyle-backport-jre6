@@ -101,41 +101,44 @@ public class RequireThisCheck extends AbstractCheck {
     public static final String MSG_VARIABLE = "require.this.variable";
 
     /** Set of all declaration tokens. */
-    private static final ImmutableSet<Integer> DECLARATION_TOKENS = ImmutableSet.of(
-        TokenTypes.VARIABLE_DEF,
-        TokenTypes.CTOR_DEF,
-        TokenTypes.METHOD_DEF,
-        TokenTypes.CLASS_DEF,
-        TokenTypes.ENUM_DEF,
-        TokenTypes.INTERFACE_DEF,
-        TokenTypes.PARAMETER_DEF,
-        TokenTypes.TYPE_ARGUMENT
-    );
+    private static final Set<Integer> DECLARATION_TOKENS =
+        ImmutableSet.of(
+            TokenTypes.VARIABLE_DEF,
+            TokenTypes.CTOR_DEF,
+            TokenTypes.METHOD_DEF,
+            TokenTypes.CLASS_DEF,
+            TokenTypes.ENUM_DEF,
+            TokenTypes.INTERFACE_DEF,
+            TokenTypes.PARAMETER_DEF,
+            TokenTypes.TYPE_ARGUMENT
+        );
     /** Set of all assign tokens. */
-    private static final ImmutableSet<Integer> ASSIGN_TOKENS = ImmutableSet.of(
-        TokenTypes.ASSIGN,
-        TokenTypes.PLUS_ASSIGN,
-        TokenTypes.STAR_ASSIGN,
-        TokenTypes.DIV_ASSIGN,
-        TokenTypes.MOD_ASSIGN,
-        TokenTypes.SR_ASSIGN,
-        TokenTypes.BSR_ASSIGN,
-        TokenTypes.SL_ASSIGN,
-        TokenTypes.BAND_ASSIGN,
-        TokenTypes.BXOR_ASSIGN
-    );
+    private static final Set<Integer> ASSIGN_TOKENS =
+        ImmutableSet.of(
+            TokenTypes.ASSIGN,
+            TokenTypes.PLUS_ASSIGN,
+            TokenTypes.STAR_ASSIGN,
+            TokenTypes.DIV_ASSIGN,
+            TokenTypes.MOD_ASSIGN,
+            TokenTypes.SR_ASSIGN,
+            TokenTypes.BSR_ASSIGN,
+            TokenTypes.SL_ASSIGN,
+            TokenTypes.BAND_ASSIGN,
+            TokenTypes.BXOR_ASSIGN
+        );
     /** Set of all compound assign tokens. */
-    private static final ImmutableSet<Integer> COMPOUND_ASSIGN_TOKENS = ImmutableSet.of(
-        TokenTypes.PLUS_ASSIGN,
-        TokenTypes.STAR_ASSIGN,
-        TokenTypes.DIV_ASSIGN,
-        TokenTypes.MOD_ASSIGN,
-        TokenTypes.SR_ASSIGN,
-        TokenTypes.BSR_ASSIGN,
-        TokenTypes.SL_ASSIGN,
-        TokenTypes.BAND_ASSIGN,
-        TokenTypes.BXOR_ASSIGN
-    );
+    private static final Set<Integer> COMPOUND_ASSIGN_TOKENS =
+        ImmutableSet.of(
+            TokenTypes.PLUS_ASSIGN,
+            TokenTypes.STAR_ASSIGN,
+            TokenTypes.DIV_ASSIGN,
+            TokenTypes.MOD_ASSIGN,
+            TokenTypes.SR_ASSIGN,
+            TokenTypes.BSR_ASSIGN,
+            TokenTypes.SL_ASSIGN,
+            TokenTypes.BAND_ASSIGN,
+            TokenTypes.BXOR_ASSIGN
+        );
 
     /** Tree of all the parsed frames. */
     private Map<DetailAST, AbstractFrame> frames;

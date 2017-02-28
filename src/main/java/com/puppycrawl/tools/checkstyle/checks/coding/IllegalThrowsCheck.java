@@ -59,11 +59,13 @@ public final class IllegalThrowsCheck extends AbstractCheck {
     public static final String MSG_KEY = "illegal.throw";
 
     /** Methods which should be ignored. */
-    private final Set<String> ignoredMethodNames = Sets.newHashSet("finalize");
+    private final Set<String> ignoredMethodNames =
+        Sets.newHashSet("finalize");
 
     /** Illegal class names. */
-    private final Set<String> illegalClassNames = Sets.newHashSet("Error", "RuntimeException",
-        "Throwable", "java.lang.Error", "java.lang.RuntimeException", "java.lang.Throwable");
+    private final Set<String> illegalClassNames =
+        Sets.newHashSet("Error", "RuntimeException", "Throwable", "java.lang.Error",
+                      "java.lang.RuntimeException", "java.lang.Throwable");
 
     /** Property for ignoring overridden methods. */
     private boolean ignoreOverriddenMethods = true;

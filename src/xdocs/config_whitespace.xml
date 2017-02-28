@@ -1098,13 +1098,15 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#POST_DEC">POST_DEC</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#DOT">DOT</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#GENERIC_START">GENERIC_START</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#GENERIC_END">GENERIC_END</a>.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#GENERIC_END">GENERIC_END</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELLIPSIS">ELLIPSIS</a>.
             </td>
             <td>
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMMA">COMMA</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#SEMI">SEMI</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#POST_INC">POST_INC</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#POST_DEC">POST_DEC</a>.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#POST_DEC">POST_DEC</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELLIPSIS">ELLIPSIS</a>.
             </td>
           </tr>
         </table>
@@ -2016,8 +2018,9 @@ public @interface Beta {} // empty annotation type
         <p>
         may optionally be exempted from the policy using the <code>
         allowEmptyMethods</code>, <code>allowEmptyConstructors
-        </code>, <code>allowEmptyTypes</code>, <code>allowEmptyLoops</code> and
-        <code>allowEmptyLambdas</code> properties.
+        </code>, <code>allowEmptyTypes</code>, <code>allowEmptyLoops</code>
+        <code>allowEmptyLambdas</code> and <code>allowEmptyCatches</code>
+        properties.
         </p>
         <p>This check does not flag as violation double brace initialization like:</p>
         <pre><code>
@@ -2025,6 +2028,17 @@ new Properties() {{
     setProperty("key", "value");
 }};
         </code></pre>
+        <p>Parameter allowEmptyCatches allows to suppress violations when token
+        list contains SLIST to check if beginning of block is surrounded by
+        whitespace and catch block is empty, for example:</p>
+        <pre><code>
+try {
+    k = 5 / i;
+} catch (ArithmeticException ex) {}
+        </code></pre>
+        With this property turned off, this raises violation because the beginning of the
+        catch block (left curly bracket) is not separated from the end of the catch
+        block (right curly bracket).
       </subsection>
 
       <subsection name="Properties">
@@ -2062,6 +2076,12 @@ new Properties() {{
           <tr>
             <td>allowEmptyLambdas</td>
             <td>allow empty lambda bodies</td>
+            <td><a href="property_types.html#boolean">Boolean</a></td>
+            <td><code>false</code></td>
+          </tr>
+          <tr>
+            <td>allowEmptyCatches</td>
+            <td>allow empty catch bodies</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
           </tr>

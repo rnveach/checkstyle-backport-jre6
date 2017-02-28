@@ -15,7 +15,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>7.5.1</version>
+  <version>7.6</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -162,7 +162,7 @@
     <maven.pmd.plugin.version>3.7</maven.pmd.plugin.version>
     <maven.jacoco.plugin.version>0.7.8</maven.jacoco.plugin.version>
     <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
-    <maven.sevntu.checkstyle.plugin.version>1.23.0</maven.sevntu.checkstyle.plugin.version>
+    <maven.sevntu.checkstyle.plugin.version>1.23.1</maven.sevntu.checkstyle.plugin.version>
     <maven.versions.plugin.version>2.3</maven.versions.plugin.version>
     <java.version>1.6</java.version>
     <tools.jar.version>${java.version}.0</tools.jar.version>
@@ -429,7 +429,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>7.5</version>
+            <version>7.5.1</version>
           </dependency>
         </dependencies>
         <!-- Specifying configuration here will take effect on the execution of "mvn checkstyle:checkstyle",
@@ -1174,6 +1174,8 @@
             <excludedLink>https://sourceforge.net/projects/checkstyle/</excludedLink>
             <!-- permanent SSLHandshakeException https://issues.apache.org/jira/browse/MLINKCHECK-28 -->
             <excludedLink>https://sourceforge.net/projects/checkstyle/files/checkstyle/</excludedLink>
+            <!-- permanent SSLHandshakeException -->
+            <excludedLink>http://vim.sourceforge.net/scripts/script.php?script_id=448</excludedLink>
             <!-- permanent SSLException -->
             <excludedLink>https://button.flattr.com/flattr-badge-large.png</excludedLink>
             <!-- permanent SSLException -->
@@ -1384,7 +1386,7 @@
                   <!-- Swing related classes -->
                   <exclude>com/puppycrawl/tools/checkstyle/gui/BaseCellEditor*.class</exclude>
                   <exclude>com/puppycrawl/tools/checkstyle/gui/CodeSelector.class</exclude>
-                  <exclude>com/puppycrawl/tools/checkstyle/gui/JTreeTable*.class</exclude>
+                  <exclude>com/puppycrawl/tools/checkstyle/gui/TreeTable*.class</exclude>
                   <exclude>com/puppycrawl/tools/checkstyle/gui/ListToTreeSelectionModelWrapper*.class</exclude>
                   <exclude>com/puppycrawl/tools/checkstyle/gui/Main*.class</exclude>
                   <exclude>com/puppycrawl/tools/checkstyle/gui/MainFrame*.class</exclude>
@@ -1402,6 +1404,8 @@
                   <exclude>com/puppycrawl/tools/checkstyle/checks/coding/AbstractNestedDepthCheck.class</exclude>
                   <exclude>com/puppycrawl/tools/checkstyle/checks/metrics/AbstractComplexityCheck.class</exclude>
                   <exclude>com/puppycrawl/tools/checkstyle/checks/naming/AbstractTypeParameterNameCheck.class</exclude>
+                  <!--Until https://github.com/checkstyle/checkstyle/issues/3848-->
+                  <exclude>com/puppycrawl/tools/checkstyle/checks/coding/RequireThisCheck.class</exclude>
                 </excludes>
               </instrumentation>
             </configuration>

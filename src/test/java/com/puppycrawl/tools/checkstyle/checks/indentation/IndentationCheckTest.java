@@ -226,7 +226,7 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
     }
 
     @Test
-    public void forbidCStyle() throws Exception {
+    public void forbidOldStyle() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(IndentationCheck.class);
         checkConfig.addAttribute("arrayInitIndent", "4");
         checkConfig.addAttribute("basicOffset", "4");
@@ -331,8 +331,11 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("tabWidth", "4");
 
         final String[] expected = {
-            "19: " + getCheckMessage(MSG_ERROR, ")", 16, 0),
-            "22: " + getCheckMessage(MSG_ERROR, ")", 8, 4),
+            "33: " + getCheckMessage(MSG_ERROR, ")", 16, 0),
+            "35: " + getCheckMessage(MSG_ERROR, ")", 16, 0),
+            "39: " + getCheckMessage(MSG_ERROR, ")", 8, 4),
+            "41: " + getCheckMessage(MSG_ERROR, ")", 8, 4),
+            "45: " + getCheckMessage(MSG_ERROR, ")", 8, 4),
         };
 
         verifyWarns(checkConfig,
@@ -843,6 +846,14 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
             "74: " + getCheckMessage(MSG_ERROR, "catch lcurly", 6, 8),
             "77: " + getCheckMessage(MSG_ERROR, "catch rcurly", 10, 8),
             "80: " + getCheckMessage(MSG_CHILD_ERROR, "catch", 10, 12),
+            "86: " + getCheckMessage(MSG_ERROR, "try", 0, 8),
+            "87: " + getCheckMessage(MSG_ERROR, "try rcurly", 0, 8),
+            "88: " + getCheckMessage(MSG_CHILD_ERROR, "catch", 0, 12),
+            "89: " + getCheckMessage(MSG_ERROR, "catch rcurly", 0, 8),
+            "91: " + getCheckMessage(MSG_ERROR, "try", 0, 8),
+            "92: " + getCheckMessage(MSG_ERROR, "try rcurly", 0, 8),
+            "93: " + getCheckMessage(MSG_CHILD_ERROR, "catch", 0, 12),
+            "94: " + getCheckMessage(MSG_ERROR, "catch rcurly", 0, 8),
         };
         verifyWarns(checkConfig, fileName, expected);
     }
@@ -1054,6 +1065,10 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
             "245: " + getCheckMessage(MSG_ERROR, "if rparen", 6, 8),
             "251: " + getCheckMessage(MSG_ERROR, "if lparen", 6, 8),
             "253: " + getCheckMessage(MSG_ERROR, "if rparen", 6, 8),
+            "256: " + getCheckMessage(MSG_ERROR, "if", 0, 8),
+            "257: " + getCheckMessage(MSG_CHILD_ERROR, "if", 0, 12),
+            "258: " + getCheckMessage(MSG_CHILD_ERROR, "if", 0, 12),
+            "259: " + getCheckMessage(MSG_ERROR, "if rcurly", 0, 8),
         };
         verifyWarns(checkConfig, fileName, expected);
     }
@@ -1699,6 +1714,30 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("basicOffset", "4");
         final String fileName = getPath("InputChainedMethods.java");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verifyWarns(checkConfig, fileName, expected);
+    }
+
+    @Test
+    public void testMultipleAnnotationsWithWrappedLines() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(IndentationCheck.class);
+        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addAttribute("basicOffset", "4");
+        checkConfig.addAttribute("forceStrictCondition", "true");
+        final String fileName = getPath("InputCorrectMultipleAnnotationsWithWrappedLines.java");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verifyWarns(checkConfig, fileName, expected);
+    }
+
+    @Test
+    public void testInputAnnotationScopeIndentationCheck() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(IndentationCheck.class);
+        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addAttribute("basicOffset", "4");
+        checkConfig.addAttribute("forceStrictCondition", "true");
+        final String fileName = getPath("InputAnnotationScopeIndentationCheck.java");
+        final String[] expected = {
+            "9: " + getCheckMessage(MSG_ERROR, "}", 8, 0),
+        };
         verifyWarns(checkConfig, fileName, expected);
     }
 

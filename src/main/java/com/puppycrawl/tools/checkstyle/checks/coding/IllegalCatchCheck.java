@@ -45,8 +45,8 @@ public final class IllegalCatchCheck extends AbstractCheck {
 
     /** Illegal class names. */
     private final Set<String> illegalClassNames = Sets.newHashSet("Exception", "Error",
-            "RuntimeException", "Throwable", "java.lang.Error", "java.lang.Exception",
-            "java.lang.RuntimeException", "java.lang.Throwable");
+        "RuntimeException", "Throwable", "java.lang.Error", "java.lang.Exception",
+        "java.lang.RuntimeException", "java.lang.Throwable");
 
     /**
      * Set the list of illegal classes.

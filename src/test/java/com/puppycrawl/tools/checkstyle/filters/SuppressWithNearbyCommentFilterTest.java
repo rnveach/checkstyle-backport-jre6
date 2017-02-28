@@ -135,7 +135,7 @@ public class SuppressWithNearbyCommentFilterTest
     }
 
     @Test
-    public void testUsingAVariableMessage() throws Exception {
+    public void testUsingVariableMessage() throws Exception {
         final DefaultConfiguration filterConfig =
             createFilterConfig(SuppressWithNearbyCommentFilter.class);
         filterConfig.addAttribute("commentFormat", "ALLOW CATCH (\\w+) BECAUSE");
@@ -150,7 +150,7 @@ public class SuppressWithNearbyCommentFilterTest
     }
 
     @Test
-    public void testUsingAVariableCheckOnNextLine() throws Exception {
+    public void testUsingVariableCheckOnNextLine() throws Exception {
         final DefaultConfiguration filterConfig =
             createFilterConfig(SuppressWithNearbyCommentFilter.class);
         filterConfig.addAttribute("commentFormat", "ALLOW (\\w+) ON NEXT LINE");
@@ -163,7 +163,7 @@ public class SuppressWithNearbyCommentFilterTest
     }
 
     @Test
-    public void testUsingAVariableCheckOnPreviousLine() throws Exception {
+    public void testUsingVariableCheckOnPreviousLine() throws Exception {
         final DefaultConfiguration filterConfig =
             createFilterConfig(SuppressWithNearbyCommentFilter.class);
         filterConfig.addAttribute("commentFormat", "ALLOW (\\w+) ON PREVIOUS LINE");

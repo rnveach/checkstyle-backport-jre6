@@ -247,7 +247,8 @@ public class VisibilityModifierCheck
     public static final String MSG_KEY = "variable.notPrivate";
 
     /** Default immutable types canonical names. */
-    private static final List<String> DEFAULT_IMMUTABLE_TYPES = ImmutableList.of(
+    private static final List<String> DEFAULT_IMMUTABLE_TYPES =
+        ImmutableList.of(
             "java.lang.String",
             "java.lang.Integer",
             "java.lang.Byte",
@@ -268,14 +269,15 @@ public class VisibilityModifierCheck
             "java.net.Inet4Address",
             "java.net.Inet6Address",
             "java.net.InetSocketAddress"
-    );
+        );
 
     /** Default ignore annotations canonical names. */
-    private static final List<String> DEFAULT_IGNORE_ANNOTATIONS = ImmutableList.of(
+    private static final List<String> DEFAULT_IGNORE_ANNOTATIONS =
+        ImmutableList.of(
             "org.junit.Rule",
             "org.junit.ClassRule",
             "com.google.common.annotations.VisibleForTesting"
-    );
+        );
 
     /** Name for 'public' access modifier. */
     private static final String PUBLIC_ACCESS_MODIFIER = "public";
