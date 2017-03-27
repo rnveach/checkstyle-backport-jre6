@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 
-import org.apache.commons.beanutils.ConversionException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -269,7 +268,7 @@ public class SuppressionCommentFilterTest
             verifySuppressed(filterConfig, suppressed);
         }
         catch (CheckstyleException ex) {
-            final ConversionException cause = (ConversionException) ex.getCause();
+            final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
             assertEquals("unable to parse expanded comment e[l",
                     cause.getMessage());
         }
@@ -286,7 +285,7 @@ public class SuppressionCommentFilterTest
             verifySuppressed(filterConfig, suppressed);
         }
         catch (CheckstyleException ex) {
-            final ConversionException cause = (ConversionException) ex.getCause();
+            final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
             assertEquals("unable to parse expanded comment e[l",
                     cause.getMessage());
         }

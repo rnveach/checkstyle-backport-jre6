@@ -63,112 +63,145 @@ all-sevntu-checks)
   diff -u web.txt file.txt
   ;;
 
+no-error-test-sbe)
+  CS_POM_VERSION=$(mvn -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+  echo version:$CS_POM_VERSION
+  mvn clean install -Pno-validations
+  git clone https://github.com/real-logic/simple-binary-encoding.git
+  cd simple-binary-encoding
+  sed -i'' "s/'com.puppycrawl.tools:checkstyle:.*'/'com.puppycrawl.tools:checkstyle:$CS_POM_VERSION'/" build.gradle
+  ./gradlew build
+  ;;
+
 no-exception-test-checkstyle-sevntu-checkstyle)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#checkstyle/checkstyle/' projects-for-travis.properties
-  sed -i.'' 's/#sevntu-checkstyle/sevntu-checkstyle/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#checkstyle/checkstyle/' projects-to-test-on.properties
+  sed -i.'' 's/#sevntu-checkstyle/sevntu-checkstyle/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-guava)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#guava/guava/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#guava/guava/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-guava-with-google-checks)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#guava/guava/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#guava/guava/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   sed -i.'' 's/warning/ignore/' src/main/resources/google_checks.xml
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config ../../src/main/resources/google_checks.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config ../../src/main/resources/google_checks.xml
   ;;
 
 no-exception-test-hibernate)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#hibernate-orm/hibernate-orm/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#hibernate-orm/hibernate-orm/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-findbugs)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#findbugs/findbugs/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#findbugs/findbugs/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-spring-framework)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#spring-framework/spring-framework/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#spring-framework/spring-framework/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-hbase)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#Hbase/Hbase/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#Hbase/Hbase/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-Pmd-elasticsearch-lombok-ast)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#pmd/pmd/' projects-for-travis.properties
-  sed -i.'' 's/#elasticsearch/elasticsearch/' projects-for-travis.properties
-  sed -i.'' 's/#lombok-ast/lombok-ast/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#pmd/pmd/' projects-to-test-on.properties
+  sed -i.'' 's/#elasticsearch/elasticsearch/' projects-to-test-on.properties
+  sed -i.'' 's/#lombok-ast/lombok-ast/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
 no-exception-test-alot-of-project1)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
-  sed -i.'' 's/^guava/#guava/' projects-for-travis.properties
-  sed -i.'' 's/#RxJava/RxJava/' projects-for-travis.properties
-  sed -i.'' 's/#java-design-patterns/java-design-patterns/' projects-for-travis.properties
-  sed -i.'' 's/#MaterialDesignLibrary/MaterialDesignLibrary/' projects-for-travis.properties
-  sed -i.'' 's/#apache-ant/apache-ant/' projects-for-travis.properties
-  sed -i.'' 's/#apache-jsecurity/apache-jsecurity/' projects-for-travis.properties
-  sed -i.'' 's/#android-launcher/android-launcher/' projects-for-travis.properties
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#RxJava/RxJava/' projects-to-test-on.properties
+  sed -i.'' 's/#java-design-patterns/java-design-patterns/' projects-to-test-on.properties
+  sed -i.'' 's/#MaterialDesignLibrary/MaterialDesignLibrary/' projects-to-test-on.properties
+  sed -i.'' 's/#apache-ant/apache-ant/' projects-to-test-on.properties
+  sed -i.'' 's/#apache-jsecurity/apache-jsecurity/' projects-to-test-on.properties
+  sed -i.'' 's/#android-launcher/android-launcher/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
-  groovy ./launch.groovy --listOfProjects projects-for-travis.properties --config checks-nonjavadoc-error.xml
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
+  ;;
+
+cobertura-check)
+  mvn clean compile cobertura:check cobertura:cobertura
+  xmlstarlet sel -t -m "//class" -v "@name" -n target/site/cobertura/coverage.xml | sed "s/\./\//g" | sed "/^$/d" | sort | uniq > cobertura_classes.log
+  find target/classes -type f -name "*.class" | grep -vE ".*\\$.*" | sed "s/target\/classes\///g" | sed "s/.class//g" | sed "/^$/d" | sort | uniq > target_classes.log
+  xmlstarlet sel -N pom=http://maven.apache.org/POM/4.0.0 -t -m "//pom:instrumentation/pom:excludes" -v "pom:exclude" -n pom.xml | sed "s/*//g" | sed "s/.class//g" | sed "/^$/d" | sort | uniq > cobertura_excluded_classes.log
+  # xmlstarlet has an issue. It concatenates these two lines and removes new line character,
+  # so we need to split them apart. We use the command till update of xmlstarlet to higher version.
+  sed -i'' "s/com\/puppycrawl\/tools\/checkstyle\/grammars\/javadoc\/com\/puppycrawl\/tools\/checkstyle\/gui\/BaseCellEditor/com\/puppycrawl\/tools\/checkstyle\/grammars\/javadoc\/\ncom\/puppycrawl\/tools\/checkstyle\/gui\/BaseCellEditor/" cobertura_excluded_classes.log
+  grep -Fxvf cobertura_classes.log target_classes.log > missed_classes_with_excludes.log
+  grep -Fvf cobertura_excluded_classes.log missed_classes_with_excludes.log > missed_classes_without_excludes.log | cat > output.log
+  echo "output.log"
+  cat output.log
+
+  if [[ -s missed_classes_without_excludes.log ]] ; then
+    echo "Classes which are missed in Cobertura coverage report:"
+    cat missed_classes_without_excludes.log
+    exit 1;
+  else
+    echo "All classes are present in Cobertura coverage report."
+    exit 0;
+  fi
   ;;
 
 *)

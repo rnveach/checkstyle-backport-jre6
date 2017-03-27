@@ -92,7 +92,7 @@
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -248,7 +248,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -272,7 +272,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           Controls the indentation between comments and surrounding code.
           Comments are indented at the same level as the surrounding code.
           Detailed info about such convention can be found <a href=
-          "http://checkstyle.sourceforge.net/reports/google-java-style.html#s4.8.6.1-block-comment-style">
+          "http://checkstyle.sourceforge.net/reports/google-java-style-20170228.html#s4.8.6.1-block-comment-style">
           here</a>
         </p>
         <p>Please take a look at the following examples to understand how the check works:</p>
@@ -388,7 +388,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 8   ;
         </source>
         <p>
-          Examnple #8: Comment is placed within an empty case block.
+          Example #8: Comment is placed within an empty case block.
           Note, if comment is placed at the end of the empty case block, we have Checkstyle's
           limitations to clearly detect user intention of explanation target - above or below. The
           only case we can assume as a violation is when a single line comment within the empty case
@@ -494,7 +494,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -805,7 +805,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -964,7 +964,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1127,7 +1127,7 @@ void foo(String aFooString,
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1246,7 +1246,7 @@ void foo(String aFooString,
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1303,7 +1303,7 @@ void foo(String aFooString,
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1397,7 +1397,7 @@ void foo(String aFooString,
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1539,7 +1539,7 @@ d = e / f;        // Another comment for this line
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1732,7 +1732,7 @@ messages_home_fr_CA_UNIX.properties
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1820,7 +1820,7 @@ messages_home_fr_CA_UNIX.properties
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1901,7 +1901,7 @@ messages_home_fr_CA_UNIX.properties
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>
@@ -1968,7 +1968,7 @@ messages_home_fr_CA_UNIX.properties
           </li>
         </ul>
         <p>
-          All messages can be customized if the default message doesn't suite you.
+          All messages can be customized if the default message doesn't suit you.
           Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
         </p>
       </subsection>

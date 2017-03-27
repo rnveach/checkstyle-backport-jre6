@@ -139,6 +139,21 @@ public class JavadocDetailNodeParser {
 
             result.setParseErrorMessage(parseErrorMessage);
         }
+        catch (IllegalArgumentException ex) {
+            // If syntax error occurs then message is printed by error listener
+            // and parser throws this runtime exception to stop parsing.
+            // Just stop processing current Javadoc comment.
+            ParseErrorMessage parseErrorMessage = errorListener.getErrorMessage();
+
+            // There are cases when antlr error listener does not handle syntax error
+            if (parseErrorMessage == null) {
+                parseErrorMessage = new ParseErrorMessage(javadocCommentAst.getLineNo(),
+                        MSG_KEY_UNRECOGNIZED_ANTLR_ERROR,
+                        javadocCommentAst.getColumnNo(), ex.getMessage());
+            }
+
+            result.setParseErrorMessage(parseErrorMessage);
+        }
 
         return result;
     }
@@ -478,13 +493,13 @@ public class JavadocDetailNodeParser {
                 errorMessage = new ParseErrorMessage(lineNumber,
                         MSG_JAVADOC_MISSED_HTML_CLOSE, charPositionInLine, token.getText());
 
-                throw new ParseCancellationException(msg);
+                throw new IllegalArgumentException(msg);
             }
             else if (MSG_JAVADOC_WRONG_SINGLETON_TAG.equals(msg)) {
                 errorMessage = new ParseErrorMessage(lineNumber,
                         MSG_JAVADOC_WRONG_SINGLETON_TAG, charPositionInLine, token.getText());
 
-                throw new ParseCancellationException(msg);
+                throw new IllegalArgumentException(msg);
             }
             else {
                 final int ruleIndex = ex.getCtx().getRuleIndex();

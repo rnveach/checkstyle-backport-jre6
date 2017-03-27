@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 
-import org.apache.commons.beanutils.ConversionException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -255,7 +254,7 @@ public class SuppressWithNearbyCommentFilterTest
             verifySuppressed(filterConfig, suppressed);
         }
         catch (CheckstyleException ex) {
-            final ConversionException cause = (ConversionException) ex.getCause();
+            final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
             assertEquals("unable to parse influence"
                             + " from 'SUPPRESS CHECKSTYLE MemberNameCheck' using a",
                     cause.getMessage());
@@ -273,7 +272,7 @@ public class SuppressWithNearbyCommentFilterTest
             verifySuppressed(filterConfig, suppressed);
         }
         catch (CheckstyleException ex) {
-            final ConversionException cause = (ConversionException) ex.getCause();
+            final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
             assertEquals("unable to parse expanded comment a[l",
                     cause.getMessage());
         }

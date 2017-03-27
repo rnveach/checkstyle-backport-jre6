@@ -329,7 +329,7 @@ public class AutomaticBean
                     result = CommonUtils.getUriByFilename(url);
                 }
                 catch (CheckstyleException ex) {
-                    throw new ConversionException(ex);
+                    throw new IllegalArgumentException(ex);
                 }
             }
 

@@ -161,9 +161,12 @@ final class ImportControlLoader extends AbstractLoader {
      * @throws CheckstyleException if an error occurs.
      */
     public static ImportControl load(final URI uri) throws CheckstyleException {
-        final InputStream inputStream;
+
+        InputStream inputStream = null;
         try {
             inputStream = uri.toURL().openStream();
+            final InputSource source = new InputSource(inputStream);
+            return load(source, uri);
         }
         catch (final MalformedURLException ex) {
             throw new CheckstyleException("syntax error in url " + uri, ex);
@@ -171,8 +174,9 @@ final class ImportControlLoader extends AbstractLoader {
         catch (final IOException ex) {
             throw new CheckstyleException("unable to find " + uri, ex);
         }
-        final InputSource source = new InputSource(inputStream);
-        return load(source, uri);
+        finally {
+            closeStream(inputStream);
+        }
     }
 
     /**
@@ -203,6 +207,22 @@ final class ImportControlLoader extends AbstractLoader {
     }
 
     /**
+     * This method exists only due to bug in cobertura library
+     * https://github.com/cobertura/cobertura/issues/170
+     * @param inputStream the InputStream to close
+     * @throws CheckstyleException if an error occurs.
+     */
+    private static void closeStream(InputStream inputStream) throws CheckstyleException {
+        if (inputStream != null) {
+            try {
+                inputStream.close();
+            } catch (IOException ex) {
+                throw new CheckstyleException("unable to close input stream", ex);
+            }
+        }
+    }
+
+    /**
      * @return the root {@link ImportControl} object loaded.
      */
     private ImportControl getRoot() {
@@ -221,6 +241,8 @@ final class ImportControlLoader extends AbstractLoader {
             throws SAXException {
         final String returnValue = attributes.getValue(name);
         if (returnValue == null) {
+            // -@cs[IllegalInstantiation] SAXException is in the overridden method signature
+            // of the only method which calls the current one
             throw new SAXException("missing attribute " + name);
         }
         return returnValue;

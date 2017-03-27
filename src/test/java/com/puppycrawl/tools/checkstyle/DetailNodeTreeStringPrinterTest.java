@@ -22,10 +22,12 @@ package com.puppycrawl.tools.checkstyle;
 import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
 
 import java.io.File;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
@@ -54,6 +56,7 @@ public class DetailNodeTreeStringPrinterTest {
 
     @Test
     public void testParseFileWithError() throws Exception {
+        LocalizedMessage.setLocale(Locale.ROOT);
         try {
             DetailNodeTreeStringPrinter.printFileAst(
                     new File(getPath("InputJavadocWithError.javadoc")));

@@ -363,6 +363,7 @@ public final class LocalizedMessage
      * @param locale the locale to use for localization
      */
     public static void setLocale(Locale locale) {
+        clearCache();
         if (Locale.ENGLISH.getLanguage().equals(locale.getLanguage())) {
             sLocale = Locale.ROOT;
         }
@@ -393,12 +394,12 @@ public final class LocalizedMessage
     /**
      * <p>
      * Custom ResourceBundle.Control implementation which allows explicitly read
-     * the properties files as UTF-8
+     * the properties files as UTF-8.
      * </p>
      *
      * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
      */
-    protected static class Utf8Control extends Control {
+    public static class Utf8Control extends Control {
         @Override
         public ResourceBundle newBundle(String aBaseName, Locale aLocale, String aFormat,
                  ClassLoader aLoader, boolean aReload) throws IOException {
