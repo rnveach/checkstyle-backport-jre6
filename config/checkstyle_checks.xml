@@ -18,7 +18,7 @@
 
   <property name="severity" value="error"/>
 
-  <property name="fileExtensions" value="java, properties, xml, vm, g, g4"/>
+  <property name="fileExtensions" value="java, properties, xml, vm, g, g4, dtd"/>
 
   <!-- BeforeExecutionFileFilters is required for sources that are based on java9 -->
   <module name="BeforeExecutionExclusionFileFilter">
@@ -45,7 +45,7 @@
   </module>
   <module name="SuppressWarningsFilter"/>
   <module name="SuppressWithNearbyCommentFilter">
-    <property name="commentFormat" value="-@cs\[(\w{8,})\] \w[\(\)\-\.\'\`\,\:\;\w ]{10,}"/>
+    <property name="commentFormat" value="-@cs\[(\w{8,}(\|\w{8,})*)\] \w[\(\)\-\.\'\`\,\:\;\w ]{10,}"/>
     <property name="checkFormat" value="$1"/>
     <property name="influenceFormat" value="3"/>
   </module>
@@ -161,6 +161,17 @@
       <property name="tokens" value="ARRAY_INIT"/>
       <property name="tokens" value="LITERAL_DEFAULT"/>
       <property name="tokens" value="LITERAL_CASE"/>
+      <property name="tokens" value="INSTANCE_INIT"/>
+      <property name="tokens" value="LITERAL_DO"/>
+      <property name="tokens" value="LITERAL_ELSE"/>
+      <property name="tokens" value="LITERAL_FINALLY"/>
+      <property name="tokens" value="LITERAL_FOR"/>
+      <property name="tokens" value="LITERAL_IF"/>
+      <property name="tokens" value="LITERAL_SWITCH"/>
+      <property name="tokens" value="LITERAL_SYNCHRONIZED"/>
+      <property name="tokens" value="LITERAL_TRY"/>
+      <property name="tokens" value="LITERAL_WHILE"/>
+      <property name="tokens" value="STATIC_INIT"/>
       <property name="option" value="text"/>
     </module>
     <module name="EmptyCatchBlock"/>
@@ -180,6 +191,11 @@
       <property name="tokens" value="LITERAL_FOR"/>
       <property name="tokens" value="STATIC_INIT"/>
       <property name="tokens" value="LITERAL_WHILE"/>
+      <property name="tokens" value="LITERAL_CATCH"/>
+      <property name="tokens" value="LITERAL_ELSE"/>
+      <property name="tokens" value="LITERAL_FINALLY"/>
+      <property name="tokens" value="LITERAL_IF"/>
+      <property name="tokens" value="LITERAL_TRY"/>
       <property name="option" value="alone"/>
     </module>
     <module name="RightCurly">
@@ -264,6 +280,10 @@
     <module name="RequireThis"/>
     <module name="ReturnCount">
       <property name="maxForVoid" value="0"/>
+    </module>
+    <module name="ReturnCount">
+      <property name="id" value="returnCountMaxOne"/>
+      <property name="max" value="1"/>
     </module>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
@@ -453,10 +473,12 @@
       <property name="tokens" value="UNARY_MINUS"/>
       <property name="tokens" value="UNARY_PLUS"/>
       <property name="tokens" value="ARRAY_DECLARATOR"/>
+      <property name="tokens" value="INDEX_OP"/>
     </module>
     <module name="NoWhitespaceBefore"/>
     <module name="NoWhitespaceBefore">
       <property name="tokens" value="DOT"/>
+      <property name="tokens" value="METHOD_REF"/>
       <property name="allowLineBreaks" value="true"/>
     </module>
     <module name="OperatorWrap">
@@ -505,6 +527,7 @@
     <module name="SeparatorWrap">
       <property name="tokens" value="DOT"/>
       <property name="tokens" value="AT"/>
+      <property name="tokens" value="METHOD_REF"/>
       <property name="option" value="nl"/>
     </module>
     <module name="SeparatorWrap">

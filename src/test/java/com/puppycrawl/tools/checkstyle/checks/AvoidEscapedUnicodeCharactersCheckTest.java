@@ -347,8 +347,9 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends BaseCheckTestSupport
         final String message = getCheckMessage(MSG_KEY);
         final List<String> expected = new ArrayList<String>();
         for (int val = 0; val < 0x10000; val++) {
-            if (!isControlCharacter(val))
+            if (!isControlCharacter(val)) {
                 expected.add(indexOfStartLineInInputFile + val + ": " + message);
+            }
         }
         verify(checkConfig, getPath("InputAllEscapedUnicodeCharacters.java"), expected.toArray(new String[expected.size()]));
     }

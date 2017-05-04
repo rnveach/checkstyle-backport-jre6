@@ -365,6 +365,7 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      * @return Some javadoc.
      */
     private boolean hasAllowedAnnotations(DetailAST methodDef) {
+        boolean result = false;
         final DetailAST modifiersNode = methodDef.findFirstToken(TokenTypes.MODIFIERS);
         DetailAST annotationNode = modifiersNode.findFirstToken(TokenTypes.ANNOTATION);
         while (annotationNode != null && annotationNode.getType() == TokenTypes.ANNOTATION) {
@@ -374,11 +375,12 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
                     .findFirstToken(TokenTypes.IDENT);
             }
             if (allowedAnnotations.contains(identNode.getText())) {
-                return true;
+                result = true;
+                break;
             }
             annotationNode = annotationNode.getNextSibling();
         }
-        return false;
+        return result;
     }
 
     /**
@@ -445,16 +447,17 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      * @return true if given method name matches the regex.
      */
     private boolean matchesSkipRegex(DetailAST methodDef) {
+        boolean result = false;
         if (ignoreMethodNamesRegex != null) {
             final DetailAST ident = methodDef.findFirstToken(TokenTypes.IDENT);
             final String methodName = ident.getText();
 
             final Matcher matcher = ignoreMethodNamesRegex.matcher(methodName);
             if (matcher.matches()) {
-                return true;
+                result = true;
             }
         }
-        return false;
+        return result;
     }
 
     /**
@@ -520,20 +523,20 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      * @param tags the list of Javadoc tags associated with the construct
      * @return true if the construct has a short circuit tag.
      */
-    private boolean hasShortCircuitTag(final DetailAST ast,
-            final List<JavadocTag> tags) {
+    private boolean hasShortCircuitTag(final DetailAST ast, final List<JavadocTag> tags) {
+        boolean result = true;
         // Check if it contains {@inheritDoc} tag
-        if (tags.size() != 1
-                || !tags.get(0).isInheritDocTag()) {
-            return false;
+        if (tags.size() == 1
+                && tags.get(0).isInheritDocTag()) {
+            // Invalid if private, a constructor, or a static method
+            if (!JavadocTagInfo.INHERIT_DOC.isValidOn(ast)) {
+                log(ast, MSG_INVALID_INHERIT_DOC);
+            }
         }
-
-        // Invalid if private, a constructor, or a static method
-        if (!JavadocTagInfo.INHERIT_DOC.isValidOn(ast)) {
-            log(ast, MSG_INVALID_INHERIT_DOC);
+        else {
+            result = false;
         }
-
-        return true;
+        return result;
     }
 
     /**
@@ -546,14 +549,15 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      */
     private static Scope calculateScope(final DetailAST ast) {
         final DetailAST mods = ast.findFirstToken(TokenTypes.MODIFIERS);
-        final Scope declaredScope = ScopeUtils.getScopeFromMods(mods);
+        final Scope scope;
 
         if (ScopeUtils.isInInterfaceOrAnnotationBlock(ast)) {
-            return Scope.PUBLIC;
+            scope = Scope.PUBLIC;
         }
         else {
-            return declaredScope;
+            scope = ScopeUtils.getScopeFromMods(mods);
         }
+        return scope;
     }
 
     /**
@@ -944,14 +948,12 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
         ExceptionInfo foundException = null;
 
         // First look for matches on the exception name
-        final ListIterator<ExceptionInfo> throwIt = throwsList.listIterator();
-        while (!found && throwIt.hasNext()) {
-            final ExceptionInfo exceptionInfo = throwIt.next();
-
+        for (ExceptionInfo exceptionInfo : throwsList) {
             if (exceptionInfo.getName().getText().equals(
                     documentedClassInfo.getName().getText())) {
                 found = true;
                 foundException = exceptionInfo;
+                break;
             }
         }
 

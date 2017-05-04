@@ -132,6 +132,7 @@ public final class CommonUtils {
             for (final String fileExtension : withDotExtensions) {
                 if (fileName.endsWith(fileExtension)) {
                     result = true;
+                    break;
                 }
             }
         }
@@ -149,12 +150,14 @@ public final class CommonUtils {
      * @return whether there is only whitespace
      */
     public static boolean hasWhitespaceBefore(int index, String line) {
+        boolean result = true;
         for (int i = 0; i < index; i++) {
             if (!Character.isWhitespace(line.charAt(i))) {
-                return false;
+                result = false;
+                break;
             }
         }
-        return true;
+        return result;
     }
 
     /**
@@ -213,13 +216,14 @@ public final class CommonUtils {
      * @return true if the pattern is valid false otherwise
      */
     public static boolean isPatternValid(String pattern) {
+        boolean isValid = true;
         try {
             Pattern.compile(pattern);
         }
         catch (final PatternSyntaxException ignored) {
-            return false;
+            isValid = false;
         }
-        return true;
+        return isValid;
     }
 
     /**
@@ -228,14 +232,15 @@ public final class CommonUtils {
      * @return the base class name from a fully qualified name
      */
     public static String baseClassName(String type) {
+        final String className;
         final int index = type.lastIndexOf('.');
-
         if (index == -1) {
-            return type;
+            className = type;
         }
         else {
-            return type.substring(index + 1);
+            className = type.substring(index + 1);
         }
+        return className;
     }
 
     /**
@@ -249,12 +254,16 @@ public final class CommonUtils {
      *     path or path if base directory is null.
      */
     public static String relativizeAndNormalizePath(final String baseDirectory, final String path) {
+        final String resultPath;
         if (baseDirectory == null) {
-            return path;
+            resultPath = path;
         }
-        final Path pathAbsolute = Paths.get(path).normalize();
-        final Path pathBase = Paths.get(baseDirectory).normalize();
-        return pathBase.relativize(pathAbsolute).toString();
+        else {
+            final Path pathAbsolute = Paths.get(path).normalize();
+            final Path pathBase = Paths.get(baseDirectory).normalize();
+            resultPath = pathBase.relativize(pathAbsolute).toString();
+        }
+        return resultPath;
     }
 
     /**
@@ -475,5 +484,41 @@ public final class CommonUtils {
             extension = fileName.substring(dotIndex + 1);
         }
         return extension;
+    }
+
+    /**
+     * Checks whether the given string is a valid identifier.
+     * @param str A string to check.
+     * @return true when the given string contains valid identifier.
+     */
+    public static boolean isIdentifier(String str) {
+        boolean isIdentifier = !str.isEmpty();
+
+        for (int i = 0; isIdentifier && i < str.length(); i++) {
+            if (i == 0) {
+                isIdentifier = Character.isJavaIdentifierStart(str.charAt(0));
+            }
+            else {
+                isIdentifier = Character.isJavaIdentifierPart(str.charAt(i));
+            }
+        }
+
+        return isIdentifier;
+    }
+
+    /**
+     * Checks whether the given string is a valid name.
+     * @param str A string to check.
+     * @return true when the given string contains valid name.
+     */
+    public static boolean isName(String str) {
+        boolean isName = !str.isEmpty();
+
+        final String[] identifiers = str.split("\\.", -1);
+        for (int i = 0; isName && i < identifiers.length; i++) {
+            isName = isIdentifier(identifiers[i]);
+        }
+
+        return isName;
     }
 }

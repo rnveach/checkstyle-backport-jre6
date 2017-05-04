@@ -38,7 +38,7 @@ public class FinalLocalVariableCheckTest
     @Override
     protected String getPath(String filename) throws IOException {
         return super.getPath("checks" + File.separator
-                + "coding" + File.separator + filename);
+                + "coding" + File.separator + "finallocalvariable" + File.separator + filename);
     }
 
     @Override
@@ -254,5 +254,14 @@ public class FinalLocalVariableCheckTest
         final DefaultConfiguration checkConfig = createCheckConfig(FinalLocalVariableCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputFinalLocalVariableLeavingSlistToken.java"), expected);
+    }
+
+    @Test
+    public void testBreakOrReturn() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(FinalLocalVariableCheck.class);
+        final String[] expected = {
+            "7:19: " + getCheckMessage(MSG_KEY, "e"),
+        };
+        verify(checkConfig, getPath("InputFinalLocalVariableBreak.java"), expected);
     }
 }

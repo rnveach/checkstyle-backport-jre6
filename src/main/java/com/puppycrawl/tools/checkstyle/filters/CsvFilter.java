@@ -89,12 +89,14 @@ class CsvFilter implements IntFilter {
      */
     @Override
     public boolean accept(int intValue) {
+        boolean result = false;
         for (IntFilter filter : getFilters()) {
             if (filter.accept(intValue)) {
-                return true;
+                result = true;
+                break;
             }
         }
-        return false;
+        return result;
     }
 
     @Override

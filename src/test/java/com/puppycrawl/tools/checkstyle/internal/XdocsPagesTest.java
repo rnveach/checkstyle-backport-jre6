@@ -253,7 +253,7 @@ public class XdocsPagesTest {
             final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("section");
-            String lastSectioName = null;
+            String lastSectionName = null;
 
             for (int position = 0; position < sources.getLength(); position++) {
                 final Node section = sources.item(position);
@@ -262,23 +262,23 @@ public class XdocsPagesTest {
 
                 if ("Content".equals(sectionName) || "Overview".equals(sectionName)) {
                     Assert.assertNull(fileName + " section '" + sectionName + "' should be first",
-                            lastSectioName);
+                            lastSectionName);
                     continue;
                 }
 
                 Assert.assertTrue(fileName + " section '" + sectionName
                         + "' shouldn't end with 'Check'", !sectionName.endsWith("Check"));
-                if (lastSectioName != null) {
+                if (lastSectionName != null) {
                     Assert.assertTrue(
                             fileName + " section '" + sectionName
-                                    + "' is out of order compared to '" + lastSectioName + "'",
+                                    + "' is out of order compared to '" + lastSectionName + "'",
                             sectionName.toLowerCase(Locale.ENGLISH).compareTo(
-                                    lastSectioName.toLowerCase(Locale.ENGLISH)) >= 0);
+                                    lastSectionName.toLowerCase(Locale.ENGLISH)) >= 0);
                 }
 
                 validateCheckSection(moduleFactory, fileName, sectionName, section);
 
-                lastSectioName = sectionName;
+                lastSectionName = sectionName;
             }
         }
     }
@@ -974,7 +974,7 @@ public class XdocsPagesTest {
             }
 
             Assert.assertEquals(fileName + " rule '" + ruleName + "' anchor " + position
-                    + " shoud have matching name/url", expectedUrl, actualUrl);
+                    + " should have matching name/url", expectedUrl, actualUrl);
 
             position++;
         }

@@ -35,11 +35,12 @@ public class AvoidInlineConditionalsCheckTest
     @Override
     protected String getPath(String filename) throws IOException {
         return super.getPath("checks" + File.separator
-                + "coding" + File.separator + filename);
+                + "coding" + File.separator
+                + "avoidinlineconditionals" + File.separator + filename);
     }
 
     @Test
-    public void testIt()
+    public void testDefault()
             throws Exception {
         final DefaultConfiguration checkConfig =
             createCheckConfig(AvoidInlineConditionalsCheck.class);
@@ -48,7 +49,7 @@ public class AvoidInlineConditionalsCheckTest
             "33:20: " + getCheckMessage(MSG_KEY),
             "46:34: " + getCheckMessage(MSG_KEY),
         };
-        verify(checkConfig, getPath("InputWhitespace.java"), expected);
+        verify(checkConfig, getPath("InputAvoidInlineConditionals.java"), expected);
     }
 
     @Test

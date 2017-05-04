@@ -35,7 +35,7 @@ public class ArrayTrailingCommaCheckTest
     @Override
     protected String getPath(String filename) throws IOException {
         return super.getPath("checks" + File.separator
-                + "coding" + File.separator + filename);
+                + "coding" + File.separator + "arraytrailingcomma" + File.separator + filename);
     }
 
     @Test
@@ -45,7 +45,6 @@ public class ArrayTrailingCommaCheckTest
             createCheckConfig(ArrayTrailingCommaCheck.class);
         final String[] expected = {
             "17: " + getCheckMessage(MSG_KEY),
-            "34: " + getCheckMessage(MSG_KEY),
             "37: " + getCheckMessage(MSG_KEY),
         };
         verify(checkConfig, getPath("InputArrayTrailingComma.java"), expected);

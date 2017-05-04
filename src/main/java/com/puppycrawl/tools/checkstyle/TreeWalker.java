@@ -152,7 +152,9 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
         final Object module = moduleFactory.createModule(name);
         if (!(module instanceof AbstractCheck)) {
             throw new CheckstyleException(
-                "TreeWalker is not allowed as a parent of " + name);
+                "TreeWalker is not allowed as a parent of " + name
+                        + " Please review 'Parent Module' section for this Check in web"
+                        + " documentation if Check is standard.");
         }
         final AbstractCheck check = (AbstractCheck) module;
         check.contextualize(childContext);
@@ -471,11 +473,11 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
     @Override
     public Set<String> getExternalResourceLocations() {
-        final Set<String> orinaryChecksResources = getExternalResourceLocations(ordinaryChecks);
+        final Set<String> ordinaryChecksResources = getExternalResourceLocations(ordinaryChecks);
         final Set<String> commentChecksResources = getExternalResourceLocations(commentChecks);
-        final int resultListSize = orinaryChecksResources.size() + commentChecksResources.size();
+        final int resultListSize = ordinaryChecksResources.size() + commentChecksResources.size();
         final Set<String> resourceLocations = new HashSet<String>(resultListSize);
-        resourceLocations.addAll(orinaryChecksResources);
+        resourceLocations.addAll(ordinaryChecksResources);
         resourceLocations.addAll(commentChecksResources);
         return resourceLocations;
     }
@@ -589,12 +591,14 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * @return true if position of ast1 is greater than position of ast2.
      */
     private static boolean isPositionGreater(DetailAST ast1, DetailAST ast2) {
+        final boolean isGreater;
         if (ast1.getLineNo() == ast2.getLineNo()) {
-            return ast1.getColumnNo() > ast2.getColumnNo();
+            isGreater = ast1.getColumnNo() > ast2.getColumnNo();
         }
         else {
-            return ast1.getLineNo() > ast2.getLineNo();
+            isGreater = ast1.getLineNo() > ast2.getLineNo();
         }
+        return isGreater;
     }
 
     /**
@@ -605,12 +609,14 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * @return DetailAST of comment node.
      */
     private static DetailAST createCommentAstFromToken(Token token) {
+        final DetailAST commentAst;
         if (token.getType() == TokenTypes.SINGLE_LINE_COMMENT) {
-            return createSlCommentNode(token);
+            commentAst = createSlCommentNode(token);
         }
         else {
-            return createBlockCommentNode(token);
+            commentAst = createBlockCommentNode(token);
         }
+        return commentAst;
     }
 
     /**

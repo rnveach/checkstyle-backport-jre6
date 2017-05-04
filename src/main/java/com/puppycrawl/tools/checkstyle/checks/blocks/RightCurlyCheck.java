@@ -50,6 +50,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  *  {@link TokenTypes#LITERAL_DO LITERAL_DO}.
  *  {@link TokenTypes#STATIC_INIT STATIC_INIT}.
  *  {@link TokenTypes#INSTANCE_INIT INSTANCE_INIT}.
+ *  {@link TokenTypes#LAMBDA LAMBDA}.
  * </p>
  * <p>
  * <b>shouldStartLine</b> - does the check need to check
@@ -160,6 +161,7 @@ public class RightCurlyCheck extends AbstractCheck {
             TokenTypes.LITERAL_DO,
             TokenTypes.STATIC_INIT,
             TokenTypes.INSTANCE_INIT,
+            TokenTypes.LAMBDA,
         };
     }
 
@@ -188,18 +190,9 @@ public class RightCurlyCheck extends AbstractCheck {
      *     if there was not violation during validation.
      */
     private String validate(Details details) {
-        final DetailAST rcurly = details.rcurly;
-        final DetailAST nextToken = details.nextToken;
-        final boolean shouldCheckLastRcurly = details.shouldCheckLastRcurly;
         String violation = "";
         if (shouldHaveLineBreakBefore(option, details)) {
             violation = MSG_KEY_LINE_BREAK_BEFORE;
-        }
-        else if (shouldCheckLastRcurly
-                 && option != RightCurlyOption.ALONE) {
-            if (rcurly.getLineNo() == nextToken.getLineNo()) {
-                violation = MSG_KEY_LINE_ALONE;
-            }
         }
         else if (shouldBeOnSameLine(option, details)) {
             violation = MSG_KEY_LINE_SAME;
@@ -208,7 +201,7 @@ public class RightCurlyCheck extends AbstractCheck {
             violation = MSG_KEY_LINE_ALONE;
         }
         else if (shouldStartLine) {
-            final String targetSourceLine = getLines()[rcurly.getLineNo() - 1];
+            final String targetSourceLine = getLines()[details.rcurly.getLineNo() - 1];
             if (!isOnStartOfLine(details, targetSourceLine)) {
                 violation = MSG_KEY_LINE_NEW;
             }
@@ -237,6 +230,7 @@ public class RightCurlyCheck extends AbstractCheck {
      */
     private static boolean shouldBeOnSameLine(RightCurlyOption bracePolicy, Details details) {
         return bracePolicy == RightCurlyOption.SAME
+                && !details.shouldCheckLastRcurly
                 && details.rcurly.getLineNo() != details.nextToken.getLineNo();
     }
 
@@ -248,10 +242,31 @@ public class RightCurlyCheck extends AbstractCheck {
      */
     private static boolean shouldBeAloneOnLine(RightCurlyOption bracePolicy, Details details) {
         return bracePolicy == RightCurlyOption.ALONE
-                && !isAloneOnLine(details)
-                && !isEmptyBody(details.lcurly)
+                    && shouldBeAloneOnLineWithAloneOption(details)
                 || bracePolicy == RightCurlyOption.ALONE_OR_SINGLELINE
-                && !isAloneOnLine(details)
+                    && shouldBeAloneOnLineWithAloneOrSinglelineOption(details)
+                || details.shouldCheckLastRcurly
+                    && details.rcurly.getLineNo() == details.nextToken.getLineNo();
+    }
+
+    /**
+     * Whether right curly should be alone on line when ALONE option is used.
+     * @param details details for validation.
+     * @return true, if right curly should be alone on line when ALONE option is used.
+     */
+    private static boolean shouldBeAloneOnLineWithAloneOption(Details details) {
+        return !isAloneOnLine(details)
+                && !isEmptyBody(details.lcurly);
+    }
+
+    /**
+     * Whether right curly should be alone on line when ALONE_OR_SINGLELINE option is used.
+     * @param details details for validation.
+     * @return true, if right curly should be alone on line
+     *         when ALONE_OR_SINGLELINE option is used.
+     */
+    private static boolean shouldBeAloneOnLineWithAloneOrSinglelineOption(Details details) {
+        return !isAloneOnLine(details)
                 && !isSingleLineBlock(details)
                 && !isAnonInnerClassInit(details.lcurly)
                 && !isEmptyBody(details.lcurly);
@@ -308,10 +323,10 @@ public class RightCurlyCheck extends AbstractCheck {
      * Collects validation details.
      * @param ast detail ast.
      * @return object that contain all details to make a validation.
+     * @noinspection SwitchStatementDensity
      */
-    // -@cs[JavaNCSS] getDetails() method is a huge SWITCH, it has to be monolithic
-    // -@cs[ExecutableStatementCount] getDetails() method is a huge SWITCH, it has to be monolithic
-    // -@cs[NPathComplexity] getDetails() method is a huge SWITCH, it has to be monolithic
+    // -@cs[JavaNCSS|ExecutableStatementCount|CyclomaticComplexity|NPathComplexity] getDetails()
+    // method is a huge SWITCH, it has to be monolithic
     private static Details getDetails(DetailAST ast) {
         // Attempt to locate the tokens to do the check
         boolean shouldCheckLastRcurly = false;
@@ -383,6 +398,18 @@ public class RightCurlyCheck extends AbstractCheck {
             case TokenTypes.LITERAL_DO:
                 nextToken = ast.findFirstToken(TokenTypes.DO_WHILE);
                 lcurly = ast.findFirstToken(TokenTypes.SLIST);
+                if (lcurly != null) {
+                    rcurly = lcurly.getLastChild();
+                }
+                break;
+            case TokenTypes.LAMBDA:
+                lcurly = ast.findFirstToken(TokenTypes.SLIST);
+                nextToken = getNextToken(ast);
+                if (nextToken.getType() != TokenTypes.RPAREN
+                        && nextToken.getType() != TokenTypes.COMMA) {
+                    shouldCheckLastRcurly = true;
+                    nextToken = getNextToken(nextToken);
+                }
                 if (lcurly != null) {
                     rcurly = lcurly.getLastChild();
                 }

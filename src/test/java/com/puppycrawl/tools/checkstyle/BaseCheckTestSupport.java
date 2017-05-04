@@ -230,7 +230,7 @@ public class BaseCheckTestSupport {
     }
 
     /**
-     *  We keep two verify methods with separate logic only for convenience of debuging
+     *  We keep two verify methods with separate logic only for convenience of debugging
      *  We have minimum amount of multi-file test cases
      */
     protected void verify(Checker checker,
@@ -416,12 +416,16 @@ public class BaseCheckTestSupport {
     }
 
     private static String getMessageBundle(String className) {
-        final int endIndex = className.lastIndexOf('.');
+        final String messageBundle;
         final String messages = "messages";
+        final int endIndex = className.lastIndexOf('.');
         if (endIndex < 0) {
-            return messages;
+            messageBundle = messages;
         }
-        final String packageName = className.substring(0, endIndex);
-        return packageName + "." + messages;
+        else {
+            final String packageName = className.substring(0, endIndex);
+            messageBundle = packageName + "." + messages;
+        }
+        return messageBundle;
     }
 }

@@ -94,6 +94,7 @@ public class NoWhitespaceBeforeCheck
             TokenTypes.GENERIC_START,
             TokenTypes.GENERIC_END,
             TokenTypes.ELLIPSIS,
+            TokenTypes.METHOD_REF,
         };
     }
 
@@ -115,6 +116,7 @@ public class NoWhitespaceBeforeCheck
             for (int i = 0; !flag && i < before; i++) {
                 if (!Character.isWhitespace(line.charAt(i))) {
                     flag = true;
+                    break;
                 }
             }
             if (flag) {

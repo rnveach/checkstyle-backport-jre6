@@ -29,6 +29,7 @@
 
     <!-- Tone down the checking for test code -->
     <suppress checks="CyclomaticComplexity" files="[\\/]XdocsPagesTest\.java"/>
+    <suppress checks="NPathComplexity" files="[\\/]XdocsPagesTest\.java"/>
     <suppress checks="IllegalCatch" files="[\\/]internal[\\/]\w+Util\.java"/>
     <suppress checks="EmptyBlock" files=".*[\\/]src[\\/]test[\\/]"/>
     <suppress checks="ImportControl" files=".*[\\/]src[\\/](test|it)[\\/]"/>
@@ -78,6 +79,7 @@
     <suppress checks="ClassDataAbstractionCoupling" files="(CheckerTest|TreeWalkerTest|BaseCheckTestSupport|XdocsPagesTest|CheckstyleAntTaskTest)\.java"/>
     <suppress checks="ClassDataAbstractionCoupling" files="PropertyCacheFile\.java"/>
     <suppress checks="ClassFanOutComplexity" files="[\\/]Main\.java"/>
+    <suppress checks="ClassFanOutComplexity" files="CheckstyleAntTask\.java"/>
     <!-- a lot of GUI elements is OK -->
     <suppress checks="ClassDataAbstractionCoupling" files="(TreeTable|MainFrame)\.java"/>
 
@@ -90,4 +92,6 @@
     <suppress checks="CyclomaticComplexity" files="JavadocStyleCheck\.java"/>
     <suppress checks="CyclomaticComplexity" files="CustomImportOrderCheck\.java"/>
 
+    <!-- Until https://github.com/checkstyle/checkstyle/issues/3496 -->
+    <suppress id="returnCountMaxOne" files=".*[\\/]coding[\\/]|.*[\\/]indentation[\\/]"/>
 </suppressions>

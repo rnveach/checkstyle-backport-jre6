@@ -44,4 +44,8 @@ public final class Objects {
 
         return obj;
     }
+
+    public static boolean nonNull(Object obj) {
+        return obj != null;
+    }
 }

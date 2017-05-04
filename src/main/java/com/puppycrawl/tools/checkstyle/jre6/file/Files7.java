@@ -19,11 +19,18 @@
 
 package com.puppycrawl.tools.checkstyle.jre6.file;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public final class Files7 {
     private Files7() {
@@ -39,6 +46,16 @@ public final class Files7 {
 
     public static void delete(Path path) {
         path.getFile().delete();
+    }
+
+    public static BufferedReader newBufferedReader(Path path) throws IOException {
+        return newBufferedReader(path, StandardCharsets.UTF_8);
+    }
+
+    public static BufferedReader newBufferedReader(Path path, Charset cs) throws IOException {
+        CharsetDecoder decoder = cs.newDecoder();
+        Reader reader = new InputStreamReader(new FileInputStream(path.getFile()), decoder);
+        return new BufferedReader(reader);
     }
 
     public static byte[] readAllBytes(Path path) throws IOException {

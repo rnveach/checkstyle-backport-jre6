@@ -87,11 +87,11 @@ public class SuppressWarningsHolder
      * @return the default alias for the given check
      */
     public static String getDefaultAlias(String sourceName) {
-        final int startIndex = sourceName.lastIndexOf('.') + 1;
         int endIndex = sourceName.length();
         if (sourceName.endsWith(CHECK_SUFFIX)) {
             endIndex -= CHECK_SUFFIX.length();
         }
+        final int startIndex = sourceName.lastIndexOf('.') + 1;
         return sourceName.substring(startIndex, endIndex).toLowerCase(Locale.ENGLISH);
     }
 
@@ -166,6 +166,7 @@ public class SuppressWarningsHolder
                 && event.getModuleId().equals(entry.getCheckName());
             if (afterStart && beforeEnd && (nameMatches || idMatches)) {
                 suppressed = true;
+                break;
             }
         }
         return suppressed;
@@ -407,16 +408,18 @@ public class SuppressWarningsHolder
      * @throws IllegalArgumentException if the AST is invalid
      */
     private static String getIdentifier(DetailAST ast) {
-        if (ast != null) {
-            if (ast.getType() == TokenTypes.IDENT) {
-                return ast.getText();
-            }
-            else {
-                return getIdentifier(ast.getFirstChild()) + "."
-                        + getIdentifier(ast.getLastChild());
-            }
+        if (ast == null) {
+            throw new IllegalArgumentException("Identifier AST expected, but get null.");
         }
-        throw new IllegalArgumentException("Identifier AST expected, but get null.");
+        final String identifier;
+        if (ast.getType() == TokenTypes.IDENT) {
+            identifier = ast.getText();
+        }
+        else {
+            identifier = getIdentifier(ast.getFirstChild()) + "."
+                + getIdentifier(ast.getLastChild());
+        }
+        return identifier;
     }
 
     /**
@@ -456,17 +459,19 @@ public class SuppressWarningsHolder
      * @throws IllegalArgumentException if the AST is invalid
      */
     private static List<String> getAnnotationValues(DetailAST ast) {
+        final List<String> annotationValues;
         switch (ast.getType()) {
             case TokenTypes.EXPR:
-                return Collections.singletonList(getStringExpr(ast));
-
+                annotationValues = Collections.singletonList(getStringExpr(ast));
+                break;
             case TokenTypes.ANNOTATION_ARRAY_INIT:
-                return findAllExpressionsInChildren(ast);
-
+                annotationValues = findAllExpressionsInChildren(ast);
+                break;
             default:
                 throw new IllegalArgumentException(
                         "Expression or annotation array initializer AST expected: " + ast);
         }
+        return annotationValues;
     }
 
     /**

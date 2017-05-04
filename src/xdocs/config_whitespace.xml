@@ -1110,7 +1110,8 @@ import static java.math.BigInteger.ZERO;
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#DOT">DOT</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#GENERIC_START">GENERIC_START</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#GENERIC_END">GENERIC_END</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELLIPSIS">ELLIPSIS</a>.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELLIPSIS">ELLIPSIS</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELLIPSIS">METHOD_REF</a>.
             </td>
             <td>
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMMA">COMMA</a>,
@@ -1391,6 +1392,8 @@ import static java.math.BigInteger.ZERO;
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">CTOR_DEF</a>,
               <a
+              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#DOT">DOT</a>,
+              <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_CONSTANT_DEF">ENUM_CONSTANT_DEF</a>,
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#EXPR">EXPR</a>,
@@ -1433,6 +1436,8 @@ import static java.math.BigInteger.ZERO;
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_CALL">CTOR_CALL</a>,
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">CTOR_DEF</a>,
+              <a
+              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#DOT">DOT</a>,
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_CONSTANT_DEF">ENUM_CONSTANT_DEF</a>,
               <a
@@ -1591,7 +1596,9 @@ import static java.math.BigInteger.ZERO;
                     <a
                      href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ARRAY_DECLARATOR">ARRAY_DECLARATOR</a>,
                      <a
-                      href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RBRACK">RBRACK</a>.
+                      href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RBRACK">RBRACK</a>,
+                      <a
+                       href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_REF">METHOD_REF</a>.
             </td>
 
             <td>
@@ -1628,6 +1635,25 @@ s.
     isEmpty();
 foo(i,
     s);
+        </source>
+        <p>
+          Example for checking method reference at new line (good case and bad case):
+        </p>
+        <source>
+Arrays.sort(stringArray, String:: // violation
+    compareToIgnoreCase);
+Arrays.sort(stringArray, String
+    ::compareToIgnoreCase); // good
+        </source>
+        <p>
+          An example of how to configure the check for <a
+               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_REF">METHOD_REF</a> at new line:
+        </p>
+        <source>
+&lt;module name="SeparatorWrap"&gt;
+    &lt;property name="tokens" value="METHOD_REF"/&gt;
+    &lt;property name="option" value="nl"/&gt;
+&lt;/module&gt;
         </source>
         <p>
           An example of how to configure the check for comma at the new line is:

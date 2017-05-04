@@ -222,16 +222,18 @@ public class BaseCheckTestSupport {
      */
     protected String getCheckMessage(Class<? extends AbstractViolationReporter> aClass,
             String messageKey, Object... arguments) {
-        final Properties pr = new Properties();
+        String checkMessage;
         try {
+            final Properties pr = new Properties();
             pr.load(aClass.getResourceAsStream("messages.properties"));
+            final MessageFormat formatter = new MessageFormat(pr.getProperty(messageKey),
+                    Locale.ROOT);
+            checkMessage = formatter.format(arguments);
         }
         catch (IOException ex) {
-            return null;
+            checkMessage = null;
         }
-        final MessageFormat formatter = new MessageFormat(pr.getProperty(messageKey),
-                Locale.ROOT);
-        return formatter.format(arguments);
+        return checkMessage;
     }
 
     /**
@@ -241,13 +243,15 @@ public class BaseCheckTestSupport {
      */
     protected String getCheckMessage(Map<String, String> messages, String messageKey,
             Object... arguments) {
+        String checkMessage = null;
         for (Map.Entry<String, String> entry : messages.entrySet()) {
             if (messageKey.equals(entry.getKey())) {
                 final MessageFormat formatter = new MessageFormat(entry.getValue(), Locale.ROOT);
-                return formatter.format(arguments);
+                checkMessage = formatter.format(arguments);
+                break;
             }
         }
-        return null;
+        return checkMessage;
     }
 
     /**
@@ -322,11 +326,12 @@ public class BaseCheckTestSupport {
     }
 
     private static String removeDeviceFromPathOnWindows(String path) {
+        String fixedPath = path;
         final String os = System.getProperty("os.name", "Unix");
         if (os.startsWith("Windows")) {
-            return path.substring(path.indexOf(':') + 1);
+            fixedPath = path.substring(path.indexOf(':') + 1);
         }
-        return path;
+        return fixedPath;
     }
 
     /**

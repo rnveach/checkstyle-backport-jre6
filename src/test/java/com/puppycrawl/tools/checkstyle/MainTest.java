@@ -445,9 +445,9 @@ public class MainTest {
                 final String output = String.format(Locale.ROOT,
                         "Checkstyle ends with 1 errors.%n");
                 assertEquals(output, systemOut.getLog());
-                final String errorOuput = "com.puppycrawl.tools.checkstyle.api."
+                final String errorOutput = "com.puppycrawl.tools.checkstyle.api."
                     + "CheckstyleException: unable to parse configuration stream - ";
-                assertTrue(systemErr.getLog().startsWith(errorOuput));
+                assertTrue(systemErr.getLog().startsWith(errorOutput));
             }
         });
         Main.main("-c", getPath("config-Incorrect.xml"),
@@ -464,10 +464,10 @@ public class MainTest {
                 final String output = String.format(Locale.ROOT,
                         "Checkstyle ends with 1 errors.%n");
                 assertEquals(output, systemOut.getLog());
-                final String errorOuput = "com.puppycrawl.tools.checkstyle.api."
+                final String errorOutput = "com.puppycrawl.tools.checkstyle.api."
                         + "CheckstyleException: cannot initialize module RegexpSingleline"
                         + " - RegexpSingleline is not allowed as a child in RegexpSingleline";
-                assertTrue(systemErr.getLog().startsWith(errorOuput));
+                assertTrue(systemErr.getLog().startsWith(errorOutput));
             }
         });
         Main.main("-c", getPath("config-incorrectChildren.xml"),
@@ -484,10 +484,10 @@ public class MainTest {
                 final String output = String.format(Locale.ROOT,
                         "Checkstyle ends with 1 errors.%n");
                 assertEquals(output, systemOut.getLog());
-                final String errorOuput = "com.puppycrawl.tools.checkstyle.api."
+                final String errorOutput = "com.puppycrawl.tools.checkstyle.api."
                         + "CheckstyleException: cannot initialize module TreeWalker"
                         + " - JavadocVariable is not allowed as a child in JavadocMethod";
-                assertTrue(systemErr.getLog().startsWith(errorOuput));
+                assertTrue(systemErr.getLog().startsWith(errorOutput));
             }
         });
         Main.main("-c", getPath("config-incorrectChildren2.xml"),
@@ -576,7 +576,7 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() throws IOException {
-                final String expectedPath = getFilePath("checks/metrics") + File.separator;
+                final String expectedPath = getFilePath("main/") + File.separator;
                 final StringBuilder sb = new StringBuilder();
                 sb.append("Starting audit...").append(System.getProperty("line.separator"));
                 final String format = "[WARN] %s.java:%s: %s [FileLength]";
@@ -595,7 +595,7 @@ public class MainTest {
         });
 
         Main.main("-c", getPath("config-filelength.xml"),
-                getPath("checks/metrics"));
+                getPath("main/"));
     }
 
     @Test

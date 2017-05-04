@@ -49,7 +49,9 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
     @Override
     protected String getPath(String filename) throws IOException {
         return super.getPath("checks" + File.separator
-                + "blocks" + File.separator + filename);
+                + "blocks" + File.separator
+                + "rightcurly" + File.separator
+                + filename);
     }
 
     /* Additional test for jacoco, since valueOf()
@@ -71,7 +73,7 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "44:13: " + getCheckMessage(MSG_KEY_LINE_SAME, "}", 13),
             "93:27: " + getCheckMessage(MSG_KEY_LINE_BREAK_BEFORE, "}", 27),
         };
-        verify(checkConfig, getPath("InputLeftCurlyOther.java"), expected);
+        verify(checkConfig, getPath("InputRightCurlyLeft.java"), expected);
     }
 
     @Test
@@ -84,7 +86,7 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "44:13: " + getCheckMessage(MSG_KEY_LINE_SAME, "}", 13),
             "93:27: " + getCheckMessage(MSG_KEY_LINE_BREAK_BEFORE, "}", 27),
         };
-        verify(checkConfig, getPath("InputLeftCurlyOther.java"), expected);
+        verify(checkConfig, getPath("InputRightCurlyLeft.java"), expected);
     }
 
     @Test
@@ -101,7 +103,7 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "93:27: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 27),
             "97:72: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 72),
         };
-        verify(checkConfig, getPath("InputLeftCurlyOther.java"), expected);
+        verify(checkConfig, getPath("InputRightCurlyLeft.java"), expected);
     }
 
     @Test
@@ -116,7 +118,7 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "122:6: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 6),
             "136:6: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 6),
         };
-        verify(checkConfig, getPath("InputLeftCurlyOther.java"), expected);
+        verify(checkConfig, getPath("InputRightCurlyLeft.java"), expected);
     }
 
     @Test
@@ -127,7 +129,7 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "93:27: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 27),
             "97:72: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 72),
         };
-        verify(checkConfig, getPath("InputLeftCurlyOther.java"), expected);
+        verify(checkConfig, getPath("InputRightCurlyLeft.java"), expected);
     }
 
     @Test
@@ -138,7 +140,7 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "93:27: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 27),
             "97:72: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 72),
         };
-        verify(checkConfig, getPath("InputLeftCurlyOther.java"), expected);
+        verify(checkConfig, getPath("InputRightCurlyLeft.java"), expected);
     }
 
     @Test
@@ -258,7 +260,9 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "164:76: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 76),
             "164:77: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 77),
             "176:27: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 27),
-
+            "182:24: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 24),
+            "185:24: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 24),
+            "188:24: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 24),
         };
         verify(checkConfig, getPath("InputRightCurlyAloneOrSingleline.java"), expected);
     }
@@ -316,6 +320,8 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "11:9: " + getCheckMessage(MSG_KEY_LINE_SAME, "}", 9),
             "24:67: " + getCheckMessage(MSG_KEY_LINE_SAME, "}", 67),
+            "35:15: " + getCheckMessage(MSG_KEY_LINE_BREAK_BEFORE, "}", 15),
+            "37:13: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 13),
         };
         verify(checkConfig, getPath("InputRightCurlyTryResource.java"), expected);
     }
@@ -329,6 +335,8 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "25:35: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 35),
             "27:92: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 92),
             "33:67: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 67),
+            "35:15: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 15),
+            "37:13: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 13),
         };
         verify(checkConfig, getPath("InputRightCurlyTryResource.java"), expected);
     }
@@ -338,6 +346,8 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("option", RightCurlyOption.ALONE_OR_SINGLELINE.toString());
         final String[] expected = {
             "19:9: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 9),
+            "35:15: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 15),
+            "37:13: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 13),
         };
         verify(checkConfig, getPath("InputRightCurlyTryResource.java"), expected);
     }
@@ -351,5 +361,49 @@ public class RightCurlyCheckTest extends BaseCheckTestSupport {
             "7:47: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 47),
         };
         verify(checkConfig, getPath("InputRightCurlySingelineIfBlocks.java"), expected);
+    }
+
+    @Test
+    public void testRightCurlyIsAloneLambda() throws Exception {
+        checkConfig.addAttribute("option", RightCurlyOption.ALONE.toString());
+        checkConfig.addAttribute("tokens", "LAMBDA");
+        final String[] expected = {
+            "14:74: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 74),
+            "17:49: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 49),
+            "35:5: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 5),
+            "45:9: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 9),
+        };
+        verify(checkConfig, getPath("InputRightCurlyAloneLambda.java"), expected);
+    }
+
+    @Test
+    public void testRightCurlyIsAloneOrSinglelineLambda() throws Exception {
+        checkConfig.addAttribute("option",
+            RightCurlyOption.ALONE_OR_SINGLELINE.toString());
+        checkConfig.addAttribute("tokens", "LAMBDA");
+        final String[] expected = {
+            "17:49: " + getCheckMessage(MSG_KEY_LINE_NEW, "}", 49),
+            "35:5: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 5),
+            "45:9: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 9),
+            "47:58: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 58),
+        };
+        verify(checkConfig,
+            getPath("InputRightCurlyAloneOrSinglelineLambda.java"), expected);
+    }
+
+    @Test
+    public void testRightCurlyIsSameLambda() throws Exception {
+        checkConfig.addAttribute("option", RightCurlyOption.SAME.toString());
+        checkConfig.addAttribute("tokens", "LAMBDA");
+        final String[] expected = {
+            "17:49: " + getCheckMessage(MSG_KEY_LINE_BREAK_BEFORE, "}", 49),
+            "35:5: " + getCheckMessage(MSG_KEY_LINE_ALONE, "}", 5),
+            "40:13: " + getCheckMessage(MSG_KEY_LINE_SAME, "}", 13),
+            "53:30: " + getCheckMessage(MSG_KEY_LINE_BREAK_BEFORE, "}", 30),
+            "68:20: " + getCheckMessage(MSG_KEY_LINE_BREAK_BEFORE, "}", 20),
+            "73:20: " + getCheckMessage(MSG_KEY_LINE_BREAK_BEFORE, "}", 20),
+        };
+        verify(checkConfig,
+            getPath("InputRightCurlySameLambda.java"), expected);
     }
 }

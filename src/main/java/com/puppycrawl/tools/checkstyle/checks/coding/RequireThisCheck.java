@@ -435,6 +435,7 @@ public class RequireThisCheck extends AbstractCheck {
      * or null otherwise.
      * @param ast IDENT ast to check.
      * @return the class frame where violation is found or null otherwise.
+     * @noinspection IfStatementWithIdenticalBranches
      */
     // -@cs[CyclomaticComplexity] Method already invokes too many methods that fully explain
     // a logic, additional abstraction will not make logic/algorithm more readable.
@@ -473,22 +474,13 @@ public class RequireThisCheck extends AbstractCheck {
                  && !isUserDefinedArrangementOfThis(variableDeclarationFrame, ast)) {
             frameWhereViolationIsFound = findFrame(ast, true);
         }
-        else if (variableDeclarationFrameType == FrameType.BLOCK_FRAME) {
-            if (isOverlappingByLocalVariable(ast)) {
-                if (canAssignValueToClassField(ast)
-                        && !isUserDefinedArrangementOfThis(variableDeclarationFrame, ast)
-                        && !isReturnedVariable(variableDeclarationFrame, ast)
-                        && canBeReferencedFromStaticContext(ast)) {
-                    frameWhereViolationIsFound = findFrame(ast, true);
-                }
-            }
-            else if (!validateOnlyOverlapping
-                     && prevSibling == null
-                     && isAssignToken(ast.getParent().getType())
-                     && !isUserDefinedArrangementOfThis(variableDeclarationFrame, ast)
-                     && canBeReferencedFromStaticContext(ast)) {
-                frameWhereViolationIsFound = findFrame(ast, true);
-            }
+        else if (variableDeclarationFrameType == FrameType.BLOCK_FRAME
+                    && isOverlappingByLocalVariable(ast)
+                    && canAssignValueToClassField(ast)
+                    && !isUserDefinedArrangementOfThis(variableDeclarationFrame, ast)
+                    && !isReturnedVariable(variableDeclarationFrame, ast)
+                    && canBeReferencedFromStaticContext(ast)) {
+            frameWhereViolationIsFound = findFrame(ast, true);
         }
         return frameWhereViolationIsFound;
     }
@@ -518,6 +510,7 @@ public class RequireThisCheck extends AbstractCheck {
             if (prevSibling != null
                     && prevSibling.getType() == TokenTypes.LITERAL_THIS) {
                 userDefinedArrangementOfThis = true;
+                break;
             }
         }
         return userDefinedArrangementOfThis;
@@ -1187,6 +1180,7 @@ public class RequireThisCheck extends AbstractCheck {
                 final boolean finalMod = mods.branchContains(TokenTypes.FINAL);
                 if (finalMod && member.equals(instanceMember)) {
                     result = true;
+                    break;
                 }
             }
             return result;

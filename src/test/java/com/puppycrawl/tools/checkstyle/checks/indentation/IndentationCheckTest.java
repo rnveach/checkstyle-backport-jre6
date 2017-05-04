@@ -1794,8 +1794,9 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
                     break;
                 }
             }
-            if (!isInOrder)
+            if (!isInOrder) {
                 break;
+            }
         }
         assertTrue(
                 "the argument 0 of error messages (indentation.error, indentation.child.error,"
@@ -1903,7 +1904,8 @@ public class IndentationCheckTest extends BaseCheckTestSupport {
                     getExpectedMessagePostfix(MSG_ERROR_MULTI),
                     getExpectedMessagePostfix(MSG_CHILD_ERROR_MULTI),
                 };
-            } else {
+            }
+            else {
                 expectedMessages = new String[] {
                     getExpectedMessagePostfix(MSG_ERROR),
                     getExpectedMessagePostfix(MSG_CHILD_ERROR),

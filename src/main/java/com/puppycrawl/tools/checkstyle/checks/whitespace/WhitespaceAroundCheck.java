@@ -433,7 +433,7 @@ public class WhitespaceAroundCheck extends AbstractCheck {
      * This function is needed to recognise double brace initialization as valid,
      * unfortunately its not possible to implement this functionality
      * in isNotRelevantSituation method, because in this method when we return
-     * true(is not relevant) ast is later doesnt check at all. For example:
+     * true(is not relevant) ast is later doesn't check at all. For example:
      * new Properties() {{setProperty("double curly braces", "are not a style error");
      * }};
      * For second left curly brace in first line when we would return true from
@@ -508,18 +508,21 @@ public class WhitespaceAroundCheck extends AbstractCheck {
      *         node.
      */
     private static boolean isEmptyBlock(DetailAST ast, int parentType, int match) {
+        final boolean result;
         final int type = ast.getType();
         if (type == TokenTypes.RCURLY) {
             final DetailAST parent = ast.getParent();
             final DetailAST grandParent = ast.getParent().getParent();
-            return parentType == TokenTypes.SLIST
+            result = parentType == TokenTypes.SLIST
                     && parent.getFirstChild().getType() == TokenTypes.RCURLY
                     && grandParent.getType() == match;
         }
-
-        return type == TokenTypes.SLIST
+        else {
+            result = type == TokenTypes.SLIST
                 && parentType == match
                 && ast.getFirstChild().getType() == TokenTypes.RCURLY;
+        }
+        return result;
     }
 
     /**

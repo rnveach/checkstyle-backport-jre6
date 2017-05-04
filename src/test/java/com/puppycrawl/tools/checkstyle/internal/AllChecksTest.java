@@ -126,7 +126,8 @@ public class AllChecksTest extends BaseCheckTestSupport {
         // https://github.com/checkstyle/checkstyle/issues/3730
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AnnotationLocation",
                 ImmutableSet.of("TYPECAST", "DOT", "TYPE_ARGUMENT", "LITERAL_NEW", "LITERAL_THROWS",
-                        "IMPLEMENTS_CLAUSE"));
+                        "IMPLEMENTS_CLAUSE", "CLASS_DEF", "CTOR_DEF", "ENUM_DEF", "INTERFACE_DEF",
+                        "METHOD_DEF", "VARIABLE_DEF"));
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoLineWrap", ImmutableSet.of(
                 // method declaration could be long due to "parameters/exceptions", it is ok to
                 // be not strict there
@@ -153,6 +154,9 @@ public class AllChecksTest extends BaseCheckTestSupport {
                 "ARRAY_INIT",
                 // these are covered by GenericWhitespaceCheck
                 "WILDCARD_TYPE", "GENERIC_END", "GENERIC_START"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("RightCurly", ImmutableSet.of(
+                // Until https://github.com/checkstyle/checkstyle/issues/4177
+                "LAMBDA"));
 
         // google
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AnnotationLocation", ImmutableSet.of(
@@ -183,7 +187,11 @@ public class AllChecksTest extends BaseCheckTestSupport {
                 // can be empty for special cases via '6.2 Caught exceptions: not ignored'
                 "LITERAL_CATCH",
                 // specifically allowed via '5.2.4 Constant names'
-                "ARRAY_INIT"));
+                "ARRAY_INIT",
+                // state of the configuration when test was made until
+                // https://github.com/checkstyle/checkstyle/issues/4121
+                "INSTANCE_INIT", "LITERAL_DO", "LITERAL_FOR", "LITERAL_SYNCHRONIZED",
+                "LITERAL_WHILE", "STATIC_INIT"));
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WhitespaceAround", ImmutableSet.of(
                 //  allowed via '4.8.3 Arrays'
                 "ARRAY_INIT",
@@ -198,7 +206,13 @@ public class AllChecksTest extends BaseCheckTestSupport {
                 // assignment operators and they are allowed to break before or after the symbol
                 "DIV_ASSIGN", "BOR_ASSIGN", "SL_ASSIGN", "ASSIGN", "BSR_ASSIGN", "BAND_ASSIGN",
                 "PLUS_ASSIGN", "MINUS_ASSIGN", "SR_ASSIGN", "STAR_ASSIGN", "BXOR_ASSIGN",
-                "MOD_ASSIGN"));
+                "MOD_ASSIGN",
+                // state of the configuration when test was made until
+                // https://github.com/checkstyle/checkstyle/issues/4122
+                "COLON", "TYPE_EXTENSION_AND"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("RightCurly", ImmutableSet.of(
+                // Until https://github.com/checkstyle/checkstyle/issues/4178
+                "LAMBDA"));
     }
 
     @Test
@@ -353,14 +367,14 @@ public class AllChecksTest extends BaseCheckTestSupport {
 
                     configCheckTokens.put(checkName, configTokens);
 
-                    // add all overriden tokens
+                    // add all overridden tokens
                     final Set<String> overrideTokens = tokensToIgnore.get(checkName);
 
                     if (overrideTokens != null) {
                         configTokens.addAll(overrideTokens);
                     }
 
-                    configTokens.addAll(CheckUtil.getTokenNameSet(check.getDefaultTokens()));
+                    configTokens.addAll(CheckUtil.getTokenNameSet(check.getRequiredTokens()));
                     checkTokens.put(checkName,
                             CheckUtil.getTokenNameSet(check.getAcceptableTokens()));
                 }
@@ -371,6 +385,7 @@ public class AllChecksTest extends BaseCheckTestSupport {
                 }
                 catch (CheckstyleException ex) {
                     // no tokens defined, so it is using default
+                    configTokens.addAll(CheckUtil.getTokenNameSet(check.getDefaultTokens()));
                 }
             }
         }
@@ -425,7 +440,7 @@ public class AllChecksTest extends BaseCheckTestSupport {
             }
             else {
                 Assert.assertFalse(name
-                        + " should have atleast one 'MSG_*' field for error messages", CheckUtil
+                        + " should have at least one 'MSG_*' field for error messages", CheckUtil
                         .getCheckMessages(module).isEmpty());
             }
         }
@@ -517,11 +532,13 @@ public class AllChecksTest extends BaseCheckTestSupport {
      */
     private static boolean isSubset(int[] array, int... arrayToCheckIn) {
         Arrays.sort(arrayToCheckIn);
+        boolean result = true;
         for (final int element : array) {
             if (Arrays.binarySearch(arrayToCheckIn, element) < 0) {
-                return false;
+                result = false;
+                break;
             }
         }
-        return true;
+        return result;
     }
 }

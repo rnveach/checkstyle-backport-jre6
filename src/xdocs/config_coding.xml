@@ -36,17 +36,58 @@ int[] a = new int[]
         </source>
 
         <p>
-          The check allows leaving out the comma at the end if both the left and right curly brackets
-          are on the same line.
+          The check demands a comma at the end if neither left nor right curly braces
+          are on the same line as the last element of the array.
         </p>
         <source>
 return new int[] { 0 };
+return new int[] { 0
+    };
+return new int[] {
+    0 };
         </source>
 
         <p>
           Rationale: Putting this comma in makes it easier to change the order
-          of the elements or add new elements on the end.
+          of the elements or add new elements on the end. Main benefit of a trailing
+          comma is that when you add new entry to an array, no surrounding lines are changed.
         </p>
+        <source>
+{
+    100000000000000000000,
+    200000000000000000000, // OK
+}
+
+{
+    100000000000000000000,
+    200000000000000000000,
+    300000000000000000000,  // Just this line added, no other changes
+}
+        </source>
+        <p>
+          If closing brace is on the same line as training comma, this benefit is gone
+          (as the Check does not demand a certain location of curly braces the following
+          two cases will not produce a violation):
+        </p>
+        <source>
+{100000000000000000000,
+    200000000000000000000,} // Trailing comma not needed, line needs to be modified anyway
+
+{100000000000000000000,
+    200000000000000000000, // Modified line
+    300000000000000000000,} // Added line
+        </source>
+        <p>
+          If opening brace is on the same line as training comma there's also (more arguable) problem:
+        </p>
+        <source>
+{100000000000000000000, // Line cannot be just duplicated to slightly modify entry
+}
+
+{100000000000000000000,
+    100000000000000000001, // More work needed to duplicate
+}
+        </source>
       </subsection>
 
       <subsection name="Examples">
@@ -73,7 +114,24 @@ return new int[] { 0 };
             {0.5, 2.3, 1.1,},        //no violation
             {1.7, 1.9, 0.6},
             {0.8, 7.4, 6.5}
-            };        //violation
+            };        // violation as previous line misses a comma
+
+            char[] chars = {'a', 'b', 'c'
+                };        / /no violation
+
+            String[] letters = {
+                "a", "b", "c"};        // no violation
+
+            int[] a1 = new int[]{
+                1,
+                2
+                ,
+            };        // no violation
+
+            int[] a2 = new int[]{
+                1,
+                2
+                ,};        // no violation
           </source>
       </subsection>
 
@@ -464,13 +522,57 @@ public class A {
           more readable if it comes after the last <code>case</code>.
         </p>
       </subsection>
-
+      <subsection name="Properties">
+        <table>
+          <tr>
+            <th>name</th>
+            <th>description</th>
+            <th>type</th>
+            <th>default value</th>
+          </tr>
+          <tr>
+            <td>skipIfLastAndSharedWithCase</td>
+            <td>whether to allow <code>default</code> along with case if they are not last</td>
+            <td><a href="property_types.html#boolean">Boolean</a></td>
+            <td>false</td>
+          </tr>
+        </table>
+      </subsection>
       <subsection name="Examples">
         <p>
           To configure the check:
         </p>
         <source>
 &lt;module name=&quot;DefaultComesLast&quot;/&gt;
+        </source>
+        <p>
+            To configure the check for skipIfLastAndSharedWithCase:
+        </p>
+        <source>
+&lt;module name=&quot;DefaultComesLast&quot;&gt;
+    &lt;property name=&quot;skipIfLastAndSharedWithCase&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+            Example when skipIfLastAndSharedWithCase is set to true.
+        </p>
+        <source>
+switch (i) {
+    case 1:
+        break;
+    case 2:
+    default: // No violation with the new option is expected
+        break;
+    case 3:
+        break;
+}
+switch (i) {
+    case 1:
+        break;
+    default: // violation with the new option is expected
+    case 2:
+        break;
+}
         </source>
       </subsection>
 
@@ -488,6 +590,10 @@ public class A {
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fcoding+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22default.comes.last%22">
             default.comes.last</a>
+          </li>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fcoding+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22default.comes.last.in.casegroup%22">
+            default.comes.last.in.casegroup</a>
           </li>
         </ul>
         <p>
@@ -3438,7 +3544,7 @@ public static class B {
          Please, be aware of the following logic, which is implemented in the check:
        </p>
        <p>
-         1) If you arranges 'this' in your code on your own, the check will not rise violation for
+         1) If you arrange 'this' in your code on your own, the check will not raise violation for
             variables which use 'this' to reference a class field, for example:
        </p>
        <source>
@@ -3455,7 +3561,7 @@ public class C {
 }
        </source>
        <p>
-         2) If method parameter is returned from the method, the check will not rise violation for
+         2) If method parameter is returned from the method, the check will not raise violation for
             returned variable/parameter, for example:
        </p>
        <source>
@@ -3478,13 +3584,15 @@ public static class A {
   public A(int field1) {
     field1 = field1; // violation: Reference to instance variable "field1" needs "this".
     field2 = 0; // violation: Reference to instance variable "field2" needs "this".
+    String field2;
+    field2 = "0"; // No violation. Local var allowed
   }
 
   void foo3() {
     String field1 = "values";
     field1 = field1; // violation:  Reference to instance variable "field1" needs "this".
-    }
   }
+}
 
 public static class B {
   private int field1;
@@ -3495,6 +3603,19 @@ public static class B {
 
   String addSuffixToField(String field1) {
     return field1 += "suffix"; // violation: Reference to instance variable "field1" needs "this".
+  }
+}
+
+// If the variable is locally defined, there won't be a violation provided the variable doesn't overlap.
+class C {
+  private String s1 = "foo1";
+  String s2 = "foo2";
+
+  C() {
+      s1 = "bar1"; // Violation. Reference to instance variable 's1' needs "this.".
+      String s2;
+      s2 = "bar2"; // No violation. Local var allowed.
+      s2 += s2; // Violation. Overlapping. Reference to instance variable 's2' needs "this.".
   }
 }
        </source>

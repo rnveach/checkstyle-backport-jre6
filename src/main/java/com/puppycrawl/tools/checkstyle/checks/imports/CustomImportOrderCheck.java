@@ -157,7 +157,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *          <td>string</td><td>null</td></tr>
  *      <tr><td>standardPackageRegExp</td><td>RegExp for STANDARD_JAVA_PACKAGE group imports.</td>
  *          <td>regular expression</td><td>^(java|javax)\.</td></tr>
- *      <tr><td>thirdPartyPackageRegExp</td><td>RegExp for THIRDPARTY_PACKAGE group imports.</td>
+ *      <tr><td>thirdPartyPackageRegExp</td><td>RegExp for THIRD_PARTY_PACKAGE group imports.</td>
  *          <td>regular expression</td><td>.*</td></tr>
  *      <tr><td>specialImportsRegExp</td><td>RegExp for SPECIAL_IMPORTS group imports.</td>
  *          <td>regular expression</td><td>^$</td></tr>
@@ -366,7 +366,7 @@ public class CustomImportOrderCheck extends AbstractCheck {
     /** RegExp for STANDARD_JAVA_PACKAGE group imports. */
     private Pattern standardPackageRegExp = Pattern.compile("^(java|javax)\\.");
 
-    /** RegExp for THIRDPARTY_PACKAGE group imports. */
+    /** RegExp for THIRD_PARTY_PACKAGE group imports. */
     private Pattern thirdPartyPackageRegExp = Pattern.compile(".*");
 
     /** RegExp for SPECIAL_IMPORTS group imports. */
@@ -593,12 +593,14 @@ public class CustomImportOrderCheck extends AbstractCheck {
      *        true, if current group contains at least one import.
      */
     private boolean hasAnyImportInCurrentGroup(String currentGroup) {
+        boolean result = false;
         for (ImportDetails currentImport : importToGroupList) {
             if (currentGroup.equals(currentImport.getImportGroup())) {
-                return true;
+                result = true;
+                break;
             }
         }
-        return false;
+        return result;
     }
 
     /**
@@ -723,12 +725,11 @@ public class CustomImportOrderCheck extends AbstractCheck {
      * @return full path or null.
      */
     private static String getFullImportIdent(DetailAST token) {
-        if (token == null) {
-            return "";
+        String ident = "";
+        if (token != null) {
+            ident = FullIdent.createFullIdent(token.findFirstToken(TokenTypes.DOT)).getText();
         }
-        else {
-            return FullIdent.createFullIdent(token.findFirstToken(TokenTypes.DOT)).getText();
-        }
+        return ident;
     }
 
     /**
