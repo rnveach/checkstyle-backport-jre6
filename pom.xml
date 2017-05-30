@@ -15,7 +15,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>7.7</version>
+  <version>7.8</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -162,7 +162,7 @@
     <maven.pmd.plugin.version>3.7</maven.pmd.plugin.version>
     <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
     <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
-    <maven.sevntu.checkstyle.plugin.version>1.23.1</maven.sevntu.checkstyle.plugin.version>
+    <maven.sevntu.checkstyle.plugin.version>1.24.0</maven.sevntu.checkstyle.plugin.version>
     <maven.versions.plugin.version>2.3</maven.versions.plugin.version>
     <java.version>1.6</java.version>
     <tools.jar.version>${java.version}.0</tools.jar.version>
@@ -422,14 +422,14 @@
         <version>${maven.checkstyle.plugin.version}</version>
         <dependencies>
           <dependency>
-            <groupId>com.github.sevntu.checkstyle</groupId>
+            <groupId>com.github.sevntu-checkstyle</groupId>
             <artifactId>sevntu-checkstyle-maven-plugin</artifactId>
             <version>${maven.sevntu.checkstyle.plugin.version}</version>
           </dependency>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>7.6.1</version>
+            <version>7.7</version>
           </dependency>
         </dependencies>
         <!-- Specifying configuration here will take effect on the execution of "mvn checkstyle:checkstyle",
@@ -486,6 +486,32 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/site/dtds</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/com/puppycrawl/tools/checkstyle</directory>
+                  <includes>
+                    <include>*.dtd</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>src/main/resources/com/puppycrawl/tools/checkstyle/checks/imports</directory>
+                  <includes>
+                    <include>*.dtd</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -884,6 +910,9 @@
               <systemId>src/main/resources/com/puppycrawl/tools/checkstyle/configuration_1_3.dtd</systemId>
             </validationSet>
           </validationSets>
+          <catalogs>
+            <catalog>config/catalog.xml</catalog>
+          </catalogs>
         </configuration>
       </plugin>
       <plugin>
@@ -906,7 +935,7 @@
           <exclude>**/GeneratedJavaLexer.class</exclude>
           <exclude>**/JavadocParser.class</exclude>
           <!-- excluded till https://github.com/policeman-tools/forbidden-apis/issues/108-->
-          <exclude>**/checks/annotation/InputAnnotationLocation4*</exclude>
+          <exclude>**/checks/annotation/annotationlocation/InputAnnotationLocationDeprecatedAndCustom*</exclude>
         </excludes>
       </configuration>
       <executions>

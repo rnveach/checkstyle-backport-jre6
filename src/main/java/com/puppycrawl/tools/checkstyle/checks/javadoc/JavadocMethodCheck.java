@@ -487,11 +487,11 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
         final List<JavadocTag> tags = getMethodTags(comment);
 
         if (!hasShortCircuitTag(ast, tags)) {
-            final Iterator<JavadocTag> it = tags.iterator();
             if (ast.getType() == TokenTypes.ANNOTATION_FIELD_DEF) {
                 checkReturnTag(tags, ast.getLineNo(), true);
             }
             else {
+                final Iterator<JavadocTag> it = tags.iterator();
                 // Check for inheritDoc
                 boolean hasInheritDocTag = false;
                 while (!hasInheritDocTag && it.hasNext()) {
@@ -548,13 +548,13 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
      * @return the scope of the method/constructor
      */
     private static Scope calculateScope(final DetailAST ast) {
-        final DetailAST mods = ast.findFirstToken(TokenTypes.MODIFIERS);
         final Scope scope;
 
         if (ScopeUtils.isInInterfaceOrAnnotationBlock(ast)) {
             scope = Scope.PUBLIC;
         }
         else {
+            final DetailAST mods = ast.findFirstToken(TokenTypes.MODIFIERS);
             scope = ScopeUtils.getScopeFromMods(mods);
         }
         return scope;

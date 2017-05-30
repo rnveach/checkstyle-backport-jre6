@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -160,8 +160,9 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
         if (!invalidIdentifiers.isEmpty()) {
             String error = "[";
             for (String s : invalidIdentifiers) {
-                if (error.length() > 1)
+                if (error.length() > 1) {
                     error += ", ";
+                }
                 error += s;
             }
             error += "]";

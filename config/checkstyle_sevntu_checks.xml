@@ -2,7 +2,7 @@
 
 <!DOCTYPE module PUBLIC
         "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+        "http://checkstyle.sourceforge.net/dtds/configuration_1_2.dtd">
 
 <module name="Checker">
     <!-- All checks are from https://github.com/sevntu-checkstyle/sevntu.checkstyle project -->
@@ -87,7 +87,7 @@
         <module name="WhitespaceBeforeArrayInitializer"/>
         <module name="InnerClass"/>
         <module name="EnumValueNameCheck">
-            <property name="objFormat" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+            <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
         </module>
         <module name="OverridableMethodInConstructor">
             <property name="checkCloneMethod" value="true"/>
@@ -199,5 +199,6 @@
           <property name="ignoredClassNameFormat" value="UnsupportedOperationException"/>
         </module>
         <module name="ReturnCountExtendedCheck" />
+        <module name="MoveVariableInsideIfCheck" />
     </module>
 </module>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE module PUBLIC
           "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
-          "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+          "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
   <!--
@@ -474,6 +474,7 @@
       <property name="tokens" value="UNARY_PLUS"/>
       <property name="tokens" value="ARRAY_DECLARATOR"/>
       <property name="tokens" value="INDEX_OP"/>
+      <property name="tokens" value="METHOD_REF"/>
     </module>
     <module name="NoWhitespaceBefore"/>
     <module name="NoWhitespaceBefore">

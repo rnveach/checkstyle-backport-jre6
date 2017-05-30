@@ -250,7 +250,8 @@ public class PropertyCacheFileTest {
             nonExistingExternalResources.add(externalResourceFileName);
             cache.putExternalResources(nonExistingExternalResources);
 
-            externalResourceHashes[i] = cache.get(externalResourceFileName);
+            externalResourceHashes[i] = cache.get(PropertyCacheFile.EXTERNAL_RESOURCE_KEY_PREFIX
+                    + externalResourceFileName);
             assertNotNull(externalResourceHashes[i]);
 
             cache.persist();
@@ -302,7 +303,8 @@ public class PropertyCacheFileTest {
             nonExistingExternalResources.add(externalResourceFileName);
             cache.putExternalResources(nonExistingExternalResources);
 
-            externalResourceHashes[i] = cache.get(externalResourceFileName);
+            externalResourceHashes[i] = cache.get(PropertyCacheFile.EXTERNAL_RESOURCE_KEY_PREFIX
+                    + externalResourceFileName);
             assertNotNull(externalResourceHashes[i]);
 
             cache.persist();

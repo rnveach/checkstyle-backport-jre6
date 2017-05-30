@@ -32,8 +32,10 @@ import com.google.common.collect.ImmutableSet;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
 /**
  * <p>Checks that code doesn't rely on the &quot;this&quot; default.
@@ -307,7 +309,8 @@ public class RequireThisCheck extends AbstractCheck {
         if (!importOrPackage
                 && !methodNameInMethodCall
                 && !typeName
-                && !isDeclarationToken(parentType)) {
+                && !isDeclarationToken(parentType)
+                && !isLambdaParameter(ast)) {
             final AbstractFrame fieldFrame = findClassFrame(ast, false);
 
             if (fieldFrame != null && ((ClassFrame) fieldFrame).hasInstanceMember(ast)) {
@@ -329,7 +332,8 @@ public class RequireThisCheck extends AbstractCheck {
                 collectVariableDeclarations(ast, frame);
                 break;
             case TokenTypes.PARAMETER_DEF :
-                if (!CheckUtils.isReceiverParameter(ast)) {
+                if (!CheckUtils.isReceiverParameter(ast)
+                        && !isLambdaParameter(ast)) {
                     final DetailAST parameterIdent = ast.findFirstToken(TokenTypes.IDENT);
                     frame.addIdent(parameterIdent);
                 }
@@ -662,12 +666,12 @@ public class RequireThisCheck extends AbstractCheck {
         final DetailAST parent = ast.getParent();
         final DetailAST sibling = ast.getNextSibling();
         if (sibling != null && isAssignToken(parent.getType())) {
-            final ClassFrame classFrame = (ClassFrame) findFrame(ast, true);
-            final Set<DetailAST> exprIdents = getAllTokensOfType(sibling, TokenTypes.IDENT);
             if (isCompoundAssignToken(parent.getType())) {
                 overlapping = true;
             }
             else {
+                final ClassFrame classFrame = (ClassFrame) findFrame(ast, true);
+                final Set<DetailAST> exprIdents = getAllTokensOfType(sibling, TokenTypes.IDENT);
                 overlapping = classFrame.containsFieldOrVariableDef(exprIdents, ast);
             }
         }
@@ -888,6 +892,44 @@ public class RequireThisCheck extends AbstractCheck {
             frame = frame.getParent();
         }
         return frame.getFrameName();
+    }
+
+    /**
+     * Checks if the token is a Lambda parameter.
+     * @param ast the {@code DetailAST} value of the token to be checked
+     * @return true if the token is a Lambda parameter
+     */
+    private static boolean isLambdaParameter(final DetailAST ast) {
+        DetailAST parent;
+        for (parent = ast.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent.getType() == TokenTypes.LAMBDA) {
+                break;
+            }
+        }
+        final boolean isLambdaParameter;
+        if (parent == null) {
+            isLambdaParameter = false;
+        }
+        else if (ast.getType() == TokenTypes.PARAMETER_DEF) {
+            isLambdaParameter = true;
+        }
+        else {
+            final DetailAST lambdaParameters = parent.findFirstToken(TokenTypes.PARAMETERS);
+            if (lambdaParameters == null) {
+                isLambdaParameter = parent.getFirstChild().getText().equals(ast.getText());
+            }
+            else {
+                isLambdaParameter = TokenUtils.findFirstTokenByPredicate(lambdaParameters,
+                    new Predicate<DetailAST>() {
+                        @Override
+                        public boolean test(DetailAST paramDef) {
+                            final DetailAST param = paramDef.findFirstToken(TokenTypes.IDENT);
+                            return param != null && param.getText().equals(ast.getText());
+                        }
+                    }).isPresent();
+            }
+        }
+        return isLambdaParameter;
     }
 
     /** An AbstractFrame type. */
