@@ -200,7 +200,9 @@ public class PackageObjectFactory implements ModuleFactory {
         try {
             returnValue = new HashMap<String, String>();
             for (Class<?> clzz : ModuleReflectionUtils.getCheckstyleModules(packages, loader)) {
-                returnValue.put(clzz.getSimpleName(), clzz.getCanonicalName());
+                if (!NAME_TO_FULL_MODULE_NAME.keySet().contains(clzz.getSimpleName())) {
+                    returnValue.put(clzz.getSimpleName(), clzz.getCanonicalName());
+                }
             }
         }
         catch (IOException ignore) {
