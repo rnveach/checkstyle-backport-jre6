@@ -120,6 +120,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     }
 
     /**
+     * Sets classLoader to load class.
      * @param classLoader class loader to resolve classes with.
      */
     public void setClassLoader(ClassLoader classLoader) {
@@ -171,17 +172,23 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
             final String msg = "%s occurred during the analysis of file %s.";
             final String fileName = file.getPath();
             try {
-                final FileText text = FileText.fromLines(file, lines);
-                final FileContents contents = new FileContents(text);
-                final DetailAST rootAST = parse(contents);
+                if (!ordinaryChecks.isEmpty()
+                        || !commentChecks.isEmpty()) {
+                    final FileText text = FileText.fromLines(file, lines);
+                    final FileContents contents = new FileContents(text);
+                    final DetailAST rootAST = parse(contents);
 
-                getMessageCollector().reset();
+                    getMessageCollector().reset();
 
-                walk(rootAST, contents, AstState.ORDINARY);
+                    if (!ordinaryChecks.isEmpty()) {
+                        walk(rootAST, contents, AstState.ORDINARY);
+                    }
+                    if (!commentChecks.isEmpty()) {
+                        final DetailAST astWithComments = appendHiddenCommentNodes(rootAST);
 
-                final DetailAST astWithComments = appendHiddenCommentNodes(rootAST);
-
-                walk(astWithComments, contents, AstState.WITH_COMMENTS);
+                        walk(astWithComments, contents, AstState.WITH_COMMENTS);
+                    }
+                }
             }
             catch (final TokenStreamRecognitionException tre) {
                 final String exceptionMsg = String.format(Locale.ROOT, msg,
@@ -387,7 +394,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     }
 
     /**
-     * Method returns list of checks
+     * Method returns list of checks.
      *
      * @param ast
      *            the node to notify for

@@ -177,7 +177,8 @@ public final class CheckUtil {
         final Set<Class<?>> checkstyleModules = new HashSet<Class<?>>();
         for (ClassInfo clazz : classPath.getTopLevelClassesRecursive(packageName)) {
             final Class<?> loadedClass = clazz.load();
-            if (ModuleReflectionUtils.isCheckstyleModule(loadedClass)) {
+            if (ModuleReflectionUtils.isCheckstyleModule(loadedClass)
+                    && !loadedClass.getCanonicalName().startsWith("com.puppycrawl.tools.checkstyle.packageobjectfactory")) {
                 checkstyleModules.add(loadedClass);
             }
         }

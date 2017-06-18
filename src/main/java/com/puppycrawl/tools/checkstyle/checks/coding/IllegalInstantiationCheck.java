@@ -69,7 +69,7 @@ public class IllegalInstantiationCheck
      */
     public static final String MSG_KEY = "instantiation.avoid";
 
-    /** {@link java.lang} package as string */
+    /** {@link java.lang} package as string. */
     private static final String JAVA_LANG = "java.lang.";
 
     /** The imports for the file. */

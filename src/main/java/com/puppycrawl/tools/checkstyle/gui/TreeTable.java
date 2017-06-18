@@ -216,6 +216,7 @@ public class TreeTable extends JTable {
     }
 
     /**
+     * Returns tree.
      * @return the tree that is being shared between the model.
      */
     public JTree getTree() {

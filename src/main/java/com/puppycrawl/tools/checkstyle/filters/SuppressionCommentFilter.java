@@ -123,6 +123,7 @@ public class SuppressionCommentFilter
     }
 
     /**
+     * Returns FileContents for this filter.
      * @return the FileContents for this filter.
      */
     public FileContents getFileContents() {
@@ -358,6 +359,7 @@ public class SuppressionCommentFilter
         }
 
         /**
+         * Returns line number of the tag in the source file.
          * @return the line number of the tag in the source file.
          */
         public int getLine() {

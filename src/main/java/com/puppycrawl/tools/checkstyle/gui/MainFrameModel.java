@@ -127,6 +127,7 @@ public class MainFrameModel {
     }
 
     /**
+     * Returns title for the main frame.
      * @return title for the main frame.
      */
     public String getTitle() {
@@ -134,6 +135,7 @@ public class MainFrameModel {
     }
 
     /**
+     * Returns true if the reload action is enabled, false otherwise.
      * @return true if the reload action is enabled.
      */
     public boolean isReloadActionEnabled() {
