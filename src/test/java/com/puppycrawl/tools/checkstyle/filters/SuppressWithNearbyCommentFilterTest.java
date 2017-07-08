@@ -255,9 +255,8 @@ public class SuppressWithNearbyCommentFilterTest
         }
         catch (CheckstyleException ex) {
             final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
-            assertEquals("unable to parse influence"
-                            + " from 'SUPPRESS CHECKSTYLE MemberNameCheck' using a",
-                    cause.getMessage());
+            assertEquals("Invalid exception message", "unable to parse influence"
+                + " from 'SUPPRESS CHECKSTYLE MemberNameCheck' using a", cause.getMessage());
         }
     }
 
@@ -273,8 +272,8 @@ public class SuppressWithNearbyCommentFilterTest
         }
         catch (CheckstyleException ex) {
             final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
-            assertEquals("unable to parse expanded comment a[l",
-                    cause.getMessage());
+            assertEquals("Invalid exception message",
+                "unable to parse expanded comment a[l", cause.getMessage());
         }
     }
 
@@ -290,7 +289,8 @@ public class SuppressWithNearbyCommentFilterTest
         final SuppressWithNearbyCommentFilter.Tag tag = new SuppressWithNearbyCommentFilter.Tag(
                 "text", 7, new SuppressWithNearbyCommentFilter()
         );
-        assertEquals("Tag[lines=[7 to 7]; text='text']", tag.toString());
+        assertEquals("Invalid toString result",
+            "Tag[lines=[7 to 7]; text='text']", tag.toString());
     }
 
     @Test

@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.Comment;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocNodeImpl;
@@ -181,6 +182,13 @@ public class JavadocUtilsTest {
         commentBegin.setFirstChild(javadocCommentContent);
         javadocCommentContent.setNextSibling(commentEnd);
 
+        final DetailAST commentBeginParent = new DetailAST();
+        commentBeginParent.setType(TokenTypes.MODIFIERS);
+        commentBeginParent.setFirstChild(commentBegin);
+
+        final DetailAST aJavadocPosition = new DetailAST();
+        aJavadocPosition.setType(TokenTypes.METHOD_DEF);
+        aJavadocPosition.setFirstChild(commentBeginParent);
         assertTrue(JavadocUtils.isJavadocComment(commentBegin));
     }
 
@@ -246,5 +254,41 @@ public class JavadocUtilsTest {
         catch (IllegalArgumentException ex) {
             assertEquals("Unknown javadoc token name. Given name ", ex.getMessage());
         }
+    }
+
+    @Test
+    public void testGetTokenId() {
+        final int tokenId = JavadocUtils.getTokenId("JAVADOC");
+
+        assertEquals(JavadocTokenTypes.JAVADOC, tokenId);
+    }
+
+    @Test
+    public void testGetJavadocCommentContent() {
+        final DetailAST detailAST = new DetailAST();
+        final DetailAST javadoc = new DetailAST();
+
+        javadoc.setText("1javadoc");
+        detailAST.setFirstChild(javadoc);
+        final String commentContent = JavadocUtils.getJavadocCommentContent(detailAST);
+
+        assertEquals("javadoc", commentContent);
+    }
+
+    @Test
+    public void testGetFirstToken() {
+        final JavadocNodeImpl javadocNode = new JavadocNodeImpl();
+        final JavadocNodeImpl basetag = new JavadocNodeImpl();
+        basetag.setType(JavadocTokenTypes.BASE_TAG);
+        final JavadocNodeImpl body = new JavadocNodeImpl();
+        body.setType(JavadocTokenTypes.BODY);
+
+        body.setParent(javadocNode);
+        basetag.setParent(javadocNode);
+        javadocNode.setChildren(basetag, body);
+
+        final DetailNode result = JavadocUtils.findFirstToken(javadocNode, JavadocTokenTypes.BODY);
+
+        assertEquals(body, result);
     }
 }

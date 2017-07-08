@@ -97,6 +97,7 @@ public final class MethodCountCheck extends AbstractCheck {
             TokenTypes.ENUM_CONSTANT_DEF,
             TokenTypes.ENUM_DEF,
             TokenTypes.INTERFACE_DEF,
+            TokenTypes.ANNOTATION_DEF,
             TokenTypes.METHOD_DEF,
         };
     }
@@ -119,10 +120,7 @@ public final class MethodCountCheck extends AbstractCheck {
 
     @Override
     public void leaveToken(DetailAST ast) {
-        if (ast.getType() == TokenTypes.CLASS_DEF
-            || ast.getType() == TokenTypes.INTERFACE_DEF
-            || ast.getType() == TokenTypes.ENUM_CONSTANT_DEF
-            || ast.getType() == TokenTypes.ENUM_DEF) {
+        if (ast.getType() != TokenTypes.METHOD_DEF) {
             final MethodCounter counter = counters.pop();
             checkCounters(counter, ast);
         }

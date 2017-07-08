@@ -16,16 +16,12 @@
     <suppress checks="AvoidEscapedUnicodeCharactersCheck"
               files="AvoidEscapedUnicodeCharactersCheck.java"/>
 
-    <!-- Can not change API -->
-    <suppress checks="AbstractClassNameCheck"
-              files="Check.java"/>
-
     <!-- 'Abstract' pattern is used to show it is checking for abstract class name -->
     <suppress checks="AbstractClassNameCheck"
               files="AbstractClassNameCheck.java"/>
     <!-- test should be named as their main class -->
     <suppress checks="AbstractClassNameCheck"
-              files="AbstractCheckTest.java|AbstractClassNameCheckTest.java|AbstractTypeAwareCheckTest.java|AbstractJavadocCheckTest.java|AbstractViolationReporterTest.java"/>
+              files="AbstractCheckTest.java|AbstractClassNameCheckTest.java|AbstractTypeAwareCheckTest.java|AbstractJavadocCheckTest.java|AbstractViolationReporterTest.java|AbstractFileSetCheckTest.java"/>
 
     <!-- Tone down the checking for test code -->
     <suppress checks="CyclomaticComplexity" files="[\\/]XdocsPagesTest\.java"/>
@@ -52,6 +48,7 @@
     <suppress checks="MethodLength" files=".*GeneratedJavaTokenTypesTest\.java"/>
     <suppress checks="ExecutableStatementCount" files=".*GeneratedJavaTokenTypesTest\.java"/>
     <suppress checks="JavaNCSS" files=".*GeneratedJavaTokenTypesTest\.java"/>
+    <suppress checks="ExecutableStatementCount" files=".*IllegalInstantiationCheckTest\.java"/>
 
     <suppress checks="." files=".*JavadocTokenTypes\.java"/>
     <suppress checks="." files=".*ParseTreeBuilder\.java"/>
@@ -80,6 +77,7 @@
     <suppress checks="ClassDataAbstractionCoupling" files="PropertyCacheFile\.java"/>
     <suppress checks="ClassFanOutComplexity" files="[\\/]Main\.java"/>
     <suppress checks="ClassFanOutComplexity" files="CheckstyleAntTask\.java"/>
+    <suppress checks="ClassFanOutComplexity" files="CheckerTest\.java"/>
     <!-- a lot of GUI elements is OK -->
     <suppress checks="ClassDataAbstractionCoupling" files="(TreeTable|MainFrame)\.java"/>
 
@@ -94,4 +92,7 @@
 
     <!-- Until https://github.com/checkstyle/checkstyle/issues/3496 -->
     <suppress id="returnCountMaxOne" files=".*[\\/]coding[\\/]|.*[\\/]indentation[\\/]"/>
+
+    <!-- HandlerFactory crosses allowed limit for executable statements -->
+    <suppress checks="ExecutableStatementCount" files="HandlerFactory\.java"/>
 </suppressions>

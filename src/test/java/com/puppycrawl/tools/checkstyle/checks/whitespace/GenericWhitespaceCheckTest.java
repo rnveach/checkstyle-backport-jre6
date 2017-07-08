@@ -74,7 +74,8 @@ public class GenericWhitespaceCheckTest
             TokenTypes.GENERIC_START,
             TokenTypes.GENERIC_END,
         };
-        assertArrayEquals(expected, checkObj.getRequiredTokens());
+        assertArrayEquals("Default required tokens are invalid",
+            expected, checkObj.getRequiredTokens());
     }
 
     @Test
@@ -150,7 +151,7 @@ public class GenericWhitespaceCheckTest
             TokenTypes.GENERIC_START,
             TokenTypes.GENERIC_END,
         };
-        assertArrayEquals(expected, actual);
+        assertArrayEquals("Default acceptable tokens are invalid", expected, actual);
     }
 
     @Test
@@ -163,7 +164,8 @@ public class GenericWhitespaceCheckTest
             fail("exception expected");
         }
         catch (IllegalArgumentException ex) {
-            assertEquals("Unknown type interface[0x-1]", ex.getMessage());
+            assertEquals("Invalid exception message",
+                "Unknown type interface[0x-1]", ex.getMessage());
         }
     }
 }

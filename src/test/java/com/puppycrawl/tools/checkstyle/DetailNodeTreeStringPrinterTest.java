@@ -20,14 +20,19 @@
 package com.puppycrawl.tools.checkstyle;
 
 import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
@@ -51,7 +56,7 @@ public class DetailNodeTreeStringPrinterTest {
         final String expected = new String(Files7.readAllBytes(Paths.get(
             getPath("expectedInputJavadocComment.txt"))), StandardCharsets.UTF_8)
             .replaceAll("\\\\r\\\\n", "\\\\n");
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -66,8 +71,41 @@ public class DetailNodeTreeStringPrinterTest {
             final String expected = "[ERROR:0] Javadoc comment at column 1 has parse error. "
                     + "Missed HTML close tag 'qwe'. Sometimes it means that close tag missed "
                     + "for one of previous tags.";
-            Assert.assertEquals(expected, ex.getMessage());
+            assertEquals(expected, ex.getMessage());
         }
     }
 
+    @Test
+    public void testCreationOfFakeCommentBlock() throws Exception {
+        final Method createFakeBlockComment =
+                Whitebox.getMethod(DetailNodeTreeStringPrinter.class,
+                        "createFakeBlockComment", String.class);
+
+        final DetailAST testCommentBlock =
+                (DetailAST) createFakeBlockComment.invoke(null, "test_comment");
+        assertEquals(TokenTypes.BLOCK_COMMENT_BEGIN, testCommentBlock.getType());
+        assertEquals("/*", testCommentBlock.getText());
+        assertEquals(0, testCommentBlock.getLineNo());
+
+        final DetailAST contentCommentBlock = testCommentBlock.getFirstChild();
+        assertEquals(TokenTypes.COMMENT_CONTENT, contentCommentBlock.getType());
+        assertEquals("*test_comment", contentCommentBlock.getText());
+        assertEquals(0, contentCommentBlock.getLineNo());
+        assertEquals(-1, contentCommentBlock.getColumnNo());
+
+        final DetailAST endCommentBlock = contentCommentBlock.getNextSibling();
+        assertEquals(TokenTypes.BLOCK_COMMENT_END, endCommentBlock.getType());
+        assertEquals("*/", endCommentBlock.getText());
+    }
+
+    @Test
+    public void testNoUnnecessaryTextinJavadocAst() throws Exception {
+        final String actual = DetailNodeTreeStringPrinter.printFileAst(
+                new File(getPath("InputNoUnnecessaryTextInJavadocAst.javadoc")))
+                .replaceAll("\\\\r\\\\n", "\\\\n");
+        final String expected = new String(Files7.readAllBytes(Paths.get(
+                getPath("expectedNoUnnecessaryTextInJavadocAst.txt"))), StandardCharsets.UTF_8)
+                .replaceAll("\\\\r\\\\n", "\\\\n");
+        assertEquals(expected, actual);
+    }
 }

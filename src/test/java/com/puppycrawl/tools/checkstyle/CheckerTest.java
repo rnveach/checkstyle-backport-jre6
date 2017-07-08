@@ -58,6 +58,7 @@ import org.powermock.api.mockito.PowerMockito;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
+import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Context;
@@ -276,9 +277,12 @@ public class CheckerTest extends BaseCheckTestSupport {
 
         // comparing to 1 as there is only one legal file in input
         final int numLegalFiles = 1;
-        assertEquals(numLegalFiles, counter);
-        assertEquals(numLegalFiles, auditAdapter.getNumFilesStarted());
-        assertEquals(numLegalFiles, auditAdapter.getNumFilesFinished());
+        assertEquals("There were more legal files than expected",
+                numLegalFiles, counter);
+        assertEquals("Audit was started on larger amount of files than expected",
+                numLegalFiles, auditAdapter.getNumFilesStarted());
+        assertEquals("Audit was finished on larger amount of files than expected",
+                numLegalFiles, auditAdapter.getNumFilesFinished());
     }
 
     @Test
@@ -304,18 +308,19 @@ public class CheckerTest extends BaseCheckTestSupport {
 
         // comparing to 0 as there is no legal file in input
         final int numLegalFiles = 0;
-        assertEquals(numLegalFiles, counter);
-        assertEquals(numLegalFiles, auditAdapter.getNumFilesStarted());
-        assertEquals(numLegalFiles, auditAdapter.getNumFilesFinished());
+        assertEquals("There were more legal files than expected",
+                numLegalFiles, counter);
+        assertEquals("Audit was started on larger amount of files than expected",
+                numLegalFiles, auditAdapter.getNumFilesStarted());
+        assertEquals("Audit was finished on larger amount of files than expected",
+                numLegalFiles, auditAdapter.getNumFilesFinished());
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testSetters() {
         // all  that is set by reflection, so just make code coverage be happy
         final Checker checker = new Checker();
         checker.setClassLoader(getClass().getClassLoader());
-        checker.setClassloader(getClass().getClassLoader());
         checker.setBasedir("some");
         checker.setSeverity("ignore");
 
@@ -331,7 +336,8 @@ public class CheckerTest extends BaseCheckTestSupport {
             fail("Exception is expected");
         }
         catch (UnsupportedEncodingException ex) {
-            assertEquals("unsupported charset: 'UNKNOWN-CHARSET'", ex.getMessage());
+            assertEquals("Error message is not expected",
+                    "unsupported charset: 'UNKNOWN-CHARSET'", ex.getMessage());
         }
     }
 
@@ -344,17 +350,24 @@ public class CheckerTest extends BaseCheckTestSupport {
             fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("if no custom moduleFactory is set, "
-                            + "moduleClassLoader must be specified", ex.getMessage());
+            assertEquals("Error message is not expected",
+                    "if no custom moduleFactory is set, moduleClassLoader must be specified",
+                    ex.getMessage());
         }
     }
 
     @Test
     public void testNoModuleFactory() throws Exception {
         final Checker checker = new Checker();
-        checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
+        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
+        checker.setModuleClassLoader(classLoader);
         checker.finishLocalSetup();
+        final Context actualCtx = (Context) Whitebox.getInternalState(checker, "childContext");
+
+        assertNotNull("Default module factory should be created when it is not specified",
+            actualCtx.get("moduleFactory"));
+        assertEquals("Invalid classLoader", classLoader, actualCtx.get("classLoader"));
     }
 
     @Test
@@ -371,15 +384,19 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.finishLocalSetup();
 
         final Context context = (Context) Whitebox.getInternalState(checker, "childContext");
-        assertEquals(System.getProperty("file.encoding", "UTF-8"), context.get("charset"));
-        assertEquals(contextClassLoader, context.get("classLoader"));
-        assertEquals("error", context.get("severity"));
-        assertEquals("testBaseDir", context.get("basedir"));
+        assertEquals("Charset was different than expected",
+                System.getProperty("file.encoding", "UTF-8"), context.get("charset"));
+        assertEquals("Was used unsufficient classloader",
+                contextClassLoader, context.get("classLoader"));
+        assertEquals("Severity is set to unexpected value",
+                "error", context.get("severity"));
+        assertEquals("Basedir is set to unexpected value",
+                "testBaseDir", context.get("basedir"));
 
         final Field sLocale = LocalizedMessage.class.getDeclaredField("sLocale");
         sLocale.setAccessible(true);
         final Locale locale = (Locale) sLocale.get(null);
-        assertEquals(Locale.ITALY, locale);
+        assertEquals("Locale is set to unexpected value", Locale.ITALY, locale);
     }
 
     @Test
@@ -395,11 +412,13 @@ public class CheckerTest extends BaseCheckTestSupport {
             fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("java.lang.String is not allowed as a child in Checker", ex.getMessage());
+            assertEquals("Error message is not expected",
+                    "java.lang.String is not allowed as a child in Checker", ex.getMessage());
         }
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSetupChildListener() throws Exception {
         final Checker checker = new Checker();
         final PackageObjectFactory factory = new PackageObjectFactory(
@@ -409,6 +428,12 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Configuration config = new DefaultConfiguration(
             DebugAuditAdapter.class.getCanonicalName());
         checker.setupChild(config);
+
+        final List<AuditListener> listeners =
+            (List<AuditListener>) Whitebox.getInternalState(checker, "listeners");
+        assertTrue("Invalid child listener class",
+            listeners.get(listeners.size() - 1) instanceof DebugAuditAdapter);
+
     }
 
     @Test
@@ -427,7 +452,8 @@ public class CheckerTest extends BaseCheckTestSupport {
             fail("Exception did not happen");
         }
         catch (IllegalStateException ex) {
-            assertTrue(ex.getCause() instanceof IOException);
+            assertTrue("Cause of exception differs from IOException",
+                    ex.getCause() instanceof IOException);
         }
     }
 
@@ -438,7 +464,8 @@ public class CheckerTest extends BaseCheckTestSupport {
     @Test
     public void testCacheAndCheckWhichDoesNotImplementExternalResourceHolderInterface()
             throws Exception {
-        assertFalse(ExternalResourceHolder.class.isAssignableFrom(HiddenFieldCheck.class));
+        assertFalse("ExternalResourceHolder has changed his parent",
+                ExternalResourceHolder.class.isAssignableFrom(HiddenFieldCheck.class));
         final DefaultConfiguration checkConfig = createCheckConfig(HiddenFieldCheck.class);
 
         final DefaultConfiguration treeWalkerConfig = createCheckConfig(TreeWalker.class);
@@ -471,7 +498,8 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Properties cacheAfterSecondRun = new Properties();
         cacheAfterSecondRun.load(Files7.newBufferedReader(new Path(cacheFile)));
 
-        assertEquals(cacheAfterFirstRun, cacheAfterSecondRun);
+        assertEquals("Cache from first run differs from second run cache",
+                cacheAfterFirstRun, cacheAfterSecondRun);
     }
 
     @Test
@@ -499,12 +527,15 @@ public class CheckerTest extends BaseCheckTestSupport {
 
         // There should 2 objects in cache: processed file (file.java) and checker configuration.
         final int expectedNumberOfObjectsInCache = 2;
-        assertEquals(expectedNumberOfObjectsInCache, cache.size());
+        assertEquals("Cache has unexpected size",
+                expectedNumberOfObjectsInCache, cache.size());
 
         final String expectedConfigHash = "68EE3C3B4593FD8D86159C670C504542E20C6FA0";
-        assertEquals(expectedConfigHash, cache.getProperty(PropertyCacheFile.CONFIG_HASH_KEY));
+        assertEquals("Cache has unexpected hash",
+                expectedConfigHash, cache.getProperty(PropertyCacheFile.CONFIG_HASH_KEY));
 
-        assertNotNull(cache.getProperty(tmpFile.getPath()));
+        assertNotNull("Cache file has null path",
+                cache.getProperty(tmpFile.getPath()));
     }
 
     @Test
@@ -532,8 +563,10 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Properties cacheAfterClear = new Properties();
         cacheAfterClear.load(Files7.newBufferedReader(new Path(cacheFile)));
 
-        assertEquals(1, cacheAfterClear.size());
-        assertNotNull(cacheAfterClear.getProperty(PropertyCacheFile.CONFIG_HASH_KEY));
+        assertEquals("Cache has unexpected size",
+                1, cacheAfterClear.size());
+        assertNotNull("Cache has null hash",
+                cacheAfterClear.getProperty(PropertyCacheFile.CONFIG_HASH_KEY));
 
         final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -543,13 +576,15 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Properties cacheAfterSecondRun = new Properties();
         cacheAfterSecondRun.load(Files7.newBufferedReader(new Path(cacheFile)));
 
-        assertNotNull(cacheAfterSecondRun.getProperty(pathToEmptyFile));
-        assertEquals(
+        assertNotNull("Cache has null path",
+                cacheAfterSecondRun.getProperty(pathToEmptyFile));
+        assertEquals("Cash have changed it hash",
             cacheAfterClear.getProperty(PropertyCacheFile.CONFIG_HASH_KEY),
             cacheAfterSecondRun.getProperty(PropertyCacheFile.CONFIG_HASH_KEY)
         );
         final int expectedNumberOfObjectsInCacheAfterSecondRun = 2;
-        assertEquals(expectedNumberOfObjectsInCacheAfterSecondRun, cacheAfterSecondRun.size());
+        assertEquals("Cache has changed number of items",
+                expectedNumberOfObjectsInCacheAfterSecondRun, cacheAfterSecondRun.size());
     }
 
     @Test
@@ -558,6 +593,8 @@ public class CheckerTest extends BaseCheckTestSupport {
         // the invocation of clearCache method does not throw an exception.
         final Checker checker = new Checker();
         checker.clearCache();
+        assertNull("If cache file is not set the cache should default to null",
+            Whitebox.getInternalState(checker, "cache"));
     }
 
     @Test
@@ -582,9 +619,12 @@ public class CheckerTest extends BaseCheckTestSupport {
         }
         // -@cs[IllegalCatchExtended] Testing for catch Error is part of 100% coverage.
         catch (Error error) {
-            assertThat(error.getCause(), instanceOf(IOError.class));
-            assertThat(error.getCause().getCause(), instanceOf(InternalError.class));
-            assertEquals(errorMessage, error.getCause().getCause().getMessage());
+            assertThat("Error cause differs from IOError",
+                    error.getCause(), instanceOf(IOError.class));
+            assertThat("Error cause is not InternalError",
+                    error.getCause().getCause(), instanceOf(InternalError.class));
+            assertEquals("Error message is not expected",
+                    errorMessage, error.getCause().getCause().getMessage());
         }
     }
 
@@ -595,7 +635,8 @@ public class CheckerTest extends BaseCheckTestSupport {
     @Test
     public void testCacheAndFilterWhichDoesNotImplementExternalResourceHolderInterface()
             throws Exception {
-        assertFalse(ExternalResourceHolder.class.isAssignableFrom(DummyFilter.class));
+        assertFalse("ExternalResourceHolder has changed its parent",
+                ExternalResourceHolder.class.isAssignableFrom(DummyFilter.class));
         final DefaultConfiguration filterConfig = createCheckConfig(DummyFilter.class);
 
         final DefaultConfiguration checkerConfig = new DefaultConfiguration("checkstyle_checks");
@@ -621,16 +662,20 @@ public class CheckerTest extends BaseCheckTestSupport {
         cacheAfterSecondRun.load(Files7.newBufferedReader(new Path(cacheFile)));
 
         assertEquals(
+                "Cache file has changed its path",
             cacheAfterFirstRun.getProperty(pathToEmptyFile),
             cacheAfterSecondRun.getProperty(pathToEmptyFile)
         );
         assertEquals(
+                "Cache has changed its hash",
             cacheAfterFirstRun.getProperty(PropertyCacheFile.CONFIG_HASH_KEY),
             cacheAfterSecondRun.getProperty(PropertyCacheFile.CONFIG_HASH_KEY)
         );
         final int expectedNumberOfObjectsInCache = 2;
-        assertEquals(expectedNumberOfObjectsInCache, cacheAfterFirstRun.size());
-        assertEquals(expectedNumberOfObjectsInCache, cacheAfterSecondRun.size());
+        assertEquals("Number of items in cache differs from expected",
+                expectedNumberOfObjectsInCache, cacheAfterFirstRun.size());
+        assertEquals("Number of items in cache differs from expected",
+                expectedNumberOfObjectsInCache, cacheAfterSecondRun.size());
     }
 
     /**
@@ -649,8 +694,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         // Cache should not be reused.
 
         final DynamicalResourceHolderCheck check = new DynamicalResourceHolderCheck();
-        final String firstExternalResourceLocation = getPath("checks" + File.separator
-            + "imports" + File.separator + "import-control_one.xml");
+        final String firstExternalResourceLocation = getPath("InputImportControlOne.xml");
         final String firstExternalResourceKey = PropertyCacheFile.EXTERNAL_RESOURCE_KEY_PREFIX
                 + firstExternalResourceLocation;
         check.setFirstExternalResourceLocation(firstExternalResourceLocation);
@@ -673,11 +717,11 @@ public class CheckerTest extends BaseCheckTestSupport {
         cacheAfterFirstRun.load(Files7.newBufferedReader(new Path(cacheFile)));
 
         final int expectedNumberOfObjectsInCacheAfterFirstRun = 3;
-        assertEquals(expectedNumberOfObjectsInCacheAfterFirstRun, cacheAfterFirstRun.size());
+        assertEquals("Number of items in cache differs from expected",
+                expectedNumberOfObjectsInCacheAfterFirstRun, cacheAfterFirstRun.size());
 
         // Change a list of external resources which are used by the check
-        final String secondExternalResourceLocation = "checks" + File.separator
-            + "imports" + File.separator + "import-control_one-re.xml";
+        final String secondExternalResourceLocation = "InputImportControlOneRegExp.xml";
         final String secondExternalResourceKey = PropertyCacheFile.EXTERNAL_RESOURCE_KEY_PREFIX
                 + secondExternalResourceLocation;
         check.setSecondExternalResourceLocation(secondExternalResourceLocation);
@@ -686,23 +730,28 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Properties cacheAfterSecondRun = new Properties();
         cacheAfterSecondRun.load(Files7.newBufferedReader(new Path(cacheFile)));
 
-        assertEquals(
+        assertEquals("Cache file has changed its path",
             cacheAfterFirstRun.getProperty(pathToEmptyFile),
             cacheAfterSecondRun.getProperty(pathToEmptyFile)
         );
         assertEquals(
+                "Cache has changed its hash",
             cacheAfterFirstRun.getProperty(PropertyCacheFile.CONFIG_HASH_KEY),
             cacheAfterSecondRun.getProperty(PropertyCacheFile.CONFIG_HASH_KEY)
         );
-        assertEquals(
+        assertEquals("Cache has changed its resource key",
             cacheAfterFirstRun.getProperty(firstExternalResourceKey),
             cacheAfterSecondRun.getProperty(firstExternalResourceKey)
         );
-        assertNotNull(cacheAfterFirstRun.getProperty(firstExternalResourceKey));
+        assertNotNull("Cache has null as a resource key",
+                cacheAfterFirstRun.getProperty(firstExternalResourceKey));
         final int expectedNumberOfObjectsInCacheAfterSecondRun = 4;
-        assertEquals(expectedNumberOfObjectsInCacheAfterSecondRun, cacheAfterSecondRun.size());
-        assertNull(cacheAfterFirstRun.getProperty(secondExternalResourceKey));
-        assertNotNull(cacheAfterSecondRun.getProperty(secondExternalResourceKey));
+        assertEquals("Number of items in cache differs from expected",
+                expectedNumberOfObjectsInCacheAfterSecondRun, cacheAfterSecondRun.size());
+        assertNull("Cache has not null as a resource key",
+                cacheAfterFirstRun.getProperty(secondExternalResourceKey));
+        assertNotNull("Cache has null as a resource key",
+                cacheAfterSecondRun.getProperty(secondExternalResourceKey));
     }
 
     @Test
@@ -800,7 +849,8 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.process(Collections.singletonList(new File("dummy.java")));
         final List<String> expected =
             Arrays.asList("beginProcessing", "finishProcessing", "destroy");
-        assertArrayEquals(expected.toArray(), fileSet.getMethodCalls().toArray());
+        assertArrayEquals("Method calls were not expected",
+                expected.toArray(), fileSet.getMethodCalls().toArray());
     }
 
     @Test
@@ -808,7 +858,8 @@ public class CheckerTest extends BaseCheckTestSupport {
         final DummyFileSet fileSet = new DummyFileSet();
         final Checker checker = new Checker();
         checker.addFileSetCheck(fileSet);
-        assertEquals(checker, fileSet.getInternalMessageDispatcher());
+        assertEquals("Message dispatcher was not expected",
+                checker, fileSet.getInternalMessageDispatcher());
     }
 
     @Test
@@ -873,6 +924,51 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.finishLocalSetup();
         checker.setupChild(createCheckConfig(DummyFileSet.class));
         assertTrue("FileSetCheck.init() wasn't called", fileSet.isInitCalled());
+    }
+
+    @Test
+    public void testDefaultLoggerClosesItStreams() throws Exception {
+        final Checker checker = new Checker();
+        final CloseAndFlushTestByteArrayOutputStream testInfoOutputStream =
+            new CloseAndFlushTestByteArrayOutputStream();
+        final CloseAndFlushTestByteArrayOutputStream testErrorOutputStream =
+            new CloseAndFlushTestByteArrayOutputStream();
+        checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
+        checker.addListener(new DefaultLogger(testInfoOutputStream,
+            true, testErrorOutputStream, true));
+
+        final File tmpFile = temporaryFolder.newFile("file.java");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+
+        verify(checker, tmpFile.getPath(), tmpFile.getPath(), expected);
+
+        assertEquals("Close count was not expected",
+                1, testInfoOutputStream.getCloseCount());
+        assertEquals("Flush count was not expected",
+                3, testInfoOutputStream.getFlushCount());
+        assertEquals("Close count was not expected",
+                1, testErrorOutputStream.getCloseCount());
+        assertEquals("Flush count was not expected",
+                1, testErrorOutputStream.getFlushCount());
+    }
+
+    @Test
+    public void testXmlLoggerClosesItStreams() throws Exception {
+        final Checker checker = new Checker();
+        final CloseAndFlushTestByteArrayOutputStream testInfoOutputStream =
+            new CloseAndFlushTestByteArrayOutputStream();
+        checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
+        checker.addListener(new XMLLogger(testInfoOutputStream, true));
+
+        final File tmpFile = temporaryFolder.newFile("file.java");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+
+        verify(checker, tmpFile.getPath(), tmpFile.getPath(), expected);
+
+        assertEquals("Close count was not expected",
+                1, testInfoOutputStream.getCloseCount());
+        assertEquals("Flush count was not expected",
+                0, testInfoOutputStream.getFlushCount());
     }
 
     private static class DummyFilter implements Filter {

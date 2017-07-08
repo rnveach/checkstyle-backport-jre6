@@ -23,6 +23,7 @@
 
     <section name="ArrayTrailingComma">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that array initialization contains a trailing comma.
         </p>
@@ -172,6 +173,7 @@ return new int[] {
 
     <section name="AvoidInlineConditionals">
       <subsection name="Description">
+        <p>Since Checkstyle 3.1</p>
         <p>
           Detects inline conditionals. Here is one example of an inline conditional:
         </p>
@@ -236,6 +238,7 @@ String b = (a==null || a.length&lt;1) ? null : a.substring(1);
 
     <section name="CovariantEquals">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that classes which define a covariant <code>equals()</code> method
           also override method <code>equals(Object)</code>.<br/>
@@ -355,6 +358,7 @@ class Test {
 
     <section name="DeclarationOrder">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           According to <a
           href="http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-141855.html#1852">
@@ -404,18 +408,21 @@ public class A {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>ignoreConstructors</td>
             <td>whether to ignore constructors</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>5.2</td>
           </tr>
           <tr>
             <td>ignoreModifiers</td>
             <td>whether to ignore modifiers</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>5.2</td>
           </tr>
         </table>
       </subsection>
@@ -511,6 +518,7 @@ public class A {
 
     <section name="DefaultComesLast">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           Check that the <code>default</code> is after all the
           <code>case</code>s in a <code>switch</code> statement.
@@ -529,12 +537,14 @@ public class A {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>skipIfLastAndSharedWithCase</td>
             <td>whether to allow <code>default</code> along with case if they are not last</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>false</td>
+            <td>7.7</td>
           </tr>
         </table>
       </subsection>
@@ -617,6 +627,7 @@ switch (i) {
 
     <section name="EmptyStatement">
       <subsection name="Description">
+        <p>Since Checkstyle 3.1</p>
         <p>
           Detects empty statements (standalone ";" semicolon).
         </p>
@@ -672,6 +683,7 @@ switch (i) {
 
     <section name="EqualsAvoidNull">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p>
           Checks that any combination of String literals
           is on the left side of an equals() comparison.
@@ -710,12 +722,14 @@ String nullString = null;
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>ignoreEqualsIgnoreCase</td>
             <td>whether to ignore <code>String.equalsIgnoreCase()</code> invocations</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>false</td>
+            <td>5.4</td>
           </tr>
         </table>
       </subsection>
@@ -770,6 +784,7 @@ String nullString = null;
 
     <section name="EqualsHashCode">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks that classes that either override <code>equals()</code>
           or <code>hashCode()</code> also overrides the other.
@@ -842,6 +857,7 @@ String nullString = null;
 
     <section name="ExplicitInitialization">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks if any class or object member is explicitly initialized to
           default for its type value (<code>null</code> for
@@ -868,6 +884,7 @@ String nullString = null;
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>onlyObjectReferences</td>
@@ -875,6 +892,7 @@ String nullString = null;
                 null for objects should be checked</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>7.8</td>
           </tr>
         </table>
       </subsection>
@@ -965,6 +983,7 @@ String nullString = null;
 
     <section name="FallThrough">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           Checks for fall-through in <code>switch</code>
           statements. Finds locations where a <code>case</code>
@@ -1016,6 +1035,7 @@ case 5:
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>checkLastCaseGroup</td>
@@ -1024,6 +1044,7 @@ case 5:
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>4.0</td>
           </tr>
           <tr>
             <td>reliefPattern</td>
@@ -1033,6 +1054,7 @@ case 5:
             </td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"fallthru|falls? ?through"</code></td>
+            <td>4.0</td>
           </tr>
         </table>
       </subsection>
@@ -1099,6 +1121,7 @@ case 5:
 
     <section name="FinalLocalVariable">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that local variables that never have their values changed are
           declared final. The check can be configured to also check that
@@ -1120,6 +1143,7 @@ case 5:
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>validateEnhancedForLoopVariable</td>
@@ -1133,6 +1157,7 @@ case 5:
               false
              </code>
             </td>
+            <td>6.5</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -1147,6 +1172,7 @@ case 5:
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>.
             </td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -1233,6 +1259,7 @@ case 5:
 
     <section name="HiddenField">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks that a local variable or a parameter does not shadow a field
           that is defined in the same class.
@@ -1246,12 +1273,14 @@ case 5:
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>ignoreFormat</td>
             <td>pattern for names of variables and parameters to ignore</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>null</code></td>
+            <td>3.2</td>
           </tr>
 
           <tr>
@@ -1259,6 +1288,7 @@ case 5:
             <td>Controls whether to ignore constructor parameters.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>3.2</td>
           </tr>
 
           <tr>
@@ -1274,6 +1304,7 @@ case 5:
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>3.2</td>
           </tr>
 
           <tr>
@@ -1300,6 +1331,7 @@ case 5:
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>6.3</td>
           </tr>
 
           <tr>
@@ -1307,6 +1339,7 @@ case 5:
             <td>Controls whether to ignore parameters of abstract methods.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>4.0</td>
           </tr>
 
           <tr>
@@ -1327,6 +1360,7 @@ case 5:
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">PARAMETER_DEF</a>,
               LAMBDA.
             </td>
+            <td>3.0</td>
           </tr>
         </table>
       </subsection>
@@ -1450,6 +1484,7 @@ class SomeClass
 
     <section name="IllegalCatch">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
         Checks that certain exception types do not appear in a <code>catch</code> statement.
         </p>
@@ -1471,6 +1506,7 @@ class SomeClass
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>illegalClassNames</td>
@@ -1478,6 +1514,7 @@ class SomeClass
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>&quot;java.lang.Exception,
             java.lang.Throwable, java.lang.RuntimeException&quot;</code></td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -1528,6 +1565,7 @@ class SomeClass
 
     <section name="IllegalInstantiation">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for illegal instantiations where a factory method is
           preferred.
@@ -1568,12 +1606,14 @@ class SomeClass
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>classes</td>
             <td>classes that should not be instantiated</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td>{}</td>
+            <td>3.0</td>
           </tr>
 
           <tr>
@@ -1588,6 +1628,7 @@ class SomeClass
             <td>
               CLASS_DEF.
             </td>
+            <td>3.0</td>
           </tr>
         </table>
       </subsection>
@@ -1644,6 +1685,7 @@ class SomeClass
 
     <section name="IllegalThrows">
       <subsection name="Description">
+        <p>Since Checkstyle 4.0</p>
         <p>
           This check can be used to ensure that types are not declared
           to be thrown. Declaring that a method throws java.lang.Error or
@@ -1658,6 +1700,7 @@ class SomeClass
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>illegalClassNames</td>
@@ -1667,12 +1710,14 @@ class SomeClass
               <code>&quot;java.lang.Throwable,
               java.lang.Error, java.lang.RuntimeException&quot;</code>
             </td>
+            <td>4.0</td>
           </tr>
           <tr>
             <td>ignoredMethodNames</td>
             <td>names of methods to ignore</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>finalize</code></td>
+            <td>5.4</td>
           </tr>
           <tr>
             <td>ignoreOverriddenMethods</td>
@@ -1680,6 +1725,7 @@ class SomeClass
              annotation).</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>6.4</td>
           </tr>
         </table>
       </subsection>
@@ -1754,6 +1800,7 @@ class SomeClass
 
     <section name="IllegalToken">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks for illegal tokens. By default labels are prohibited.
         </p>
@@ -1773,6 +1820,7 @@ class SomeClass
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>tokens</td>
@@ -1784,6 +1832,7 @@ class SomeClass
             <td>
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LABELED_STAT">LABELED_STAT</a>.
             </td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -1836,6 +1885,7 @@ class SomeClass
 
     <section name="IllegalTokenText">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks specified tokens text for matching an illegal pattern from
           <code>format</code> property. By default no tokens are specified.
@@ -1849,18 +1899,21 @@ class SomeClass
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>illegal pattern</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>&quot;$^&quot; (empty)</code></td>
+            <td>3.2</td>
           </tr>
           <tr>
             <td>ignoreCase</td>
             <td>Controls whether to ignore case when matching.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>3.2</td>
           </tr>
           <tr>
             <td>message</td>
@@ -1868,6 +1921,7 @@ class SomeClass
             if empty then the default message is used.</td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>&quot;&quot;</code>(empty)</td>
+            <td>3.2</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -1883,6 +1937,7 @@ class SomeClass
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CHAR_LITERAL">CHAR_LITERAL</a>.
             </td>
             <td>empty</td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -1952,6 +2007,7 @@ class SomeClass
 
     <section name="IllegalType">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that particular classes are never used as types in variable
           declarations, return values or parameters.
@@ -1969,12 +2025,14 @@ class SomeClass
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>validateAbstractClassNames</td>
             <td>Whether to validate abstract class names</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>false</td>
+            <td>6.10</td>
           </tr>
           <tr>
             <td>illegalClassNames</td>
@@ -1984,30 +2042,35 @@ class SomeClass
             <td>&quot;java.util.HashSet, java.util.HashMap, java.util.LinkedHashMap,
             java.util.LinkedHashSet, java.util.TreeSet,
             java.util.TreeMap&quot;</td>
+            <td>3.2</td>
           </tr>
           <tr>
           <td>legalAbstractClassNames</td>
           <td>Abstract classes that may be used as types. </td>
           <td><a href="property_types.html#stringSet">String Set</a></td>
           <td/>
+          <td>4.2</td>
         </tr>
         <tr>
             <td>ignoredMethodNames</td>
             <td>Methods that should not be checked.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td>&quot;getInitialContext, getEnvironment&quot; </td>
+            <td>3.2</td>
           </tr>
           <tr>
             <td>format</td>
             <td>Pattern for illegal class names.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^(.*[.])?Abstract.*$"</code></td>
+            <td>3.2</td>
           </tr>
           <tr>
             <td>memberModifiers</td>
             <td>Check methods and fields with only corresponding modifiers.</td>
             <td><a href="property_types.html#stringSet">List of tokens</a></td>
             <td><code>null</code></td>
+            <td>6.3</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -2023,6 +2086,7 @@ class SomeClass
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">PARAMETER_DEF</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">METHOD_DEF</a>.
             </td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -2085,6 +2149,7 @@ class SomeClass
 
     <section name="InnerAssignment">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for assignments in subexpressions, such as in <code>String s = Integer.toString(i = 2);</code>.
         </p>
@@ -2169,6 +2234,7 @@ while ((line = bufferedReader.readLine()) != null) {
 
     <section name="MagicNumber">
       <subsection name="Description">
+        <p>Since Checkstyle 3.1</p>
         <p>
           Checks that there are no <a href="https://en.wikipedia.org/wiki/Magic_number_%28programming%29">
           &quot;magic numbers&quot;</a> where a magic
@@ -2195,30 +2261,35 @@ static final Integer ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE = new Integer(42);
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>ignoreNumbers</td>
             <td>non-magic numbers</td>
             <td><a href="property_types.html#intSet">Number Set</a></td>
             <td>-1, 0, 1, 2</td>
+            <td>3.1</td>
           </tr>
           <tr>
             <td>ignoreHashCodeMethod</td>
             <td>ignore magic numbers in hashCode methods</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><span class="default">false</span></td>
+            <td>5.3</td>
           </tr>
           <tr>
             <td>ignoreAnnotation</td>
             <td>ignore magic numbers in annotation declarations.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><span class="default">false</span></td>
+            <td>5.4</td>
           </tr>
           <tr>
               <td>ignoreFieldDeclaration</td>
               <td>ignore magic numbers in field declarations.</td>
               <td><a href="property_types.html#boolean">Boolean</a></td>
               <td><span class="default">false</span></td>
+              <td>6.6</td>
           </tr>
           <tr>
               <td>constantWaiverParentToken</td>
@@ -2241,6 +2312,7 @@ static final Integer ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE = new Integer(42);
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PLUS">PLUS</a>,
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#MINUS">MINUS</a>.
               </td>
+              <td>6.11</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -2257,6 +2329,7 @@ static final Integer ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE = new Integer(42);
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#NUM_INT">NUM_INT</a>,
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#NUM_LONG">NUM_LONG</a>.
             </td>
+            <td>3.1</td>
           </tr>
         </table>
       </subsection>
@@ -2380,6 +2453,7 @@ class MyClass {
 
     <section name="MissingCtor">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           Checks that classes (except abstract ones) define a constructor and don't
           rely on the default one.
@@ -2432,6 +2506,7 @@ class MyClass {
 
     <section name="MissingSwitchDefault">
       <subsection name="Description">
+        <p>Since Checkstyle 3.1</p>
         <p>
           Checks that switch statement has a &quot;default&quot; clause.
         </p>
@@ -2500,6 +2575,7 @@ class MyClass {
 
     <section name="ModifiedControlVariable">
       <subsection name="Description">
+        <p>Since Checkstyle 3.5</p>
         <p>
             Check for ensuring that for loop control variables are not modified inside the for block. An example is:
         </p>
@@ -2530,6 +2606,7 @@ class MyClass {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
 
           <tr>
@@ -2544,6 +2621,7 @@ class MyClass {
               false
              </code>
             </td>
+            <td>6.8</td>
           </tr>
         </table>
       </subsection>
@@ -2620,6 +2698,7 @@ class MyClass {
 
     <section name="MultipleStringLiterals">
       <subsection name="Description">
+        <p>Since Checkstyle 3.5</p>
         <p>
           Checks for multiple occurrences of the same string literal within a
           single file.
@@ -2638,6 +2717,7 @@ class MyClass {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>allowedDuplicates</td>
@@ -2647,6 +2727,7 @@ class MyClass {
             </td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td>1</td>
+            <td>3.5</td>
           </tr>
           <tr>
             <td>ignoreStringsRegexp</td>
@@ -2655,6 +2736,7 @@ class MyClass {
             </td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^""$"</code></td>
+            <td>4.0</td>
           </tr>
           <tr>
             <td>ignoreOccurrenceContext</td>
@@ -2671,6 +2753,7 @@ class MyClass {
               <code>ANNOTATION</code>
               (ignore strings inside the context of an annotation)
             </td>
+            <td>4.4</td>
           </tr>
         </table>
       </subsection>
@@ -2751,6 +2834,7 @@ class MyClass {
 
     <section name="MultipleVariableDeclarations">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           Checks that each variable declaration is in its own statement and on
           its own line.
@@ -2818,6 +2902,7 @@ class MyClass {
 
     <section name="NestedForDepth">
       <subsection name="Description">
+        <p>Since Checkstyle 5.3</p>
         <p>
           Restricts nested <code>for</code> blocks to a specified depth
           (default = 1).
@@ -2831,12 +2916,14 @@ class MyClass {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
             <td>allowed nesting depth</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><span class="default">1</span></td>
+            <td>5.3</td>
           </tr>
         </table>
       </subsection>
@@ -2896,6 +2983,7 @@ class MyClass {
 
     <section name="NestedIfDepth">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Restricts nested if-else blocks to a specified depth (default = 1).
         </p>
@@ -2908,12 +2996,14 @@ class MyClass {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
             <td>allowed nesting depth</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>1</code></td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -2973,6 +3063,7 @@ class MyClass {
 
     <section name="NestedTryDepth">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Restricts nested try blocks to a specified depth (default = 1).
         </p>
@@ -2985,12 +3076,14 @@ class MyClass {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
             <td>allowed nesting depth</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>1</code></td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -3050,6 +3143,7 @@ class MyClass {
 
     <section name="NoClone">
       <subsection name="Description">
+       <p>Since Checkstyle 5.0</p>
        <p>
        Checks that the clone method is not overridden from the
        Object class.
@@ -3116,6 +3210,7 @@ class MyClass {
 
     <section name="NoFinalizer">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p>
           Verifies there are no <code>finalize()</code> methods
           defined in a class.
@@ -3172,6 +3267,7 @@ class MyClass {
 
     <section name="OneStatementPerLine">
       <subsection name="Description">
+          <p>Since Checkstyle 5.3</p>
           <p>
           Checks that there is only one statement per line.
           </p>
@@ -3261,6 +3357,7 @@ r = 5; int t; //violation here
 
     <section name="OverloadMethodsDeclarationOrder">
       <subsection name="Description">
+        <p>Since Checkstyle 5.8</p>
         <p>
           Checks that overload methods are grouped together.
         </p>
@@ -3325,6 +3422,7 @@ public void foo(int i, String s) {}
 
     <section name="PackageDeclaration">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Ensures that a class has a package declaration, and (optionally) whether
           the package name matches the directory name for the source file.
@@ -3348,12 +3446,14 @@ public void foo(int i, String s) {}
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>matchDirectoryStructure</td>
             <td>Whether to check for directory and package name match.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>7.6.1</td>
           </tr>
         </table>
       </subsection>
@@ -3435,6 +3535,7 @@ public class AnnotationLocationCheck extends AbstractCheck {
 
     <section name="ParameterAssignment">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p> Disallows assignment of parameters.</p>
         <p>
           Rationale: Parameter assignment is often considered poor programming
@@ -3490,6 +3591,7 @@ public class AnnotationLocationCheck extends AbstractCheck {
 
     <section name="RequireThis">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           Checks that references to instance variables and methods of the present
           object are explicitly of the form &quot;this.varName&quot; or
@@ -3525,24 +3627,28 @@ public class AnnotationLocationCheck extends AbstractCheck {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>checkFields</td>
             <td>Whether to check references to fields.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>checkMethods</td>
             <td>Whether to check references to methods.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>validateOnlyOverlapping</td>
             <td>Whether to check only overlapping by variables or arguments.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>6.17</td>
           </tr>
         </table>
       </subsection>
@@ -3720,6 +3826,7 @@ class C {
 
     <section name="ReturnCount">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Restricts the number of return statements in methods, constructors and lambda expressions
           (2 by default). Ignores specified methods (<code>equals()</code> by default).
@@ -3750,24 +3857,28 @@ class C {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
             <td>maximum allowed number of return statements in non-void methods/lambdas</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>2</code></td>
+            <td>3.2</td>
           </tr>
           <tr>
             <td>maxForVoid</td>
             <td>maximum allowed number of return statements in void methods/constructors/lambdas</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>1</code></td>
+            <td>6.19</td>
           </tr>
           <tr>
             <td>format</td>
             <td>method names to ignore</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^equals$"</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -3783,6 +3894,7 @@ class C {
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">METHOD_DEF</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LAMBDA">LAMBDA</a>.
             </td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -3890,6 +4002,7 @@ class C {
 
     <section name="SimplifyBooleanExpression">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for over-complicated boolean expressions. Currently finds
           code like <code> if (b == true)</code>, <code>b || true</code>, <code>!false</code>,
@@ -3952,6 +4065,7 @@ class C {
 
     <section name="SimplifyBooleanReturn">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for over-complicated boolean return statements. For example
           the following code
@@ -4026,6 +4140,7 @@ return !valid();
 
     <section name="StringLiteralEquality">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that string literals are not used with <code>==</code> or
           <code>&#33;=</code>.
@@ -4090,6 +4205,7 @@ if (&quot;something&quot;.equals(x))
 
     <section name="SuperClone">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that an overriding <code>clone()</code> method invokes
           <code>super.clone()</code>. Does not check native methods, as
@@ -4148,6 +4264,7 @@ if (&quot;something&quot;.equals(x))
 
     <section name="SuperFinalize">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that an overriding <code>finalize()</code> method invokes
           <code>super.finalize()</code>. Does not check native methods, as
@@ -4207,6 +4324,7 @@ if (&quot;something&quot;.equals(x))
 
     <section name="UnnecessaryParentheses">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           Checks for the use of unnecessary parentheses.
         </p>
@@ -4219,6 +4337,7 @@ if (&quot;something&quot;.equals(x))
                   <th>description</th>
                   <th>type</th>
                   <th>default value</th>
+                  <th>since</th>
               </tr>
               <tr>
                   <td>tokens</td>
@@ -4272,6 +4391,7 @@ if (&quot;something&quot;.equals(x))
                     <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#SR_ASSIGN">SR_ASSIGN</a>,
                     <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#STAR_ASSIGN">STAR_ASSIGN</a>.
                   </td>
+                  <td>3.4</td>
               </tr>
           </table>
       </subsection>
@@ -4342,6 +4462,7 @@ if (&quot;something&quot;.equals(x))
 
     <section name="VariableDeclarationUsageDistance">
       <subsection name="Description">
+        <p>Since Checkstyle 5.8</p>
         <p>
           Checks the distance between declaration of variable and its first usage.
         </p>
@@ -4354,6 +4475,7 @@ if (&quot;something&quot;.equals(x))
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
 
           <tr>
@@ -4361,6 +4483,7 @@ if (&quot;something&quot;.equals(x))
             <td>A distance between declaration of variable and its first usage. Values should be greater than 0.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td>3</td>
+            <td>5.8</td>
           </tr>
 
           <tr>
@@ -4368,6 +4491,7 @@ if (&quot;something&quot;.equals(x))
             <td>pattern for ignoring the distance calculation</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>""</code></td>
+            <td>5.8</td>
           </tr>
 
           <tr>
@@ -4375,6 +4499,7 @@ if (&quot;something&quot;.equals(x))
             <td>Allows to calculate the distance between declaration of variable and its first usage in the different scopes.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>5.8</td>
           </tr>
 
           <tr>
@@ -4382,6 +4507,7 @@ if (&quot;something&quot;.equals(x))
             <td>Allows to ignore variables with a 'final' modifier.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.8</td>
           </tr>
         </table>
       </subsection>

@@ -34,7 +34,6 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.gui.MainFrameModel.ParseMode;
-import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
 public class ParseTreeTablePresentationTest {
@@ -254,8 +253,7 @@ public class ParseTreeTablePresentationTest {
         final int line = (Integer) parseTree.getValueAt(child, 2);
         final int column = (Integer) parseTree.getValueAt(child, 3);
         final String text = (String) parseTree.getValueAt(child, 4);
-        final String expectedText = System7.lineSeparator()
-                + "* class javadoc" + System7.lineSeparator() + "<EOF>";
+        final String expectedText = "JAVADOC";
 
         Assert.assertNull(treeModel);
         Assert.assertEquals("JAVADOC", type);

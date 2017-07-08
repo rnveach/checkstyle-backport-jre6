@@ -157,7 +157,8 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends BaseCheckTestSupport
             TokenTypes.STRING_LITERAL,
             TokenTypes.CHAR_LITERAL,
         };
-        assertArrayEquals(expected, checkObj.getRequiredTokens());
+        assertArrayEquals("Required tokens differ from expected",
+                expected, checkObj.getRequiredTokens());
     }
 
     @Test
@@ -334,7 +335,8 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends BaseCheckTestSupport
         final AvoidEscapedUnicodeCharactersCheck check = new AvoidEscapedUnicodeCharactersCheck();
         final int[] actual = check.getAcceptableTokens();
         final int[] expected = {TokenTypes.STRING_LITERAL, TokenTypes.CHAR_LITERAL };
-        assertArrayEquals(expected, actual);
+        assertArrayEquals("Acceptable tokens differ from expected",
+                expected, actual);
     }
 
     @Test

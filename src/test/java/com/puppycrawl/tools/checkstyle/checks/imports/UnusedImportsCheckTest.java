@@ -36,13 +36,13 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
     @Override
     protected String getPath(String filename) throws IOException {
         return super.getPath("checks" + File.separator
-                + "imports" + File.separator + filename);
+                + "imports" + File.separator + "unusedimports" + File.separator + filename);
     }
 
     @Override
     protected String getNonCompilablePath(String filename) throws IOException {
         return super.getNonCompilablePath("checks" + File.separator
-                + "imports" + File.separator + filename);
+                + "imports" + File.separator + "unusedimports" + File.separator + filename);
     }
 
     @Test
@@ -51,7 +51,8 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("processJavadoc", "false");
         final String[] expected = {
             "8:45: " + getCheckMessage(MSG_KEY,
-                "com.puppycrawl.tools.checkstyle.checks.imports.InputImportBug"),
+                "com.puppycrawl.tools.checkstyle.checks."
+                + "imports.unusedimports.InputUnusedImportsBug"),
             "11:8: " + getCheckMessage(MSG_KEY, "java.lang.String"),
             "13:8: " + getCheckMessage(MSG_KEY, "java.util.List"),
             "14:8: " + getCheckMessage(MSG_KEY, "java.util.List"),
@@ -89,7 +90,8 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
         final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
         final String[] expected = {
             "8:45: " + getCheckMessage(MSG_KEY,
-                "com.puppycrawl.tools.checkstyle.checks.imports.InputImportBug"),
+                "com.puppycrawl.tools.checkstyle.checks."
+                        + "imports.unusedimports.InputUnusedImportsBug"),
             "11:8: " + getCheckMessage(MSG_KEY, "java.lang.String"),
             "13:8: " + getCheckMessage(MSG_KEY, "java.util.List"),
             "14:8: " + getCheckMessage(MSG_KEY, "java.util.List"),
@@ -108,21 +110,21 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
     public void testProcessJavadocWithLinkTag() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputUnusedImportWithValueTag.java"), expected);
+        verify(checkConfig, getPath("InputUnusedImportsWithValueTag.java"), expected);
     }
 
     @Test
     public void testAnnotations() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getNonCompilablePath("package-info.java"), expected);
+        verify(checkConfig, getNonCompilablePath("InputUnusedImportsAnnotations.java"), expected);
     }
 
     @Test
     public void testBug() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputImportBug.java"), expected);
+        verify(checkConfig, getPath("InputUnusedImportsBug.java"), expected);
     }
 
     @Test
@@ -147,7 +149,7 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
             TokenTypes.VARIABLE_DEF,
         };
 
-        assertArrayEquals(expected, actual);
+        assertArrayEquals("Default required tokens are invalid", expected, actual);
     }
 
     @Test
@@ -172,7 +174,7 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
             TokenTypes.VARIABLE_DEF,
         };
 
-        assertArrayEquals(expected, actual);
+        assertArrayEquals("Default acceptable tokens are invalid", expected, actual);
     }
 
     @Test
@@ -182,7 +184,7 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
             "5:8: " + getCheckMessage(MSG_KEY, "java.util.Arrays"),
             "6:8: " + getCheckMessage(MSG_KEY, "java.lang.String"),
         };
-        verify(checkConfig, getNonCompilablePath("InputRedundantImport_UnnamedPackage.java"),
+        verify(checkConfig, getNonCompilablePath("InputUnusedImportsFileInUnnamedPackage.java"),
             expected);
     }
 
@@ -202,6 +204,6 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
             "12:8: " + getCheckMessage(MSG_KEY, "java.lang.Float"),
             "13:8: " + getCheckMessage(MSG_KEY, "java.lang.Short"),
         };
-        verify(checkConfig, getPath("InputUnusedImportFromJavaLang.java"), expected);
+        verify(checkConfig, getPath("InputUnusedImportsFromJavaLang.java"), expected);
     }
 }

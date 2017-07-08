@@ -49,7 +49,8 @@ public class MethodCountCheckTest extends BaseCheckTestSupport {
     public void testGetRequiredTokens() {
         final MethodCountCheck checkObj = new MethodCountCheck();
         final int[] expected = {TokenTypes.METHOD_DEF};
-        assertArrayEquals(expected, checkObj.getRequiredTokens());
+        assertArrayEquals("Default required tokens are invalid",
+            expected, checkObj.getRequiredTokens());
     }
 
     @Test
@@ -62,10 +63,11 @@ public class MethodCountCheckTest extends BaseCheckTestSupport {
             TokenTypes.ENUM_CONSTANT_DEF,
             TokenTypes.ENUM_DEF,
             TokenTypes.INTERFACE_DEF,
+            TokenTypes.ANNOTATION_DEF,
             TokenTypes.METHOD_DEF,
         };
 
-        assertArrayEquals(expected, actual);
+        assertArrayEquals("Default acceptable tokens are invalid", expected, actual);
     }
 
     @Test
@@ -129,5 +131,27 @@ public class MethodCountCheckTest extends BaseCheckTestSupport {
         };
 
         verify(checkConfig, getPath("InputMethodCount3.java"), expected);
+    }
+
+    @Test
+    public void testOnInterfaceDefinitionWithField() throws Exception {
+        final DefaultConfiguration checkConfig =
+                createCheckConfig(MethodCountCheck.class);
+
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getPath("InputMethodCount4.java"), expected);
+    }
+
+    @Test
+    public void testWithInterfaceDefinitionInClass() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(MethodCountCheck.class);
+        checkConfig.addAttribute("maxTotal", "1");
+
+        final String[] expected = {
+            "1: " + getCheckMessage(MSG_MANY_METHODS, 2, 1),
+        };
+
+        verify(checkConfig, getPath("InputMethodCount5.java"), expected);
     }
 }

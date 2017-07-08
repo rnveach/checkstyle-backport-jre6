@@ -20,6 +20,7 @@
 package com.puppycrawl.tools.checkstyle;
 
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.any;
@@ -47,11 +48,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.mockito.internal.util.reflection.Whitebox;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.Context;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -152,16 +155,23 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException exception) {
-            assertTrue(exception.getMessage().contains("TreeWalker is not allowed as a parent of"));
+            assertTrue("Error message is unexpected",
+                    exception.getMessage().contains("TreeWalker is not allowed as a parent of"));
         }
     }
 
     @Test
     public void testSettersForParameters() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
+        final DefaultConfiguration config = new DefaultConfiguration("default config");
         treeWalker.setTabWidth(1);
-        treeWalker.configure(new DefaultConfiguration("default config"));
+        treeWalker.configure(config);
         treeWalker.setCacheFile(temporaryFolder.newFile().getPath());
+
+        assertEquals("Invalid setter result", 1,
+            Whitebox.getInternalState(treeWalker, "tabWidth"));
+        assertEquals("Invalid configuration", config,
+            Whitebox.getInternalState(treeWalker, "configuration"));
     }
 
     @Test
@@ -174,7 +184,8 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
             verify(checkConfig, pathToEmptyFile, expected);
         }
         catch (CheckstyleException ex) {
-            assertTrue(ex.getMessage().contains("isCommentNodesRequired"));
+            assertTrue("Error message is unexpected",
+                    ex.getMessage().contains("isCommentNodesRequired"));
         }
     }
 
@@ -189,16 +200,14 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
 
     @Test
     public void testWithCacheWithNoViolation() throws Exception {
-        final TreeWalker treeWalker = new TreeWalker();
-        treeWalker.configure(createCheckConfig(TypeNameCheck.class));
+        final Checker checker = createChecker(createCheckConfig(HiddenFieldCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
             new HashSet<String>(), Thread.currentThread().getContextClassLoader());
-        treeWalker.setModuleFactory(factory);
-        treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
+        checker.setModuleFactory(factory);
         final File file = temporaryFolder.newFile("file.java");
-        final List<String> lines = new ArrayList<String>();
-        lines.add(" class a {} ");
-        treeWalker.processFiltered(file, lines);
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+
+        verify(checker, file.getPath(), expected);
     }
 
     @Test
@@ -217,7 +226,8 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
             treeWalker.processFiltered(file, lines);
         }
         catch (CheckstyleException exception) {
-            assertTrue(exception.getMessage().contains(
+            assertTrue("Error message is unexpected",
+                    exception.getMessage().contains(
                     "occurred during the analysis of file"));
         }
     }
@@ -238,7 +248,8 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
             treeWalker.processFiltered(file, lines);
         }
         catch (CheckstyleException exception) {
-            assertTrue(exception.getMessage().contains(
+            assertTrue("Error message is unexpected",
+                    exception.getMessage().contains(
                     "TokenStreamRecognitionException occurred during the analysis of file"));
         }
     }
@@ -255,7 +266,8 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue(ex.getMessage().startsWith("cannot initialize module"
+            assertTrue("Error message is unexpected",
+                    ex.getMessage().startsWith("cannot initialize module"
                 + " com.puppycrawl.tools.checkstyle.TreeWalker - Token \""
                 + TokenTypes.ASSIGN + "\" from required"
                 + " tokens was not found in default tokens list in check"));
@@ -359,6 +371,34 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         TreeWalker.parse(any(FileContents.class));
     }
 
+    @Test
+    public void testFinishLocalSetupFullyInitialized() throws Exception {
+        final TreeWalker treeWalker = new TreeWalker();
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        treeWalker.setClassLoader(contextClassLoader);
+        treeWalker.setSeverity("error");
+        treeWalker.setTabWidth(100);
+        treeWalker.finishLocalSetup();
+
+        final Context context = (Context) Whitebox.getInternalState(treeWalker, "childContext");
+        assertEquals("Classloader object differs from expected",
+                contextClassLoader, context.get("classLoader"));
+        assertEquals("Severity differs from expected",
+                "error", context.get("severity"));
+        assertEquals("Tab width differs from expected",
+                String.valueOf(100), context.get("tabWidth"));
+    }
+
+    @Test
+    public void testCheckInitIsCalledInTreeWalker() throws Exception {
+        final DefaultConfiguration checkConfig =
+                createCheckConfig(VerifyInitCheck.class);
+        final File file = temporaryFolder.newFile("file.pdf");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(checkConfig, file.getPath(), expected);
+        assertTrue("Init was not called", VerifyInitCheck.isInitWasCalled());
+    }
+
     private static class BadJavaDocCheck extends AbstractCheck {
         @Override
         public int[] getDefaultTokens() {
@@ -373,6 +413,35 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         @Override
         public int[] getRequiredTokens() {
             return getAcceptableTokens();
+        }
+    }
+
+    private static class VerifyInitCheck extends AbstractCheck {
+        private static boolean initWasCalled;
+
+        @Override
+        public int[] getDefaultTokens() {
+            return CommonUtils.EMPTY_INT_ARRAY;
+        }
+
+        @Override
+        public int[] getAcceptableTokens() {
+            return getDefaultTokens();
+        }
+
+        @Override
+        public int[] getRequiredTokens() {
+            return getDefaultTokens();
+        }
+
+        @Override
+        public void init() {
+            super.init();
+            initWasCalled = true;
+        }
+
+        public static boolean isInitWasCalled() {
+            return initWasCalled;
         }
     }
 

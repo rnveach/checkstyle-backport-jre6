@@ -65,51 +65,54 @@ public class ModuleReflectionUtilsTest {
     @Test
     public void testIsCheckstyleCheck() {
         assertTrue(ModuleReflectionUtils.isCheckstyleCheck(CheckClass.class));
-        assertFalse(ModuleReflectionUtils.isCheckstyleCheck(Foo.class));
+        assertFalse(ModuleReflectionUtils.isCheckstyleCheck(NotCheckstyleCheck.class));
     }
 
     @Test
     public void testIsFileSetModule() {
         assertTrue(ModuleReflectionUtils.isFileSetModule(FileSetModuleClass.class));
-        assertFalse(ModuleReflectionUtils.isFileSetModule(Foo.class));
+        assertFalse(ModuleReflectionUtils.isFileSetModule(NotCheckstyleCheck.class));
     }
 
     @Test
     public void testIsFilterModule() {
         assertTrue(ModuleReflectionUtils.isFilterModule(FilterClass.class));
-        assertFalse(ModuleReflectionUtils.isFilterModule(Foo.class));
+        assertFalse(ModuleReflectionUtils.isFilterModule(NotCheckstyleCheck.class));
     }
 
     @Test
     public void testIsFileFilterModule() {
         assertTrue(ModuleReflectionUtils.isFileFilterModule(FileFilterModuleClass.class));
-        assertFalse(ModuleReflectionUtils.isFileFilterModule(Foo.class));
+        assertFalse(ModuleReflectionUtils.isFileFilterModule(NotCheckstyleCheck.class));
     }
 
     @Test
     public void testIsRootModule() {
         assertTrue(ModuleReflectionUtils.isRootModule(RootModuleClass.class));
-        assertFalse(ModuleReflectionUtils.isRootModule(Foo.class));
+        assertFalse(ModuleReflectionUtils.isRootModule(NotCheckstyleCheck.class));
     }
 
     private static class ValidCheckstyleClass extends AutomaticBean {
         protected ValidCheckstyleClass() {
+            //keep pmd calm and happy
         }
     }
 
     private static class InvalidNonAutomaticBeanClass {
         protected InvalidNonAutomaticBeanClass() {
-        }
-    }
-
-    private static class Bar extends AbstractInvalidClass {
-        @Override
-        void method() {
+            //keep pmd calm and happy
         }
     }
 
     private abstract static class AbstractInvalidClass extends AutomaticBean {
-        abstract void method();
+        public abstract void method();
+    }
+
+    private static class DummyClass extends AbstractInvalidClass {
+        @Override
+        public void method() {
+            //keep pmd calm and happy
+        }
     }
 
     private static class CheckClass extends AbstractCheck {
@@ -117,11 +120,22 @@ public class ModuleReflectionUtilsTest {
         public int[] getDefaultTokens() {
             return new int[] {0};
         }
+
+        @Override
+        public int[] getAcceptableTokens() {
+            return getDefaultTokens();
+        }
+
+        @Override
+        public int[] getRequiredTokens() {
+            return getDefaultTokens();
+        }
     }
 
     private static class FileSetModuleClass extends AbstractFileSetCheck {
         @Override
         protected void processFiltered(File file, List<String> lines) throws CheckstyleException {
+            //dummy method
         }
     }
 
@@ -143,6 +157,7 @@ public class ModuleReflectionUtilsTest {
     private static class RootModuleClass extends AutomaticBean implements RootModule {
         @Override
         public void addListener(AuditListener listener) {
+            //dummy method
         }
 
         @Override
@@ -152,15 +167,18 @@ public class ModuleReflectionUtilsTest {
 
         @Override
         public void destroy() {
+            //dummy method
         }
 
         @Override
         public void setModuleClassLoader(ClassLoader moduleClassLoader) {
+            //dummy method
         }
     }
 
-    private static class Foo {
-        protected Foo() {
+    private static class NotCheckstyleCheck {
+        protected NotCheckstyleCheck() {
+            //keep pmd calm and happy
         }
     }
 }

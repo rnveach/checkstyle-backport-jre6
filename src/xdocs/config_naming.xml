@@ -33,6 +33,7 @@
 
     <section name="AbbreviationAsWordInName">
       <subsection name="Description">
+        <p>Since Checkstyle 5.8</p>
         <p>
          The Check validate abbreviations(consecutive capital letters)
          length in identifier name, it also allows to enforce camel case naming. Please read more at
@@ -60,6 +61,7 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>allowedAbbreviationLength</td>
@@ -67,6 +69,7 @@
              (abbreviations in the classes, interfaces, variables and methods names, ... ).</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td>3</td>
+            <td>5.8</td>
           </tr>
           <tr>
             <td>allowedAbbreviations</td>
@@ -74,18 +77,21 @@
             Abbreviations should be separated by comma, no spaces are allowed.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td>null</td>
+            <td>5.8</td>
           </tr>
           <tr>
             <td>ignoreFinal</td>
             <td>allow to skip variables with final modifier.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>true</td>
+            <td>5.8</td>
           </tr>
           <tr>
             <td>ignoreStatic</td>
             <td>allow to skip variables with static modifier.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>true</td>
+            <td>5.8</td>
           </tr>
           <tr>
             <td>ignoreOverriddenMethods</td>
@@ -93,6 +99,7 @@
             (that usually mean inherited name).</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>true</td>
+            <td>5.8</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -119,6 +126,7 @@
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">METHOD_DEF</a>.
             </td>
+            <td>5.8</td>
           </tr>
         </table>
       </subsection>
@@ -183,6 +191,7 @@
 
     <section name="AbstractClassName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>Validates identifiers for <code>abstract</code> classes.</p>
       </subsection>
 
@@ -193,12 +202,14 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^Abstract.+$"</code></td>
+            <td>3.2</td>
           </tr>
           <tr>
             <td>ignoreModifier</td>
@@ -209,6 +220,7 @@
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>5.3</td>
           </tr>
           <tr>
             <td>ignoreName</td>
@@ -219,6 +231,7 @@
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>5.3</td>
           </tr>
         </table>
       </subsection>
@@ -273,6 +286,7 @@
 
     <section name="CatchParameterName">
       <subsection name="Description">
+        <p>Since Checkstyle 6.14</p>
         <p>
           Checks that catch parameter names conform to a format specified by the format property.
           Default pattern has the following characteristic:
@@ -297,6 +311,7 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
@@ -307,6 +322,7 @@
             <td>
               <code>"^(e|t|ex|[a-z][a-z][a-zA-Z]+)$"</code>
             </td>
+            <td>6.14</td>
           </tr>
         </table>
       </subsection>
@@ -370,6 +386,7 @@
 
     <section name="ClassTypeParameterName">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p>Validates identifiers for class type parameters.</p>
       </subsection>
 
@@ -380,12 +397,14 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[A-Z]$"</code></td>
+            <td>5.0</td>
           </tr>
         </table>
       </subsection>
@@ -436,6 +455,7 @@
 
     <section name="ConstantName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Validates identifiers for constants (<code>static</code>, <code>
           final</code> fields).
@@ -449,24 +469,28 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>applyToPublic</td>
             <td>Controls whether to apply the check to public member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToProtected</td>
             <td>Controls whether to apply the check to protected member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToPackage</td>
@@ -475,12 +499,14 @@
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToPrivate</td>
             <td>Controls whether to apply the check to private member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
         </table>
       </subsection>
@@ -538,6 +564,7 @@
 
     <section name="InterfaceTypeParameterName">
       <subsection name="Description">
+        <p>Since Checkstyle 5.8</p>
         <p>
           Validates identifiers for interface type parameters.
         </p>
@@ -550,12 +577,14 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[A-Z]$"</code></td>
+            <td>5.8</td>
           </tr>
         </table>
       </subsection>
@@ -606,6 +635,7 @@
 
     <section name="LocalFinalVariableName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Validates identifiers for local, <code>final</code> variables, including
           <code>catch</code> parameters and resources in <code>try</code> statements.
@@ -619,12 +649,14 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
           <td>tokens</td>
@@ -640,6 +672,7 @@
             <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">PARAMETER_DEF</a>,
             <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">RESOURCE</a>.
           </td>
+          <td>3.0</td>
         </tr>
         </table>
       </subsection>
@@ -690,6 +723,7 @@
 
     <section name="LocalVariableName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
             Checks that local, non-<code>final</code> variable names conform to a format specified
             by the format property.
@@ -703,12 +737,14 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>allowOneCharVarInForLoop</td>
@@ -720,6 +756,7 @@ for (int i = 1; i &lt; 10; i++) {}
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>5.8</td>
           </tr>
         </table>
       </subsection>
@@ -786,6 +823,7 @@ for (int i = 1; i &lt; 10; i++) {}
 
     <section name="MemberName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Validates identifiers for non-<code>static</code> fields.
         </p>
@@ -798,24 +836,28 @@ for (int i = 1; i &lt; 10; i++) {}
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>applyToPublic</td>
             <td>Controls whether to apply the check to public member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>applyToProtected</td>
             <td>Controls whether to apply the check to protected member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>applyToPackage</td>
@@ -824,12 +866,14 @@ for (int i = 1; i &lt; 10; i++) {}
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>applyToPrivate</td>
             <td>Controls whether to apply the check to private member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>3.4</td>
           </tr>
         </table>
       </subsection>
@@ -891,6 +935,7 @@ for (int i = 1; i &lt; 10; i++) {}
 
     <section name="MethodName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Validates identifiers for methods.
         </p>
@@ -903,12 +948,14 @@ for (int i = 1; i &lt; 10; i++) {}
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>allowClassName</td>
@@ -927,18 +974,21 @@ class MyClass {
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToPublic</td>
             <td>Controls whether to apply the check to public member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.1</td>
           </tr>
           <tr>
             <td>applyToProtected</td>
             <td>Controls whether to apply the check to protected member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.1</td>
           </tr>
           <tr>
             <td>applyToPackage</td>
@@ -947,12 +997,14 @@ class MyClass {
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.1</td>
           </tr>
           <tr>
             <td>applyToPrivate</td>
             <td>Controls whether to apply the check to private member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.1</td>
           </tr>
         </table>
       </subsection>
@@ -1011,6 +1063,7 @@ class MyClass {
 
     <section name="MethodTypeParameterName">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p>
           Validates identifiers for method type parameters.
         </p>
@@ -1023,12 +1076,14 @@ class MyClass {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[A-Z]$"</code></td>
+            <td>5.0</td>
           </tr>
         </table>
       </subsection>
@@ -1079,6 +1134,7 @@ class MyClass {
 
     <section name="PackageName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Validates identifiers for packages.
         </p>
@@ -1091,12 +1147,14 @@ class MyClass {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$"</code></td>
+            <td>3.0</td>
           </tr>
         </table>
       </subsection>
@@ -1160,6 +1218,7 @@ class MyClass {
 
     <section name="ParameterName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks that method and <code>catch</code> parameter names conform to a format specified
           by the format property. By using <code>accessModifiers</code> property it is possible
@@ -1174,12 +1233,14 @@ class MyClass {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>ignoreOverridden</td>
@@ -1196,12 +1257,14 @@ public boolean equals(Object o) {
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>6.12.1</td>
           </tr>
           <tr>
             <td>accessModifiers</td>
             <td>Access modifiers of methods where parameters are checked.</td>
             <td><a href="property_types.html#access_modifiers">Access Modifier Set</a></td>
             <td><code>public, protected, package, private</code></td>
+            <td>7.5</td>
           </tr>
         </table>
       </subsection>
@@ -1293,6 +1356,7 @@ public boolean equals(Object o) {
 
     <section name="StaticVariableName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Validates identifiers for <code>static</code>, non-<code>final</code> fields.
         </p>
@@ -1305,24 +1369,28 @@ public boolean equals(Object o) {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[a-z][a-zA-Z0-9]*$"</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>applyToPublic</td>
             <td>Controls whether to apply the check to public member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToProtected</td>
             <td>Controls whether to apply the check to protected member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToPackage</td>
@@ -1331,12 +1399,14 @@ public boolean equals(Object o) {
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToPrivate</td>
             <td>Controls whether to apply the check to private member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
         </table>
       </subsection>
@@ -1387,6 +1457,7 @@ public boolean equals(Object o) {
 
     <section name="TypeName">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Validates identifiers for classes, interfaces, enums, and annotations.
         </p>
@@ -1399,24 +1470,28 @@ public boolean equals(Object o) {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
             <td>Specifies valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[A-Z][a-zA-Z0-9]*$"</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>applyToPublic</td>
             <td>Controls whether to apply the check to public member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToProtected</td>
             <td>Controls whether to apply the check to protected member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToPackage</td>
@@ -1425,12 +1500,14 @@ public boolean equals(Object o) {
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>applyToPrivate</td>
             <td>Controls whether to apply the check to private member.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -1456,6 +1533,7 @@ public boolean equals(Object o) {
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
                 ANNOTATION_DEF</a>.
             </td>
+            <td>3.0</td>
           </tr>
         </table>
       </subsection>

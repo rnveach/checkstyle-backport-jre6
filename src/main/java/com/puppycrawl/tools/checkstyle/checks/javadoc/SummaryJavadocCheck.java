@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 import com.google.common.base.CharMatcher;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
-import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
@@ -132,16 +131,6 @@ public class SummaryJavadocCheck extends AbstractJavadocCheck {
     }
 
     @Override
-    public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.BLOCK_COMMENT_BEGIN };
-    }
-
-    @Override
-    public int[] getRequiredTokens() {
-        return getAcceptableTokens();
-    }
-
-    @Override
     public void visitJavadocToken(DetailNode ast) {
         String firstSentence = getFirstSentence(ast);
         final int endOfSentence = firstSentence.lastIndexOf(period);
@@ -199,7 +188,13 @@ public class SummaryJavadocCheck extends AbstractJavadocCheck {
         final StringBuilder result = new StringBuilder();
         final String periodSuffix = PERIOD + ' ';
         for (DetailNode child : ast.getChildren()) {
-            final String text = child.getText();
+            final String text;
+            if (child.getChildren().length == 0) {
+                text = child.getText();
+            }
+            else {
+                text = getFirstSentence(child);
+            }
 
             if (child.getType() != JavadocTokenTypes.JAVADOC_INLINE_TAG
                 && text.contains(periodSuffix)) {

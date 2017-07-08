@@ -65,6 +65,7 @@ public class MainTest {
         + " -c <arg>                    Sets the check configuration file to use.%n"
         + " -d,--debug                  Print all debug logging of CheckStyle utility%n"
         + " -e,--exclude <arg>          Directory path to exclude from CheckStyle%n"
+        + " -executeIgnoredModules      Allows ignored modules to be run.%n"
         + " -f <arg>                    Sets the output format. (plain|xml). Defaults to"
         + " plain%n"
         + " -j,--javadocTree            Print Parse tree of the Javadoc comment%n"
@@ -78,9 +79,9 @@ public class MainTest {
         + " -x,--exclude-regexp <arg>   Regular expression of directory to exclude from"
         + " CheckStyle%n");
 
-    private static Logger logger;
-    private static Handler[] handlers;
-    private static Level originalLogLevel;
+    private static final Logger LOG = Logger.getLogger(MainTest.class.getName()).getParent();
+    private static final Handler[] HANDLERS = LOG.getHandlers();
+    private static final Level ORIGINAL_LOG_LEVEL = LOG.getLevel();
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -108,22 +109,18 @@ public class MainTest {
         // Set locale to root to prevent check message fail
         // in other language environment.
         Locale.setDefault(Locale.ROOT);
-
-        logger = Logger.getLogger(MainTest.class.getName()).getParent();
-        handlers = logger.getHandlers();
-        originalLogLevel = logger.getLevel();
     }
 
     @Before
     public void setUp() {
-        // restore original logging level and handlers to prevent bleeding into other tests
+        // restore original logging level and HANDLERS to prevent bleeding into other tests
 
-        logger.setLevel(originalLogLevel);
+        LOG.setLevel(ORIGINAL_LOG_LEVEL);
 
-        for (Handler handler : logger.getHandlers()) {
+        for (Handler handler : LOG.getHandlers()) {
             boolean found = false;
 
-            for (Handler savedHandler : handlers) {
+            for (Handler savedHandler : HANDLERS) {
                 if (handler == savedHandler) {
                     found = true;
                     break;
@@ -131,7 +128,7 @@ public class MainTest {
             }
 
             if (!found) {
-                logger.removeHandler(handler);
+                LOG.removeHandler(handler);
             }
         }
     }
@@ -577,7 +574,7 @@ public class MainTest {
             @Override
             public void checkAssertion() throws IOException {
                 final String expectedPath = getFilePath("main/") + File.separator;
-                final StringBuilder sb = new StringBuilder();
+                final StringBuilder sb = new StringBuilder(28);
                 sb.append("Starting audit...").append(System.getProperty("line.separator"));
                 final String format = "[WARN] %s.java:%s: %s [FileLength]";
                 for (String[] outputValue : outputValues) {
@@ -935,6 +932,27 @@ public class MainTest {
             }
         });
         Main.main("-c", getPath("config-custom-simple-root-module.xml"),
+                getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testExecuteIgnoredModule() throws Exception {
+        exit.expectSystemExitWithStatus(-2);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                final String expectedExceptionMessage =
+                        String.format(Locale.ROOT, "Checkstyle ends with 1 errors.%n");
+                assertEquals(expectedExceptionMessage, systemOut.getLog());
+
+                final String cause = "com.puppycrawl.tools.checkstyle.api.CheckstyleException:"
+                        + " cannot initialize module TreeWalker - ";
+                assertTrue(systemErr.getLog().startsWith(cause));
+            }
+        });
+
+        Main.main("-c", getPath("config-non-existing-classname-ignore.xml"),
+                "-executeIgnoredModules",
                 getPath("InputMain.java"));
     }
 }

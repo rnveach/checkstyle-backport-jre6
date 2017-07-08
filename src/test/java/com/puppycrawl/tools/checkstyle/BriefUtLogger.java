@@ -39,10 +39,6 @@ public class BriefUtLogger extends DefaultLogger {
 
     @Override
     public void auditStarted(AuditEvent event) {
-    }
-
-    @Override
-    public void auditFinished(AuditEvent event) {
-        super.auditFinished(event);
+        //has to NOT log audit started event
     }
 }

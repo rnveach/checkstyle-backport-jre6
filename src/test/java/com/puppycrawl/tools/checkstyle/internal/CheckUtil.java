@@ -291,7 +291,7 @@ public final class CheckUtil {
                 result.append("empty");
             }
             else {
-                result.append(".");
+                result.append('.');
             }
 
             tokenText = result.toString();
@@ -341,7 +341,7 @@ public final class CheckUtil {
             result.append("empty");
         }
         else {
-            result.append(".");
+            result.append('.');
         }
 
         return result.toString();

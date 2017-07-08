@@ -19,7 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.api;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -32,39 +31,31 @@ public class FileContentsTest {
 
     @Test
     @SuppressWarnings("deprecation")
-    public void testDeprecatedCtor() {
-        // just to make UT coverage 100%
-        final FileContents o = new FileContents("filename.java", "1", "2");
-        assertEquals("filename.java", o.getFilename());
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
     public void testDeprecatedAbbreviatedMethod() {
         // just to make UT coverage 100%
-        final FileContents o = new FileContents("filename", "123", "456");
-        o.getCppComments();
-        o.getCComments();
-        o.reportCppComment(1, 1);
-        o.reportCComment(1, 1, 1, 1);
+        final FileContents fileContents = new FileContents("filename", "123", "456");
+        fileContents.getCppComments();
+        fileContents.getCComments();
+        fileContents.reportCppComment(1, 1);
+        fileContents.reportCComment(1, 1, 1, 1);
     }
 
     @Test
     public void testSinglelineCommentNotIntersect() {
         // just to make UT coverage 100%
-        final FileContents o = new FileContents(
+        final FileContents fileContents = new FileContents(
                 FileText.fromLines(new File("filename"), Collections.singletonList("  //  ")));
-        o.reportSingleLineComment(1, 2);
-        assertFalse(o.hasIntersectionWithComment(1, 0, 1, 1));
+        fileContents.reportSingleLineComment(1, 2);
+        assertFalse(fileContents.hasIntersectionWithComment(1, 0, 1, 1));
     }
 
     @Test
     public void testSinglelineCommentIntersect() {
         // just to make UT coverage 100%
-        final FileContents o = new FileContents(
+        final FileContents fileContents = new FileContents(
                 FileText.fromLines(new File("filename"), Collections.singletonList("  //   ")));
-        o.reportSingleLineComment(1, 2);
-        assertTrue(o.hasIntersectionWithComment(1, 5, 1, 6));
+        fileContents.reportSingleLineComment(1, 2);
+        assertTrue(fileContents.hasIntersectionWithComment(1, 5, 1, 6));
 
     }
 }

@@ -57,7 +57,8 @@ public class FileSetCheckLifecycleTest
     @Test
     public void testGetRequiredTokens() {
         final FileContentsHolder checkObj = new FileContentsHolder();
-        assertArrayEquals(CommonUtils.EMPTY_INT_ARRAY, checkObj.getRequiredTokens());
+        assertArrayEquals("Required tokens array is not empty",
+                CommonUtils.EMPTY_INT_ARRAY, checkObj.getRequiredTokens());
     }
 
     @Test
@@ -117,6 +118,7 @@ public class FileSetCheckLifecycleTest
 
         @Override
         protected void processFiltered(File file, List<String> lines) {
+            //dummy method
         }
 
         @Override

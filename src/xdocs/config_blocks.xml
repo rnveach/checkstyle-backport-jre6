@@ -23,6 +23,7 @@
 
     <section name="AvoidNestedBlocks">
       <subsection name="Description">
+        <p>Since Checkstyle 3.1</p>
         <p>
           Finds nested blocks, i.e. blocks that are used freely in the code.
         </p>
@@ -95,12 +96,14 @@ switch (a)
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>allowInSwitchCase</td>
             <td>Allow nested blocks in case statements</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -149,6 +152,7 @@ switch (a)
 
     <section name="EmptyBlock">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p> Checks for empty blocks. This check does not validate sequential blocks. </p>
 
         <p> Sequential blocks won't be checked. Also, no violations for fallthrough: </p>
@@ -188,12 +192,14 @@ switch (a)
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>option</td>
             <td>policy on block contents</td>
             <td><a href="property_types.html#block">block policy</a></td>
-            <td><code>stmt</code></td>
+            <td><code>statement</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -230,6 +236,7 @@ switch (a)
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_SWITCH">LITERAL_SWITCH</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_SYNCHRONIZED">LITERAL_SYNCHRONIZED</a>.
             </td>
+            <td>3.0</td>
           </tr>
         </table>
       </subsection>
@@ -276,8 +283,8 @@ switch (a)
             block.empty</a>
           </li>
           <li>
-            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fblocks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22block.noStmt%22">
-            block.noStmt</a>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fblocks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22block.noStatement%22">
+            block.noStatement</a>
           </li>
         </ul>
         <p>
@@ -297,6 +304,7 @@ switch (a)
 
     <section name="EmptyCatchBlock">
       <subsection name="Description">
+        <p>Since Checkstyle 6.4</p>
         <p>
           Checks for empty catch blocks. There are two options to make validation more precise
           (by default Check allows empty catch block with any comment inside):
@@ -310,18 +318,21 @@ switch (a)
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>exceptionVariableName</td>
             <td>The name of variable associated with exception</td>
             <td><a href="property_types.html#string">String</a></td>
             <td>^$</td>
+            <td>6.4</td>
           </tr>
           <tr>
             <td>commentFormat</td>
             <td>The format of the first comment inside empty catch</td>
             <td><a href="property_types.html#string">String</a></td>
             <td>.*</td>
+            <td>6.4</td>
           </tr>
         </table>
       </subsection>
@@ -440,6 +451,7 @@ try {
 
     <section name="LeftCurly">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for the placement of left curly braces
           (<code>'{'</code>) for code blocks.  The policy to verify is
@@ -456,18 +468,21 @@ try {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>option</td>
             <td>policy on placement of a left curly brace (<code>'{'</code>)</td>
             <td><a href="property_types.html#lcurly">left curly brace policy</a></td>
             <td><code>eol</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>ignoreEnums</td>
             <td>If true, Check will ignore enums when left curly brace policy is EOL</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>true</td>
+            <td>6.9</td>
           </tr>
           <tr>
             <td>maxLineLength</td>
@@ -476,6 +491,7 @@ try {
                 since checkstyle 6.10 release.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>80</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -526,6 +542,7 @@ try {
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#OBJBLOCK">OBJBLOCK</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LAMBDA">LAMBDA</a>.
             </td>
+            <td>3.0</td>
           </tr>
         </table>
       </subsection>
@@ -604,6 +621,7 @@ try {
 
     <section name="NeedBraces">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p> Checks for braces around code blocks. </p>
       </subsection>
 
@@ -614,18 +632,21 @@ try {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>allowSingleLineStatement</td>
             <td>allows single-line statements without braces</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>false</td>
+            <td>6.5</td>
           </tr>
           <tr>
             <td>allowEmptyLoopBody</td>
             <td>allows loops with empty bodies</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>false</td>
+            <td>6.12.1</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -649,6 +670,7 @@ try {
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_IF">LITERAL_IF</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_WHILE">LITERAL_WHILE</a>.
             </td>
+            <td>3.0</td>
           </tr>
         </table>
       </subsection>
@@ -769,6 +791,7 @@ for(int i = 0; i &lt; 10; value.incrementValue()); // OK
 
     <section name="RightCurly">
       <subsection name="Description">
+        <p>Since Checkstyle 3.0</p>
         <p>
           Checks the placement of right curly braces (<code>'}'</code>)
           for if-else, try-catch-finally blocks, while-loops, for-loops,
@@ -785,12 +808,14 @@ for(int i = 0; i &lt; 10; value.incrementValue()); // OK
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>option</td>
             <td>policy on placement of a right curly brace (<code>'}'</code>)</td>
             <td><a href="property_types.html#rcurly">right curly brace policy</a></td>
             <td><code>same</code></td>
+            <td>3.0</td>
           </tr>
           <tr>
             <td>shouldStartLine</td>
@@ -798,6 +823,7 @@ for(int i = 0; i &lt; 10; value.incrementValue()); // OK
             starts line.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>4.2</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -842,6 +868,7 @@ for(int i = 0; i &lt; 10; value.incrementValue()); // OK
              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_IF">LITERAL_IF</a>,
             <a
              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_ELSE">LITERAL_ELSE</a>.</td>
+            <td>3.0</td>
           </tr>
         </table>
       </subsection>

@@ -317,7 +317,7 @@
     </inspection_tool>
     <inspection_tool class="ClassWithOnlyPrivateConstructors" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ClassWithTooManyDependencies" enabled="true" level="ERROR" enabled_by_default="true">
-        <option name="limit" value="30" />
+        <option name="limit" value="33" />
     </inspection_tool>
     <inspection_tool class="ClassWithTooManyDependents" enabled="true" level="ERROR" enabled_by_default="true">
         <option name="limit" value="300" />
@@ -2008,6 +2008,8 @@
                 <option value="IfStatementWithTooManyBranches" />
                 <!-- we have to catch Exception in Checker and rethrow it -->
                 <option value="ProhibitedExceptionThrown" />
+                <!-- we have to use it when pass null argument in test purporses -->
+                <option value="NullArgumentToVariableArgMethod" />
             </list>
         </option>
     </inspection_tool>

@@ -23,6 +23,7 @@
 
     <section name="BooleanExpressionComplexity">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           Restrict the number of number of <code>&#x26;&#x26;</code>, <code>||</code>,
           <code>&#x26;</code>, <code>|</code>
@@ -56,6 +57,7 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
@@ -65,6 +67,7 @@
             </td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>3</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -84,6 +87,7 @@
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#BOR">BOR</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#BXOR">BXOR</a>.
             </td>
+            <td>3.4</td>
           </tr>
         </table>
       </subsection>
@@ -155,6 +159,7 @@
 
     <section name="ClassDataAbstractionCoupling">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           This metric measures the number of instantiations of other
           classes within the given class. This type of coupling is not
@@ -211,12 +216,14 @@
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
             <td>the maximum threshold allowed</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>7</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>excludedClasses</td>
@@ -234,18 +241,21 @@
                 List, ArrayList, Deque, Queue, LinkedList,
                 Set, HashSet, SortedSet, TreeSet,
                 Map, HashMap, SortedMap, TreeMap</td>
+            <td>5.7</td>
           </tr>
           <tr>
             <td>excludeClassesRegexps</td>
             <td>User-configured regular expressions to ignore classes</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>"^$"</code></td>
+            <td>7.7</td>
           </tr>
           <tr>
             <td>excludedPackages</td>
             <td>User-configured packages to ignore</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td>{}</td>
+            <td>7.7</td>
           </tr>
         </table>
       </subsection>
@@ -452,6 +462,7 @@ public class Foo {
 
     <section name="ClassFanOutComplexity">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           The number of other classes a given class relies on. Also the
           square of this has been shown to indicate the amount of
@@ -518,12 +529,14 @@ public class Foo {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
             <td>the maximum threshold allowed</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>20</code></td>
+            <td>3.4</td>
           </tr>
           <tr>
             <td>excludedClasses</td>
@@ -541,18 +554,21 @@ public class Foo {
                 List, ArrayList, Deque, Queue, LinkedList,
                 Set, HashSet, SortedSet, TreeSet,
                 Map, HashMap, SortedMap, TreeMap</td>
+            <td>5.7</td>
           </tr>
           <tr>
             <td>excludeClassesRegexps</td>
             <td>User-configured regular expressions to ignore classes</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>"^$"</code></td>
+            <td>7.7</td>
           </tr>
           <tr>
             <td>excludedPackages</td>
             <td>User-configured packages to ignore</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td>{}</td>
+            <td>7.7</td>
           </tr>
         </table>
       </subsection>
@@ -681,6 +697,7 @@ public class Foo {
 
     <section name="CyclomaticComplexity">
       <subsection name="Description">
+        <p>Since Checkstyle 3.2</p>
         <p>
           Checks cyclomatic complexity against a specified limit.
             It is a measure of the minimum number of
@@ -716,18 +733,21 @@ public class Foo {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
             <td>the maximum threshold allowed</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>10</code></td>
+            <td>3.2</td>
           </tr>
           <tr>
             <td>switchBlockAsSingleDecisionPoint</td>
             <td>whether to treat the whole switch block as a single decision point</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>6.11</td>
           </tr>
 
           <tr>
@@ -760,6 +780,7 @@ public class Foo {
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LAND">LAND</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LOR">LOR</a>.
             </td>
+            <td>3.2</td>
           </tr>
         </table>
       </subsection>
@@ -886,6 +907,7 @@ class SwitchExample {
 
     <section name="JavaNCSS">
       <subsection name="Description">
+        <p>Since Checkstyle 3.5</p>
         <p>
           Determines complexity of methods, classes and files by
           counting the Non Commenting Source Statements (NCSS).  This
@@ -919,6 +941,7 @@ class SwitchExample {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>methodMaximum</td>
@@ -928,6 +951,7 @@ class SwitchExample {
             </td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>50</code></td>
+            <td>3.5</td>
           </tr>
           <tr>
             <td>classMaximum</td>
@@ -937,6 +961,7 @@ class SwitchExample {
             </td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>1500</code></td>
+            <td>3.5</td>
           </tr>
           <tr>
             <td>fileMaximum</td>
@@ -946,6 +971,7 @@ class SwitchExample {
             </td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>2000</code></td>
+            <td>3.5</td>
           </tr>
         </table>
       </subsection>
@@ -1014,6 +1040,7 @@ class SwitchExample {
 
     <section name="NPathComplexity">
       <subsection name="Description">
+        <p>Since Checkstyle 3.4</p>
         <p>
           The NPATH metric computes the number of possible execution
           paths through a function(method). It takes into account the nesting of
@@ -1091,12 +1118,14 @@ class SwitchExample {
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>max</td>
             <td>the maximum threshold allowed</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>200</code></td>
+            <td>3.4</td>
           </tr>
         </table>
       </subsection>

@@ -23,6 +23,7 @@
 
     <section name="AnnotationLocation">
       <subsection name="Description">
+        <p>Since Checkstyle 6.0</p>
         <p>
           Check location of annotation on language elements.
           By default, Check enforce to locate annotations immediately
@@ -51,24 +52,28 @@ public String getNameIfPresent() { ... }
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>allowSamelineMultipleAnnotations</td>
             <td>To allow annotation(s) to be located on the same line as target element.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
            <td><code>false</code></td>
+            <td>6.0</td>
           </tr>
           <tr>
             <td>allowSamelineSingleParameterlessAnnotation</td>
             <td>To allow single parameterless annotation to be located on the same line as target element.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
+            <td>6.1</td>
           </tr>
           <tr>
             <td>allowSamelineParameterizedAnnotation</td>
             <td>To allow one and only parameterized annotation to be located on the same line as target element.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
+            <td>6.4</td>
           </tr>
           <tr>
             <td>tokens</td>
@@ -98,6 +103,7 @@ public String getNameIfPresent() { ... }
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">CTOR_DEF</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>.
             </td>
+            <td>6.0</td>
           </tr>
         </table>
       </subsection>
@@ -224,6 +230,7 @@ public void test(&#64;MyAnnotation String s) { // OK
 
     <section name="AnnotationUseStyle">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p> This check controls the style with the usage of annotations.
         </p>
       </subsection>
@@ -234,6 +241,7 @@ public void test(&#64;MyAnnotation String s) { // OK
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>elementStyle</td>
@@ -248,6 +256,7 @@ public void test(&#64;MyAnnotation String s) { // OK
             <td>
               <code>compact_no_array</code>
             </td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>closingParens</td>
@@ -260,6 +269,7 @@ public void test(&#64;MyAnnotation String s) { // OK
             <td>
               <code>never</code>
             </td>
+            <td>5.0</td>
           </tr>
           <tr>
             <td>trailingArrayComma</td>
@@ -272,6 +282,7 @@ public void test(&#64;MyAnnotation String s) { // OK
             <td>
               <code>never</code>
             </td>
+            <td>5.0</td>
           </tr>
         </table>
       </subsection>
@@ -345,6 +356,7 @@ public void test(&#64;MyAnnotation String s) { // OK
 
     <section name="MissingDeprecated">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p> Verifies that both the java.lang.Deprecated annotation is
             present and the @deprecated Javadoc tag is present when
             either is present.</p>
@@ -356,6 +368,7 @@ public void test(&#64;MyAnnotation String s) { // OK
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>skipNoJavadoc</td>
@@ -366,6 +379,7 @@ public void test(&#64;MyAnnotation String s) { // OK
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>false</td>
+            <td>6.16</td>
           </tr>
         </table>
       </subsection>
@@ -432,6 +446,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
 
     <section name="MissingOverride">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p> Verifies that the java.lang.Override annotation is present
           when the {@inheritDoc} javadoc tag is present.</p>
       </subsection>
@@ -442,6 +457,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>javaFiveCompatibility</td>
@@ -460,6 +476,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
             <td>
               <code>false</code>
             </td>
+            <td>5.0</td>
           </tr>
         </table>
       </subsection>
@@ -517,6 +534,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
 
     <section name="PackageAnnotation">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p>  This check makes sure that all package annotations are in the
              package-info.java file.
         </p>
@@ -575,6 +593,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
 
     <section name="SuppressWarnings">
       <subsection name="Description">
+        <p>Since Checkstyle 5.0</p>
         <p> This check allows you to specify what warnings that
         SuppressWarnings is not allowed to suppress.
         You can also specify a list of TokenTypes that
@@ -601,6 +620,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>format</td>
@@ -614,6 +634,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
             <td>
               <code>"^$|^\s+$"</code>
             </td>
+            <td>5.0</td>
           </tr>
 
           <tr>
@@ -646,6 +667,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">METHOD_DEF</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">CTOR_DEF</a>.
             </td>
+            <td>5.0</td>
           </tr>
 
         </table>
@@ -707,6 +729,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
 
     <section name="SuppressWarningsHolder">
       <subsection name="Description">
+        <p>Since Checkstyle 5.7</p>
         <p>
           Maintains a set of check suppressions from
           <code>@SuppressWarnings</code> annotations. It allows to
@@ -724,6 +747,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
             <th>description</th>
             <th>type</th>
             <th>default value</th>
+            <th>since</th>
           </tr>
           <tr>
             <td>aliasList</td>
@@ -731,6 +755,7 @@ public static final int COUNTER = 10; // violation as javadoc exists
             <td><a href="property_types.html#stringSet">String Set</a> in a format of comma separated attribute=value entries.
             The attribute is the fully qualified name of the Check and value is its alias.</td>
             <td>null</td>
+            <td>5.7</td>
           </tr>
         </table>
       </subsection>

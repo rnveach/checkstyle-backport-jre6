@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
          http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-    PMD ruleset for Checkstyle
+    PMD common ruleset for Checkstyle main/test sourcesets
   </description>
   <rule ref="rulesets/java/basic.xml"/>
   <rule ref="rulesets/java/braces.xml"/>
@@ -150,6 +150,9 @@
     <exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
     <!-- too much alarms of Checks, we will never move logic out of Check, each Check is independent logic container -->
     <exclude name="GodClass"/>
+    <!--we do not care about this minor overhead, we are not Android application and we do not want to change
+     visibility of methods. Package-private visibility should be avoid almost always.-->
+    <exclude name="AccessorMethodGeneration"/>
   </rule>
 
   <rule ref="rulesets/java/design.xml/ConfusingTernary">
@@ -178,12 +181,6 @@
     or @Image='AbstractCheck' or @Image='AbstractJavadocCheck']"/>
     </properties>
   </rule>
-  <rule ref="rulesets/java/design.xml/AbstractClassWithoutAnyMethod">
-    <properties>
-     <!-- Can not change API -->
-    <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='Check']"/>
-    </properties>
-  </rule>
 
   <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts">
     <properties>
@@ -206,7 +203,6 @@
     <!-- too many false-positives -->
     <exclude name="BeanMembersShouldSerialize"/>
   </rule>
-  <rule ref="rulesets/java/junit.xml"/>
   <rule ref="rulesets/java/logging-jakarta-commons.xml"/>
 
   <rule ref="rulesets/java/logging-java.xml"/>
@@ -255,7 +251,7 @@
   <rule ref="rulesets/java/naming.xml/AbstractNaming">
     <properties>
      <!-- We can not brake compatibility with previous versions -->
-     <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='Check' or @Image='AbstractClassNameCheck']"/>
+     <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='AbstractClassNameCheck']"/>
     </properties>
   </rule>
   <rule ref="rulesets/java/naming.xml/LongVariable">

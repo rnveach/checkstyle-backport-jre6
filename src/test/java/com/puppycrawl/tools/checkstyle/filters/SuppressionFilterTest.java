@@ -81,7 +81,8 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
 
         final AuditEvent ev = new AuditEvent(this, "ATest.java", null);
 
-        assertTrue(filter.accept(ev));
+        assertTrue("Audit event should be excepted when there are no suppressions",
+            filter.accept(ev));
     }
 
     @Test
@@ -91,8 +92,7 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
         final SuppressionFilter filter = createSuppressionFilter(fileName, optional);
 
         final AuditEvent ev = new AuditEvent(this, "AnyJava.java", null);
-
-        assertTrue(filter.accept(ev));
+        assertTrue("Audit event on null file should be excepted, but was not", filter.accept(ev));
     }
 
     @Test
@@ -105,7 +105,8 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
             fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Unable to find: " + fileName, ex.getMessage());
+            assertEquals("Invalid error message",
+                "Unable to find: " + fileName, ex.getMessage());
         }
     }
 
@@ -119,8 +120,9 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
             fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Unable to parse " + fileName + " - invalid files or checks format",
-                    ex.getMessage());
+            assertEquals("Invalid error message",
+                "Unable to parse " + fileName + " - invalid files or checks format",
+                ex.getMessage());
         }
     }
 
@@ -133,7 +135,8 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
 
         final AuditEvent ev = new AuditEvent(this, "AnyFile.java", null);
 
-        assertTrue(filter.accept(ev));
+        assertTrue("Suppression file with true optional was not accepted",
+            filter.accept(ev));
     }
 
     @Test
@@ -157,7 +160,9 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
         final boolean optional = true;
         final SuppressionFilter filter = createSuppressionFilter(fileName, optional);
         final AuditEvent ev = new AuditEvent(this, "AnyFile.java", null);
-        assertTrue(filter.accept(ev));
+        assertTrue(
+            "Event was not excepted when IOException is thrown while reading suppression file",
+            filter.accept(ev));
     }
 
     @Test
@@ -169,7 +174,8 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
 
         final AuditEvent ev = new AuditEvent(this, "AnyFile.java", null);
 
-        assertTrue(filter.accept(ev));
+        assertTrue("Should except event when suppression file does not exist",
+            filter.accept(ev));
     }
 
     @Test
@@ -181,7 +187,8 @@ public class SuppressionFilterTest extends BaseCheckTestSupport {
 
         final AuditEvent ev = new AuditEvent(this, "AnyFile.java", null);
 
-        assertTrue(filter.accept(ev));
+        assertTrue("Should except event when suppression file url does not exist",
+            filter.accept(ev));
     }
 
     @Test

@@ -254,7 +254,8 @@ public class SuppressionCommentFilterTest
                 0, 1, "text", false, new SuppressionCommentFilter()
         );
 
-        assertEquals("Tag[line=0; col=1; on=false; text='text']", tag.toString());
+        assertEquals("Invalid toString result",
+            "Tag[line=0; col=1; on=false; text='text']", tag.toString());
     }
 
     @Test
@@ -269,8 +270,8 @@ public class SuppressionCommentFilterTest
         }
         catch (CheckstyleException ex) {
             final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
-            assertEquals("unable to parse expanded comment e[l",
-                    cause.getMessage());
+            assertEquals("Invalid exception message",
+                "unable to parse expanded comment e[l", cause.getMessage());
         }
     }
 
@@ -286,8 +287,8 @@ public class SuppressionCommentFilterTest
         }
         catch (CheckstyleException ex) {
             final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
-            assertEquals("unable to parse expanded comment e[l",
-                    cause.getMessage());
+            assertEquals("Invalid exception message",
+                "unable to parse expanded comment e[l", cause.getMessage());
         }
 
     }
