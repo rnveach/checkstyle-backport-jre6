@@ -25,24 +25,22 @@ import static com.puppycrawl.tools.checkstyle.checks.coding.DeclarationOrderChec
 import static com.puppycrawl.tools.checkstyle.checks.coding.DeclarationOrderCheck.MSG_STATIC;
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.SortedSet;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessages;
+import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class DeclarationOrderCheckTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "coding" + File.separator + "declarationorder" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/coding/declarationorder";
     }
 
     @Test
@@ -148,14 +146,16 @@ public class DeclarationOrderCheckTest
         method.setNextSibling(ctor);
 
         final DeclarationOrderCheck check = new DeclarationOrderCheck();
-        final LocalizedMessages messages = new LocalizedMessages();
-        check.setMessages(messages);
 
         check.visitToken(method);
-        assertEquals("No exception messages expected", 0, messages.size());
+        final SortedSet<LocalizedMessage> messages1 = check.getMessages();
+
+        assertEquals("No exception messages expected", 0, messages1.size());
 
         check.visitToken(ctor);
-        assertEquals("No exception messages expected", 0, messages.size());
+        final SortedSet<LocalizedMessage> messages2 = check.getMessages();
+
+        assertEquals("No exception messages expected", 0, messages2.size());
     }
 
     @Test
@@ -167,10 +167,10 @@ public class DeclarationOrderCheckTest
         parent.setFirstChild(array);
 
         final DeclarationOrderCheck check = new DeclarationOrderCheck();
-        final LocalizedMessages messages = new LocalizedMessages();
-        check.setMessages(messages);
 
         check.visitToken(array);
+        final SortedSet<LocalizedMessage> messages = check.getMessages();
+
         assertEquals("No exception messages expected", 0, messages.size());
     }
 

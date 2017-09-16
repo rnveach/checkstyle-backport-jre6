@@ -21,26 +21,24 @@ package com.puppycrawl.tools.checkstyle.checks.metrics;
 
 import static com.puppycrawl.tools.checkstyle.checks.metrics.NPathComplexityCheck.MSG_KEY;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.SortedSet;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import antlr.CommonHiddenStreamToken;
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessages;
+import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 // -@cs[AbbreviationAsWordInName] Can't change check name
-public class NPathComplexityCheckTest extends BaseCheckTestSupport {
+public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "metrics" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/metrics/npathcomplexity";
     }
 
     @Test
@@ -61,7 +59,7 @@ public class NPathComplexityCheckTest extends BaseCheckTestSupport {
             "104:13: " + getCheckMessage(MSG_KEY, 2, 0),
         };
 
-        verify(checkConfig, getPath("InputComplexity.java"), expected);
+        verify(checkConfig, getPath("InputNPathComplexityDefault.java"), expected);
     }
 
     @Test
@@ -103,7 +101,7 @@ public class NPathComplexityCheckTest extends BaseCheckTestSupport {
             "13:5: " + getCheckMessage(MSG_KEY, largerThanMaxInt, 0),
         };
 
-        verify(checkConfig, getPath("InputComplexityOverflow.java"), expected);
+        verify(checkConfig, getPath("InputNPathComplexityOverflow.java"), expected);
     }
 
     @Test
@@ -113,7 +111,7 @@ public class NPathComplexityCheckTest extends BaseCheckTestSupport {
 
         createChecker(checkConfig);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputComplexity.java"), expected);
+        verify(checkConfig, getPath("InputNPathComplexityDefault.java"), expected);
     }
 
     @Test
@@ -171,17 +169,18 @@ public class NPathComplexityCheckTest extends BaseCheckTestSupport {
     @Test
     public void testDefaultHooks() {
         final NPathComplexityCheck npathComplexityCheckObj = new NPathComplexityCheck();
-        final LocalizedMessages messages = new LocalizedMessages();
-        npathComplexityCheckObj.setMessages(messages);
-
         final DetailAST ast = new DetailAST();
         ast.initialize(new CommonHiddenStreamToken(TokenTypes.INTERFACE_DEF, "interface"));
 
         npathComplexityCheckObj.visitToken(ast);
-        Assert.assertEquals("No exception messages expected", 0, messages.size());
+        final SortedSet<LocalizedMessage> messages1 = npathComplexityCheckObj.getMessages();
+
+        Assert.assertEquals("No exception messages expected", 0, messages1.size());
 
         npathComplexityCheckObj.leaveToken(ast);
-        Assert.assertEquals("No exception messages expected", 0, messages.size());
+        final SortedSet<LocalizedMessage> messages2 = npathComplexityCheckObj.getMessages();
+
+        Assert.assertEquals("No exception messages expected", 0, messages2.size());
     }
 
     @Test
@@ -202,15 +201,18 @@ public class NPathComplexityCheckTest extends BaseCheckTestSupport {
         astTernary.addChild(astTernaryTrue);
 
         final NPathComplexityCheck npathComplexityCheckObj = new NPathComplexityCheck();
-        final LocalizedMessages messages = new LocalizedMessages();
-        npathComplexityCheckObj.setMessages(messages);
 
         // visiting first ast, set expressionSpatialRange to [2,2 - 4,4]
         npathComplexityCheckObj.visitToken(astIf);
-        Assert.assertEquals("No exception messages expected", 0, messages.size());
+        final SortedSet<LocalizedMessage> messages1 = npathComplexityCheckObj.getMessages();
+
+        Assert.assertEquals("No exception messages expected", 0, messages1.size());
+
         //visiting ternary, it lies before expressionSpatialRange
         npathComplexityCheckObj.visitToken(astTernary);
-        Assert.assertEquals("No exception messages expected", 0, messages.size());
+        final SortedSet<LocalizedMessage> messages2 = npathComplexityCheckObj.getMessages();
+
+        Assert.assertEquals("No exception messages expected", 0, messages2.size());
     }
 
     /**

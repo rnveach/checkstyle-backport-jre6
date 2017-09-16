@@ -219,15 +219,15 @@ public class ParseTreeTablePresentation {
     }
 
     /**
-     * Return the index of child in parent.  If either <code>parent</code>
-     * or <code>child</code> is <code>null</code>, returns -1.
-     * If either <code>parent</code> or <code>child</code> don't
+     * Return the index of child in parent.  If either {@code parent}
+     * or {@code child} is {@code null}, returns -1.
+     * If either {@code parent} or {@code child} don't
      * belong to this tree model, returns -1.
      *
      * @param parent a node in the tree, obtained from this data source.
      * @param child the node we are interested in.
      * @return the index of the child in the parent, or -1 if either
-     *     <code>child</code> or <code>parent</code> are <code>null</code>
+     *     {@code child} or {@code parent} are {@code null}
      *     or don't belong to this tree model.
      */
     public int getIndexOfChild(Object parent, Object child) {
@@ -294,7 +294,7 @@ public class ParseTreeTablePresentation {
      * @param column column index.
      * @return value at specified column.
      */
-    private Object getValueAtDetailNode(DetailNode node, int column) {
+    private static Object getValueAtDetailNode(DetailNode node, int column) {
         final Object value;
 
         switch (column) {
@@ -326,7 +326,7 @@ public class ParseTreeTablePresentation {
      * @param column column index.
      * @return value at specified column.
      */
-    private Object getValueAtDetailAST(DetailAST ast, int column) {
+    private static Object getValueAtDetailAST(DetailAST ast, int column) {
         final Object value;
 
         switch (column) {

@@ -21,11 +21,11 @@ package com.puppycrawl.tools.checkstyle.checks.regexp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
@@ -248,7 +248,7 @@ public class RegexpOnFilenameCheck extends AbstractFileSetCheck {
     }
 
     @Override
-    protected void processFiltered(File file, List<String> lines) throws CheckstyleException {
+    protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
         final String fileName = getFileName(file);
         final String folderPath = getFolderPath(file);
 
@@ -306,16 +306,8 @@ public class RegexpOnFilenameCheck extends AbstractFileSetCheck {
             result = true;
         }
         else {
-            final boolean useMatch;
-
             // null pattern means 'match' applies to the folderPattern matching
-            if (fileNamePattern == null) {
-                useMatch = match;
-            }
-            else {
-                useMatch = true;
-            }
-
+            final boolean useMatch = fileNamePattern != null || match;
             result = folderPattern.matcher(folderPath).find() == useMatch;
         }
 
@@ -330,17 +322,8 @@ public class RegexpOnFilenameCheck extends AbstractFileSetCheck {
      * @return true if they do match.
      */
     private boolean isMatchFile(String fileName) {
-        final boolean result;
-
         // null pattern always matches, regardless of value of 'match'
-        if (fileNamePattern == null) {
-            result = true;
-        }
-        else {
-            result = fileNamePattern.matcher(fileName).find() == match;
-        }
-
-        return result;
+        return fileNamePattern == null || fileNamePattern.matcher(fileName).find() == match;
     }
 
     /** Logs the errors for the check. */

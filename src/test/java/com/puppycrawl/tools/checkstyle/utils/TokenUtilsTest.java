@@ -137,12 +137,6 @@ public class TokenUtilsTest {
             assertEquals("given id " + id, expected.getMessage());
 
         }
-        catch (IllegalAccessException ex) {
-            fail("Exception is expected");
-        }
-        catch (NoSuchFieldException ex) {
-            fail("Exception is expected");
-        }
     }
 
     @Test

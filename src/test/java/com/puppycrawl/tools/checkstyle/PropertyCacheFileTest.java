@@ -34,6 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -42,12 +43,15 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -197,7 +201,7 @@ public class PropertyCacheFileTest {
     }
 
     @Test
-    public void testExternalResourseIsSavedInCache() throws IOException {
+    public void testExternalResourseIsSavedInCache() throws Exception {
         final Configuration config = new DefaultConfiguration("myName");
         final String filePath = temporaryFolder.newFile().getPath();
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
@@ -210,7 +214,18 @@ public class PropertyCacheFileTest {
         resources.add(pathToResource);
         cache.putExternalResources(resources);
 
-        assertFalse(cache.get("module-resource*?:" + pathToResource).isEmpty());
+        final MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        final URI uri = CommonUtils.getUriByFilename(pathToResource);
+        final byte[] input =
+                ByteStreams.toByteArray(new BufferedInputStream(uri.toURL().openStream()));
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(out);
+        oos.writeObject(input);
+        digest.update(out.toByteArray());
+        final String expected = DatatypeConverter.printHexBinary(digest.digest());
+
+        assertEquals("Hashes are not equal", expected,
+                cache.get("module-resource*?:" + pathToResource));
     }
 
     /**
@@ -434,7 +449,7 @@ public class PropertyCacheFileTest {
         final PropertyCacheFile cache = new PropertyCacheFile(config, cacheFile.getPath());
         cache.load();
 
-        final String expectedInitialConfigHash = "EEF15651C2D79B29968835FC729E788938CAFE3B";
+        final String expectedInitialConfigHash = "91753B970AFDF9F5F3DFA0D258064841949D3C6B";
         final String actualInitialConfigHash = cache.get(PropertyCacheFile.CONFIG_HASH_KEY);
         assertEquals(expectedInitialConfigHash, actualInitialConfigHash);
 
@@ -451,7 +466,7 @@ public class PropertyCacheFileTest {
             new PropertyCacheFile(config, cacheFile.getPath());
         cacheAfterChangeInConfig.load();
 
-        final String expectedConfigHashAfterChange = "0FFFF89F6636EE8AEB904681F594B0F05E1FF795";
+        final String expectedConfigHashAfterChange = "4CF5EC78955B81D76153ACC2CA6D60CB77FDCB2A";
         final String actualConfigHashAfterChange =
             cacheAfterChangeInConfig.get(PropertyCacheFile.CONFIG_HASH_KEY);
         assertEquals(expectedConfigHashAfterChange, actualConfigHashAfterChange);

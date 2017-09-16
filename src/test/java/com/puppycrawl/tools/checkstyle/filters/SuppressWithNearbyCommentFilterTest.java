@@ -20,26 +20,27 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
-import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
-import com.puppycrawl.tools.checkstyle.BriefUtLogger;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
+import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.api.FileContents;
+import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.checks.FileContentsHolder;
 import com.puppycrawl.tools.checkstyle.checks.coding.IllegalCatchCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
@@ -48,7 +49,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class SuppressWithNearbyCommentFilterTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     private static final String[] ALL_MESSAGES = {
         "14:17: Name 'A1' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
         "15:17: Name 'A2' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
@@ -79,8 +80,8 @@ public class SuppressWithNearbyCommentFilterTest
     };
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("filters" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/filters";
     }
 
     @Test
@@ -224,7 +225,7 @@ public class SuppressWithNearbyCommentFilterTest
         checksConfig.addChild(createCheckConfig(IllegalCatchCheck.class));
         checkerConfig.addChild(checksConfig);
         if (checkConfig != null) {
-            checkerConfig.addChild(checkConfig);
+            checksConfig.addChild(checkConfig);
         }
         final Checker checker = new Checker();
         final Locale locale = Locale.ROOT;
@@ -232,7 +233,7 @@ public class SuppressWithNearbyCommentFilterTest
         checker.setLocaleLanguage(locale.getLanguage());
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
         return checker;
     }
 
@@ -261,6 +262,25 @@ public class SuppressWithNearbyCommentFilterTest
     }
 
     @Test
+    public void testInfluenceFormat() throws Exception {
+        final DefaultConfiguration filterConfig =
+                createFilterConfig(SuppressWithNearbyCommentFilter.class);
+        filterConfig.addAttribute("influenceFormat", "1");
+
+        final String[] suppressed = {
+            "14:17: Name 'A1' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
+            "15:17: Name 'A2' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
+            "16:59: Name 'A3' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
+            "18:17: Name 'B1' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
+            "19:17: Name 'B2' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
+            "20:59: Name 'B3' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
+            "80:59: Name 'A2' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
+            "81:17: Name 'A1' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
+        };
+        verifySuppressed(filterConfig, suppressed);
+    }
+
+    @Test
     public void testInvalidCheckFormat() throws Exception {
         final DefaultConfiguration filterConfig =
             createFilterConfig(SuppressWithNearbyCommentFilter.class);
@@ -280,8 +300,8 @@ public class SuppressWithNearbyCommentFilterTest
     @Test
     public void testAcceptNullLocalizedMessage() {
         final SuppressWithNearbyCommentFilter filter = new SuppressWithNearbyCommentFilter();
-        final AuditEvent auditEvent = new AuditEvent(this);
-        Assert.assertTrue(filter.accept(auditEvent));
+        final TreeWalkerAuditEvent auditEvent = new TreeWalkerAuditEvent(null, null, null);
+        assertTrue(filter.accept(auditEvent));
     }
 
     @Test
@@ -290,7 +310,8 @@ public class SuppressWithNearbyCommentFilterTest
                 "text", 7, new SuppressWithNearbyCommentFilter()
         );
         assertEquals("Invalid toString result",
-            "Tag[lines=[7 to 7]; text='text']", tag.toString());
+            "Tag[text='text', firstLine=7, lastLine=7, "
+                    + "tagCheckRegexp=.*, tagMessageRegexp=null]", tag.toString());
     }
 
     @Test
@@ -325,5 +346,31 @@ public class SuppressWithNearbyCommentFilterTest
         verify(createChecker(filterConfig),
             getPath("InputSuppressByIdWithNearbyCommentFilter.java"),
             removeSuppressed(expectedViolationMessages, suppressedViolationMessages));
+    }
+
+    @Test
+    public void testTagsAreClearedEachRun() {
+        final SuppressWithNearbyCommentFilter suppressionCommentFilter =
+                new SuppressWithNearbyCommentFilter();
+        final FileContentsHolder fileContentsHolder = new FileContentsHolder();
+        final FileContents contents =
+                new FileContents("filename", "//SUPPRESS CHECKSTYLE ignore", "line2");
+        contents.reportSingleLineComment(1, 0);
+        fileContentsHolder.setFileContents(contents);
+        fileContentsHolder.beginTree(null);
+        final TreeWalkerAuditEvent dummyEvent = new TreeWalkerAuditEvent(contents, "filename",
+                new LocalizedMessage(1, null, null, null, null, Object.class, null));
+        suppressionCommentFilter.accept(dummyEvent);
+        final FileContents contents2 =
+                new FileContents("filename2", "some line", "//SUPPRESS CHECKSTYLE ignore");
+        contents2.reportSingleLineComment(2, 0);
+        fileContentsHolder.setFileContents(contents2);
+        fileContentsHolder.beginTree(null);
+        final TreeWalkerAuditEvent dummyEvent2 = new TreeWalkerAuditEvent(contents2, "filename",
+                new LocalizedMessage(1, null, null, null, null, Object.class, null));
+        suppressionCommentFilter.accept(dummyEvent2);
+        final List<SuppressionCommentFilter.Tag> tags =
+                Whitebox.getInternalState(suppressionCommentFilter, "tags");
+        assertEquals(1, tags.size());
     }
 }

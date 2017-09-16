@@ -22,27 +22,17 @@ package com.puppycrawl.tools.checkstyle.checks.imports;
 import static com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck.MSG_KEY;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class UnusedImportsCheckTest extends BaseCheckTestSupport {
+public class UnusedImportsCheckTest extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "imports" + File.separator + "unusedimports" + File.separator + filename);
-    }
-
-    @Override
-    protected String getNonCompilablePath(String filename) throws IOException {
-        return super.getNonCompilablePath("checks" + File.separator
-                + "imports" + File.separator + "unusedimports" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/imports/unusedimports";
     }
 
     @Test
@@ -73,7 +63,7 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
                 "com.puppycrawl.tools.checkstyle.BaseFileSetCheckTestSupport"),
             "40:8: " + getCheckMessage(MSG_KEY, "com.puppycrawl.tools.checkstyle.Definitions"),
             "41:8: " + getCheckMessage(MSG_KEY,
-                "com.puppycrawl.tools.checkstyle.checks.Input15Extensions"),
+                "com.puppycrawl.tools.checkstyle.checks.imports.unusedimports.Input15Extensions"),
             "42:8: " + getCheckMessage(MSG_KEY,
                 "com.puppycrawl.tools.checkstyle.ConfigurationLoaderTest"),
             "43:8: " + getCheckMessage(MSG_KEY,
@@ -114,6 +104,13 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
     }
 
     @Test
+    public void testProcessJavadocWithBlockTagContainingMethodParameters() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(checkConfig, getPath("InputUnusedImportWithBlockMethodParameters.java"), expected);
+    }
+
+    @Test
     public void testAnnotations() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -125,6 +122,13 @@ public class UnusedImportsCheckTest extends BaseCheckTestSupport {
         final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputUnusedImportsBug.java"), expected);
+    }
+
+    @Test
+    public void testNewlinesInsideTags() throws Exception {
+        final DefaultConfiguration checkConfig = createCheckConfig(UnusedImportsCheck.class);
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(checkConfig, getPath("InputUnusedImportsWithNewlinesInsideTags.java"), expected);
     }
 
     @Test

@@ -22,19 +22,16 @@ package com.puppycrawl.tools.checkstyle.filters;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
+import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
+import com.puppycrawl.tools.checkstyle.TreeWalkerFilter;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
-import com.puppycrawl.tools.checkstyle.api.Filter;
 import com.puppycrawl.tools.checkstyle.api.TextBlock;
-import com.puppycrawl.tools.checkstyle.checks.FileContentsHolder;
-import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
@@ -74,7 +71,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  */
 public class SuppressWithNearbyCommentFilter
     extends AutomaticBean
-    implements Filter {
+    implements TreeWalkerFilter {
 
     /** Format to turns checkstyle reporting off. */
     private static final String DEFAULT_COMMENT_FORMAT =
@@ -185,13 +182,13 @@ public class SuppressWithNearbyCommentFilter
     }
 
     @Override
-    public boolean accept(AuditEvent event) {
+    public boolean accept(TreeWalkerAuditEvent event) {
         boolean accepted = true;
 
         if (event.getLocalizedMessage() != null) {
             // Lazy update. If the first event for the current file, update file
             // contents and tag suppressions
-            final FileContents currentContents = FileContentsHolder.getCurrentFileContents();
+            final FileContents currentContents = event.getFileContents();
 
             if (getFileContents() != currentContents) {
                 setFileContents(currentContents);
@@ -206,10 +203,10 @@ public class SuppressWithNearbyCommentFilter
 
     /**
      * Whether current event matches any tag from {@link #tags}.
-     * @param event AuditEvent to test match on {@link #tags}.
+     * @param event TreeWalkerAuditEvent to test match on {@link #tags}.
      * @return true if event matches any tag from {@link #tags}, false otherwise.
      */
-    private boolean matchesTag(AuditEvent event) {
+    private boolean matchesTag(TreeWalkerAuditEvent event) {
         boolean result = false;
         for (final Tag tag : tags) {
             if (tag.isMatch(event)) {
@@ -237,7 +234,6 @@ public class SuppressWithNearbyCommentFilter
                 tagSuppressions(element);
             }
         }
-        Collections.sort(tags);
     }
 
     /**
@@ -282,7 +278,7 @@ public class SuppressWithNearbyCommentFilter
     /**
      * A Tag holds a suppression comment and its location.
      */
-    public static class Tag implements Comparable<Tag> {
+    public static class Tag {
         /** The text of the tag. */
         private final String text;
 
@@ -325,18 +321,13 @@ public class SuppressWithNearbyCommentFilter
                 }
                 format = CommonUtils.fillTemplateWithStringsByRegexp(
                         filter.influenceFormat, text, filter.commentFormat);
-                final int influence;
-                try {
-                    if (CommonUtils.startsWithChar(format, '+')) {
-                        format = format.substring(1);
-                    }
-                    influence = Integer.parseInt(format);
+
+                if (CommonUtils.startsWithChar(format, '+')) {
+                    format = format.substring(1);
                 }
-                catch (final NumberFormatException ex) {
-                    throw new IllegalArgumentException("unable to parse influence from '" + text
-                            + "' using " + filter.influenceFormat, ex);
-                }
-                if (influence >= 0) {
+                final int influence = parseInfluence(format, filter.influenceFormat, text);
+
+                if (influence >= 1) {
                     firstLine = line;
                     lastLine = line + influence;
                 }
@@ -352,23 +343,21 @@ public class SuppressWithNearbyCommentFilter
         }
 
         /**
-         * Compares the position of this tag in the file
-         * with the position of another tag.
-         * @param other the tag to compare with this one.
-         * @return a negative number if this tag is before the other tag,
-         *     0 if they are at the same position, and a positive number if this
-         *     tag is after the other tag.
+         * Gets influence from suppress filter influence format param.
+         *
+         * @param format          influence format to parse
+         * @param influenceFormat raw influence format
+         * @param text            text of the suppression
+         * @return parsed influence
          */
-        @Override
-        public int compareTo(Tag other) {
-            final int result;
-            if (firstLine == other.firstLine) {
-                result = Integer7.compare(lastLine, other.lastLine);
+        private static int parseInfluence(String format, String influenceFormat, String text) {
+            try {
+                return Integer.parseInt(format);
             }
-            else {
-                result = Integer7.compare(firstLine, other.firstLine);
+            catch (final NumberFormatException ex) {
+                throw new IllegalArgumentException("unable to parse influence from '" + text
+                        + "' using " + influenceFormat, ex);
             }
-            return result;
         }
 
         @Override
@@ -395,10 +384,10 @@ public class SuppressWithNearbyCommentFilter
         /**
          * Determines whether the source of an audit event
          * matches the text of this tag.
-         * @param event the {@code AuditEvent} to check.
+         * @param event the {@code TreeWalkerAuditEvent} to check.
          * @return true if the source of event matches the text of this tag.
          */
-        public boolean isMatch(AuditEvent event) {
+        public boolean isMatch(TreeWalkerAuditEvent event) {
             final int line = event.getLine();
             boolean match = false;
 
@@ -423,9 +412,13 @@ public class SuppressWithNearbyCommentFilter
         }
 
         @Override
-        public final String toString() {
-            return "Tag[lines=[" + firstLine + " to " + lastLine
-                + "]; text='" + text + "']";
+        public String toString() {
+            return "Tag[text='" + text + '\''
+                    + ", firstLine=" + firstLine
+                    + ", lastLine=" + lastLine
+                    + ", tagCheckRegexp=" + tagCheckRegexp
+                    + ", tagMessageRegexp=" + tagMessageRegexp
+                    + ']';
         }
     }
 }

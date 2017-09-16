@@ -20,17 +20,24 @@
 package com.puppycrawl.tools.checkstyle.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.List;
 import java.util.Locale;
 
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.TreeWalker;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 
 /**
  * TestCase to check DetailAST.
@@ -118,8 +125,152 @@ public class DetailASTTest {
     }
 
     @Test
+    public void testClearBranchTokenTypes() throws Exception {
+        final DetailAST parent = new DetailAST();
+        final DetailAST child = new DetailAST();
+        parent.setFirstChild(child);
+
+        final List<Consumer<DetailAST>> clearBranchTokenTypesMethods = Arrays.asList(
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.setFirstChild(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.setFirstChild(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.setNextSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.addPreviousSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.addNextSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.addChild(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    try {
+                        Whitebox.invokeMethod(child, "setParent", ast);
+                    }
+                    // -@cs[IllegalCatch] Cannot avoid catching it.
+                    catch (Exception exception) {
+                        throw new IllegalStateException(exception);
+                    }
+                    return false;
+                }
+            }
+        );
+
+        for (Consumer<DetailAST> method : clearBranchTokenTypesMethods) {
+            final BitSet branchTokenTypes = Whitebox.invokeMethod(parent, "getBranchTokenTypes");
+            method.accept(null);
+            final BitSet branchTokenTypes2 = Whitebox.invokeMethod(parent, "getBranchTokenTypes");
+            assertEquals(branchTokenTypes, branchTokenTypes2);
+            assertNotSame(branchTokenTypes, branchTokenTypes2);
+        }
+    }
+
+    @Test
+    public void testClearChildCountCache() throws Exception {
+        final DetailAST parent = new DetailAST();
+        final DetailAST child = new DetailAST();
+        parent.setFirstChild(child);
+
+        final List<Consumer<DetailAST>> clearChildCountCacheMethods = Arrays.asList(
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.setNextSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.addPreviousSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    child.addNextSibling(ast);
+                    return false;
+                }
+            }
+        );
+
+        for (Consumer<DetailAST> method : clearChildCountCacheMethods) {
+            final int startCount = parent.getChildCount();
+            method.accept(null);
+            final int intermediateCount = Whitebox.getInternalState(parent, "childCount");
+            final int finishCount = parent.getChildCount();
+            assertEquals(startCount, finishCount);
+            assertEquals(Integer.MIN_VALUE, intermediateCount);
+        }
+
+        final int startCount = child.getChildCount();
+        child.addChild(null);
+        final int intermediateCount = Whitebox.getInternalState(child, "childCount");
+        final int finishCount = child.getChildCount();
+        assertEquals(startCount, finishCount);
+        assertEquals(Integer.MIN_VALUE, intermediateCount);
+    }
+
+    @Test
+    public void testAddNextSibling() {
+        final DetailAST parent = new DetailAST();
+        final DetailAST child = new DetailAST();
+        final DetailAST sibling = new DetailAST();
+        final DetailAST newSibling = new DetailAST();
+        parent.setFirstChild(child);
+        child.setNextSibling(sibling);
+
+        child.addNextSibling(newSibling);
+        assertTrue(newSibling.getParent().equals(parent));
+        assertTrue(newSibling.getNextSibling().equals(sibling));
+        assertTrue(child.getNextSibling().equals(newSibling));
+    }
+
+    @Test
     public void testTreeStructure() throws Exception {
         checkDir(new File("src/test/resources/com/puppycrawl/tools/checkstyle"));
+    }
+
+    @Test
+    public void testToString() {
+        final DetailAST ast = new DetailAST();
+        ast.setText("text");
+        ast.setColumnNo(0);
+        ast.setLineNo(0);
+        assertEquals("text[0x0]", ast.toString());
     }
 
     private static void checkDir(File dir) throws Exception {

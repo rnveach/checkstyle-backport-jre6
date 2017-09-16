@@ -22,22 +22,18 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTagContinuationIndentationCheck.MSG_KEY;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class JavadocTagContinuationIndentationCheckTest
-        extends BaseCheckTestSupport {
+        extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/javadoctagcontinuationindentation";
     }
 
     @Test
@@ -54,7 +50,9 @@ public class JavadocTagContinuationIndentationCheckTest
         final DefaultConfiguration checkConfig =
                 createCheckConfig(JavadocTagContinuationIndentationCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputGuavaFalsePositive.java"), expected);
+        verify(checkConfig,
+               getPath("InputJavadocTagContinuationIndentationGuavaFalsePositive.java"),
+               expected);
     }
 
     @Test
@@ -76,7 +74,7 @@ public class JavadocTagContinuationIndentationCheckTest
             "322: " + getCheckMessage(MSG_KEY, 4),
             "324: " + getCheckMessage(MSG_KEY, 4),
         };
-        verify(checkConfig, getPath("InputJavaDocTagContinuationIndentation.java"),
+        verify(checkConfig, getPath("InputJavadocTagContinuationIndentation.java"),
                 expected);
     }
 
@@ -89,7 +87,7 @@ public class JavadocTagContinuationIndentationCheckTest
             "7: " + getCheckMessage(MSG_KEY, 3),
             "19: " + getCheckMessage(MSG_KEY, 3),
         };
-        verify(checkConfig, getPath("InputJavaDocTagContinuationIndentationOffset3.java"),
+        verify(checkConfig, getPath("InputJavadocTagContinuationIndentationOffset3.java"),
                 expected);
     }
 }

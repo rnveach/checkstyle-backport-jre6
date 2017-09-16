@@ -42,11 +42,13 @@ public class AbstractFileSetCheckTest {
         final DummyFileSetCheck check = new DummyFileSetCheck();
         check.configure(new DefaultConfiguration("filesetcheck"));
         check.setFileExtensions("tmp");
-        final List<String> lines = Arrays.asList("key=value", "ext=tmp");
+        final File firstFile = new File("inputAbstractFileSetCheck.tmp");
         final SortedSet<LocalizedMessage> firstFileMessages =
-            check.process(new File("inputAbstractFileSetCheck.tmp"), Collections.<String>emptyList());
+            check.process(firstFile, new FileText(firstFile, Collections.<String>emptyList()));
+        final File secondFile = new File("inputAbstractFileSetCheck.txt");
+        final List<String> lines = Arrays.asList("key=value", "ext=tmp");
         final SortedSet<LocalizedMessage> secondFileMessages =
-            check.process(new File("inputAbstractFileSetCheck.txt"), lines);
+            check.process(secondFile, new FileText(secondFile, lines));
 
         assertEquals("File should not be empty.",
             firstFileMessages.first().getMessage());
@@ -62,8 +64,12 @@ public class AbstractFileSetCheckTest {
         Assert.assertArrayEquals(expectedExtentions, check.getFileExtensions());
     }
 
+    /**
+     * This javadoc exists only to suppress Intellij Idea inspection
+     * @throws Exception it happens
+     * @noinspection NullArgumentToVariableArgMethod
+     */
     @Test
-    @SuppressWarnings("NullArgumentToVariableArgMethod")
     public void testSetExtentionThrowsExceptionWhenTheyAreNull() throws Exception {
         final DummyFileSetCheck check = new DummyFileSetCheck();
         try {
@@ -88,8 +94,8 @@ public class AbstractFileSetCheckTest {
         private static final String MSG_KEY = "File should not be empty.";
 
         @Override
-        protected void processFiltered(File file, List<String> lines) throws CheckstyleException {
-            if (lines.isEmpty()) {
+        protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
+            if (fileText.size() == 0) {
                 log(1, MSG_KEY);
             }
         }

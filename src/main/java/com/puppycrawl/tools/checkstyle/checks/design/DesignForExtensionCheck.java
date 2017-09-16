@@ -54,7 +54,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  *
  * <p>
  * ATTENTION: If the method which can be overridden in a subclass has a javadoc comment
- * (a good practise is to explain its self-use of overridable methods) the check will not
+ * (a good practice is to explain its self-use of overridable methods) the check will not
  * rise a violation. The violation can also be skipped if the method which can be overridden
  * in a subclass has one or more annotations that are specified in ignoredAnnotations
  * option. Note, that by default @Override annotation is not included in the
@@ -159,7 +159,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @param methodDef method definition token.
      * @return true if a method has a javadoc comment.
      */
-    private boolean hasJavadocComment(DetailAST methodDef) {
+    private static boolean hasJavadocComment(DetailAST methodDef) {
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
         return modifiers.branchContains(TokenTypes.BLOCK_COMMENT_BEGIN);
     }
@@ -169,7 +169,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @param ast method definition token.
      * @return true if a methods is native.
      */
-    private boolean isNativeMethod(DetailAST ast) {
+    private static boolean isNativeMethod(DetailAST ast) {
         final DetailAST mods = ast.findFirstToken(TokenTypes.MODIFIERS);
         return mods.branchContains(TokenTypes.LITERAL_NATIVE);
     }
@@ -206,7 +206,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @param methodDef method definition token.
      * @return true if a method can be overridden in a subclass.
      */
-    private boolean canBeOverridden(DetailAST methodDef) {
+    private static boolean canBeOverridden(DetailAST methodDef) {
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
         return ScopeUtils.getSurroundingScope(methodDef).isIn(Scope.PROTECTED)
             && !ScopeUtils.isInInterfaceOrAnnotationBlock(methodDef)

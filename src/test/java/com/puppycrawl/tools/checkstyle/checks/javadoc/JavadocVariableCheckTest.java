@@ -22,23 +22,19 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck.MSG_JAVADOC_MISSING;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class JavadocVariableCheckTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/javadocvariable";
     }
 
     @Test
@@ -75,7 +71,7 @@ public class JavadocVariableCheckTest
             "311:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "330:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputTags.java"), expected);
+        verify(checkConfig, getPath("InputJavadocVariableTags.java"), expected);
     }
 
     @Test
@@ -88,7 +84,7 @@ public class JavadocVariableCheckTest
             "24:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "30:13: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputInner.java"), expected);
+        verify(checkConfig, getPath("InputJavadocVariableInner.java"), expected);
     }
 
     @Test
@@ -98,7 +94,7 @@ public class JavadocVariableCheckTest
             createCheckConfig(JavadocVariableCheck.class);
         checkConfig.addAttribute("scope", Scope.PUBLIC.getName());
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputInner.java"), expected);
+        verify(checkConfig, getPath("InputJavadocVariableInner.java"), expected);
     }
 
     @Test
@@ -115,7 +111,7 @@ public class JavadocVariableCheckTest
             "45:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "46:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputPublicOnly.java"), expected);
+        verify(checkConfig, getPath("InputJavadocVariablePublicOnly.java"), expected);
     }
 
     @Test
@@ -127,7 +123,7 @@ public class JavadocVariableCheckTest
         final String[] expected = {
             "46:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputPublicOnly.java"), expected);
+        verify(checkConfig, getPath("InputJavadocVariablePublicOnly.java"), expected);
     }
 
     @Test
@@ -174,7 +170,7 @@ public class JavadocVariableCheckTest
             "113:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
         verify(checkConfig,
-               getPath("InputNoJavadoc.java"),
+               getPath("InputJavadocVariableNoJavadoc.java"),
                expected);
     }
 
@@ -190,7 +186,7 @@ public class JavadocVariableCheckTest
             "17:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
         verify(checkConfig,
-               getPath("InputNoJavadoc.java"),
+               getPath("InputJavadocVariableNoJavadoc.java"),
                expected);
     }
 
@@ -236,7 +232,7 @@ public class JavadocVariableCheckTest
             "113:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
         verify(checkConfig,
-               getPath("InputNoJavadoc.java"),
+               getPath("InputJavadocVariableNoJavadoc.java"),
                expected);
     }
 
@@ -285,7 +281,7 @@ public class JavadocVariableCheckTest
             "103:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
         verify(checkConfig,
-                getPath("InputNoJavadoc.java"),
+                getPath("InputJavadocVariableNoJavadoc.java"),
                 expected);
     }
 
@@ -335,7 +331,7 @@ public class JavadocVariableCheckTest
             "113:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
         verify(checkConfig,
-                getPath("InputNoJavadoc.java"),
+                getPath("InputJavadocVariableNoJavadoc.java"),
                 expected);
     }
 
@@ -345,6 +341,8 @@ public class JavadocVariableCheckTest
         final String[] expected = {
             "6:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputNoJavadocNeededInLambda.java"), expected);
+        verify(checkConfig,
+                getPath("InputJavadocVariableNoJavadocNeededInLambda.java"),
+                expected);
     }
 }

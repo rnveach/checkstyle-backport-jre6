@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
@@ -39,7 +40,7 @@ public class CodeSelectorPresentationTest {
 
     private DetailAST tree;
 
-    private List<Integer> linesToPosition;
+    private ImmutableList<Integer> linesToPosition;
 
     @Before
     public void loadFile() throws CheckstyleException {
@@ -47,7 +48,7 @@ public class CodeSelectorPresentationTest {
         model.setParseMode(ParseMode.JAVA_WITH_JAVADOC_AND_COMMENTS);
         model.openFile(new File(getPath("InputJavadocAttributesAndMethods.java")));
         tree = ((DetailAST) model.getParseTreeTableModel().getRoot()).getFirstChild();
-        linesToPosition = convertLinesToPosition(model.getLinesToPosition());
+        linesToPosition = ImmutableList.copyOf(convertLinesToPosition(model.getLinesToPosition()));
     }
 
     private static String getPath(String filename) {

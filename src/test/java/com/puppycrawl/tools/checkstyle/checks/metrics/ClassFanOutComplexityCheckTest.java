@@ -23,23 +23,19 @@ import static com.puppycrawl.tools.checkstyle.checks.metrics.ClassFanOutComplexi
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class ClassFanOutComplexityCheckTest extends BaseCheckTestSupport {
+public class ClassFanOutComplexityCheckTest extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "metrics" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/metrics/classfanoutcomplexity";
     }
 
     @Test
@@ -54,7 +50,7 @@ public class ClassFanOutComplexityCheckTest extends BaseCheckTestSupport {
             "38:1: " + getCheckMessage(MSG_KEY, 1, 0),
         };
 
-        verify(checkConfig, getPath("InputClassCoupling.java"), expected);
+        verify(checkConfig, getPath("InputClassFanOutComplexity.java"), expected);
     }
 
     @Test
@@ -145,7 +141,7 @@ public class ClassFanOutComplexityCheckTest extends BaseCheckTestSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("Input15Extensions.java"), expected);
+        verify(checkConfig, getPath("InputClassFanOutComplexity15Extensions.java"), expected);
     }
 
     @Test
@@ -155,7 +151,7 @@ public class ClassFanOutComplexityCheckTest extends BaseCheckTestSupport {
 
         createChecker(checkConfig);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputClassCoupling.java"), expected);
+        verify(checkConfig, getPath("InputClassFanOutComplexity.java"), expected);
     }
 
     @Test
@@ -191,7 +187,7 @@ public class ClassFanOutComplexityCheckTest extends BaseCheckTestSupport {
             "38:1: " + getCheckMessage(MSG_KEY, 1, 0),
         };
 
-        verify(checkConfig, getPath("InputClassCoupling.java"), expected);
+        verify(checkConfig, getPath("InputClassFanOutComplexity.java"), expected);
     }
 
     @Test
@@ -207,6 +203,6 @@ public class ClassFanOutComplexityCheckTest extends BaseCheckTestSupport {
             "38:1: " + getCheckMessage(MSG_KEY, 1, 0),
         };
 
-        verify(checkConfig, getPath("InputClassCoupling.java"), expected);
+        verify(checkConfig, getPath("InputClassFanOutComplexity.java"), expected);
     }
 }

@@ -83,8 +83,6 @@ public class XdocsPagesTest {
             "name=\"Translation\"",
             "name=\"SeverityMatchFilter\"",
             "name=\"SuppressionFilter\"",
-            "name=\"SuppressionCommentFilter\"",
-            "name=\"SuppressWithNearbyCommentFilter\"",
             "name=\"SuppressWarningsFilter\"",
             "name=\"BeforeExecutionExclusionFileFilter\"",
             "name=\"RegexpHeader\"",
@@ -764,7 +762,7 @@ public class XdocsPagesTest {
                 result = clss.getDeclaredField(propertyName);
                 result.setAccessible(true);
             }
-            catch (NoSuchFieldException ex) {
+            catch (NoSuchFieldException ignored) {
                 result = getField(clss.getSuperclass(), propertyName);
             }
         }

@@ -21,23 +21,19 @@ package com.puppycrawl.tools.checkstyle.checks.metrics;
 
 import static com.puppycrawl.tools.checkstyle.checks.metrics.CyclomaticComplexityCheck.MSG_KEY;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class CyclomaticComplexityCheckTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "metrics" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/metrics/cyclomaticcomplexity";
     }
 
     @Test
@@ -51,7 +47,7 @@ public class CyclomaticComplexityCheckTest
             "4:5: " + getCheckMessage(MSG_KEY, 2, 0),
         };
 
-        verify(checkConfig, getPath("InputComplexitySwitchBlocks.java"), expected);
+        verify(checkConfig, getPath("InputCyclomaticComplexitySwitchBlocks.java"), expected);
     }
 
     @Test
@@ -65,7 +61,7 @@ public class CyclomaticComplexityCheckTest
             "4:5: " + getCheckMessage(MSG_KEY, 5, 0),
         };
 
-        verify(checkConfig, getPath("InputComplexitySwitchBlocks.java"), expected);
+        verify(checkConfig, getPath("InputCyclomaticComplexitySwitchBlocks.java"), expected);
     }
 
     @Test
@@ -88,7 +84,7 @@ public class CyclomaticComplexityCheckTest
             "104:13: " + getCheckMessage(MSG_KEY, 2, 0),
         };
 
-        verify(checkConfig, getPath("InputComplexity.java"), expected);
+        verify(checkConfig, getPath("InputCyclomaticComplexity.java"), expected);
     }
 
     @Test
@@ -122,6 +118,6 @@ public class CyclomaticComplexityCheckTest
         checkConfig.addAttribute("max", "100");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputComplexitySwitchBlocks.java"), expected);
+        verify(checkConfig, getPath("InputCyclomaticComplexitySwitchBlocks.java"), expected);
     }
 }

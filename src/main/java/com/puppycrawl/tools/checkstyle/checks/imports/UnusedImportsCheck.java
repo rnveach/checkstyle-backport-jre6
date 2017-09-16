@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.imports;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -250,20 +251,15 @@ public class UnusedImportsCheck extends AbstractCheck {
      */
     private static Set<String> collectReferencesFromJavadoc(TextBlock textBlock) {
         final Set<String> references = new HashSet<String>();
-        // process all the @link type tags
+        final List<JavadocTag> tags = new ArrayList<JavadocTag>();
+        // gather all the inline tags, like @link
         // INLINE tags inside BLOCKs get hidden when using ALL
-        for (final JavadocTag tag
-                : getValidTags(textBlock, JavadocUtils.JavadocTagType.INLINE)) {
+        tags.addAll(getValidTags(textBlock, JavadocUtils.JavadocTagType.INLINE));
+        // gather all the block-level tags, like @throws and @see
+        tags.addAll(getValidTags(textBlock, JavadocUtils.JavadocTagType.BLOCK));
+        for (JavadocTag tag : tags) {
             if (tag.canReferenceImports()) {
                 references.addAll(processJavadocTag(tag));
-            }
-        }
-        // process all the @throws type tags
-        for (final JavadocTag tag
-                : getValidTags(textBlock, JavadocUtils.JavadocTagType.BLOCK)) {
-            if (tag.canReferenceImports()) {
-                references.addAll(
-                        matchPattern(tag.getFirstArg(), FIRST_CLASS_NAME));
             }
         }
         return references;

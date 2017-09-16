@@ -20,26 +20,28 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
-import com.puppycrawl.tools.checkstyle.BriefUtLogger;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
-import com.puppycrawl.tools.checkstyle.api.AuditEvent;
+import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.api.FileContents;
+import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.checks.FileContentsHolder;
 import com.puppycrawl.tools.checkstyle.checks.coding.IllegalCatchCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
@@ -48,7 +50,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class SuppressionCommentFilterTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     private static final String[] ALL_MESSAGES = {
         "13:17: Name 'I' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
         "16:17: Name 'J' must match pattern '^[a-z][a-zA-Z0-9]*$'.",
@@ -70,8 +72,8 @@ public class SuppressionCommentFilterTest
     };
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("filters" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/filters";
     }
 
     @Test
@@ -224,7 +226,7 @@ public class SuppressionCommentFilterTest
         checksConfig.addChild(createCheckConfig(IllegalCatchCheck.class));
         checkerConfig.addChild(checksConfig);
         if (checkConfig != null) {
-            checkerConfig.addChild(checkConfig);
+            checksConfig.addChild(checkConfig);
         }
         final Checker checker = new Checker();
         final Locale locale = Locale.ROOT;
@@ -232,7 +234,7 @@ public class SuppressionCommentFilterTest
         checker.setLocaleLanguage(locale.getLanguage());
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
         return checker;
     }
 
@@ -255,7 +257,8 @@ public class SuppressionCommentFilterTest
         );
 
         assertEquals("Invalid toString result",
-            "Tag[line=0; col=1; on=false; text='text']", tag.toString());
+            "Tag[text='text', line=0, column=1, on=false,"
+                    + " tagCheckRegexp=.*, tagMessageRegexp=null]", tag.toString());
     }
 
     @Test
@@ -296,8 +299,9 @@ public class SuppressionCommentFilterTest
     @Test
     public void testAcceptNullLocalizedMessage() {
         final SuppressionCommentFilter filter = new SuppressionCommentFilter();
-        final AuditEvent auditEvent = new AuditEvent(this);
+        final TreeWalkerAuditEvent auditEvent = new TreeWalkerAuditEvent(null, null, null);
         Assert.assertTrue(filter.accept(auditEvent));
+        Assert.assertNull(auditEvent.getFileName());
     }
 
     @Test
@@ -321,5 +325,45 @@ public class SuppressionCommentFilterTest
         verify(createChecker(filterConfig),
             getPath("InputSuppressByIdWithCommentFilter.java"),
             removeSuppressed(expectedViolationMessages, suppressedViolationMessages));
+    }
+
+    @Test
+    public void testFindNearestMatchDontAllowSameColumn() {
+        final SuppressionCommentFilter suppressionCommentFilter = new SuppressionCommentFilter();
+        final FileContentsHolder fileContentsHolder = new FileContentsHolder();
+        final FileContents contents =
+                new FileContents("filename", "//CHECKSTYLE:OFF: ConstantNameCheck", "line2");
+        contents.reportSingleLineComment(1, 0);
+        fileContentsHolder.setFileContents(contents);
+        fileContentsHolder.beginTree(null);
+        final TreeWalkerAuditEvent dummyEvent = new TreeWalkerAuditEvent(contents, "filename",
+                new LocalizedMessage(1, null, null, null, null, Object.class, null));
+        final boolean result = suppressionCommentFilter.accept(dummyEvent);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testTagsAreClearedEachRun() {
+        final SuppressionCommentFilter suppressionCommentFilter = new SuppressionCommentFilter();
+        final FileContentsHolder fileContentsHolder = new FileContentsHolder();
+        final FileContents contents =
+                new FileContents("filename", "//CHECKSTYLE:OFF", "line2");
+        contents.reportSingleLineComment(1, 0);
+        fileContentsHolder.setFileContents(contents);
+        fileContentsHolder.beginTree(null);
+        final TreeWalkerAuditEvent dummyEvent = new TreeWalkerAuditEvent(contents, "filename",
+                new LocalizedMessage(1, null, null, null, null, Object.class, null));
+        suppressionCommentFilter.accept(dummyEvent);
+        final FileContents contents2 =
+                new FileContents("filename2", "some line", "//CHECKSTYLE:OFF");
+        contents2.reportSingleLineComment(2, 0);
+        fileContentsHolder.setFileContents(contents2);
+        fileContentsHolder.beginTree(null);
+        final TreeWalkerAuditEvent dummyEvent2 = new TreeWalkerAuditEvent(contents2, "filename",
+                new LocalizedMessage(1, null, null, null, null, Object.class, null));
+        suppressionCommentFilter.accept(dummyEvent2);
+        final List<SuppressionCommentFilter.Tag> tags =
+                Whitebox.getInternalState(suppressionCommentFilter, "tags");
+        assertEquals(1, tags.size());
     }
 }

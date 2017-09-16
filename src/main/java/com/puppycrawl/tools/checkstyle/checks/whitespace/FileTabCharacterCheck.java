@@ -20,9 +20,9 @@
 package com.puppycrawl.tools.checkstyle.checks.whitespace;
 
 import java.io.File;
-import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 
 /**
  * Checks to see if a file contains a tab character.
@@ -46,9 +46,10 @@ public class FileTabCharacterCheck extends AbstractFileSetCheck {
     private boolean eachLine;
 
     @Override
-    protected void processFiltered(File file, List<String> lines) {
+    protected void processFiltered(File file, FileText fileText) {
         int lineNum = 0;
-        for (final String line : lines) {
+        for (int index = 0; index < fileText.size(); index++) {
+            final String line = fileText.get(index);
             lineNum++;
             final int tabPosition = line.indexOf('\t');
             if (tabPosition != -1) {

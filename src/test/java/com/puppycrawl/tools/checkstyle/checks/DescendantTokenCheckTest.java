@@ -24,19 +24,16 @@ import static com.puppycrawl.tools.checkstyle.checks.DescendantTokenCheck.MSG_KE
 import static com.puppycrawl.tools.checkstyle.checks.DescendantTokenCheck.MSG_KEY_SUM_MAX;
 import static com.puppycrawl.tools.checkstyle.checks.DescendantTokenCheck.MSG_KEY_SUM_MIN;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class DescendantTokenCheckTest extends BaseCheckTestSupport {
+public class DescendantTokenCheckTest extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/misc/descendanttoken";
     }
 
     @Test
@@ -45,7 +42,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
         final DefaultConfiguration checkConfig =
             createCheckConfig(DescendantTokenCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenIllegalTokens.java"), expected);
     }
 
     @Test
@@ -59,7 +56,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "17:12: " + getCheckMessage(MSG_KEY_MAX, 1, 0, "LITERAL_NATIVE", "LITERAL_NATIVE"),
         };
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenIllegalTokens.java"), expected);
     }
 
     @Test
@@ -74,7 +71,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "17:12: Using 'native' is not allowed.",
         };
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenIllegalTokens.java"), expected);
     }
 
     @Test
@@ -88,7 +85,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "8:9: " + getCheckMessage(MSG_KEY_MIN, 1, 2, "LITERAL_SWITCH", "LITERAL_DEFAULT"),
         };
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenIllegalTokens.java"), expected);
     }
 
     @Test
@@ -101,7 +98,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("maximumNumber", "0");
         checkConfig.addAttribute("minimumDepth", "3");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenIllegalTokens.java"), expected);
     }
 
     @Test
@@ -114,7 +111,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("maximumNumber", "0");
         checkConfig.addAttribute("maximumDepth", "1");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenIllegalTokens.java"), expected);
     }
 
     @Test
@@ -147,7 +144,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "75:10: Empty statement.",
         };
 
-        verify(checkConfig, getPath("InputEmptyStatement.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenEmptyStatement.java"), expected);
     }
 
     @Test
@@ -164,7 +161,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "17:9: switch without \"default\" clause.",
         };
 
-        verify(checkConfig, getPath("InputMissingSwitchDefault.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenMissingSwitchDefault.java"), expected);
     }
 
     @Test
@@ -183,7 +180,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "12:20: Literal Strings should be compared using equals(), not '=='.",
             "17:22: Literal Strings should be compared using equals(), not '=='.",
         };
-        verify(checkConfig, getPath("InputStringLiteralEquality.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenStringLiteralEquality.java"), expected);
     }
 
     @Test
@@ -201,7 +198,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "11:18: Using 'POST_DEC' is not allowed.",
             "12:18: Using 'POST_INC' is not allowed.",
         };
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenIllegalTokens.java"), expected);
     }
 
     @Test
@@ -217,7 +214,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "17:12: Using 'LITERAL_NATIVE' is not allowed.",
         };
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenIllegalTokens.java"), expected);
     }
 
     @Test
@@ -234,7 +231,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "15:11: Return from catch is not allowed.",
         };
 
-        verify(checkConfig, getPath("InputReturnFromCatch.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenReturnFromCatch.java"), expected);
     }
 
     @Test
@@ -251,7 +248,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "15:11: Return from finally is not allowed.",
         };
 
-        verify(checkConfig, getPath("InputReturnFromFinally.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenReturnFromFinally.java"), expected);
     }
 
     @Test
@@ -265,7 +262,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputReturnFromFinally.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenReturnFromFinally.java"), expected);
     }
 
     @Test
@@ -285,7 +282,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "23:51: this cannot be null.",
         };
 
-        verify(checkConfig, getPath("InputReturnFromFinally.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenReturnFromFinally.java"), expected);
     }
 
     @Test
@@ -304,7 +301,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "23:51: " + getCheckMessage(MSG_KEY_SUM_MAX, 2, 1, "NOT_EQUAL"),
         };
 
-        verify(checkConfig, getPath("InputReturnFromFinally.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenReturnFromFinally.java"), expected);
     }
 
     @Test
@@ -325,7 +322,7 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "24:77: " + getCheckMessage(MSG_KEY_SUM_MIN, 1, 3, "EQUAL"),
         };
 
-        verify(checkConfig, getPath("InputReturnFromFinally.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenReturnFromFinally.java"), expected);
     }
 
     @Test
@@ -347,6 +344,6 @@ public class DescendantTokenCheckTest extends BaseCheckTestSupport {
             "24:77: custom message",
         };
 
-        verify(checkConfig, getPath("InputReturnFromFinally.java"), expected);
+        verify(checkConfig, getPath("InputDescendantTokenReturnFromFinally.java"), expected);
     }
 }

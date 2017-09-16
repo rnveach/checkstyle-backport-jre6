@@ -23,20 +23,17 @@ import static com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck.MSG_KEY;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class TodoCommentCheckTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/misc/todocomment";
     }
 
     @Test
@@ -58,7 +55,7 @@ public class TodoCommentCheckTest
             "163: " + getCheckMessage(MSG_KEY, "FIXME:"),
             "167: " + getCheckMessage(MSG_KEY, "FIXME:"),
         };
-        verify(checkConfig, getPath("InputSimple.java"), expected);
+        verify(checkConfig, getPath("InputTodoCommentSimple.java"), expected);
     }
 
     @Test

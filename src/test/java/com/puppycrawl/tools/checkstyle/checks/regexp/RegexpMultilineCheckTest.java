@@ -53,7 +53,9 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
     @Override
     protected String getPath(String filename) throws IOException {
         return super.getPath("checks" + File.separator
-                + "regexp" + File.separator + filename);
+                + "regexp" + File.separator
+                + "regexpmultiline" + File.separator
+                + filename);
     }
 
     @Test
@@ -63,7 +65,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         final String[] expected = {
             "69: " + getCheckMessage(MSG_REGEXP_EXCEEDED, illegal),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -76,7 +78,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         final String[] expected = {
             "69: " + message,
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -87,7 +89,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         final String[] expected = {
             "69: " + getCheckMessage(MSG_REGEXP_EXCEEDED, illegal),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -96,7 +98,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("ignoreCase", "false");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -108,7 +110,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
             "8: " + getCheckMessage(MSG_REGEXP_EXCEEDED, illegal),
             "9: " + getCheckMessage(MSG_REGEXP_EXCEEDED, illegal),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -131,7 +133,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
     @Test
     public void testDefaultConfiguration() throws Exception {
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -140,7 +142,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         final String[] expected = {
             "0: " + getCheckMessage(MSG_EMPTY),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -149,7 +151,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         final String[] expected = {
             "0: " + getCheckMessage(MSG_EMPTY),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -205,7 +207,7 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
             expected[i] = i + ": someMessage";
         }
 
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 
     @Test
@@ -214,6 +216,6 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("maximum", "5000");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpMultilineSemantic.java"), expected);
     }
 }

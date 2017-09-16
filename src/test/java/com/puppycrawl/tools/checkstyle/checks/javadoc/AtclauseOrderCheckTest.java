@@ -22,21 +22,17 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.AtclauseOrderCheck.MSG_KEY;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class AtclauseOrderCheckTest extends BaseCheckTestSupport {
+public class AtclauseOrderCheckTest extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/atclauseorder";
     }
 
     @Test
@@ -60,7 +56,7 @@ public class AtclauseOrderCheckTest extends BaseCheckTestSupport {
         final DefaultConfiguration checkConfig = createCheckConfig(AtclauseOrderCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputCorrectAtClauseOrder.java"), expected);
+        verify(checkConfig, getPath("InputAtClauseOrderCorrect.java"), expected);
     }
 
     @Test
@@ -110,7 +106,7 @@ public class AtclauseOrderCheckTest extends BaseCheckTestSupport {
             "278: " + getCheckMessage(MSG_KEY, tagOrder),
             "288: " + getCheckMessage(MSG_KEY, tagOrder),
         };
-        verify(checkConfig, getPath("InputIncorrectAtClauseOrder.java"), expected);
+        verify(checkConfig, getPath("InputAtClauseOrderIncorrect.java"), expected);
     }
 
     @Test
@@ -127,6 +123,6 @@ public class AtclauseOrderCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "113: " + getCheckMessage(MSG_KEY, tagOrder),
         };
-        verify(checkConfig, getPath("InputIncorrectAtClauseOrder.java"), expected);
+        verify(checkConfig, getPath("InputAtClauseOrderIncorrect.java"), expected);
     }
 }

@@ -22,7 +22,6 @@ package com.puppycrawl.tools.checkstyle;
 import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,11 +33,11 @@ import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
-public class AstTreeStringPrinterTest extends BaseCheckTestSupport {
+public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("astprinter" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/astprinter";
     }
 
     @Test

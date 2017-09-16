@@ -49,6 +49,7 @@ import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.PackageObjectFactory;
 import com.puppycrawl.tools.checkstyle.PropertiesExpander;
+import com.puppycrawl.tools.checkstyle.ThreadModeSettings;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -61,6 +62,7 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevelCounter;
  * An implementation of a ANT task for calling checkstyle. See the documentation
  * of the task for usage.
  * @author Oliver Burn
+ * @noinspection ClassLoaderInstantiation
  */
 public class CheckstyleAntTask extends Task {
     /** Poor man's enum for an xml formatter. */
@@ -389,11 +391,11 @@ public class CheckstyleAntTask extends Task {
         final RootModule rootModule;
         try {
             final Properties props = createOverridingProperties();
-            final Configuration configuration =
-                ConfigurationLoader.loadConfiguration(
-                    config,
-                    new PropertiesExpander(props),
-                    !executeIgnoredModules);
+            final ThreadModeSettings threadModeSettings =
+                    ThreadModeSettings.SINGLE_THREAD_MODE_INSTANCE;
+            final Configuration configuration = ConfigurationLoader.loadConfiguration(
+                    config, new PropertiesExpander(props),
+                    !executeIgnoredModules, threadModeSettings);
 
             final ClassLoader moduleClassLoader =
                 Checker.class.getClassLoader();
@@ -574,8 +576,6 @@ public class CheckstyleAntTask extends Task {
         for (int i = 0; i < fileSets.size(); i++) {
             final FileSet fileSet = fileSets.get(i);
             final DirectoryScanner scanner = fileSet.getDirectoryScanner(getProject());
-            scanner.scan();
-
             final List<File> scannedFiles = retrieveAllScannedFiles(scanner, i);
             allFiles.addAll(scannedFiles);
         }

@@ -122,7 +122,7 @@ public abstract class AbstractViolationReporter
         final String messageBundle;
         final int endIndex = className.lastIndexOf('.');
         final String messages = "messages";
-        if (endIndex < 0) {
+        if (endIndex == -1) {
             messageBundle = messages;
         }
         else {
@@ -130,18 +130,6 @@ public abstract class AbstractViolationReporter
             messageBundle = packageName + "." + messages;
         }
         return messageBundle;
-    }
-
-    /**
-     * Helper method to log a LocalizedMessage.
-     *
-     * @param ast a node to get line id column numbers associated
-     *             with the message
-     * @param key key to locale message format
-     * @param args arguments to format
-     */
-    protected final void log(DetailAST ast, String key, Object... args) {
-        log(ast.getLineNo(), ast.getColumnNo(), key, args);
     }
 
     /**

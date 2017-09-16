@@ -26,15 +26,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
-import com.puppycrawl.tools.checkstyle.BriefUtLogger;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
@@ -42,21 +40,14 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class ImportControlCheckTest extends BaseCheckTestSupport {
+public class ImportControlCheckTest extends AbstractModuleTestSupport {
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "imports" + File.separator + "importcontrol" + File.separator + filename);
-    }
-
-    @Override
-    protected String getUriString(String filename) {
-        return super.getUriString("checks" + File.separator
-                + "imports" + File.separator + "importcontrol" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/imports/importcontrol";
     }
 
     private static String getResourcePath(String filename) {
@@ -287,71 +278,6 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
     }
 
     @Test
-    public void testUrl() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
-        checkConfig.addAttribute("url", getUriString("InputImportControlOne.xml"));
-        final String[] expected = {"5:1: " + getCheckMessage(MSG_DISALLOWED, "java.io.File")};
-
-        verify(checkConfig, getPath("InputImportControl.java"), expected);
-    }
-
-    @Test
-    public void testUrlBlank() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
-        checkConfig.addAttribute("url", "");
-        final String[] expected = {"1:1: " + getCheckMessage(MSG_MISSING_FILE)};
-
-        verify(checkConfig, getPath("InputImportControl.java"), expected);
-    }
-
-    @Test
-    public void testUrlNull() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
-        checkConfig.addAttribute("url", null);
-        final String[] expected = {"1:1: " + getCheckMessage(MSG_MISSING_FILE)};
-
-        verify(checkConfig, getPath("InputImportControl.java"), expected);
-    }
-
-    @Test
-    public void testUrlUnableToLoad() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
-        checkConfig.addAttribute("url", "https://UnableToLoadThisURL");
-
-        try {
-            final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-            verify(checkConfig, getPath("InputImportControl.java"), expected);
-            fail("Test should fail if exception was not thrown");
-        }
-        catch (CheckstyleException ex) {
-            final String message = getCheckstyleExceptionMessage(ex);
-            final String messageStart = "Unable to load ";
-
-            assertTrue("Invalid message, should start with: " + messageStart,
-                message.startsWith(message));
-        }
-    }
-
-    @Test
-    public void testUrlIncorrectUrl() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
-        checkConfig.addAttribute("url", "https://{WrongCharsInURL}");
-
-        try {
-            final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-            verify(checkConfig, getPath("InputImportControl.java"), expected);
-            fail("Test should fail if exception was not thrown");
-        }
-        catch (CheckstyleException ex) {
-            final String message = getCheckstyleExceptionMessage(ex);
-            final String messageStart = "Unable to find: ";
-
-            assertTrue("Invalid message, should start with: " + messageStart,
-                message.startsWith(message));
-        }
-    }
-
-    @Test
     public void testResource() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
         checkConfig.addAttribute("file", getResourcePath("InputImportControlOne.xml"));
@@ -423,21 +349,6 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
     }
 
     @Test
-    public void testCacheWhenUrlExternalResourceContentDoesNotChange() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
-        checkConfig.addAttribute("url", getUriString("InputImportControlOne.xml"));
-
-        final Checker checker = createMockCheckerWithCache(checkConfig);
-
-        final String pathToEmptyFile = temporaryFolder.newFile("TestFile.java").getPath();
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-
-        verify(checker, pathToEmptyFile, pathToEmptyFile, expected);
-        // One more time to use cache.
-        verify(checker, pathToEmptyFile, pathToEmptyFile, expected);
-    }
-
-    @Test
     public void testPathRegexMatches() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(ImportControlCheck.class);
         checkConfig.addAttribute("file", getResourcePath("InputImportControlOne.xml"));
@@ -489,7 +400,7 @@ public class ImportControlCheckTest extends BaseCheckTestSupport {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
         return checker;
     }
 

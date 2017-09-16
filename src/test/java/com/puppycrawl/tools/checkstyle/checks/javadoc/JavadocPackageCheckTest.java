@@ -23,21 +23,19 @@ import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocPackageCheck
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocPackageCheck.MSG_PACKAGE_INFO;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class JavadocPackageCheckTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/javadocpackage";
     }
 
     @Override
@@ -56,8 +54,8 @@ public class JavadocPackageCheckTest
         };
         verify(
             createChecker(checkConfig),
-            getPath("InputBadCls.java"),
-            getPath("InputBadCls.java"),
+            getPath("InputJavadocPackageBadCls.java"),
+            getPath("InputJavadocPackageBadCls.java"),
             expected);
     }
 
@@ -70,16 +68,16 @@ public class JavadocPackageCheckTest
         };
         verify(
             createChecker(checkConfig),
-            getPath("InputBadCls.java"),
-            getPath("InputBadCls.java"),
+            getPath("InputJavadocPackageBadCls.java"),
+            getPath("InputJavadocPackageBadCls.java"),
             expected);
     }
 
     @Test
     public void testWithMultipleFiles() throws Exception {
         final Configuration checkConfig = createCheckConfig(JavadocPackageCheck.class);
-        final String path1 = getPath("InputNoJavadoc.java");
-        final String path2 = getPath("InputBadTag.java");
+        final String path1 = getPath("InputJavadocPackageNoJavadoc.java");
+        final String path2 = getPath("InputJavadocPackageBadTag.java");
         final String[] expected = {
             "0: " + getCheckMessage(MSG_PACKAGE_INFO),
         };
@@ -97,8 +95,9 @@ public class JavadocPackageCheckTest
             "0: " + getCheckMessage(MSG_LEGACY_PACKAGE_HTML),
         };
         verify(createChecker(checkConfig),
-            getPath("bothfiles" + File.separator + "InputIgnored.java"),
-            getPath("bothfiles" + File.separator + "InputIgnored.java"), expected);
+            getPath("bothfiles" + File.separator + "InputJavadocPackageBothIgnored.java"),
+            getPath("bothfiles"
+            + File.separator + "InputJavadocPackageBothIgnored.java"), expected);
     }
 
     @Test
@@ -108,8 +107,8 @@ public class JavadocPackageCheckTest
             "0: " + getCheckMessage(MSG_PACKAGE_INFO),
         };
         verify(createChecker(checkConfig),
-            getPath("pkghtml" + File.separator + "InputIgnored.java"),
-            getPath("pkghtml" + File.separator + "InputIgnored.java"), expected);
+            getPath("pkghtml" + File.separator + "InputJavadocPackageHtmlIgnored.java"),
+            getPath("pkghtml" + File.separator + "InputJavadocPackageHtmlIgnored.java"), expected);
     }
 
     @Test
@@ -118,7 +117,7 @@ public class JavadocPackageCheckTest
         checkConfig.addAttribute("allowLegacy", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(createChecker(checkConfig),
-            getPath("pkghtml" + File.separator + "InputIgnored.java"),
+            getPath("pkghtml" + File.separator + "InputJavadocPackageHtmlIgnored.java"),
             getPath("pkghtml" + File.separator + "package-info.java"), expected);
     }
 
@@ -127,9 +126,9 @@ public class JavadocPackageCheckTest
         final DefaultConfiguration checkConfig = createCheckConfig(JavadocPackageCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(createChecker(checkConfig),
-            getPath("pkginfo" + File.separator + "annotation"
+            getPath("annotation"
                     + File.separator + "package-info.java"),
-            getPath("pkginfo" + File.separator + "annotation"
+            getPath("annotation"
                     + File.separator + "package-info.java"), expected);
     }
 }

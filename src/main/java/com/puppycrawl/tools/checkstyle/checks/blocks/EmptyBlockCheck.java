@@ -197,14 +197,9 @@ public class EmptyBlockCheck
         else {
             final String firstLine = lines[slistLineNo - 1].substring(slistColNo + 1);
             final String lastLine = lines[rcurlyLineNo - 1].substring(0, rcurlyColNo);
-            if (CommonUtils.isBlank(firstLine)
-                    && CommonUtils.isBlank(lastLine)) {
-                // check if all lines are also only whitespace
-                returnValue = !checkIsAllLinesAreWhitespace(lines, slistLineNo, rcurlyLineNo);
-            }
-            else {
-                returnValue = true;
-            }
+            // check if all lines are also only whitespace
+            returnValue = !(CommonUtils.isBlank(firstLine) && CommonUtils.isBlank(lastLine))
+                    || !checkIsAllLinesAreWhitespace(lines, slistLineNo, rcurlyLineNo);
         }
         return returnValue;
     }
@@ -243,6 +238,7 @@ public class EmptyBlockCheck
         if ((ast.getType() == TokenTypes.LITERAL_CASE
                 || ast.getType() == TokenTypes.LITERAL_DEFAULT)
                 && ast.getNextSibling() != null
+                && ast.getNextSibling().getFirstChild() != null
                 && ast.getNextSibling().getFirstChild().getType() == TokenTypes.SLIST) {
             leftCurly = ast.getNextSibling().getFirstChild();
         }

@@ -173,16 +173,19 @@ public final class CheckUtil {
      */
     private static Set<Class<?>> getCheckstyleModulesRecursive(
             String packageName, ClassLoader loader) throws IOException {
+        final Set<Class<?>> result = new HashSet<Class<?>>();
         final ClassPath classPath = ClassPath.from(loader);
-        final Set<Class<?>> checkstyleModules = new HashSet<Class<?>>();
-        for (ClassInfo clazz : classPath.getTopLevelClassesRecursive(packageName)) {
-            final Class<?> loadedClass = clazz.load();
-            if (ModuleReflectionUtils.isCheckstyleModule(loadedClass)
-                    && !loadedClass.getCanonicalName().startsWith("com.puppycrawl.tools.checkstyle.packageobjectfactory")) {
-                checkstyleModules.add(loadedClass);
+        for (ClassInfo clsInfo : classPath.getTopLevelClassesRecursive(packageName)) {
+            final Class<?> cls = clsInfo.load();
+
+            if (ModuleReflectionUtils.isCheckstyleModule(cls)
+                    && !cls.getName().endsWith("Stub")
+                    && !cls.getCanonicalName()
+                        .startsWith("com.puppycrawl.tools.checkstyle.packageobjectfactory")) {
+                result.add(cls);
             }
         }
-        return checkstyleModules;
+        return result;
     }
 
     /**
@@ -248,7 +251,7 @@ public final class CheckUtil {
             final MessageFormat formatter = new MessageFormat(pr.getProperty(messageKey), locale);
             checkMessage = formatter.format(arguments);
         }
-        catch (IOException ex) {
+        catch (IOException ignored) {
             checkMessage = null;
         }
         return checkMessage;

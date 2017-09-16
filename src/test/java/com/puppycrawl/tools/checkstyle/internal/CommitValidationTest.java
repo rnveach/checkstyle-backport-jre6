@@ -212,7 +212,9 @@ public class CommitValidationTest {
 
     private static RevCommitsPair resolveRevCommitsPair(Repository repo) {
         RevCommitsPair revCommitIteratorPair;
+
         final RevWalk revWalk = new RevWalk(repo);
+        final Git git = new Git(repo);
         try {
             final Iterator<RevCommit> first;
             final Iterator<RevCommit> second;
@@ -222,35 +224,22 @@ public class CommitValidationTest {
             if (isMergeCommit(headCommit)) {
                 final RevCommit firstParent = headCommit.getParent(0);
                 final RevCommit secondParent = headCommit.getParent(1);
-
-                final Git git = new Git(repo);
-                try {
-                    first = git.log().add(firstParent).call().iterator();
-                    second = git.log().add(secondParent).call().iterator();
-                }
-                finally {
-                    git.close();
-                }
+                first = git.log().add(firstParent).call().iterator();
+                second = git.log().add(secondParent).call().iterator();
             }
             else {
-                final Git git = new Git(repo);
-                try {
-                    first = git.log().call().iterator();
-                }
-                finally {
-                    git.close();
-                }
-                second = Collections7.emptyIterator();
+                first = git.log().call().iterator();
+                second = Collections7.<RevCommit>emptyIterator();
             }
 
             revCommitIteratorPair =
                     new RevCommitsPair(new OmitMergeCommitsIterator(first),
                             new OmitMergeCommitsIterator(second));
         }
-        catch (GitAPIException ex) {
+        catch (GitAPIException ignored) {
             revCommitIteratorPair = new RevCommitsPair();
         }
-        catch (IOException ex) {
+        catch (IOException ignored) {
             revCommitIteratorPair = new RevCommitsPair();
         }
 

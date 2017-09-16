@@ -53,7 +53,15 @@ public class BaseCheckTestSupport {
 
     protected static final String CLRF_REGEX = "\\\\r\\\\n";
 
-    protected final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+    /**
+     * Returns test logger.
+     * @return logger for tests
+     */
+    public BriefUtLogger getBriefUtLogger() {
+        return new BriefUtLogger(stream);
+    }
 
     protected static DefaultConfiguration createCheckConfig(Class<?> clazz) {
         return new DefaultConfiguration(clazz.getName());
@@ -71,7 +79,7 @@ public class BaseCheckTestSupport {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(dc);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
         return checker;
     }
 
@@ -113,25 +121,13 @@ public class BaseCheckTestSupport {
      * This implementation uses 'src/test/resources/com/puppycrawl/tools/checkstyle/'
      * as a root location.
      * @param filename file name.
+     * @deprecated This method is now used in AbstractModuleTestSupport.
      * @return URI-representation of the path for the file with the given file name.
      */
+    @Deprecated
     protected String getUriString(String filename) {
         return new File("src/test/resources/com/puppycrawl/tools/checkstyle/" + filename).toURI()
                 .toString();
-    }
-
-    /**
-     * Returns canonical path for the file with the given file name.
-     * The path is formed base on the sources location.
-     * This implementation uses 'src/test/java/com/puppycrawl/tools/checkstyle/'
-     * as a src location.
-     * @param filename file name.
-     * @return canonical path for the file with the given file name.
-     * @throws IOException if I/O exception occurs while forming the path.
-     */
-    protected static String getSrcPath(String filename) throws IOException {
-        return new File("src/test/java/com/puppycrawl/tools/checkstyle/" + filename)
-                .getCanonicalPath();
     }
 
     /**

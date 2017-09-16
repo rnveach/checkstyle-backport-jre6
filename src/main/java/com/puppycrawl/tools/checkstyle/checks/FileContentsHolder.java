@@ -30,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * a filter can access the current file contents through this module.
  * @author Mike McMahon
  * @author Rick Giles
+ * @noinspection StaticVariableMayNotBeInitialized, StaticVariableUsedBeforeInitialization
  */
 public class FileContentsHolder extends AbstractCheck {
     /** The current file contents. */
@@ -47,6 +48,7 @@ public class FileContentsHolder extends AbstractCheck {
      * Returns content of current file.
      * @return the current file contents.
      * @deprecated use getCurrentFileContents() instead.
+     * @noinspection CallToSimpleGetterFromWithinClass
      */
     @Deprecated
     public static FileContents getContents() {
@@ -68,6 +70,10 @@ public class FileContentsHolder extends AbstractCheck {
         return getAcceptableTokens();
     }
 
+    /**
+     * {@inheritDoc} Initializes file contents.
+     * @noinspection AssignmentToStaticFieldFromInstanceMethod
+     */
     @Override
     public void beginTree(DetailAST rootAST) {
         currentFileContents = getFileContents();

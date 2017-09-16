@@ -23,27 +23,25 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
-import com.puppycrawl.tools.checkstyle.BriefUtLogger;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.checks.imports.AvoidStarImportCheck;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class FileSetCheckLifecycleTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/misc/fileset";
     }
 
     @Override
@@ -66,7 +64,7 @@ public class FileSetCheckLifecycleTest
         final Configuration checkConfig =
             createCheckConfig(TestFileSetCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, getPath("InputFileSetIllegalTokens.java"), expected);
 
         assertTrue("destroy() not called by Checker", TestFileSetCheck.isDestroyed());
     }
@@ -87,13 +85,13 @@ public class FileSetCheckLifecycleTest
         checker.setLocaleLanguage(locale.getLanguage());
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(dc);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
 
         checker.addFileSetCheck(new TestFileSetCheck());
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checker, getPath("InputIllegalTokens.java"), expected);
+        verify(checker, getPath("InputFileSetIllegalTokens.java"), expected);
 
         assertTrue("FileContent should be available during finishProcessing() call",
                 TestFileSetCheck.isFileContentAvailable());
@@ -117,7 +115,7 @@ public class FileSetCheckLifecycleTest
         }
 
         @Override
-        protected void processFiltered(File file, List<String> lines) {
+        protected void processFiltered(File file, FileText fileText) {
             //dummy method
         }
 

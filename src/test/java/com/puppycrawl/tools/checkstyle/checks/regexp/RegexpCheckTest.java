@@ -24,20 +24,16 @@ import static com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck.MSG_ILLE
 import static com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck.MSG_REQUIRED_REGEXP;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class RegexpCheckTest extends BaseCheckTestSupport {
+public class RegexpCheckTest extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "regexp" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/regexp/regexp";
     }
 
     @Test
@@ -55,7 +51,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
             createCheckConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", required);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -67,7 +63,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "0: " + getCheckMessage(MSG_REQUIRED_REGEXP, required),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -78,7 +74,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("format", required);
         checkConfig.addAttribute("duplicateLimit", "0");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -88,7 +84,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("format", required);
         checkConfig.addAttribute("duplicateLimit", "-1");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -101,7 +97,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "24: " + getCheckMessage(MSG_DUPLICATE_REGEXP, required),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -112,7 +108,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -128,7 +124,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
             "8: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
             "9: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -146,7 +142,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
             "8: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
             "9: " + getCheckMessage(MSG_ILLEGAL_REGEXP, error + illegal),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -162,7 +158,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "69: " + getCheckMessage(MSG_ILLEGAL_REGEXP, message),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -177,7 +173,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "69: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -190,7 +186,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "69: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
         };
-        verify(checkConfig, getPath("InputSemantic.java"), expected);
+        verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
 
     @Test
@@ -203,7 +199,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expectedTrue = {
             "69: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegalTrue),
         };
-        verify(checkConfigTrue, getPath("InputSemantic.java"), expectedTrue);
+        verify(checkConfigTrue, getPath("InputRegexpSemantic.java"), expectedTrue);
 
         final String illegalFalse = "SYSTEM\\.(OUT)|(ERR)\\.PRINT(LN)?\\(";
         final DefaultConfiguration checkConfigFalse =
@@ -211,7 +207,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfigFalse.addAttribute("format", illegalFalse);
         checkConfigFalse.addAttribute("illegalPattern", "true");
         final String[] expectedFalse = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfigFalse, getPath("InputSemantic.java"), expectedFalse);
+        verify(checkConfigFalse, getPath("InputRegexpSemantic.java"), expectedFalse);
     }
 
     @Test
@@ -224,7 +220,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -239,7 +235,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "4: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
         };
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -252,7 +248,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -266,7 +262,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "19: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
         };
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -279,7 +275,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -291,7 +287,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -303,7 +299,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -317,7 +313,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "22: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
         };
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -331,7 +327,7 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "23: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
         };
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
@@ -344,13 +340,13 @@ public class RegexpCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputTrailingComment.java"), expected);
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 
     @Test
     public void testOnFileStartingWithEmptyLine() throws Exception {
         final DefaultConfiguration checkConfig = createCheckConfig(RegexpCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputStartingWithEmptyLine.java"), expected);
+        verify(checkConfig, getPath("InputRegexpStartingWithEmptyLine.java"), expected);
     }
 }

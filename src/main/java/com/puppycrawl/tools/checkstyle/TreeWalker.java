@@ -26,10 +26,11 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import antlr.CommonHiddenStreamToken;
 import antlr.RecognitionException;
@@ -41,6 +42,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Context;
@@ -48,6 +50,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.grammars.GeneratedJavaLexer;
 import com.puppycrawl.tools.checkstyle.grammars.GeneratedJavaRecognizer;
@@ -60,6 +63,9 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  *
  * @author Oliver Burn
  */
+// -@cs[ClassFanOutComplexity] To resolve issue 4714, new classes were imported. Number of
+// classes current class relies on currently is 27, which is above threshold 25.
+// see https://github.com/checkstyle/checkstyle/issues/4714.
 public final class TreeWalker extends AbstractFileSetCheck implements ExternalResourceHolder {
 
     /** Default distance between tab stops. */
@@ -78,6 +84,12 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
     /** Registered comment checks. */
     private final Set<AbstractCheck> commentChecks = new HashSet<AbstractCheck>();
+
+    /** The ast filters. */
+    private final Set<TreeWalkerFilter> filters = new HashSet<TreeWalkerFilter>();
+
+    /** The sorted set of messages. */
+    private final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
 
     /** The distance between tab stops. */
     private int tabWidth = DEFAULT_TAB_WIDTH;
@@ -139,43 +151,54 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     public void finishLocalSetup() {
         final DefaultContext checkContext = new DefaultContext();
         checkContext.add("classLoader", classLoader);
-        checkContext.add("messages", getMessageCollector());
         checkContext.add("severity", getSeverity());
         checkContext.add("tabWidth", String.valueOf(tabWidth));
 
         childContext = checkContext;
     }
 
+    /**
+     * {@inheritDoc} Creates child module.
+     * @noinspection ChainOfInstanceofChecks
+     */
     @Override
     public void setupChild(Configuration childConf)
             throws CheckstyleException {
         final String name = childConf.getName();
         final Object module = moduleFactory.createModule(name);
-        if (!(module instanceof AbstractCheck)) {
+        if (module instanceof AutomaticBean) {
+            final AutomaticBean bean = (AutomaticBean) module;
+            bean.contextualize(childContext);
+            bean.configure(childConf);
+        }
+        if (module instanceof AbstractCheck) {
+            final AbstractCheck check = (AbstractCheck) module;
+            check.init();
+            registerCheck(check);
+        }
+        else if (module instanceof TreeWalkerFilter) {
+            final TreeWalkerFilter filter = (TreeWalkerFilter) module;
+            filters.add(filter);
+        }
+        else {
             throw new CheckstyleException(
                 "TreeWalker is not allowed as a parent of " + name
                         + " Please review 'Parent Module' section for this Check in web"
                         + " documentation if Check is standard.");
         }
-        final AbstractCheck check = (AbstractCheck) module;
-        check.contextualize(childContext);
-        check.configure(childConf);
-        check.init();
-
-        registerCheck(check);
     }
 
     @Override
-    protected void processFiltered(File file, List<String> lines) throws CheckstyleException {
+    protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
         // check if already checked and passed the file
         if (CommonUtils.matchesFileExtension(file, getFileExtensions())) {
             final String msg = "%s occurred during the analysis of file %s.";
             final String fileName = file.getPath();
+
             try {
                 if (!ordinaryChecks.isEmpty()
                         || !commentChecks.isEmpty()) {
-                    final FileText text = FileText.fromLines(file, lines);
-                    final FileContents contents = new FileContents(text);
+                    final FileContents contents = new FileContents(fileText);
                     final DetailAST rootAST = parse(contents);
 
                     if (!ordinaryChecks.isEmpty()) {
@@ -186,6 +209,10 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
                         walk(astWithComments, contents, AstState.WITH_COMMENTS);
                     }
+                    final SortedSet<LocalizedMessage> filteredMessages =
+                            getFilteredMessages(fileName, contents);
+                    addMessages(filteredMessages);
+                    messages.clear();
                 }
             }
             catch (final TokenStreamRecognitionException tre) {
@@ -204,6 +231,28 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
                 throw new CheckstyleException(exceptionMsg, ex);
             }
         }
+    }
+
+    /**
+     * Returns filtered set of {@link LocalizedMessage}.
+     * @param fileName path to the file
+     * @param fileContents the contents of the file
+     * @return filtered set of messages
+     */
+    private SortedSet<LocalizedMessage> getFilteredMessages(String fileName,
+                                                            FileContents fileContents) {
+        final SortedSet<LocalizedMessage> result = new TreeSet<LocalizedMessage>(messages);
+        for (LocalizedMessage element : messages) {
+            final TreeWalkerAuditEvent event =
+                    new TreeWalkerAuditEvent(fileContents, fileName, element);
+            for (TreeWalkerFilter filter : filters) {
+                if (!filter.accept(event)) {
+                    result.remove(element);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -336,6 +385,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
         for (AbstractCheck check : checks) {
             check.setFileContents(contents);
+            check.clearMessages();
             check.beginTree(rootAST);
         }
     }
@@ -357,6 +407,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
         for (AbstractCheck check : checks) {
             check.finishTree(rootAST);
+            messages.addAll(check.getMessages());
         }
     }
 
@@ -640,7 +691,6 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
         slComment.setLineNo(token.getLine());
 
         final DetailAST slCommentContent = new DetailAST();
-        slCommentContent.initialize(token);
         slCommentContent.setType(TokenTypes.COMMENT_CONTENT);
 
         // column counting begins from 0
@@ -668,7 +718,6 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
         blockComment.setLineNo(token.getLine());
 
         final DetailAST blockCommentContent = new DetailAST();
-        blockCommentContent.initialize(token);
         blockCommentContent.setType(TokenTypes.COMMENT_CONTENT);
 
         // column counting begins from 0

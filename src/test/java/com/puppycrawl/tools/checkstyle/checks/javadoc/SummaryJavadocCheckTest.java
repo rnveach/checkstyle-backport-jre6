@@ -21,20 +21,18 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck.MSG_SUMMARY_FIRST_SENTENCE;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck.MSG_SUMMARY_JAVADOC;
+import static com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck.MSG_SUMMARY_JAVADOC_MISSING;
 import static org.junit.Assert.assertArrayEquals;
-
-import java.io.File;
-import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class SummaryJavadocCheckTest extends BaseCheckTestSupport {
+public class SummaryJavadocCheckTest extends AbstractModuleTestSupport {
     private DefaultConfiguration checkConfig;
 
     @Before
@@ -43,9 +41,8 @@ public class SummaryJavadocCheckTest extends BaseCheckTestSupport {
     }
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/summaryjavadoc";
     }
 
     @Test
@@ -62,7 +59,7 @@ public class SummaryJavadocCheckTest extends BaseCheckTestSupport {
                 "^@return the *|^This method returns *|^A [{]@code [a-zA-Z0-9]+[}]( is a )");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputCorrectSummaryJavaDoc.java"), expected);
+        verify(checkConfig, getPath("InputSummaryJavadocCorrect.java"), expected);
     }
 
     @Test
@@ -70,19 +67,22 @@ public class SummaryJavadocCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("forbiddenSummaryFragments",
                 "^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )");
         final String[] expected = {
-            "14: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "14: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "32: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "37: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
             "47: " + getCheckMessage(MSG_SUMMARY_JAVADOC),
+            "53: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "58: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "58: " + getCheckMessage(MSG_SUMMARY_JAVADOC),
-            "69: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "69: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "83: " + getCheckMessage(MSG_SUMMARY_JAVADOC),
-            "103: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "103: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "116: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
             "121: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
-            "126: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
-            "131: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "126: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "131: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputIncorrectSummaryJavaDoc.java"), expected);
+        verify(checkConfig, getPath("InputSummaryJavadocIncorrect.java"), expected);
     }
 
     @Test
@@ -107,17 +107,33 @@ public class SummaryJavadocCheckTest extends BaseCheckTestSupport {
     @Test
     public void testDefaultConfiguration() throws Exception {
         final String[] expected = {
-            "14: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "14: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "32: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "37: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
-            "69: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
-            "103: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "53: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "58: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "69: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "103: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "116: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
             "121: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
-            "126: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
-            "131: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "126: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "131: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
         };
 
         createChecker(checkConfig);
-        verify(checkConfig, getPath("InputIncorrectSummaryJavaDoc.java"), expected);
+        verify(checkConfig, getPath("InputSummaryJavadocIncorrect.java"), expected);
+    }
+
+    @Test
+    public void testPeriodAtEnd() throws Exception {
+        checkConfig.addAttribute("period", ".");
+        final String[] expected = {
+            "10: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "17: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "24: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "31: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+        };
+
+        verify(checkConfig, getPath("InputPeriodAtEnd.java"), expected);
     }
 }

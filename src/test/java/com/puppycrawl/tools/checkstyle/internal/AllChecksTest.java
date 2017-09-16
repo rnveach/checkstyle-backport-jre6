@@ -19,6 +19,8 @@
 
 package com.puppycrawl.tools.checkstyle.internal;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -172,9 +174,15 @@ public class AllChecksTest extends BaseCheckTestSupport {
                 // be not strict there
                 "METHOD_DEF", "CTOR_DEF", "CLASS_DEF", "ENUM_DEF", "INTERFACE_DEF"));
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("SeparatorWrap", ImmutableSet.of(
-                // state of configuration until
-                // https://github.com/checkstyle/checkstyle/issues/3752
-                "RBRACK", "AT", "ELLIPSIS", "SEMI", "ARRAY_DECLARATOR",
+                // location could be any to allow writing expressions for indexes evaluation
+                // on new line, see https://github.com/checkstyle/checkstyle/issues/3752
+                "RBRACK",
+                // for some targets annotations can be used without wrapping, as described
+                // in https://google.github.io/styleguide/javaguide.html#s4.8.5-annotations
+                "AT",
+                // location could be any to allow using for line separation in enum values,
+                // see https://github.com/checkstyle/checkstyle/issues/3752
+                "SEMI",
                 // needs context to decide what type of parentheses should be separated or not
                 // which this check does not provide
                 "LPAREN", "RPAREN"));
@@ -215,9 +223,14 @@ public class AllChecksTest extends BaseCheckTestSupport {
                 "LAMBDA"));
     }
 
+    @Override
+    protected String getPath(String filename) throws IOException {
+        return super.getPath("internal" + File.separator + filename);
+    }
+
     @Test
     public void testAllChecksWithDefaultConfiguration() throws Exception {
-        final String inputFilePath = getPath("InputDefaultConfig.java");
+        final String inputFilePath = getPath("InputAllChecksDefaultConfig.java");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
         for (Class<?> check : CheckUtil.getCheckstyleChecks()) {
@@ -228,13 +241,14 @@ public class AllChecksTest extends BaseCheckTestSupport {
                 if (check.equals(ImportControlCheck.class)) {
                     // ImportControlCheck must have the import control configuration file to avoid
                     // violation.
-                    checkConfig.addAttribute("file", getPath("import-control_complete.xml"));
+                    checkConfig.addAttribute("file", getPath(
+                            "InputAllChecksImport-control_complete.xml"));
                 }
                 checker = createChecker(checkConfig);
             }
             else {
                 // Checks which have TreeWalker as a parent.
-                BaseCheckTestSupport testSupport = new BaseCheckTestSupport() {
+                final BaseCheckTestSupport testSupport = new BaseCheckTestSupport() {
                     @Override
                     protected DefaultConfiguration createCheckerConfig(Configuration config) {
                         final DefaultConfiguration dc = new DefaultConfiguration("root");

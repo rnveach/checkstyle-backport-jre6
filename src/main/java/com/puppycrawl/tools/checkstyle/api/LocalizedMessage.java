@@ -47,6 +47,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  *
  * @author Oliver Burn
  * @author lkuehne
+ * @noinspection ConstructorWithTooManyParameters, SerializableHasSerializationMethods
  */
 public final class LocalizedMessage
     implements Comparable<LocalizedMessage>, Serializable {
@@ -79,7 +80,9 @@ public final class LocalizedMessage
     /** Key for the message format. **/
     private final String key;
 
-    /** Arguments for MessageFormat. **/
+    /** Arguments for MessageFormat.
+     * @noinspection NonSerializableFieldInSerializableClass
+     */
     private final Object[] args;
 
     /** Name of the resource bundle to get messages from. **/
@@ -241,9 +244,7 @@ public final class LocalizedMessage
 
     /** Clears the cache. */
     public static void clearCache() {
-        synchronized (BUNDLE_CACHE) {
-            BUNDLE_CACHE.clear();
-        }
+        BUNDLE_CACHE.clear();
     }
 
     /**
@@ -297,16 +298,14 @@ public final class LocalizedMessage
      * @return a ResourceBundle
      */
     private ResourceBundle getBundle(String bundleName) {
-        synchronized (BUNDLE_CACHE) {
-            ResourceBundle resourceBundle = BUNDLE_CACHE
-                    .get(bundleName);
-            if (resourceBundle == null) {
-                resourceBundle = ResourceBundle.getBundle(bundleName, sLocale,
-                        sourceClass.getClassLoader(), new Utf8Control());
-                BUNDLE_CACHE.put(bundleName, resourceBundle);
-            }
-            return resourceBundle;
+        ResourceBundle resourceBundle = BUNDLE_CACHE
+                .get(bundleName);
+        if (resourceBundle == null) {
+            resourceBundle = ResourceBundle.getBundle(bundleName, sLocale,
+                    sourceClass.getClassLoader(), new Utf8Control());
+            BUNDLE_CACHE.put(bundleName, resourceBundle);
         }
+        return resourceBundle;
     }
 
     /**
@@ -399,6 +398,7 @@ public final class LocalizedMessage
      * </p>
      *
      * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
+     * @noinspection IOResourceOpenedButNotSafelyClosed
      */
     public static class Utf8Control extends Control {
         @Override

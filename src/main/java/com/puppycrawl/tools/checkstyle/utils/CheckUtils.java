@@ -20,7 +20,9 @@
 package com.puppycrawl.tools.checkstyle.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import antlr.collections.AST;
@@ -339,7 +341,7 @@ public final class CheckUtils {
             final DetailAST type = ast.findFirstToken(TokenTypes.TYPE);
             final String name = type.getNextSibling().getText();
             final boolean matchesSetterFormat = SETTER_PATTERN.matcher(name).matches();
-            final boolean voidReturnType = type.getChildCount(TokenTypes.LITERAL_VOID) > 0;
+            final boolean voidReturnType = type.findFirstToken(TokenTypes.LITERAL_VOID) != null;
 
             final DetailAST params = ast.findFirstToken(TokenTypes.PARAMETERS);
             final boolean singleParam = params.getChildCount(TokenTypes.PARAMETER_DEF) == 1;
@@ -377,7 +379,7 @@ public final class CheckUtils {
             final DetailAST type = ast.findFirstToken(TokenTypes.TYPE);
             final String name = type.getNextSibling().getText();
             final boolean matchesGetterFormat = GETTER_PATTERN.matcher(name).matches();
-            final boolean noVoidReturnType = type.getChildCount(TokenTypes.LITERAL_VOID) == 0;
+            final boolean noVoidReturnType = type.findFirstToken(TokenTypes.LITERAL_VOID) == null;
 
             final DetailAST params = ast.findFirstToken(TokenTypes.PARAMETERS);
             final boolean noParams = params.getChildCount(TokenTypes.PARAMETER_DEF) == 0;
@@ -457,5 +459,25 @@ public final class CheckUtils {
             }
         }
         return accessModifier;
+    }
+
+    /**
+     * Create set of class names and short class names.
+     *
+     * @param classNames array of class names.
+     * @return set of class names and short class names.
+     */
+    public static Set<String> parseClassNames(String... classNames) {
+        final Set<String> illegalClassNames = new HashSet<String>();
+        for (final String name : classNames) {
+            illegalClassNames.add(name);
+            final int lastDot = name.lastIndexOf('.');
+            if (lastDot != -1 && lastDot < name.length() - 1) {
+                final String shortName = name
+                        .substring(name.lastIndexOf('.') + 1);
+                illegalClassNames.add(shortName);
+            }
+        }
+        return illegalClassNames;
     }
 }

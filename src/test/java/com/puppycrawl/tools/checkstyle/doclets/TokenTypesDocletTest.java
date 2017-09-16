@@ -25,15 +25,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.tools.JavaFileObject;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.ListBuffer;
@@ -144,6 +147,12 @@ public class TokenTypesDocletTest {
         final RootDoc rootDoc = getRootDoc(javadocTool, options, names);
 
         assertTrue(TokenTypesDoclet.start(rootDoc));
+        final String fileContent =
+                FileUtils.readFileToString(new File("target/tokentypes.properties"),
+                        StandardCharsets.UTF_8);
+        assertTrue("File content is not expected",
+                fileContent.startsWith("EOF=The end of file token."));
+
     }
 
     private static RootDoc getRootDoc(JavadocTool javadocTool, ListBuffer<String[]> options,

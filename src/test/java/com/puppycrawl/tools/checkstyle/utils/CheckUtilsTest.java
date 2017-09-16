@@ -29,7 +29,9 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -266,6 +268,21 @@ public class CheckUtilsTest {
     }
 
     @Test
+    public void testGetFirstNode1() throws Exception {
+        final DetailAST child = new DetailAST();
+        child.setLineNo(5);
+        child.setColumnNo(6);
+
+        final DetailAST root = new DetailAST();
+        root.setLineNo(5);
+        root.setColumnNo(6);
+
+        root.addChild(child);
+
+        assertEquals("Unexpected node", root, CheckUtils.getFirstNode(root));
+    }
+
+    @Test
     public void testIsReceiverParameter() throws Exception {
         final DetailAST objBlock = getNodeFromFile(TokenTypes.OBJBLOCK);
         final DetailAST methodWithReceiverParameter = objBlock.getLastChild().getPreviousSibling();
@@ -288,6 +305,15 @@ public class CheckUtilsTest {
         assertEquals(2.147483647E10,
                 CheckUtils.parseDouble("21474836470", TokenTypes.NUM_LONG), 0);
         assertEquals(59.0, CheckUtils.parseDouble("073L", TokenTypes.NUM_LONG), 0);
+    }
+
+    @Test
+    public void testParseClassNames() {
+        final String className = "I.am.class.name.with.dot.in.the.end.";
+        final Set<String> result = CheckUtils.parseClassNames(className);
+        final Set<String> expected = new HashSet<String>();
+        expected.add(className);
+        assertEquals("Result is not expected", expected, result);
     }
 
     private static File getPath(String filename) {

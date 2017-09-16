@@ -20,9 +20,9 @@
 package com.puppycrawl.tools.checkstyle.checks.regexp;
 
 import java.io.File;
-import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 
 /**
  * Implementation of a check that looks for a single line in any file type.
@@ -60,8 +60,8 @@ public class RegexpSinglelineCheck extends AbstractFileSetCheck {
     }
 
     @Override
-    protected void processFiltered(File file, List<String> lines) {
-        detector.processLines(lines);
+    protected void processFiltered(File file, FileText fileText) {
+        detector.processLines(fileText);
     }
 
     /**

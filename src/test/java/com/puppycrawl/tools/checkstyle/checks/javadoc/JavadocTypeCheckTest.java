@@ -26,12 +26,9 @@ import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck.MS
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck.MSG_UNUSED_TAG;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -40,11 +37,10 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 /**
  * @author Oliver.Burn
  */
-public class JavadocTypeCheckTest extends BaseCheckTestSupport {
+public class JavadocTypeCheckTest extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/javadoctype";
     }
 
     @Test
@@ -79,7 +75,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "302: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "327: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputTags.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeTags.java"), expected);
     }
 
     @Test
@@ -91,7 +87,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "21: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "27: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputInner.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeInner.java"), expected);
     }
 
     @Test
@@ -104,7 +100,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "14: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "34: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputPublicOnly.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypePublicOnly.java"), expected);
     }
 
     @Test
@@ -115,7 +111,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "7: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputPublicOnly.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypePublicOnly.java"), expected);
     }
 
     @Test
@@ -127,7 +123,9 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "7: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "38: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputScopeInnerInterfaces.java"), expected);
+        verify(checkConfig,
+               getPath("InputJavadocTypeScopeInnerInterfaces.java"),
+               expected);
     }
 
     @Test
@@ -141,7 +139,9 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "38: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "65: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputScopeInnerInterfaces.java"), expected);
+        verify(checkConfig,
+               getPath("InputJavadocTypeScopeInnerInterfaces.java"),
+               expected);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "20: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "22: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputScopeInnerClasses.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeScopeInnerClasses.java"), expected);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "18: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputScopeInnerClasses.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeScopeInnerClasses.java"), expected);
     }
 
     @Test
@@ -180,7 +180,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "13: " + getCheckMessage(MSG_MISSING_TAG, "@author"),
         };
-        verify(checkConfig, getPath("InputWhitespace.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeWhitespace.java"), expected);
     }
 
     @Test
@@ -194,7 +194,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "58: " + getCheckMessage(MSG_MISSING_TAG, "@author"),
             "94: " + getCheckMessage(MSG_MISSING_TAG, "@author"),
         };
-        verify(checkConfig, getPath("InputJavadoc.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeJavadoc.java"), expected);
     }
 
     @Test
@@ -214,7 +214,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "94: " + getCheckMessage(MSG_MISSING_TAG, "@author"),
             "103: " + getCheckMessage(MSG_TAG_FORMAT, "@author", "ABC"),
         };
-        verify(checkConfig, getPath("InputJavadoc.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeJavadoc.java"), expected);
     }
 
     @Test
@@ -226,7 +226,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "13: " + getCheckMessage(MSG_MISSING_TAG, "@version"),
         };
-        verify(checkConfig, getPath("InputWhitespace.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeWhitespace.java"), expected);
     }
 
     @Test
@@ -240,7 +240,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "58: " + getCheckMessage(MSG_MISSING_TAG, "@version"),
             "94: " + getCheckMessage(MSG_MISSING_TAG, "@version"),
         };
-        verify(checkConfig, getPath("InputJavadoc.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeJavadoc.java"), expected);
     }
 
     @Test
@@ -263,7 +263,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "103: " + getCheckMessage(MSG_TAG_FORMAT, "@version", "\\$Revision.*\\$"),
             "112: " + getCheckMessage(MSG_TAG_FORMAT, "@version", "\\$Revision.*\\$"),
         };
-        verify(checkConfig, getPath("InputJavadoc.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeJavadoc.java"), expected);
     }
 
     @Test
@@ -283,7 +283,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "111: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
         verify(checkConfig,
-               getPath("InputNoJavadoc.java"),
+               getPath("InputJavadocTypeNoJavadoc.java"),
                expected);
     }
 
@@ -295,7 +295,9 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
         final String[] expected = {
             "4: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
-        verify(checkConfig, getPath("InputNoJavadocOnInterface.java"), expected);
+        verify(checkConfig,
+               getPath("InputJavadocTypeNoJavadocOnInterface.java"),
+               expected);
     }
 
     @Test
@@ -308,7 +310,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "15: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
         verify(checkConfig,
-               getPath("InputNoJavadoc.java"),
+               getPath("InputJavadocTypeNoJavadoc.java"),
                expected);
     }
 
@@ -329,7 +331,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "111: " + getCheckMessage(MSG_JAVADOC_MISSING),
         };
         verify(checkConfig,
-               getPath("InputNoJavadoc.java"),
+               getPath("InputJavadocTypeNoJavadoc.java"),
                expected);
     }
 
@@ -344,7 +346,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "47: " + getCheckMessage(MSG_MISSING_TAG, "@param <B>"),
             "60:5: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "<x>"),
         };
-        verify(checkConfig, getPath("InputTypeParamsTags.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeTypeParamsTags.java"), expected);
     }
 
     @Test
@@ -357,7 +359,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "44:8: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "<C>"),
             "60:5: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "<x>"),
         };
-        verify(checkConfig, getPath("InputTypeParamsTags.java"), expected);
+        verify(checkConfig, getPath("InputJavadocTypeTypeParamsTags.java"), expected);
     }
 
     @Test
@@ -369,7 +371,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "7:4: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "<BAD>"),
         };
         verify(checkConfig,
-                getPath("InputUnusedParamInJavadocForClass.java"),
+                getPath("InputJavadocTypeUnusedParamInJavadocForClass.java"),
                 expected);
     }
 
@@ -381,7 +383,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
             "5:4: " + getCheckMessage(MSG_UNKNOWN_TAG, "mytag"),
         };
         verify(checkConfig,
-               getPath("InputBadTag.java"),
+               getPath("InputJavadocTypeBadTag.java"),
                expected);
     }
 
@@ -392,7 +394,7 @@ public class JavadocTypeCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("allowUnknownTags", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig,
-                getPath("InputBadTag.java"),
+                getPath("InputJavadocTypeBadTag.java"),
                 expected);
     }
 }

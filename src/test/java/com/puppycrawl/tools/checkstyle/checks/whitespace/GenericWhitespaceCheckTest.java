@@ -27,44 +27,28 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import antlr.CommonHiddenStreamToken;
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class GenericWhitespaceCheckTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     private DefaultConfiguration checkConfig;
 
     @Before
     public void setUp() {
         checkConfig = createCheckConfig(GenericWhitespaceCheck.class);
-        final Map<Class<?>, Integer> x = new HashMap<Class<?>, Integer>();
-        for (final Map.Entry<Class<?>, Integer> entry : x.entrySet()) {
-            entry.getValue();
-        }
     }
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "whitespace" + File.separator + "genericwhitespace" + File.separator + filename);
-    }
-
-    @Override
-    protected String getNonCompilablePath(String filename) throws IOException {
-        return super.getNonCompilablePath("checks" + File.separator
-                + "whitespace" + File.separator + "genericwhitespace" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/whitespace/genericwhitespace";
     }
 
     @Test

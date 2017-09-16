@@ -26,12 +26,17 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class ExclusionBeforeExecutionFileFilterTest extends BaseCheckTestSupport {
+public class ExclusionBeforeExecutionFileFilterTest extends AbstractModuleTestSupport {
+    @Override
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/filefilters";
+    }
+
     @Test
     public void testAccept() {
         final String fileName = "BAD";

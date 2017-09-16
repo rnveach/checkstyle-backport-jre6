@@ -22,19 +22,17 @@ package com.puppycrawl.tools.checkstyle.checks;
 import static com.puppycrawl.tools.checkstyle.checks.AvoidEscapedUnicodeCharactersCheck.MSG_KEY;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class AvoidEscapedUnicodeCharactersCheckTest extends BaseCheckTestSupport {
+public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSupport {
 
     // C0 (ASCII and derivatives)
     // https://en.wiktionary.org/wiki/Appendix:Control_characters#C0_.28ASCII_and_derivatives.29
@@ -145,8 +143,8 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends BaseCheckTestSupport
     };
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/misc/avoidescapedunicodecharacters";
     }
 
     @Test

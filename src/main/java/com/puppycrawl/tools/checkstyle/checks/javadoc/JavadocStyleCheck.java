@@ -283,20 +283,21 @@ public class JavadocStyleCheck
      */
     private static int findTextStart(String line) {
         int textStart = -1;
-        for (int i = 0; i < line.length();) {
-            if (!Character.isWhitespace(line.charAt(i))) {
-                if (line.regionMatches(i, "/**", 0, "/**".length())) {
-                    i += 2;
+        int index = 0;
+        while (index < line.length()) {
+            if (!Character.isWhitespace(line.charAt(index))) {
+                if (line.regionMatches(index, "/**", 0, "/**".length())) {
+                    index += 2;
                 }
-                else if (line.regionMatches(i, "*/", 0, 2)) {
-                    i++;
+                else if (line.regionMatches(index, "*/", 0, 2)) {
+                    index++;
                 }
-                else if (line.charAt(i) != '*') {
-                    textStart = i;
+                else if (line.charAt(index) != '*') {
+                    textStart = index;
                     break;
                 }
             }
-            i++;
+            index++;
         }
         return textStart;
     }
@@ -364,7 +365,7 @@ public class JavadocStyleCheck
                     log(tag.getLineNo(),
                         tag.getPosition(),
                         MSG_EXTRA_HTML,
-                        tag);
+                        tag.getText());
                 }
                 else {
                     // See if there are any unclosed tags that were opened
@@ -388,7 +389,8 @@ public class JavadocStyleCheck
             if (!isSingleTag(htmlTag)
                 && !htmlTag.getId().equals(lastFound)
                 && !typeParameters.contains(htmlTag.getId())) {
-                log(htmlTag.getLineNo(), htmlTag.getPosition(), MSG_UNCLOSED_HTML, htmlTag);
+                log(htmlTag.getLineNo(), htmlTag.getPosition(),
+                        MSG_UNCLOSED_HTML, htmlTag.getText());
                 lastFound = htmlTag.getId();
             }
         }
@@ -430,7 +432,7 @@ public class JavadocStyleCheck
             log(lastOpenTag.getLineNo(),
                 lastOpenTag.getPosition(),
                 MSG_UNCLOSED_HTML,
-                lastOpenTag);
+                lastOpenTag.getText());
         }
     }
 

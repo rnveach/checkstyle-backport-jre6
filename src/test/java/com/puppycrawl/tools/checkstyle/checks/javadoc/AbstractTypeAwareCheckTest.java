@@ -25,8 +25,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,14 +32,14 @@ import java.lang.reflect.Method;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.checks.AbstractTypeAwareCheck;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 @SuppressWarnings("deprecation")
-public class AbstractTypeAwareCheckTest extends BaseCheckTestSupport {
+public class AbstractTypeAwareCheckTest extends AbstractModuleTestSupport {
     private DefaultConfiguration checkConfig;
 
     @Before
@@ -50,9 +48,8 @@ public class AbstractTypeAwareCheckTest extends BaseCheckTestSupport {
     }
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/abstracttypeaware";
     }
 
     @Test
@@ -103,15 +100,17 @@ public class AbstractTypeAwareCheckTest extends BaseCheckTestSupport {
                 int.class, int.class);
         final Object token = tokenConstructor.newInstance("blablabla", 1, 1);
 
+        final JavadocMethodCheck methodCheck = new JavadocMethodCheck();
         final Object regularClass = regularClassConstructor.newInstance(token, "sur",
-                new JavadocMethodCheck());
+                methodCheck);
 
         final Method toString = regularClass.getClass().getDeclaredMethod("toString");
         toString.setAccessible(true);
         final String result = (String) toString.invoke(regularClass);
-        assertEquals("Invalid toString result",
-            "RegularClass[name=Token[blablabla(1x1)], in class=sur, loadable=true, class=null]",
-            result);
+        final String expected = "RegularClass[name=Token[blablabla(1x1)], in class='sur', check="
+                + methodCheck.hashCode() + "," + " loadable=true, class=null]";
+
+        assertEquals("Invalid toString result", expected, result);
 
         final Method setClazz = regularClass.getClass().getDeclaredMethod("setClazz", Class.class);
         setClazz.setAccessible(true);
@@ -168,7 +167,7 @@ public class AbstractTypeAwareCheckTest extends BaseCheckTestSupport {
             "7:8: " + getCheckMessage(MSG_CLASS_INFO, "@throws", "InvalidExceptionName"),
         };
         try {
-            verify(config, getPath("InputLoadErrors.java"), expected);
+            verify(config, getPath("InputAbstractTypeAwareLoadErrors.java"), expected);
         }
         catch (CheckstyleException ex) {
             final IllegalStateException cause = (IllegalStateException) ex.getCause();
@@ -184,6 +183,6 @@ public class AbstractTypeAwareCheckTest extends BaseCheckTestSupport {
         checkConfig.addAttribute("allowUndeclaredRTE", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputLoadErrors.java"), expected);
+        verify(checkConfig, getPath("InputAbstractTypeAwareLoadErrors.java"), expected);
     }
 }

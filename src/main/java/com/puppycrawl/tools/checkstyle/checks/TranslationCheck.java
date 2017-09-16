@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -44,6 +43,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
@@ -241,7 +241,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
     }
 
     @Override
-    protected void processFiltered(File file, List<String> lines) {
+    protected void processFiltered(File file, FileText fileText) {
         // We just collecting files for processing at finishProcessing()
         filesToProcess.add(file);
     }

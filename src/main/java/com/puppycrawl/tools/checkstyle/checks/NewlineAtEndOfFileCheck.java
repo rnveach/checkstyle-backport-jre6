@@ -22,11 +22,11 @@ package com.puppycrawl.tools.checkstyle.checks;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.List;
 import java.util.Locale;
 
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 
 /**
  * <p>
@@ -75,20 +75,9 @@ public class NewlineAtEndOfFileCheck
     private LineSeparatorOption lineSeparator = LineSeparatorOption.SYSTEM;
 
     @Override
-    protected void processFiltered(File file, List<String> lines) {
-        // Cannot use lines as the line separators have been removed!
+    protected void processFiltered(File file, FileText fileText) {
         try {
-            final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-            boolean threw = true;
-            try {
-                if (!endsWithNewline(randomAccessFile)) {
-                    log(0, MSG_KEY_NO_NEWLINE_EOF, file.getPath());
-                }
-                threw = false;
-            }
-            finally {
-                Closeables.close(randomAccessFile, threw);
-            }
+            readAndCheckFile(file);
         }
         catch (final IOException ignored) {
             log(0, MSG_KEY_UNABLE_OPEN, file.getPath());
@@ -110,6 +99,27 @@ public class NewlineAtEndOfFileCheck
         }
         catch (IllegalArgumentException iae) {
             throw new IllegalArgumentException("unable to parse " + lineSeparatorParam, iae);
+        }
+    }
+
+    /**
+     * Reads the file provided and checks line separators.
+     * @param file the file to be processed
+     * @throws IOException When an IO error occurred while reading from the
+     *         file provided
+     */
+    private void readAndCheckFile(File file) throws IOException {
+        // Cannot use lines as the line separators have been removed!
+        final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+        boolean threw = true;
+        try {
+            if (!endsWithNewline(randomAccessFile)) {
+                log(0, MSG_KEY_NO_NEWLINE_EOF, file.getPath());
+            }
+            threw = false;
+        }
+        finally {
+            Closeables.close(randomAccessFile, threw);
         }
     }
 

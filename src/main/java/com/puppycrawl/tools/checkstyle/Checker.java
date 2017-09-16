@@ -443,6 +443,10 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
         childContext = context;
     }
 
+    /**
+     * {@inheritDoc} Creates child module.
+     * @noinspection ChainOfInstanceofChecks
+     */
     @Override
     protected void setupChild(Configuration childConf)
             throws CheckstyleException {

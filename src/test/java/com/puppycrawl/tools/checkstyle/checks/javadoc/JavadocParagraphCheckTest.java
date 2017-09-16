@@ -25,18 +25,15 @@ import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocParagraphChe
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocParagraphCheck.MSG_TAG_AFTER;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class JavadocParagraphCheckTest extends BaseCheckTestSupport {
+public class JavadocParagraphCheckTest extends AbstractModuleTestSupport {
     private DefaultConfiguration checkConfig;
 
     @Before
@@ -45,9 +42,8 @@ public class JavadocParagraphCheckTest extends BaseCheckTestSupport {
     }
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/javadocparagraph";
     }
 
     @Test
@@ -62,7 +58,7 @@ public class JavadocParagraphCheckTest extends BaseCheckTestSupport {
     public void testCorrect() throws Exception {
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputCorrectJavaDocParagraph.java"), expected);
+        verify(checkConfig, getPath("InputJavaDocParagraphCorrect.java"), expected);
     }
 
     @Test
@@ -105,7 +101,7 @@ public class JavadocParagraphCheckTest extends BaseCheckTestSupport {
             "81: " + getCheckMessage(MSG_TAG_AFTER),
             "82: " + getCheckMessage(MSG_TAG_AFTER),
         };
-        verify(checkConfig, getPath("InputIncorrectJavaDocParagraph.java"), expected);
+        verify(checkConfig, getPath("InputJavaDocParagraphIncorrect.java"), expected);
     }
 
     @Test
@@ -132,6 +128,6 @@ public class JavadocParagraphCheckTest extends BaseCheckTestSupport {
             "81: " + getCheckMessage(MSG_TAG_AFTER),
             "82: " + getCheckMessage(MSG_TAG_AFTER),
         };
-        verify(checkConfig, getPath("InputIncorrectJavaDocParagraph.java"), expected);
+        verify(checkConfig, getPath("InputJavaDocParagraphIncorrect.java"), expected);
     }
 }

@@ -32,6 +32,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  * @author Oliver Burn
  * @author lkuehne
  * @see <a href="http://www.antlr.org/">ANTLR Website</a>
+ * @noinspection FieldNotUsedInToString, SerializableHasSerializationMethods
  */
 public final class DetailAST extends CommonASTWithHiddenTokens {
     private static final long serialVersionUID = -2580884815577559874L;
@@ -110,7 +111,7 @@ public final class DetailAST extends CommonASTWithHiddenTokens {
         clearBranchTokenTypes();
         clearChildCountCache(parent);
         if (ast != null) {
-            ast.setParent(parent);
+            //parent is set in setNextSibling or parent.setFirstChild
             final DetailAST previousSiblingNode = previousSibling;
 
             if (previousSiblingNode != null) {
@@ -135,7 +136,7 @@ public final class DetailAST extends CommonASTWithHiddenTokens {
         clearBranchTokenTypes();
         clearChildCountCache(parent);
         if (ast != null) {
-            ast.setParent(parent);
+            //parent is set in setNextSibling
             final DetailAST nextSibling = getNextSibling();
 
             if (nextSibling != null) {
@@ -227,11 +228,11 @@ public final class DetailAST extends CommonASTWithHiddenTokens {
             // with initialize(String text)
             resultNo = findLineNo(getFirstChild());
 
-            if (resultNo < 0) {
+            if (resultNo == -1) {
                 resultNo = findLineNo(getNextSibling());
             }
         }
-        if (resultNo < 0) {
+        if (resultNo == -1) {
             resultNo = lineNo;
         }
         return resultNo;
@@ -258,11 +259,11 @@ public final class DetailAST extends CommonASTWithHiddenTokens {
             // with initialize(String text)
             resultNo = findColumnNo(getFirstChild());
 
-            if (resultNo < 0) {
+            if (resultNo == -1) {
                 resultNo = findColumnNo(getNextSibling());
             }
         }
-        if (resultNo < 0) {
+        if (resultNo == -1) {
             resultNo = columnNo;
         }
         return resultNo;
@@ -421,10 +422,10 @@ public final class DetailAST extends CommonASTWithHiddenTokens {
      * child count for the current DetailAST instance.
      */
     private void clearBranchTokenTypes() {
-        DetailAST prevParent = getParent();
+        DetailAST prevParent = parent;
         while (prevParent != null) {
             prevParent.branchTokenTypes = null;
-            prevParent = prevParent.getParent();
+            prevParent = prevParent.parent;
         }
     }
 }

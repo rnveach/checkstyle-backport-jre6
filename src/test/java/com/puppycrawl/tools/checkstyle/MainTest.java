@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.Assertion;
@@ -53,35 +52,46 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 public class MainTest {
     private static final String USAGE = String.format(Locale.ROOT,
           "usage: java com.puppycrawl.tools.checkstyle.Main [options] -c <config.xml>"
         + " file...%n"
-        + " -c <arg>                    Sets the check configuration file to use.%n"
-        + " -d,--debug                  Print all debug logging of CheckStyle utility%n"
-        + " -e,--exclude <arg>          Directory path to exclude from CheckStyle%n"
-        + " -executeIgnoredModules      Allows ignored modules to be run.%n"
-        + " -f <arg>                    Sets the output format. (plain|xml). Defaults to"
-        + " plain%n"
-        + " -j,--javadocTree            Print Parse tree of the Javadoc comment%n"
-        + " -J,--treeWithJavadoc        Print full Abstract Syntax Tree of the file%n"
-        + " -o <arg>                    Sets the output file. Defaults to stdout%n"
-        + " -p <arg>                    Loads the properties file%n"
-        + " -t,--tree                   Print Abstract Syntax Tree(AST) of the file%n"
-        + " -T,--treeWithComments       Print Abstract Syntax Tree(AST) of the file"
-        + " including comments%n"
-        + " -v                          Print product version and exit%n"
-        + " -x,--exclude-regexp <arg>   Regular expression of directory to exclude from"
+        + " -c <arg>                                Sets the check configuration file to use.%n"
+        + " -C,--checker-threads-number <arg>       (experimental) The number of Checker threads "
+        + "(must be%n"
+        + "                                         greater than zero)%n"
+        + " -d,--debug                              Print all debug logging of CheckStyle utility%n"
+        + " -e,--exclude <arg>                      Directory path to exclude from CheckStyle%n"
+        + " -executeIgnoredModules                  Allows ignored modules to be run.%n"
+        + " -f <arg>                                Sets the output format. (plain|xml). Defaults"
+        + " to plain%n"
+        + " -j,--javadocTree                        Print Parse tree of the Javadoc comment%n"
+        + " -J,--treeWithJavadoc                    Print full Abstract Syntax Tree of the file%n"
+        + " -o <arg>                                Sets the output file. Defaults to stdout%n"
+        + " -p <arg>                                Loads the properties file%n"
+        + " -t,--tree                               Print Abstract Syntax Tree(AST) of the file%n"
+        + " -T,--treeWithComments                   Print Abstract Syntax Tree(AST) of the file"
+        + " including%n"
+        + "                                         comments%n"
+        + " -v                                      Print product version and exit%n"
+        + " -W,--tree-walker-threads-number <arg>   (experimental) The number of TreeWalker threads"
+        + " (must be%n"
+        + "                                         greater than zero)%n"
+        + " -x,--exclude-regexp <arg>               Regular expression of directory to exclude from"
         + " CheckStyle%n");
 
     private static final Logger LOG = Logger.getLogger(MainTest.class.getName()).getParent();
     private static final Handler[] HANDLERS = LOG.getHandlers();
     private static final Level ORIGINAL_LOG_LEVEL = LOG.getLevel();
+
+    private static final String EOL = System.getProperty("line.separator");
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -92,23 +102,28 @@ public class MainTest {
     @Rule
     public final SystemOutRule systemOut = new SystemOutRule().enableLog().mute();
 
+    private final LocalizedMessage auditStartMessage = new LocalizedMessage(0,
+            Definitions.CHECKSTYLE_BUNDLE, "DefaultLogger.auditStarted", null, null,
+            getClass(), null);
+
+    private final LocalizedMessage auditFinishMessage = new LocalizedMessage(0,
+            Definitions.CHECKSTYLE_BUNDLE, "DefaultLogger.auditFinished", null, null,
+            getClass(), null);
+
+    private final LocalizedMessage errorCounterOneMessage = new LocalizedMessage(0,
+            Definitions.CHECKSTYLE_BUNDLE, "Main.errorCounter",
+            new String[] {String.valueOf(1)}, null, getClass(), null);
+
     private static String getPath(String filename) {
-        return "src/test/resources/com/puppycrawl/tools/checkstyle/" + filename;
+        return "src/test/resources/com/puppycrawl/tools/checkstyle/main/" + filename;
     }
 
     private static String getNonCompilablePath(String filename) {
-        return "src/test/resources-noncompilable/com/puppycrawl/tools/checkstyle/" + filename;
+        return "src/test/resources-noncompilable/com/puppycrawl/tools/checkstyle/main/" + filename;
     }
 
     private static String getFilePath(String filename) throws IOException {
         return new File(getPath(filename)).getCanonicalPath();
-    }
-
-    @BeforeClass
-    public static void init() {
-        // Set locale to root to prevent check message fail
-        // in other language environment.
-        Locale.setDefault(Locale.ROOT);
     }
 
     @Before
@@ -160,7 +175,7 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                final String usage = String.format(Locale.ROOT, "Unrecognized option: -w%n")
+                final String usage = "Unrecognized option: -w" + EOL
                         + USAGE;
                 assertEquals(usage, systemOut.getLog());
                 assertEquals("", systemErr.getLog());
@@ -206,9 +221,8 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                assertEquals(String.format(Locale.ROOT,
-                        "Could not find config XML file "
-                            + "'src/main/resources/non_existing_config.xml'.%n"),
+                assertEquals("Could not find config XML file "
+                            + "'src/main/resources/non_existing_config.xml'." + EOL,
                         systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
@@ -223,8 +237,8 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                assertEquals(String.format(Locale.ROOT, "Invalid output format. "
-                        + "Found 'xmlp' but expected 'plain' or 'xml'.%n"), systemOut.getLog());
+                assertEquals("Invalid output format. "
+                        + "Found 'xmlp' but expected 'plain' or 'xml'." + EOL, systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
@@ -238,8 +252,8 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                final String expectedExceptionMessage =
-                        String.format(Locale.ROOT, "Checkstyle ends with 1 errors.%n");
+                final String expectedExceptionMessage = errorCounterOneMessage.getMessage()
+                        + EOL;
                 assertEquals(expectedExceptionMessage, systemOut.getLog());
 
                 final String cause = "com.puppycrawl.tools.checkstyle.api.CheckstyleException:"
@@ -248,7 +262,7 @@ public class MainTest {
             }
         });
 
-        Main.main("-c", getPath("config-non-existing-classname.xml"),
+        Main.main("-c", getPath("InputMainConfig-non-existing-classname.xml"),
             getPath("InputMain.java"));
     }
 
@@ -258,12 +272,13 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                assertEquals(String.format(Locale.ROOT, "Starting audit...%n"
-                        + "Audit done.%n"), systemOut.getLog());
+                assertEquals(auditStartMessage.getMessage() + EOL
+                        + auditFinishMessage.getMessage() + EOL,
+                        systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-c", getPath("config-classname.xml"),
+        Main.main("-c", getPath("InputMainConfig-classname.xml"),
                 getPath("InputMain.java"));
     }
 
@@ -278,16 +293,15 @@ public class MainTest {
                         ResourceBundle.getBundle("checkstylecompilation", Locale.ROOT);
                 final String version = compilationProperties
                     .getString("checkstyle.compile.version");
-                assertEquals(String.format(Locale.ROOT,
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
-                        + "<checkstyle version=\"%s\">%n"
-                        + "<file name=\"%s\">%n"
-                        + "</file>%n"
-                        + "</checkstyle>%n", version, expectedPath), systemOut.getLog());
+                assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + EOL
+                        + "<checkstyle version=\"" + version + "\">" + EOL
+                        + "<file name=\"" + expectedPath + "\">" + EOL
+                        + "</file>" + EOL
+                        + "</checkstyle>" + EOL, systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-c", getPath("config-classname.xml"),
+        Main.main("-c", getPath("InputMainConfig-classname.xml"),
                 "-f", "xml",
                 getPath("InputMain.java"));
     }
@@ -298,12 +312,12 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                assertEquals(String.format(Locale.ROOT, "Starting audit...%n"
-                        + "Audit done.%n"), systemOut.getLog());
+                assertEquals(auditStartMessage.getMessage() + EOL
+                        + auditFinishMessage.getMessage() + EOL, systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-c", getPath("config-classname.xml"),
+        Main.main("-c", getPath("InputMainConfig-classname.xml"),
                 "-f", "plain",
                 getPath("InputMain.java"));
     }
@@ -313,20 +327,27 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() throws IOException {
+                final LocalizedMessage invalidPatternMessageMain = new LocalizedMessage(0,
+                        "com.puppycrawl.tools.checkstyle.checks.naming.messages",
+                        "name.invalidPattern", new String[] {"InputMain", "^[a-z0-9]*$"},
+                        null, getClass(), null);
+                final LocalizedMessage invalidPatternMessageMainInner = new LocalizedMessage(0,
+                        "com.puppycrawl.tools.checkstyle.checks.naming.messages",
+                        "name.invalidPattern", new String[] {"InputMainInner", "^[a-z0-9]*$"},
+                        null, getClass(), null);
                 final String expectedPath = getFilePath("InputMain.java");
-                assertEquals(String.format(Locale.ROOT, "Starting audit...%n"
-                                + "[WARN] %1$s:3:14: "
-                                + "Name 'InputMain' must match pattern"
-                                + " '^[a-z0-9]*$'. [TypeName]%n"
-                                + "[WARN] %1$s:5:7: "
-                                + "Name 'InputMainInner' must match pattern"
-                                + " '^[a-z0-9]*$'. [TypeName]%n"
-                                + "Audit done.%n", expectedPath),
-                        systemOut.getLog());
+                assertEquals(auditStartMessage.getMessage() + EOL
+                                + "[WARN] " + expectedPath + ":3:14: "
+                                + invalidPatternMessageMain.getMessage()
+                                + " [TypeName]" + EOL
+                                + "[WARN] " + expectedPath + ":5:7: "
+                                + invalidPatternMessageMainInner.getMessage()
+                                + " [TypeName]" + EOL
+                                + auditFinishMessage.getMessage() + EOL, systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-c", getPath("config-classname2.xml"),
+        Main.main("-c", getPath("InputMainConfig-classname2.xml"),
                 getPath("InputMain.java"));
     }
 
@@ -337,19 +358,30 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() throws IOException {
+                final LocalizedMessage errorCounterTwoMessage = new LocalizedMessage(0,
+                        Definitions.CHECKSTYLE_BUNDLE, "Main.errorCounter",
+                        new String[] {String.valueOf(2)}, null, getClass(), null);
+                final LocalizedMessage invalidPatternMessageMain = new LocalizedMessage(0,
+                        "com.puppycrawl.tools.checkstyle.checks.naming.messages",
+                        "name.invalidPattern", new String[] {"InputMain", "^[a-z0-9]*$"},
+                        null, getClass(), null);
+                final LocalizedMessage invalidPatternMessageMainInner = new LocalizedMessage(0,
+                        "com.puppycrawl.tools.checkstyle.checks.naming.messages",
+                        "name.invalidPattern", new String[] {"InputMainInner", "^[a-z0-9]*$"},
+                        null, getClass(), null);
                 final String expectedPath = getFilePath("InputMain.java");
-                assertEquals(String.format(Locale.ROOT, "Starting audit...%n"
-                        + "[ERROR] %1$s:3:14: "
-                        + "Name 'InputMain' must match pattern '^[a-z0-9]*$'. [TypeName]%n"
-                        + "[ERROR] %1$s:5:7: "
-                        + "Name 'InputMainInner' must match pattern '^[a-z0-9]*$'. [TypeName]%n"
-                        + "Audit done.%n"
-                        + "Checkstyle ends with 2 errors.%n", expectedPath), systemOut.getLog());
+                assertEquals(auditStartMessage.getMessage() + EOL
+                        + "[ERROR] " + expectedPath + ":3:14: "
+                        + invalidPatternMessageMain.getMessage() + " [TypeName]" + EOL
+                        + "[ERROR] " + expectedPath + ":5:7: "
+                        + invalidPatternMessageMainInner.getMessage() + " [TypeName]" + EOL
+                        + auditFinishMessage.getMessage() + EOL
+                        + errorCounterTwoMessage.getMessage() + EOL, systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
         Main.main("-c",
-                getPath("config-classname2-error.xml"),
+                getPath("InputMainConfig-classname2-error.xml"),
                 getPath("InputMain.java"));
     }
 
@@ -364,7 +396,7 @@ public class MainTest {
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-c", getPath("config-classname.xml"),
+        Main.main("-c", getPath("InputMainConfig-classname.xml"),
                 "-f", "plain",
                 "-o", temporaryFolder.getRoot() + "/output.txt",
                 getPath("InputMain.java"));
@@ -381,7 +413,7 @@ public class MainTest {
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-c", getPath("config-classname.xml"),
+        Main.main("-c", getPath("InputMainConfig-classname.xml"),
                 "-f", "plain",
                 "-o", file.getCanonicalPath(),
                 getPath("InputMain.java"));
@@ -391,7 +423,7 @@ public class MainTest {
     public void testCreateNonExistingOutputFile() throws Exception {
         final String outputFile = temporaryFolder.getRoot().getCanonicalPath() + "nonexisting.out";
         assertFalse(new File(outputFile).exists());
-        Main.main("-c", getPath("config-classname.xml"),
+        Main.main("-c", getPath("InputMainConfig-classname.xml"),
                 "-f", "plain",
                 "-o", outputFile,
                 getPath("InputMain.java"));
@@ -405,13 +437,13 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                assertEquals(String.format(Locale.ROOT, "Starting audit...%n"
-                        + "Audit done.%n"), systemOut.getLog());
+                assertEquals(auditStartMessage.getMessage() + EOL
+                        + auditFinishMessage.getMessage() + EOL, systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-c", getPath("config-classname-prop.xml"),
-                "-p", getPath("mycheckstyle.properties"),
+        Main.main("-c", getPath("InputMainConfig-classname-prop.xml"),
+                "-p", getPath("InputMainMycheckstyle.properties"),
                 getPath("InputMain.java"));
     }
 
@@ -427,7 +459,7 @@ public class MainTest {
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-c", getPath("config-classname-prop.xml"),
+        Main.main("-c", getPath("InputMainConfig-classname-prop.xml"),
                 "-p", "nonexisting.properties",
                 getPath("InputMain.java"));
     }
@@ -439,15 +471,14 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                final String output = String.format(Locale.ROOT,
-                        "Checkstyle ends with 1 errors.%n");
+                final String output = errorCounterOneMessage.getMessage() + EOL;
                 assertEquals(output, systemOut.getLog());
                 final String errorOutput = "com.puppycrawl.tools.checkstyle.api."
                     + "CheckstyleException: unable to parse configuration stream - ";
                 assertTrue(systemErr.getLog().startsWith(errorOutput));
             }
         });
-        Main.main("-c", getPath("config-Incorrect.xml"),
+        Main.main("-c", getPath("InputMainConfig-Incorrect.xml"),
             getPath("InputMain.java"));
     }
 
@@ -458,8 +489,7 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                final String output = String.format(Locale.ROOT,
-                        "Checkstyle ends with 1 errors.%n");
+                final String output = errorCounterOneMessage.getMessage() + EOL;
                 assertEquals(output, systemOut.getLog());
                 final String errorOutput = "com.puppycrawl.tools.checkstyle.api."
                         + "CheckstyleException: cannot initialize module RegexpSingleline"
@@ -467,7 +497,7 @@ public class MainTest {
                 assertTrue(systemErr.getLog().startsWith(errorOutput));
             }
         });
-        Main.main("-c", getPath("config-incorrectChildren.xml"),
+        Main.main("-c", getPath("InputMainConfig-incorrectChildren.xml"),
             getPath("InputMain.java"));
     }
 
@@ -478,8 +508,7 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                final String output = String.format(Locale.ROOT,
-                        "Checkstyle ends with 1 errors.%n");
+                final String output = errorCounterOneMessage.getMessage() + EOL;
                 assertEquals(output, systemOut.getLog());
                 final String errorOutput = "com.puppycrawl.tools.checkstyle.api."
                         + "CheckstyleException: cannot initialize module TreeWalker"
@@ -487,7 +516,7 @@ public class MainTest {
                 assertTrue(systemErr.getLog().startsWith(errorOutput));
             }
         });
-        Main.main("-c", getPath("config-incorrectChildren2.xml"),
+        Main.main("-c", getPath("InputMainConfig-incorrectChildren2.xml"),
             getPath("InputMain.java"));
     }
 
@@ -517,9 +546,7 @@ public class MainTest {
             // We do separate validation for message as in Windows
             // disk drive letter appear in message,
             // so we skip that drive letter for compatibility issues
-            assertTrue(ex.getCause().getMessage()
-                    .startsWith("Unable to load properties from file '"));
-            assertTrue(ex.getCause().getMessage().endsWith(":invalid'."));
+            assertTrue(ex.getCause().getLocalizedMessage().contains(":invalid"));
         }
     }
 
@@ -533,8 +560,11 @@ public class MainTest {
             fail("InvocationTargetException is expected");
         }
         catch (InvocationTargetException ex) {
+            final LocalizedMessage loadPropertiesMessage = new LocalizedMessage(0,
+                    Definitions.CHECKSTYLE_BUNDLE, "Main.createListener",
+                    new String[] {"myformat", "plain", "xml"}, null, getClass(), null);
+            assertEquals(loadPropertiesMessage.getMessage(), ex.getCause().getLocalizedMessage());
             assertTrue(ex.getCause() instanceof IllegalStateException);
-            assertTrue(ex.getCause().getMessage().startsWith("Invalid output format. Found"));
         }
     }
 
@@ -549,8 +579,11 @@ public class MainTest {
             fail("InvocationTargetException  is expected");
         }
         catch (InvocationTargetException ex) {
+            final LocalizedMessage createListenerMessage = new LocalizedMessage(0,
+                    Definitions.CHECKSTYLE_BUNDLE, "Main.createListener",
+                    new String[] {"myformat", "plain", "xml"}, null, getClass(), null);
+            assertEquals(createListenerMessage.getMessage(), ex.getCause().getLocalizedMessage());
             assertTrue(ex.getCause() instanceof IllegalStateException);
-            assertTrue(ex.getCause().getMessage().startsWith("Invalid output format. Found"));
         }
         finally {
             // method creates output folder
@@ -563,7 +596,7 @@ public class MainTest {
 
         // we just reference there all violations
         final String[][] outputValues = {
-                {"InputComplexityOverflow", "1", "172"},
+                {"InputMainComplexityOverflow", "1", "172"},
         };
 
         final int allowedLength = 170;
@@ -573,26 +606,28 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() throws IOException {
-                final String expectedPath = getFilePath("main/") + File.separator;
+                final String expectedPath = getFilePath("") + File.separator;
                 final StringBuilder sb = new StringBuilder(28);
-                sb.append("Starting audit...").append(System.getProperty("line.separator"));
-                final String format = "[WARN] %s.java:%s: %s [FileLength]";
+                sb.append(auditStartMessage.getMessage())
+                        .append(EOL);
+                final String format = "[WARN] " + expectedPath + outputValues[0][0] + ".java:"
+                        + outputValues[0][1] + ": ";
                 for (String[] outputValue : outputValues) {
                     final String localizedMessage = new LocalizedMessage(0, bundle,
                             msgKey, new Integer[] {Integer.valueOf(outputValue[2]), allowedLength},
                             null, getClass(), null).getMessage();
-                    final String line = String.format(Locale.ROOT, format,
-                            expectedPath + outputValue[0], outputValue[1], localizedMessage);
-                    sb.append(line).append(System.getProperty("line.separator"));
+                    final String line = format + localizedMessage + " [FileLength]";
+                    sb.append(line).append(EOL);
                 }
-                sb.append("Audit done.").append(System.getProperty("line.separator"));
+                sb.append(auditFinishMessage.getMessage())
+                        .append(EOL);
                 assertEquals(sb.toString(), systemOut.getLog());
                 assertEquals("", systemErr.getLog());
             }
         });
 
-        Main.main("-c", getPath("config-filelength.xml"),
-                getPath("main/"));
+        Main.main("-c", getPath("InputMainConfig-filelength.xml"),
+                getPath(""));
     }
 
     @Test
@@ -632,23 +667,21 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                final String expectedExceptionMessage =
-                        String.format(Locale.ROOT, "Starting audit...%n"
-                                + "Checkstyle ends with 1 errors.%n");
+                final String expectedExceptionMessage = auditStartMessage.getMessage() + EOL
+                                + errorCounterOneMessage.getMessage() + EOL;
                 assertEquals(expectedExceptionMessage, systemOut.getLog());
 
-                final String exceptionFirstLine = String.format(Locale.ROOT,
-                        "com.puppycrawl.tools.checkstyle.api."
+                final String exceptionFirstLine = "com.puppycrawl.tools.checkstyle.api."
                         + "CheckstyleException: Exception was thrown while processing "
-                        + new File(getNonCompilablePath("InputIncorrectClass.java")).getPath()
-                        + "%n");
+                        + new File(getNonCompilablePath("InputMainIncorrectClass.java")).getPath()
+                        + EOL;
                 assertTrue(systemErr.getLog().startsWith(exceptionFirstLine));
             }
         });
 
         // We put xml as source to cause parse excepion
-        Main.main("-c", getPath("config-classname.xml"),
-                getNonCompilablePath("InputIncorrectClass.java"));
+        Main.main("-c", getPath("InputMainConfig-classname.xml"),
+                getNonCompilablePath("InputMainIncorrectClass.java"));
     }
 
     @Test
@@ -664,36 +697,38 @@ public class MainTest {
             }
         });
 
-        Main.main("-t", getPath("checks/metrics"));
+        Main.main("-t", getPath(""));
     }
 
     @Test
     public void testPrintTreeOption() throws Exception {
-        final String expected = String.format(Locale.ROOT, "PACKAGE_DEF -> package [1:0]%n"
-            + "|--ANNOTATIONS -> ANNOTATIONS [1:28]%n"
-            + "|--DOT -> . [1:28]%n"
-            + "|   |--DOT -> . [1:22]%n"
-            + "|   |   |--DOT -> . [1:11]%n"
-            + "|   |   |   |--IDENT -> com [1:8]%n"
-            + "|   |   |   `--IDENT -> puppycrawl [1:12]%n"
-            + "|   |   `--IDENT -> tools [1:23]%n"
-            + "|   `--IDENT -> checkstyle [1:29]%n"
-            + "`--SEMI -> ; [1:39]%n"
-            + "CLASS_DEF -> CLASS_DEF [3:0]%n"
-            + "|--MODIFIERS -> MODIFIERS [3:0]%n"
-            + "|   `--LITERAL_PUBLIC -> public [3:0]%n"
-            + "|--LITERAL_CLASS -> class [3:7]%n"
-            + "|--IDENT -> InputMain [3:13]%n"
-            + "`--OBJBLOCK -> OBJBLOCK [3:23]%n"
-            + "    |--LCURLY -> { [3:23]%n"
-            + "    `--RCURLY -> } [4:0]%n"
-            + "CLASS_DEF -> CLASS_DEF [5:0]%n"
-            + "|--MODIFIERS -> MODIFIERS [5:0]%n"
-            + "|--LITERAL_CLASS -> class [5:0]%n"
-            + "|--IDENT -> InputMainInner [5:6]%n"
-            + "`--OBJBLOCK -> OBJBLOCK [5:21]%n"
-            + "    |--LCURLY -> { [5:21]%n"
-            + "    `--RCURLY -> } [6:0]%n");
+        final String expected = "PACKAGE_DEF -> package [1:0]" + EOL
+            + "|--ANNOTATIONS -> ANNOTATIONS [1:39]" + EOL
+            + "|--DOT -> . [1:39]" + EOL
+            + "|   |--DOT -> . [1:28]" + EOL
+            + "|   |   |--DOT -> . [1:22]" + EOL
+            + "|   |   |   |--DOT -> . [1:11]" + EOL
+            + "|   |   |   |   |--IDENT -> com [1:8]" + EOL
+            + "|   |   |   |   `--IDENT -> puppycrawl [1:12]" + EOL
+            + "|   |   |   `--IDENT -> tools [1:23]" + EOL
+            + "|   |   `--IDENT -> checkstyle [1:29]" + EOL
+            + "|   `--IDENT -> main [1:40]" + EOL
+            + "`--SEMI -> ; [1:44]" + EOL
+            + "CLASS_DEF -> CLASS_DEF [3:0]" + EOL
+            + "|--MODIFIERS -> MODIFIERS [3:0]" + EOL
+            + "|   `--LITERAL_PUBLIC -> public [3:0]" + EOL
+            + "|--LITERAL_CLASS -> class [3:7]" + EOL
+            + "|--IDENT -> InputMain [3:13]" + EOL
+            + "`--OBJBLOCK -> OBJBLOCK [3:23]" + EOL
+            + "    |--LCURLY -> { [3:23]" + EOL
+            + "    `--RCURLY -> } [4:0]" + EOL
+            + "CLASS_DEF -> CLASS_DEF [5:0]" + EOL
+            + "|--MODIFIERS -> MODIFIERS [5:0]" + EOL
+            + "|--LITERAL_CLASS -> class [5:0]" + EOL
+            + "|--IDENT -> InputMainInner [5:6]" + EOL
+            + "`--OBJBLOCK -> OBJBLOCK [5:21]" + EOL
+            + "    |--LCURLY -> { [5:21]" + EOL
+            + "    `--RCURLY -> } [6:0]" + EOL;
 
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -707,34 +742,36 @@ public class MainTest {
 
     @Test
     public void testPrintTreeCommentsOption() throws Exception {
-        final String expected = String.format(Locale.ROOT, "PACKAGE_DEF -> package [1:0]%n"
-            + "|--ANNOTATIONS -> ANNOTATIONS [1:28]%n"
-            + "|--DOT -> . [1:28]%n"
-            + "|   |--DOT -> . [1:22]%n"
-            + "|   |   |--DOT -> . [1:11]%n"
-            + "|   |   |   |--IDENT -> com [1:8]%n"
-            + "|   |   |   `--IDENT -> puppycrawl [1:12]%n"
-            + "|   |   `--IDENT -> tools [1:23]%n"
-            + "|   `--IDENT -> checkstyle [1:29]%n"
-            + "`--SEMI -> ; [1:39]%n"
-            + "CLASS_DEF -> CLASS_DEF [3:0]%n"
-            + "|--MODIFIERS -> MODIFIERS [3:0]%n"
-            + "|   |--BLOCK_COMMENT_BEGIN -> /* [2:0]%n"
-            + "|   |   |--COMMENT_CONTENT -> comment [2:2]%n"
-            + "|   |   `--BLOCK_COMMENT_END -> */ [2:8]%n"
-            + "|   `--LITERAL_PUBLIC -> public [3:0]%n"
-            + "|--LITERAL_CLASS -> class [3:7]%n"
-            + "|--IDENT -> InputMain [3:13]%n"
-            + "`--OBJBLOCK -> OBJBLOCK [3:23]%n"
-            + "    |--LCURLY -> { [3:23]%n"
-            + "    `--RCURLY -> } [4:0]%n"
-            + "CLASS_DEF -> CLASS_DEF [5:0]%n"
-            + "|--MODIFIERS -> MODIFIERS [5:0]%n"
-            + "|--LITERAL_CLASS -> class [5:0]%n"
-            + "|--IDENT -> InputMainInner [5:6]%n"
-            + "`--OBJBLOCK -> OBJBLOCK [5:21]%n"
-            + "    |--LCURLY -> { [5:21]%n"
-            + "    `--RCURLY -> } [6:0]%n");
+        final String expected = "PACKAGE_DEF -> package [1:0]" + EOL
+            + "|--ANNOTATIONS -> ANNOTATIONS [1:39]" + EOL
+            + "|--DOT -> . [1:39]" + EOL
+            + "|   |--DOT -> . [1:28]" + EOL
+            + "|   |   |--DOT -> . [1:22]" + EOL
+            + "|   |   |   |--DOT -> . [1:11]" + EOL
+            + "|   |   |   |   |--IDENT -> com [1:8]" + EOL
+            + "|   |   |   |   `--IDENT -> puppycrawl [1:12]" + EOL
+            + "|   |   |   `--IDENT -> tools [1:23]" + EOL
+            + "|   |   `--IDENT -> checkstyle [1:29]" + EOL
+            + "|   `--IDENT -> main [1:40]" + EOL
+            + "`--SEMI -> ; [1:44]" + EOL
+            + "CLASS_DEF -> CLASS_DEF [3:0]" + EOL
+            + "|--MODIFIERS -> MODIFIERS [3:0]" + EOL
+            + "|   |--BLOCK_COMMENT_BEGIN -> /* [2:0]" + EOL
+            + "|   |   |--COMMENT_CONTENT -> comment [2:2]" + EOL
+            + "|   |   `--BLOCK_COMMENT_END -> */ [2:8]" + EOL
+            + "|   `--LITERAL_PUBLIC -> public [3:0]" + EOL
+            + "|--LITERAL_CLASS -> class [3:7]" + EOL
+            + "|--IDENT -> InputMain [3:13]" + EOL
+            + "`--OBJBLOCK -> OBJBLOCK [3:23]" + EOL
+            + "    |--LCURLY -> { [3:23]" + EOL
+            + "    `--RCURLY -> } [4:0]" + EOL
+            + "CLASS_DEF -> CLASS_DEF [5:0]" + EOL
+            + "|--MODIFIERS -> MODIFIERS [5:0]" + EOL
+            + "|--LITERAL_CLASS -> class [5:0]" + EOL
+            + "|--IDENT -> InputMainInner [5:6]" + EOL
+            + "`--OBJBLOCK -> OBJBLOCK [5:21]" + EOL
+            + "    |--LCURLY -> { [5:21]" + EOL
+            + "    `--RCURLY -> } [6:0]" + EOL;
 
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -748,9 +785,9 @@ public class MainTest {
 
     @Test
     public void testPrintTreeJavadocOption() throws Exception {
-        final String expected = Files7.toString(new File(
-                getPath("astprinter/expectedInputJavadocComment.txt")), StandardCharsets.UTF_8)
-                    .replaceAll("\\\\r\\\\n", "\\\\n");
+        final String expected = new String(Files7.readAllBytes(Paths.get(
+            getPath("InputMainExpectedInputJavadocComment.txt"))), StandardCharsets.UTF_8)
+            .replaceAll("\\\\r\\\\n", "\\\\n");
 
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -759,14 +796,14 @@ public class MainTest {
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-j", getPath("astprinter/InputJavadocComment.javadoc"));
+        Main.main("-j", getPath("InputMainJavadocComment.javadoc"));
     }
 
     @Test
     public void testPrintFullTreeOption() throws Exception {
-        final String expected = Files7.toString(new File(
-                getPath("astprinter/expectedInputAstTreeStringPrinterJavadoc.txt")),
-                StandardCharsets.UTF_8).replaceAll("\\\\r\\\\n", "\\\\n");
+        final String expected = new String(Files7.readAllBytes(Paths.get(
+            getPath("InputMainExpectedInputAstTreeStringPrinterJavadoc.txt"))),
+            StandardCharsets.UTF_8).replaceAll("\\\\r\\\\n", "\\\\n");
 
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -775,7 +812,7 @@ public class MainTest {
                 assertEquals("", systemErr.getLog());
             }
         });
-        Main.main("-J", getPath("astprinter/InputAstTreeStringPrinterJavadoc.java"));
+        Main.main("-J", getPath("InputMainAstTreeStringPrinterJavadoc.java"));
     }
 
     @Test
@@ -791,7 +828,7 @@ public class MainTest {
             }
         });
 
-        Main.main("-c", "/google_checks.xml", "-t", getPath("checks/metrics"));
+        Main.main("-c", "/google_checks.xml", "-t", getPath(""));
     }
 
     @Test
@@ -807,7 +844,7 @@ public class MainTest {
             }
         });
 
-        Main.main("-p", getPath("mycheckstyle.properties"), "-t", getPath("checks/metrics"));
+        Main.main("-p", getPath("InputMainMycheckstyle.properties"), "-t", getPath(""));
     }
 
     @Test
@@ -823,7 +860,7 @@ public class MainTest {
             }
         });
 
-        Main.main("-f", "plain", "-t", getPath("checks/metrics"));
+        Main.main("-f", "plain", "-t", getPath(""));
     }
 
     @Test
@@ -840,7 +877,7 @@ public class MainTest {
             }
         });
 
-        Main.main("-o", file.getCanonicalPath(), "-t", getPath("checks/metrics"));
+        Main.main("-o", file.getCanonicalPath(), "-t", getPath(""));
     }
 
     @Test
@@ -907,7 +944,7 @@ public class MainTest {
                 assertTrue(TestRootModuleChecker.isProcessed());
             }
         });
-        Main.main("-c", getPath("config-custom-root-module.xml"),
+        Main.main("-c", getPath("InputMainConfig-custom-root-module.xml"),
                 getPath("InputMain.java"));
     }
 
@@ -919,19 +956,22 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 final String checkstylePackage = "com.puppycrawl.tools.checkstyle.";
-
-                assertEquals(String.format(Locale.ROOT, "Checkstyle ends with 1 errors.%n"),
+                final LocalizedMessage unableToInstantiateExceptionMessage = new LocalizedMessage(0,
+                        Definitions.CHECKSTYLE_BUNDLE,
+                        "PackageObjectFactory.unableToInstantiateExceptionMessage",
+                        new String[] {"TestRootModuleChecker", checkstylePackage
+                                + "TestRootModuleChecker, "
+                                + "TestRootModuleCheckerCheck, " + checkstylePackage
+                                + "TestRootModuleCheckerCheck"},
+                        null, getClass(), null);
+                assertEquals(errorCounterOneMessage.getMessage() + EOL,
                         systemOut.getLog());
-                assertTrue(systemErr.getLog().startsWith(
-                        checkstylePackage + "api.CheckstyleException: Unable to instantiate "
-                                + "'TestRootModuleChecker' class, it is also not possible to "
-                                + "instantiate it as " + checkstylePackage
-                                + "TestRootModuleChecker, TestRootModuleCheckerCheck, "
-                                + checkstylePackage + "TestRootModuleCheckerCheck."));
+                assertTrue(systemErr.getLog().startsWith(checkstylePackage + "api.CheckstyleException: "
+                        + unableToInstantiateExceptionMessage.getMessage()));
                 assertFalse(TestRootModuleChecker.isProcessed());
             }
         });
-        Main.main("-c", getPath("config-custom-simple-root-module.xml"),
+        Main.main("-c", getPath("InputMainConfig-custom-simple-root-module.xml"),
                 getPath("InputMain.java"));
     }
 
@@ -941,8 +981,7 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
-                final String expectedExceptionMessage =
-                        String.format(Locale.ROOT, "Checkstyle ends with 1 errors.%n");
+                final String expectedExceptionMessage = errorCounterOneMessage.getMessage() + EOL;
                 assertEquals(expectedExceptionMessage, systemOut.getLog());
 
                 final String cause = "com.puppycrawl.tools.checkstyle.api.CheckstyleException:"
@@ -951,8 +990,148 @@ public class MainTest {
             }
         });
 
-        Main.main("-c", getPath("config-non-existing-classname-ignore.xml"),
+        Main.main("-c", getPath("InputMainConfig-non-existing-classname-ignore.xml"),
                 "-executeIgnoredModules",
                 getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testInvalidCheckerThreadsNumber() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Invalid Checker threads number"
+                    + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("", systemErr.getLog());
+            }
+        });
+        Main.main("-C", "invalid", "-c", "/google_checks.xml", getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testInvalidTreeWalkerThreadsNumber() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Invalid TreeWalker threads number"
+                    + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("", systemErr.getLog());
+            }
+        });
+        Main.main("-W", "invalid", "-c", "/google_checks.xml", getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testZeroCheckerThreadsNumber() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Checker threads number must be greater than zero"
+                    + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("", systemErr.getLog());
+            }
+        });
+        Main.main("-C", "0", "-c", "/google_checks.xml", getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testZeroTreeWalkerThreadsNumber() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("TreeWalker threads number must be greater than zero"
+                    + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("", systemErr.getLog());
+            }
+        });
+        Main.main("-W", "0", "-c", "/google_checks.xml", getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testCheckerThreadsNumber() throws Exception {
+        TestRootModuleChecker.reset();
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("", systemOut.getLog());
+                assertEquals("", systemErr.getLog());
+                assertTrue(TestRootModuleChecker.isProcessed());
+                final DefaultConfiguration config =
+                        (DefaultConfiguration) TestRootModuleChecker.getConfig();
+                final ThreadModeSettings multiThreadModeSettings = config.getThreadModeSettings();
+                assertEquals(4, multiThreadModeSettings.getCheckerThreadsNumber());
+                assertEquals(1, multiThreadModeSettings.getTreeWalkerThreadsNumber());
+            }
+        });
+        Main.main("-C", "4", "-c", getPath("InputMainConfig-custom-root-module.xml"),
+            getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testTreeWalkerThreadsNumber() throws Exception {
+        TestRootModuleChecker.reset();
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("", systemOut.getLog());
+                assertEquals("", systemErr.getLog());
+                assertTrue(TestRootModuleChecker.isProcessed());
+                final DefaultConfiguration config =
+                        (DefaultConfiguration) TestRootModuleChecker.getConfig();
+                final ThreadModeSettings multiThreadModeSettings = config.getThreadModeSettings();
+                assertEquals(1, multiThreadModeSettings.getCheckerThreadsNumber());
+                assertEquals(4, multiThreadModeSettings.getTreeWalkerThreadsNumber());
+            }
+        });
+        Main.main("-W", "4", "-c", getPath("InputMainConfig-custom-root-module.xml"),
+            getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testModuleNameInSingleThreadMode() throws Exception {
+        TestRootModuleChecker.reset();
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("", systemOut.getLog());
+                assertEquals("", systemErr.getLog());
+                assertTrue(TestRootModuleChecker.isProcessed());
+                final DefaultConfiguration config =
+                        (DefaultConfiguration) TestRootModuleChecker.getConfig();
+                final ThreadModeSettings multiThreadModeSettings =
+                    config.getThreadModeSettings();
+                assertEquals(1, multiThreadModeSettings.getCheckerThreadsNumber());
+                assertEquals(1, multiThreadModeSettings.getTreeWalkerThreadsNumber());
+                final Configuration checkerConfiguration = config
+                    .getChildren()[0];
+                assertEquals("Checker", checkerConfiguration.getName());
+                final Configuration treeWalkerConfig = checkerConfiguration.getChildren()[0];
+                assertEquals("TreeWalker", treeWalkerConfig.getName());
+            }
+        });
+        Main.main("-C", "1", "-W", "1", "-c", getPath("InputMainConfig-multi-thread-mode.xml"),
+            getPath("InputMain.java"));
+    }
+
+    @Test
+    public void testModuleNameInMultiThreadMode() throws Exception {
+        TestRootModuleChecker.reset();
+
+        try {
+            Main.main("-C", "4", "-W", "4", "-c", getPath("InputMainConfig-multi-thread-mode.xml"),
+                getPath("InputMain.java"));
+            fail("An exception is expected");
+        }
+        catch (IllegalArgumentException ex) {
+            assertEquals("Multi thread mode for Checker module is not implemented",
+                ex.getMessage());
+        }
     }
 }

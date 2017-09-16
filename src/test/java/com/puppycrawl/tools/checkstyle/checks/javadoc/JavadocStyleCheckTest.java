@@ -26,23 +26,22 @@ import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocStyleCheck.M
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocStyleCheck.MSG_NO_PERIOD;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocStyleCheck.MSG_UNCLOSED_HTML;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class JavadocStyleCheckTest
-    extends BaseCheckTestSupport {
+    extends AbstractModuleTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "javadoc" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/javadoc/javadocstyle";
     }
 
     @Test
@@ -198,7 +197,7 @@ public class JavadocStyleCheckTest
         final DefaultConfiguration checkConfig = createCheckConfig(JavadocStyleCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputNoJavadoc.java"), expected);
+        verify(checkConfig, getPath("InputJavadocStyleNoJavadoc.java"), expected);
     }
 
     @Test
@@ -413,5 +412,12 @@ public class JavadocStyleCheckTest
             "418: " + getCheckMessage(MSG_NO_PERIOD),
         };
         verify(checkConfig, getPath("InputJavadocStyle.java"), expected);
+    }
+
+    @Test
+    public void testHtmlTagToString() {
+        final HtmlTag tag = new HtmlTag("id", 3, 5, true, false, "<a href=\"URL\"/>");
+        assertEquals("HtmlTag[id='id', lineNo=3, position=5, text='<a href=\"URL\"/>', "
+                + "closedTag=true, incompleteTag=false]", tag.toString());
     }
 }

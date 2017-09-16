@@ -64,7 +64,9 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Context;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.Filter;
+import com.puppycrawl.tools.checkstyle.api.FilterSet;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -277,12 +279,16 @@ public class CheckerTest extends BaseCheckTestSupport {
 
         // comparing to 1 as there is only one legal file in input
         final int numLegalFiles = 1;
+        final PropertyCacheFile cache =
+                (PropertyCacheFile) Whitebox.getInternalState(checker, "cache");
         assertEquals("There were more legal files than expected",
                 numLegalFiles, counter);
         assertEquals("Audit was started on larger amount of files than expected",
                 numLegalFiles, auditAdapter.getNumFilesStarted());
         assertEquals("Audit was finished on larger amount of files than expected",
                 numLegalFiles, auditAdapter.getNumFilesFinished());
+        assertNull("Cache shout not contain any file",
+                cache.get(new File("file.java").getCanonicalPath()));
     }
 
     @Test
@@ -484,7 +490,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         checker.setLocaleLanguage(locale.getLanguage());
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
 
         final File tmpFile = temporaryFolder.newFile("file.java");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -530,7 +536,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         assertEquals("Cache has unexpected size",
                 expectedNumberOfObjectsInCache, cache.size());
 
-        final String expectedConfigHash = "68EE3C3B4593FD8D86159C670C504542E20C6FA0";
+        final String expectedConfigHash = "B8535A811CA90BE8B7A14D40BCA62B4FC2447B46";
         assertEquals("Cache has unexpected hash",
                 expectedConfigHash, cache.getProperty(PropertyCacheFile.CONFIG_HASH_KEY));
 
@@ -540,21 +546,15 @@ public class CheckerTest extends BaseCheckTestSupport {
 
     @Test
     public void testClearExistingCache() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(HiddenFieldCheck.class);
-
-        final DefaultConfiguration treeWalkerConfig = createCheckConfig(TreeWalker.class);
-        treeWalkerConfig.addChild(checkConfig);
-
         final DefaultConfiguration checkerConfig = new DefaultConfiguration("myConfig");
         checkerConfig.addAttribute("charset", "UTF-8");
-        checkerConfig.addChild(treeWalkerConfig);
         final File cacheFile = temporaryFolder.newFile();
         checkerConfig.addAttribute("cacheFile", cacheFile.getPath());
 
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
 
         checker.clearCache();
         // invoke destroy to persist cache
@@ -585,6 +585,44 @@ public class CheckerTest extends BaseCheckTestSupport {
         final int expectedNumberOfObjectsInCacheAfterSecondRun = 2;
         assertEquals("Cache has changed number of items",
                 expectedNumberOfObjectsInCacheAfterSecondRun, cacheAfterSecondRun.size());
+    }
+
+    @Test
+    public void testClearCache() throws Exception {
+        final DefaultConfiguration violationCheck =
+                createCheckConfig(DummyFileSetViolationCheck.class);
+        final DefaultConfiguration checkerConfig = new DefaultConfiguration("myConfig");
+        checkerConfig.addAttribute("charset", "UTF-8");
+        final File cacheFile = temporaryFolder.newFile();
+        checkerConfig.addAttribute("cacheFile", cacheFile.getPath());
+        checkerConfig.addChild(violationCheck);
+        final Checker checker = new Checker();
+        checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
+        checker.configure(checkerConfig);
+        checker.addListener(getBriefUtLogger());
+
+        checker.process(Collections.singletonList(new File("dummy.java")));
+        checker.clearCache();
+        // invoke destroy to persist cache
+        final PropertyCacheFile cache =
+                (PropertyCacheFile) Whitebox.getInternalState(checker, "cache");
+        cache.persist();
+
+        final Properties cacheAfterClear = new Properties();
+        cacheAfterClear.load(Files7.newBufferedReader(new Path(cacheFile)));
+
+        assertEquals("Cache has unexpected size",
+                1, cacheAfterClear.size());
+    }
+
+    @Test
+    public void setFileExtension() {
+        final Checker checker = new Checker();
+        checker.setFileExtensions(".test1", "test2");
+        final String[] actual =
+                (String[]) Whitebox.getInternalState(checker, "fileExtensions");
+        assertArrayEquals("Extensions are not expected",
+                new String[] {".test1", ".test2"}, actual);
     }
 
     @Test
@@ -647,7 +685,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
@@ -706,8 +744,9 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.addFileSetCheck(check);
+        checker.addFilter(new DummyFilterSet());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
 
         final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -716,7 +755,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Properties cacheAfterFirstRun = new Properties();
         cacheAfterFirstRun.load(Files7.newBufferedReader(new Path(cacheFile)));
 
-        final int expectedNumberOfObjectsInCacheAfterFirstRun = 3;
+        final int expectedNumberOfObjectsInCacheAfterFirstRun = 4;
         assertEquals("Number of items in cache differs from expected",
                 expectedNumberOfObjectsInCacheAfterFirstRun, cacheAfterFirstRun.size());
 
@@ -771,7 +810,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
 
         final String filePath = getPath("api/InputClearDetailAstLazyLoadCache.java");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -794,7 +833,7 @@ public class CheckerTest extends BaseCheckTestSupport {
 
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
         checker.configure(defaultConfig);
 
         final String fileViolationPath = temporaryFolder.newFile("ViolationFile.java").getPath();
@@ -831,7 +870,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
         checker.configure(checkerConfig);
-        checker.addListener(new BriefUtLogger(stream));
+        checker.addListener(getBriefUtLogger());
 
         final String filePath = getPath("InputMain.java");
         final String[] expected = {
@@ -983,7 +1022,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         implements ExternalResourceHolder {
 
         @Override
-        protected void processFiltered(File file, List<String> lines) throws CheckstyleException {
+        protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
             log(0, "test");
         }
 
@@ -992,6 +1031,16 @@ public class CheckerTest extends BaseCheckTestSupport {
             final Set<String> externalResourceLocation = new HashSet<String>(1);
             externalResourceLocation.add("non_existing_external_resource.xml");
             return externalResourceLocation;
+        }
+    }
+
+    private static class DummyFilterSet extends FilterSet implements ExternalResourceHolder {
+
+        @Override
+        public Set<String> getExternalResourceLocations() {
+            final Set<String> strings = new HashSet<String>();
+            strings.add("test");
+            return strings;
         }
     }
 
@@ -1010,7 +1059,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         }
 
         @Override
-        protected void processFiltered(File file, List<String> lines) throws CheckstyleException {
+        protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
             // there is no need in implementation of the method
         }
 
@@ -1181,7 +1230,7 @@ public class CheckerTest extends BaseCheckTestSupport {
         }
 
         @Override
-        protected void processFiltered(File file, List<String> lines) throws CheckstyleException {
+        protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
             methodCalls.add("processFiltered");
         }
 

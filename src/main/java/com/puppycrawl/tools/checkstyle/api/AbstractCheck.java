@@ -22,6 +22,8 @@ package com.puppycrawl.tools.checkstyle.api;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
@@ -31,6 +33,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author Oliver Burn
  * @see <a href="{@docRoot}/../writingchecks.html" target="_top">Writing
  * your own checks</a>
+ * @noinspection NoopMethodInAbstractClass
  */
 public abstract class AbstractCheck extends AbstractViolationReporter {
     /** Default tab width for column reporting. */
@@ -39,11 +42,11 @@ public abstract class AbstractCheck extends AbstractViolationReporter {
     /** The tokens the check is interested in. */
     private final Set<String> tokens = new HashSet<String>();
 
+    /** The sorted set for collecting messages. */
+    private final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
+
     /** The current file contents. */
     private FileContents fileContents;
-
-    /** The object for collecting messages. */
-    private LocalizedMessages messages;
 
     /** The tab width for column reporting. */
     private int tabWidth = DEFAULT_TAB_WIDTH;
@@ -104,11 +107,18 @@ public abstract class AbstractCheck extends AbstractViolationReporter {
     }
 
     /**
-     * Set the global object used to collect messages.
-     * @param messages the messages to log with
+     * Returns the sorted set of {@link LocalizedMessage}.
+     * @return the sorted set of {@link LocalizedMessage}.
      */
-    public final void setMessages(LocalizedMessages messages) {
-        this.messages = messages;
+    public SortedSet<LocalizedMessage> getMessages() {
+        return new TreeSet<LocalizedMessage>(messages);
+    }
+
+    /**
+     * Clears the sorted set of {@link LocalizedMessage} of the check.
+     */
+    public final void clearMessages() {
+        messages.clear();
     }
 
     /**
@@ -223,6 +233,18 @@ public abstract class AbstractCheck extends AbstractViolationReporter {
      */
     public final void setTabWidth(int tabWidth) {
         this.tabWidth = tabWidth;
+    }
+
+    /**
+     * Helper method to log a LocalizedMessage.
+     *
+     * @param ast a node to get line id column numbers associated
+     *             with the message
+     * @param key key to locale message format
+     * @param args arguments to format
+     */
+    public final void log(DetailAST ast, String key, Object... args) {
+        log(ast.getLineNo(), ast.getColumnNo(), key, args);
     }
 
     @Override

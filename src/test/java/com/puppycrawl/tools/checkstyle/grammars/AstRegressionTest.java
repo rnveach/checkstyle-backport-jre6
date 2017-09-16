@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -38,19 +37,14 @@ import antlr.NoViableAltForCharException;
 import antlr.ParserSharedInputState;
 import antlr.SemanticException;
 import antlr.TokenBuffer;
+import com.puppycrawl.tools.checkstyle.AbstractTreeTestSupport;
 import com.puppycrawl.tools.checkstyle.AstTreeStringPrinter;
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 
-public class AstRegressionTest extends BaseCheckTestSupport {
+public class AstRegressionTest extends AbstractTreeTestSupport {
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("grammars" + File.separator + filename);
-    }
-
-    @Override
-    protected String getNonCompilablePath(String filename) throws IOException {
-        return super.getNonCompilablePath("grammars" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/grammars";
     }
 
     @Test
@@ -151,8 +145,8 @@ public class AstRegressionTest extends BaseCheckTestSupport {
 
     @Test
     public void testNewlineCr() throws Exception {
-        verifyAst(super.getPath("/checks/InputNewlineCrAtEndOfFileAst.txt"),
-                super.getPath("/checks/InputNewlineCrAtEndOfFile.java"), true);
+        verifyAst(getPath("InputNewlineCrAtEndOfFileAst.txt"),
+                getPath("InputAstRegressionNewlineCrAtEndOfFile.java"), true);
     }
 
     @Test
@@ -215,7 +209,7 @@ public class AstRegressionTest extends BaseCheckTestSupport {
         final String expectedContents = new FileText(expectedFile, System.getProperty(
                 "file.encoding", "UTF-8")).getFullText().toString().replace("\r", "");
 
-        final FileText actualFileContents = FileText.fromLines(new File(""),
+        final FileText actualFileContents = new FileText(new File(""),
                 Arrays.asList(actualJava.split("\\n|\\r\\n?")));
         final String actualContents = AstTreeStringPrinter.printAst(actualFileContents,
                 withComments);

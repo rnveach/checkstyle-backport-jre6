@@ -41,6 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author Oliver Burn
  * @deprecated Checkstyle is not type aware tool and all Checks derived from this
  *     class are potentially unstable.
+ * @noinspection DeprecatedIsStillUsed, AbstractClassWithOnlyOneDirectInheritor
  */
 @Deprecated
 public abstract class AbstractTypeAwareCheck extends AbstractCheck {
@@ -396,6 +397,7 @@ public abstract class AbstractTypeAwareCheck extends AbstractCheck {
 
     /**
      * Contains class's {@code Token}.
+     * @noinspection ProtectedInnerClass
      */
     protected abstract static class AbstractClassInfo {
         /** {@code FullIdent} associated with this class. */
@@ -474,9 +476,11 @@ public abstract class AbstractTypeAwareCheck extends AbstractCheck {
         @Override
         public String toString() {
             return "RegularClass[name=" + getName()
-                + ", in class=" + surroundingClass
-                + ", loadable=" + loadable
-                + ", class=" + classObj + "]";
+                    + ", in class='" + surroundingClass + '\''
+                    + ", check=" + check.hashCode()
+                    + ", loadable=" + loadable
+                    + ", class=" + classObj
+                    + ']';
         }
     }
 
@@ -508,6 +512,7 @@ public abstract class AbstractTypeAwareCheck extends AbstractCheck {
 
     /**
      * Represents text element with location in the text.
+     * @noinspection ProtectedInnerClass
      */
     protected static class Token {
         /** Token's column number. */
