@@ -41,7 +41,6 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
-import com.puppycrawl.tools.checkstyle.checks.FileContentsHolder;
 import com.puppycrawl.tools.checkstyle.checks.coding.IllegalCatchCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
@@ -209,23 +208,23 @@ public class SuppressWithNearbyCommentFilterTest
     }
 
     @Override
-    public Checker createChecker(Configuration checkConfig)
+    public Checker createChecker(Configuration moduleConfig)
             throws CheckstyleException {
         final DefaultConfiguration checkerConfig =
             new DefaultConfiguration("configuration");
-        final DefaultConfiguration checksConfig = createCheckConfig(TreeWalker.class);
-        checksConfig.addChild(createCheckConfig(FileContentsHolder.class));
-        final DefaultConfiguration memberNameCheckConfig = createCheckConfig(MemberNameCheck.class);
+        final DefaultConfiguration checksConfig = createModuleConfig(TreeWalker.class);
+        final DefaultConfiguration memberNameCheckConfig =
+                createModuleConfig(MemberNameCheck.class);
         memberNameCheckConfig.addAttribute("id", "ignore");
         checksConfig.addChild(memberNameCheckConfig);
         final DefaultConfiguration constantNameCheckConfig =
-            createCheckConfig(ConstantNameCheck.class);
+            createModuleConfig(ConstantNameCheck.class);
         constantNameCheckConfig.addAttribute("id", null);
         checksConfig.addChild(constantNameCheckConfig);
-        checksConfig.addChild(createCheckConfig(IllegalCatchCheck.class));
+        checksConfig.addChild(createModuleConfig(IllegalCatchCheck.class));
         checkerConfig.addChild(checksConfig);
-        if (checkConfig != null) {
-            checksConfig.addChild(checkConfig);
+        if (moduleConfig != null) {
+            checksConfig.addChild(moduleConfig);
         }
         final Checker checker = new Checker();
         final Locale locale = Locale.ROOT;
@@ -300,8 +299,8 @@ public class SuppressWithNearbyCommentFilterTest
     @Test
     public void testAcceptNullLocalizedMessage() {
         final SuppressWithNearbyCommentFilter filter = new SuppressWithNearbyCommentFilter();
-        final TreeWalkerAuditEvent auditEvent = new TreeWalkerAuditEvent(null, null, null);
-        assertTrue(filter.accept(auditEvent));
+        final TreeWalkerAuditEvent auditEvent = new TreeWalkerAuditEvent(null, null, null, null);
+        assertTrue("Filter should accept null localized message", filter.accept(auditEvent));
     }
 
     @Test
@@ -352,25 +351,20 @@ public class SuppressWithNearbyCommentFilterTest
     public void testTagsAreClearedEachRun() {
         final SuppressWithNearbyCommentFilter suppressionCommentFilter =
                 new SuppressWithNearbyCommentFilter();
-        final FileContentsHolder fileContentsHolder = new FileContentsHolder();
         final FileContents contents =
                 new FileContents("filename", "//SUPPRESS CHECKSTYLE ignore", "line2");
         contents.reportSingleLineComment(1, 0);
-        fileContentsHolder.setFileContents(contents);
-        fileContentsHolder.beginTree(null);
         final TreeWalkerAuditEvent dummyEvent = new TreeWalkerAuditEvent(contents, "filename",
-                new LocalizedMessage(1, null, null, null, null, Object.class, null));
+                new LocalizedMessage(1, null, null, null, null, Object.class, null), null);
         suppressionCommentFilter.accept(dummyEvent);
         final FileContents contents2 =
                 new FileContents("filename2", "some line", "//SUPPRESS CHECKSTYLE ignore");
         contents2.reportSingleLineComment(2, 0);
-        fileContentsHolder.setFileContents(contents2);
-        fileContentsHolder.beginTree(null);
         final TreeWalkerAuditEvent dummyEvent2 = new TreeWalkerAuditEvent(contents2, "filename",
-                new LocalizedMessage(1, null, null, null, null, Object.class, null));
+                new LocalizedMessage(1, null, null, null, null, Object.class, null), null);
         suppressionCommentFilter.accept(dummyEvent2);
         final List<SuppressionCommentFilter.Tag> tags =
                 Whitebox.getInternalState(suppressionCommentFilter, "tags");
-        assertEquals(1, tags.size());
+        assertEquals("Invalid tags size", 1, tags.size());
     }
 }

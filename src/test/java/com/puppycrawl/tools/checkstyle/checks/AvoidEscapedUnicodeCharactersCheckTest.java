@@ -21,12 +21,16 @@ package com.puppycrawl.tools.checkstyle.checks;
 
 import static com.puppycrawl.tools.checkstyle.checks.AvoidEscapedUnicodeCharactersCheck.MSG_KEY;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -162,7 +166,7 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
     @Test
     public void testDefault() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(AvoidEscapedUnicodeCharactersCheck.class);
+                createModuleConfig(AvoidEscapedUnicodeCharactersCheck.class);
         final String[] expected = {
             "7: " + getCheckMessage(MSG_KEY),
             "9: " + getCheckMessage(MSG_KEY),
@@ -206,7 +210,7 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
     @Test
     public void testAllowEscapesForControlCharacterSet() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(AvoidEscapedUnicodeCharactersCheck.class);
+                createModuleConfig(AvoidEscapedUnicodeCharactersCheck.class);
         checkConfig.addAttribute("allowEscapesForControlCharacters", "true");
         final String[] expected = {
             "7: " + getCheckMessage(MSG_KEY),
@@ -247,7 +251,7 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
     @Test
     public void testAllowByTailComment() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(AvoidEscapedUnicodeCharactersCheck.class);
+                createModuleConfig(AvoidEscapedUnicodeCharactersCheck.class);
         checkConfig.addAttribute("allowByTailComment", "true");
         final String[] expected = {
             "7: " + getCheckMessage(MSG_KEY),
@@ -277,7 +281,7 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
     @Test
     public void testAllowAllCharactersEscaped() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(AvoidEscapedUnicodeCharactersCheck.class);
+                createModuleConfig(AvoidEscapedUnicodeCharactersCheck.class);
         checkConfig.addAttribute("allowIfAllCharactersEscaped", "true");
         final String[] expected = {
             "7: " + getCheckMessage(MSG_KEY),
@@ -301,7 +305,7 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
     @Test
     public void allowNonPrintableEscapes() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(AvoidEscapedUnicodeCharactersCheck.class);
+                createModuleConfig(AvoidEscapedUnicodeCharactersCheck.class);
         checkConfig.addAttribute("allowNonPrintableEscapes", "true");
         final String[] expected = {
             "7: " + getCheckMessage(MSG_KEY),
@@ -340,7 +344,7 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
     @Test
     public void testAllowEscapesForControlCharacterSetForAllCharacters() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(AvoidEscapedUnicodeCharactersCheck.class);
+                createModuleConfig(AvoidEscapedUnicodeCharactersCheck.class);
         checkConfig.addAttribute("allowEscapesForControlCharacters", "true");
 
         final int indexOfStartLineInInputFile = 6;
@@ -352,6 +356,26 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
             }
         }
         verify(checkConfig, getPath("InputAllEscapedUnicodeCharacters.java"), expected.toArray(new String[expected.size()]));
+    }
+
+    /**
+     * Method countMatches is used only inside isOnlyUnicodeValidChars method, and when
+     * pitest mutates 316:13 countMatches++ to countMatches-- it makes no difference for
+     * isOnlyUnicodeValidChars method as it applies countMatches to both cases in comparison.
+     * It is possible to kill mutation in countMatches method by changing code in
+     * isOnlyUnicodeValidChars, but it creates new uncoverable mutations and makes code harder
+     * to understand.
+     *
+     * @throws Exception when code tested throws some exception
+     */
+    @Test
+    public void testCountMatches() throws Exception {
+        final Method countMatches = Whitebox.getMethod(AvoidEscapedUnicodeCharactersCheck.class,
+                "countMatches", Pattern.class, String.class);
+        final AvoidEscapedUnicodeCharactersCheck check = new AvoidEscapedUnicodeCharactersCheck();
+        final int actual = (Integer) countMatches.invoke(check,
+                Pattern.compile("\\\\u[a-fA-F0-9]{4}"), "\\u1234");
+        assertEquals("Unexpected matches count", 1, actual);
     }
 
     private static boolean isControlCharacter(final int character) {

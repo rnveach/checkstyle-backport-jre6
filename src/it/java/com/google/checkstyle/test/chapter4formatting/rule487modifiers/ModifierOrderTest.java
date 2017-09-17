@@ -19,21 +19,17 @@
 
 package com.google.checkstyle.test.chapter4formatting.rule487modifiers;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.modifier.ModifierOrderCheck;
 
-public class ModifierOrderTest extends BaseCheckTestSupport {
+public class ModifierOrderTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter4formatting" + File.separator + "rule487modifiers"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter4formatting/rule487modifiers";
     }
 
     @Test
@@ -100,7 +96,7 @@ public class ModifierOrderTest extends BaseCheckTestSupport {
             "245:14: " + getCheckMessage(clazz, msgMod, "default"),
         };
 
-        final Configuration checkConfig = getCheckConfig("ModifierOrder");
+        final Configuration checkConfig = getModuleConfig("ModifierOrder");
         final String filePath = getPath("InputModifierOrder.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

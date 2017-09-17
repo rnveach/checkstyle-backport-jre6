@@ -19,26 +19,22 @@
 
 package com.google.checkstyle.test.chapter5naming.rule523methodnames;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
-public class MethodNameTest extends BaseCheckTestSupport {
+public class MethodNameTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter5naming" + File.separator + "rule523methodnames"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter5naming/rule523methodnames";
     }
 
     @Test
     public void testMethodName() throws Exception {
 
-        final Configuration checkConfig = getCheckConfig("MethodName");
+        final Configuration checkConfig = getModuleConfig("MethodName");
         final String msgKey = "name.invalidPattern";
         final String format = "^[a-z][a-z0-9][a-zA-Z0-9_]*$";
 

@@ -19,35 +19,32 @@
 
 package com.google.checkstyle.test.chapter5naming.rule526parameternames;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
-public class ParameterNameTest extends BaseCheckTestSupport {
+public class ParameterNameTest extends AbstractModuleTestSupport {
 
     private static final String MSG_KEY = "name.invalidPattern";
     private static String format;
     private static Configuration config;
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter5naming" + File.separator + "rule526parameternames"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter5naming/rule526parameternames";
     }
 
     @BeforeClass
     public static void setConfigurationBuilder() throws CheckstyleException {
-        final List<Configuration> configs = getCheckConfigs("ParameterName");
+        final List<Configuration> configs = getModuleConfigs("ParameterName");
 
-        Assert.assertEquals(1, configs.size());
+        Assert.assertEquals("Invalid configs size", 1, configs.size());
 
         config = configs.get(0);
         format = config.getAttribute("format");

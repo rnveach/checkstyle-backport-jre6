@@ -21,22 +21,18 @@ package com.google.checkstyle.test.chapter2filebasic.rule21filename;
 
 import static com.puppycrawl.tools.checkstyle.checks.OuterTypeFilenameCheck.MSG_KEY;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.OuterTypeFilenameCheck;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class OuterTypeFilenameTest extends BaseCheckTestSupport {
+public class OuterTypeFilenameTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter2filebasic" + File.separator + "rule21filename"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter2filebasic/rule21filename";
     }
 
     @Test
@@ -44,7 +40,7 @@ public class OuterTypeFilenameTest extends BaseCheckTestSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("OuterTypeFilename");
+        final Configuration checkConfig = getModuleConfig("OuterTypeFilename");
         final String filePath = getPath("InputOuterTypeFilename1.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -56,7 +52,7 @@ public class OuterTypeFilenameTest extends BaseCheckTestSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("OuterTypeFilename");
+        final Configuration checkConfig = getModuleConfig("OuterTypeFilename");
         final String filePath = getPath("InputOuterTypeFilename2.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -70,7 +66,7 @@ public class OuterTypeFilenameTest extends BaseCheckTestSupport {
             "3: " + getCheckMessage(OuterTypeFilenameCheck.class, MSG_KEY),
         };
 
-        final Configuration checkConfig = getCheckConfig("OuterTypeFilename");
+        final Configuration checkConfig = getModuleConfig("OuterTypeFilename");
         final String filePath = getPath("InputOuterTypeFilename3.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

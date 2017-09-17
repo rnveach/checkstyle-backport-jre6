@@ -41,6 +41,20 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  */
 public final class AstTreeStringPrinter {
 
+    /**
+     * Enum to be used for test if comments should be printed.
+     */
+    public enum PrintOptions {
+        /**
+         * Comments has to be printed.
+         */
+        WITH_COMMENTS,
+        /**
+         * Comments has NOT to be printed.
+         */
+        WITHOUT_COMMENTS
+    }
+
     /** Newline pattern. */
     private static final Pattern NEWLINE = Pattern.compile("\n");
     /** Return pattern. */
@@ -64,7 +78,7 @@ public final class AstTreeStringPrinter {
      * @throws IOException if the file could not be read.
      * @throws CheckstyleException if the file is not a Java source.
      */
-    public static String printFileAst(File file, boolean withComments)
+    public static String printFileAst(File file, PrintOptions withComments)
             throws IOException, CheckstyleException {
         return printTree(parseFile(file, withComments));
     }
@@ -78,7 +92,7 @@ public final class AstTreeStringPrinter {
      */
     public static String printJavaAndJavadocTree(File file)
             throws IOException, CheckstyleException {
-        final DetailAST tree = parseFile(file, true);
+        final DetailAST tree = parseFile(file, PrintOptions.WITH_COMMENTS);
         return printJavaAndJavadocTree(tree);
     }
 
@@ -88,7 +102,7 @@ public final class AstTreeStringPrinter {
      * @return Full tree
      */
     private static String printJavaAndJavadocTree(DetailAST ast) {
-        final StringBuilder messageBuilder = new StringBuilder();
+        final StringBuilder messageBuilder = new StringBuilder(1024);
         DetailAST node = ast;
         while (node != null) {
             messageBuilder.append(getIndentation(node))
@@ -130,7 +144,8 @@ public final class AstTreeStringPrinter {
      * @return the AST of the file in String form.
      * @throws CheckstyleException if the file is not a Java source.
      */
-    public static String printAst(FileText text, boolean withComments) throws CheckstyleException {
+    public static String printAst(FileText text,
+                                  PrintOptions withComments) throws CheckstyleException {
         return printTree(parseFileText(text, withComments));
     }
 
@@ -140,7 +155,7 @@ public final class AstTreeStringPrinter {
      * @return string AST.
      */
     private static String printTree(DetailAST ast) {
-        final StringBuilder messageBuilder = new StringBuilder();
+        final StringBuilder messageBuilder = new StringBuilder(1024);
         DetailAST node = ast;
         while (node != null) {
             messageBuilder.append(getIndentation(node))
@@ -172,7 +187,7 @@ public final class AstTreeStringPrinter {
     private static String getIndentation(DetailAST ast) {
         final boolean isLastChild = ast.getNextSibling() == null;
         DetailAST node = ast;
-        final StringBuilder indentation = new StringBuilder();
+        final StringBuilder indentation = new StringBuilder(1024);
         while (node.getParent() != null) {
             node = node.getParent();
             if (node.getParent() == null) {
@@ -216,7 +231,7 @@ public final class AstTreeStringPrinter {
      * @throws IOException if the file could not be read.
      * @throws CheckstyleException if the file is not a Java source.
      */
-    private static DetailAST parseFile(File file, boolean withComments)
+    private static DetailAST parseFile(File file, PrintOptions withComments)
             throws IOException, CheckstyleException {
         final FileText text = new FileText(file.getAbsoluteFile(),
             System.getProperty("file.encoding", "UTF-8"));
@@ -230,12 +245,12 @@ public final class AstTreeStringPrinter {
      * @return the root node of the parse tree.
      * @throws CheckstyleException if the file is not a Java source.
      */
-    private static DetailAST parseFileText(FileText text, boolean withComments)
+    private static DetailAST parseFileText(FileText text, PrintOptions withComments)
             throws CheckstyleException {
         final FileContents contents = new FileContents(text);
         final DetailAST result;
         try {
-            if (withComments) {
+            if (withComments == PrintOptions.WITH_COMMENTS) {
                 result = TreeWalker.parseWithComments(contents);
             }
             else {

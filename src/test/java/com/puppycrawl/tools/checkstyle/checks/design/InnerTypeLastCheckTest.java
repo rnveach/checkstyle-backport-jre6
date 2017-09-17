@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class InnerTypeLastCheckTest extends AbstractModuleTestSupport {
     @Override
@@ -45,7 +46,7 @@ public class InnerTypeLastCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testMembersBeforeInner() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(InnerTypeLastCheck.class);
+            createModuleConfig(InnerTypeLastCheck.class);
         final String[] expected = {
             "44:9: " + getCheckMessage(MSG_KEY),
             "65:9: " + getCheckMessage(MSG_KEY),
@@ -54,6 +55,14 @@ public class InnerTypeLastCheckTest extends AbstractModuleTestSupport {
             "95:9: " + getCheckMessage(MSG_KEY),
         };
         verify(checkConfig, getPath("InputInnerTypeLastClass.java"), expected);
+    }
+
+    @Test
+    public void testIfRootClassChecked() throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(InnerTypeLastCheck.class);
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(checkConfig, getPath("InputInnerTypeLastClassRootClass.java"), expected);
     }
 
     @Test

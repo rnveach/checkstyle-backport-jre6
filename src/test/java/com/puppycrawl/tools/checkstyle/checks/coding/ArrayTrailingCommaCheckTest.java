@@ -38,7 +38,7 @@ public class ArrayTrailingCommaCheckTest
     public void testDefault()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ArrayTrailingCommaCheck.class);
+            createModuleConfig(ArrayTrailingCommaCheck.class);
         final String[] expected = {
             "17: " + getCheckMessage(MSG_KEY),
             "37: " + getCheckMessage(MSG_KEY),
@@ -49,8 +49,8 @@ public class ArrayTrailingCommaCheckTest
     @Test
     public void testTokensNotNull() {
         final ArrayTrailingCommaCheck check = new ArrayTrailingCommaCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Invalid acceptable tokens", check.getAcceptableTokens());
+        Assert.assertNotNull("Invalid default tokens", check.getDefaultTokens());
+        Assert.assertNotNull("Invalid required tokens", check.getRequiredTokens());
     }
 }

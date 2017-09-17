@@ -19,21 +19,17 @@
 
 package com.google.checkstyle.test.chapter7javadoc.rule713atclauses;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck;
 
-public class NonEmptyAtclauseDescriptionTest extends BaseCheckTestSupport {
+public class NonEmptyAtclauseDescriptionTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter7javadoc" + File.separator + "rule713atclauses"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter7javadoc/rule713atclauses";
     }
 
     @Test
@@ -55,7 +51,7 @@ public class NonEmptyAtclauseDescriptionTest extends BaseCheckTestSupport {
             "52: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("NonEmptyAtclauseDescription");
+        final Configuration checkConfig = getModuleConfig("NonEmptyAtclauseDescription");
         final String filePath = getPath("InputNonEmptyAtclauseDescriptionCheck.java");
 
         final Integer[] warnList = getLineNumbersFromExpected(expected);
@@ -76,7 +72,7 @@ public class NonEmptyAtclauseDescriptionTest extends BaseCheckTestSupport {
             "40: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("NonEmptyAtclauseDescription");
+        final Configuration checkConfig = getModuleConfig("NonEmptyAtclauseDescription");
         final String filePath = getPath("InputNonEmptyAtclauseDescriptionCheckSpaceSeq.java");
 
         final Integer[] warnList = getLineNumbersFromExpected(expected);

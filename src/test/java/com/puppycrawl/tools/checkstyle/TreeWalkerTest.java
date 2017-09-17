@@ -21,6 +21,7 @@ package com.puppycrawl.tools.checkstyle;
 
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -29,6 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,7 +43,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.internal.util.Checks;
-import org.mockito.internal.util.reflection.Whitebox;
+import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -64,14 +66,20 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class TreeWalkerTest extends BaseCheckTestSupport {
+public class TreeWalkerTest extends AbstractModuleTestSupport {
+
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
+
+    @Override
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle";
+    }
 
     @Test
     public void testProperFileExtension() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(ConstantNameCheck.class);
+                createModuleConfig(ConstantNameCheck.class);
         final File file = temporaryFolder.newFile("file.java");
         final Writer writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
@@ -92,7 +100,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     @Test
     public void testImproperFileExtension() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(ConstantNameCheck.class);
+                createModuleConfig(ConstantNameCheck.class);
         final File file = temporaryFolder.newFile("file.pdf");
         final BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
@@ -111,7 +119,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     public void testAcceptableTokens()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(HiddenFieldCheck.class);
+            createModuleConfig(HiddenFieldCheck.class);
         checkConfig.addAttribute("tokens", "VARIABLE_DEF, ENUM_DEF, CLASS_DEF, METHOD_DEF,"
                 + "IMPORT");
         try {
@@ -134,7 +142,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
 
     @Test
     public void testOnEmptyFile() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(HiddenFieldCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(HiddenFieldCheck.class);
         final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
@@ -143,11 +151,12 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
 
     @Test
     public void testWithCheckNotHavingTreeWalkerAsParent() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(JavadocPackageCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(JavadocPackageCheck.class);
 
         try {
             final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-            verify(checkConfig, temporaryFolder.newFile().getPath(), expected);
+            verify(createChecker(checkConfig, ModuleCreationOption.IN_TREEWALKER),
+                    temporaryFolder.newFile().getPath(), expected);
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException exception) {
@@ -192,7 +201,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
 
     @Test
     public void testForInvalidCheckImplementation() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(BadJavaDocCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(BadJavaDocCheck.class);
         final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
 
         try {
@@ -212,7 +221,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
             new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.configure(new DefaultConfiguration("default config"));
-        final DefaultConfiguration childConfig = createCheckConfig(JavadocParagraphCheck.class);
+        final DefaultConfiguration childConfig = createModuleConfig(JavadocParagraphCheck.class);
         treeWalker.setupChild(childConfig);
         final File file = new File("input.java");
         final List<String> lines =
@@ -230,23 +239,21 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testProcessNonJavaFilesWithoutException() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
         treeWalker.setTabWidth(1);
         treeWalker.configure(new DefaultConfiguration("default config"));
-        final File file = new File("src/main/resources/checkstyle_packages.xml");
+        final File file = new File(getPath("InputTreeWalkerNotJava.xml"));
         final FileText fileText = new FileText(file, StandardCharsets.ISO_8859_1.name());
         treeWalker.processFiltered(file, fileText);
-        final Collection<Checks> checks =
-                (Collection<Checks>) Whitebox.getInternalState(treeWalker, "ordinaryChecks");
+        final Collection<Checks> checks = Whitebox.getInternalState(treeWalker, "ordinaryChecks");
         assertTrue("No checks -> No parsing", checks.isEmpty());
     }
 
     @Test
     public void testWithCacheWithNoViolation() throws Exception {
-        final Checker checker = createChecker(createCheckConfig(HiddenFieldCheck.class));
+        final Checker checker = createChecker(createModuleConfig(HiddenFieldCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
             new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         checker.setModuleFactory(factory);
@@ -259,11 +266,11 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     @Test
     public void testProcessWithParserThrowable() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
-        treeWalker.configure(createCheckConfig(TypeNameCheck.class));
+        treeWalker.configure(createModuleConfig(TypeNameCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
             new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
-        treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
+        treeWalker.setupChild(createModuleConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
         final List<String> lines = new ArrayList<String>();
         lines.add(" classD a {} ");
@@ -281,11 +288,11 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     @Test
     public void testProcessWithRecognitionException() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
-        treeWalker.configure(createCheckConfig(TypeNameCheck.class));
+        treeWalker.configure(createModuleConfig(TypeNameCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
             new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
-        treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
+        treeWalker.setupChild(createModuleConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
         final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
@@ -303,7 +310,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     @Test
     public void testRequiredTokenIsNotInDefaultTokens() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RequiredTokenIsNotInDefaultsCheck.class);
+            createModuleConfig(RequiredTokenIsNotInDefaultsCheck.class);
         final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
 
         try {
@@ -323,7 +330,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     @Test
     public void testRequiredTokenIsEmptyIntArray() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RequiredTokenIsEmptyIntArray.class);
+            createModuleConfig(RequiredTokenIsEmptyIntArray.class);
         final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
 
         try {
@@ -336,7 +343,6 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testBehaviourWithZeroChecks() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
@@ -348,19 +354,18 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         final FileText fileText = new FileText(file, new ArrayList<String>());
 
         treeWalker.processFiltered(file, fileText);
-        final Collection<Checks> checks =
-                (Collection<Checks>) Whitebox.getInternalState(treeWalker, "ordinaryChecks");
+        final Collection<Checks> checks = Whitebox.getInternalState(treeWalker, "ordinaryChecks");
         assertTrue("No checks -> No parsing", checks.isEmpty());
     }
 
     @Test
     public void testBehaviourWithOnlyOrdinaryChecks() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
-        treeWalker.configure(createCheckConfig(TypeNameCheck.class));
+        treeWalker.configure(createModuleConfig(TypeNameCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
                 new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
-        treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
+        treeWalker.setupChild(createModuleConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
         final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
@@ -381,11 +386,11 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     @Test
     public void testBehaviourWithOnlyCommentChecks() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
-        treeWalker.configure(createCheckConfig(CommentsIndentationCheck.class));
+        treeWalker.configure(createModuleConfig(CommentsIndentationCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
                 new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
-        treeWalker.setupChild(createCheckConfig(CommentsIndentationCheck.class));
+        treeWalker.setupChild(createModuleConfig(CommentsIndentationCheck.class));
         final File file = temporaryFolder.newFile("file.java");
         final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
@@ -406,13 +411,13 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     @Test
     public void testBehaviourWithOrdinaryAndCommentChecks() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
-        treeWalker.configure(createCheckConfig(TypeNameCheck.class));
-        treeWalker.configure(createCheckConfig(CommentsIndentationCheck.class));
+        treeWalker.configure(createModuleConfig(TypeNameCheck.class));
+        treeWalker.configure(createModuleConfig(CommentsIndentationCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
                 new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
-        treeWalker.setupChild(createCheckConfig(TypeNameCheck.class));
-        treeWalker.setupChild(createCheckConfig(CommentsIndentationCheck.class));
+        treeWalker.setupChild(createModuleConfig(TypeNameCheck.class));
+        treeWalker.setupChild(createModuleConfig(CommentsIndentationCheck.class));
         final File file = temporaryFolder.newFile("file.java");
         final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
@@ -434,10 +439,10 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     public void testBehaviourWithChecksAndFilters() throws Exception {
         final DefaultConfiguration checkerConfig =
                 new DefaultConfiguration("configuration");
-        final DefaultConfiguration treeWalkerConfig = createCheckConfig(TreeWalker.class);
-        treeWalkerConfig.addChild(createCheckConfig(MemberNameCheck.class));
+        final DefaultConfiguration treeWalkerConfig = createModuleConfig(TreeWalker.class);
+        treeWalkerConfig.addChild(createModuleConfig(MemberNameCheck.class));
         final DefaultConfiguration filterConfig =
-                createCheckConfig(SuppressionCommentFilter.class);
+                createModuleConfig(SuppressionCommentFilter.class);
         filterConfig.addAttribute("checkCPP", "false");
         treeWalkerConfig.addChild(filterConfig);
         checkerConfig.addChild(treeWalkerConfig);
@@ -473,7 +478,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
                 }
             });
 
-        assertTrue(blockComment.isPresent());
+        assertTrue("Block comment should be present", blockComment.isPresent());
 
         final DetailAST commentContent = blockComment.get().getFirstChild();
         final DetailAST commentEnd = blockComment.get().getLastChild();
@@ -496,7 +501,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
                     return ast.getType() == TokenTypes.SINGLE_LINE_COMMENT;
                 }
             });
-        assertTrue(singleLineComment.isPresent());
+        assertTrue("Single line comment should be present", singleLineComment.isPresent());
 
         final DetailAST commentContent = singleLineComment.get().getFirstChild();
 
@@ -516,7 +521,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
         treeWalker.setTabWidth(100);
         treeWalker.finishLocalSetup();
 
-        final Context context = (Context) Whitebox.getInternalState(treeWalker, "childContext");
+        final Context context = Whitebox.getInternalState(treeWalker, "childContext");
         assertEquals("Classloader object differs from expected",
                 contextClassLoader, context.get("classLoader"));
         assertEquals("Severity differs from expected",
@@ -528,7 +533,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     @Test
     public void testCheckInitIsCalledInTreeWalker() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(VerifyInitCheck.class);
+                createModuleConfig(VerifyInitCheck.class);
         final File file = temporaryFolder.newFile("file.pdf");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
@@ -539,7 +544,7 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     public void testCheckDestroyIsCalledInTreeWalker() throws Exception {
         VerifyDestroyCheck.resetDestroyWasCalled();
         final DefaultConfiguration checkConfig =
-                createCheckConfig(VerifyDestroyCheck.class);
+                createModuleConfig(VerifyDestroyCheck.class);
         final File file = temporaryFolder.newFile("file.pdf");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
@@ -550,11 +555,42 @@ public class TreeWalkerTest extends BaseCheckTestSupport {
     public void testCommentCheckDestroyIsCalledInTreeWalker() throws Exception {
         VerifyDestroyCheck.resetDestroyWasCalled();
         final DefaultConfiguration checkConfig =
-                createCheckConfig(VerifyDestroyCommentCheck.class);
+                createModuleConfig(VerifyDestroyCommentCheck.class);
         final File file = temporaryFolder.newFile("file.pdf");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
         assertTrue("Destroy was not called", VerifyDestroyCheck.isDestroyWasCalled());
+    }
+
+    /**
+     * Could not find proper test case to test pitest mutations functionally.
+     * Should be rewritten during grammar update.
+     *
+     * @throws Exception when code tested throws exception
+     */
+    @Test
+    public void testIsPositionGreater() throws Exception {
+        final DetailAST ast1 = createAst(1, 3);
+        final DetailAST ast2 = createAst(1, 2);
+        final DetailAST ast3 = createAst(2, 2);
+
+        final TreeWalker treeWalker = new TreeWalker();
+        final Method isPositionGreater = Whitebox.getMethod(TreeWalker.class,
+                "isPositionGreater", DetailAST.class, DetailAST.class);
+
+        assertTrue("Should return true when lines are equal and column is greater",
+                (Boolean) isPositionGreater.invoke(treeWalker, ast1, ast2));
+        assertFalse("Should return false when lines are equal columns are equal",
+                (Boolean) isPositionGreater.invoke(treeWalker, ast1, ast1));
+        assertTrue("Should return true when line is greater",
+                (Boolean) isPositionGreater.invoke(treeWalker, ast3, ast1));
+    }
+
+    private static DetailAST createAst(int line, int column) {
+        final DetailAST ast = new DetailAST();
+        ast.setLineNo(line);
+        ast.setColumnNo(column);
+        return ast;
     }
 
     private static class BadJavaDocCheck extends AbstractCheck {

@@ -38,7 +38,7 @@ public class AvoidInlineConditionalsCheckTest
     public void testDefault()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(AvoidInlineConditionalsCheck.class);
+            createModuleConfig(AvoidInlineConditionalsCheck.class);
         final String[] expected = {
             "32:29: " + getCheckMessage(MSG_KEY),
             "33:20: " + getCheckMessage(MSG_KEY),
@@ -50,8 +50,8 @@ public class AvoidInlineConditionalsCheckTest
     @Test
     public void testTokensNotNull() {
         final AvoidInlineConditionalsCheck check = new AvoidInlineConditionalsCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

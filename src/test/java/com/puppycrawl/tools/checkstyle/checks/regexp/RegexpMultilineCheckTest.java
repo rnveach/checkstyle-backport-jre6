@@ -25,21 +25,23 @@ import static com.puppycrawl.tools.checkstyle.checks.regexp.MultilineDetector.MS
 import static com.puppycrawl.tools.checkstyle.checks.regexp.MultilineDetector.MSG_STACKOVERFLOW;
 
 import java.io.File;
-import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.puppycrawl.tools.checkstyle.BaseFileSetCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.TestLoggingReporter;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
+public class RegexpMultilineCheckTest extends AbstractModuleTestSupport {
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -47,15 +49,12 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
 
     @Before
     public void setUp() {
-        checkConfig = createCheckConfig(RegexpMultilineCheck.class);
+        checkConfig = createModuleConfig(RegexpMultilineCheck.class);
     }
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "regexp" + File.separator
-                + "regexpmultiline" + File.separator
-                + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/regexp/regexpmultiline";
     }
 
     @Test
@@ -128,6 +127,47 @@ public class RegexpMultilineCheckTest extends BaseFileSetCheckTestSupport {
             "first line \r\n second line \n\r third line".getBytes(StandardCharsets.UTF_8));
 
         verify(checkConfig, file.getPath(), expected);
+    }
+
+    @Test
+    public void testMaximum() throws Exception {
+        final String illegal = "\\r";
+        checkConfig.addAttribute("format", illegal);
+        checkConfig.addAttribute("maximum", "1");
+        final String[] expected = {
+            "3: " + getCheckMessage(MSG_REGEXP_EXCEEDED, illegal),
+        };
+
+        final File file = temporaryFolder.newFile();
+        Files7.write(new Path(file),
+                "first line \r\n second line \n\r third line".getBytes(StandardCharsets.UTF_8));
+
+        verify(checkConfig, file.getPath(), expected);
+    }
+
+    /**
+     * Done as a UT cause new instance of Detector is created each time 'verify' executed.
+     * @throws Exception some Exception
+     */
+    @Test
+    public void testStateIsBeingReset() throws Exception {
+        final TestLoggingReporter reporter = new TestLoggingReporter();
+        final DetectorOptions detectorOptions = DetectorOptions.newBuilder()
+                .reporter(reporter)
+                .format("\\r")
+                .maximum(1)
+                .build();
+
+        final MultilineDetector detector =
+                new MultilineDetector(detectorOptions);
+        final File file = temporaryFolder.newFile();
+        Files7.write(new Path(file),
+                "first line \r\n second line \n\r third line".getBytes(StandardCharsets.UTF_8));
+
+        detector.processLines(new FileText(file, StandardCharsets.UTF_8.name()));
+        detector.processLines(new FileText(file, StandardCharsets.UTF_8.name()));
+        Assert.assertEquals("Logged unexpected amount of issues",
+                2, reporter.getLogCount());
     }
 
     @Test

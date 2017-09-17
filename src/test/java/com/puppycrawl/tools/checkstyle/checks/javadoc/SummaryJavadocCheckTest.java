@@ -37,7 +37,7 @@ public class SummaryJavadocCheckTest extends AbstractModuleTestSupport {
 
     @Before
     public void setUp() {
-        checkConfig = createCheckConfig(SummaryJavadocCheck.class);
+        checkConfig = createModuleConfig(SummaryJavadocCheck.class);
     }
 
     @Override
@@ -73,14 +73,13 @@ public class SummaryJavadocCheckTest extends AbstractModuleTestSupport {
             "47: " + getCheckMessage(MSG_SUMMARY_JAVADOC),
             "53: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "58: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
-            "58: " + getCheckMessage(MSG_SUMMARY_JAVADOC),
             "69: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "83: " + getCheckMessage(MSG_SUMMARY_JAVADOC),
             "103: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "116: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
-            "121: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "121: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "126: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
-            "131: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "132: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
         };
         verify(checkConfig, getPath("InputSummaryJavadocIncorrect.java"), expected);
     }
@@ -115,9 +114,9 @@ public class SummaryJavadocCheckTest extends AbstractModuleTestSupport {
             "69: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "103: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "116: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
-            "121: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "121: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "126: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
-            "131: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "132: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
         };
 
         createChecker(checkConfig);
@@ -132,6 +131,7 @@ public class SummaryJavadocCheckTest extends AbstractModuleTestSupport {
             "17: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "24: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "31: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "51: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
         };
 
         verify(checkConfig, getPath("InputPeriodAtEnd.java"), expected);

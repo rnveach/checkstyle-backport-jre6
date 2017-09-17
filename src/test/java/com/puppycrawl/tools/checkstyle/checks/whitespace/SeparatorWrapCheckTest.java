@@ -40,7 +40,7 @@ public class SeparatorWrapCheckTest
 
     @Before
     public void setUp() {
-        checkConfig = createCheckConfig(SeparatorWrapCheck.class);
+        checkConfig = createModuleConfig(SeparatorWrapCheck.class);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class SeparatorWrapCheckTest
             TokenTypes.DOT,
             TokenTypes.COMMA,
         };
-        Assert.assertArrayEquals(expected, actual);
+        Assert.assertArrayEquals("Invalid default tokens", expected, actual);
     }
 
     @Test

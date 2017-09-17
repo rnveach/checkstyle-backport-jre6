@@ -19,21 +19,17 @@
 
 package com.google.checkstyle.test.chapter4formatting.rule4821onevariableperline;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.coding.MultipleVariableDeclarationsCheck;
 
-public class MultipleVariableDeclarationsTest extends BaseCheckTestSupport {
+public class MultipleVariableDeclarationsTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter4formatting" + File.separator + "rule4821onevariableperline"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter4formatting/rule4821onevariableperline";
     }
 
     @Test
@@ -67,7 +63,7 @@ public class MultipleVariableDeclarationsTest extends BaseCheckTestSupport {
             "89:5: " + msgComma,
         };
 
-        final Configuration checkConfig = getCheckConfig("MultipleVariableDeclarations");
+        final Configuration checkConfig = getModuleConfig("MultipleVariableDeclarations");
         final String filePath = getPath("InputMultipleVariableDeclarations.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

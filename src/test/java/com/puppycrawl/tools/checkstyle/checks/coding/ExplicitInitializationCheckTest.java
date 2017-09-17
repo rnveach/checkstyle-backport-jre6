@@ -36,7 +36,7 @@ public class ExplicitInitializationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testDefault() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ExplicitInitializationCheck.class);
+            createModuleConfig(ExplicitInitializationCheck.class);
         final String[] expected = {
             "4:17: " + getCheckMessage(MSG_KEY, "x", 0),
             "5:20: " + getCheckMessage(MSG_KEY, "bar", "null"),
@@ -66,15 +66,15 @@ public class ExplicitInitializationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTokensNotNull() {
         final ExplicitInitializationCheck check = new ExplicitInitializationCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 
     @Test
     public void testonlyObjectReferences() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ExplicitInitializationCheck.class);
+            createModuleConfig(ExplicitInitializationCheck.class);
         checkConfig.addAttribute("onlyObjectReferences", "true");
         final String[] expected = {
             "5:20: " + getCheckMessage(MSG_KEY, "bar", "null"),

@@ -19,6 +19,10 @@
 
 package com.puppycrawl.tools.checkstyle.api;
 
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -55,7 +59,8 @@ public class AbstractCheckTest {
             }
         };
         // Eventually it will become clear abstract method
-        Assert.assertArrayEquals(CommonUtils.EMPTY_INT_ARRAY, check.getRequiredTokens());
+        Assert.assertArrayEquals("Invalid number of tokens, should be empty",
+                CommonUtils.EMPTY_INT_ARRAY, check.getRequiredTokens());
     }
 
     @Test
@@ -77,7 +82,8 @@ public class AbstractCheckTest {
             }
         };
         // Eventually it will become clear abstract method
-        Assert.assertArrayEquals(CommonUtils.EMPTY_INT_ARRAY, check.getAcceptableTokens());
+        Assert.assertArrayEquals("Invalid number of tokens, should be empty",
+                CommonUtils.EMPTY_INT_ARRAY, check.getAcceptableTokens());
     }
 
     @Test
@@ -98,8 +104,11 @@ public class AbstractCheckTest {
                 return CommonUtils.EMPTY_INT_ARRAY;
             }
         };
+        final AbstractCheck checkSpy = spy(check);
         // Eventually it will become clear abstract method
-        check.visitToken(null);
+        checkSpy.visitToken(null);
+
+        verify(checkSpy, times(1)).visitToken(null);
     }
 
     @Test
@@ -124,7 +133,7 @@ public class AbstractCheckTest {
             new File(INPUT_FOLDER + "InputAbstractCheckTestFileContence.java"),
             Charset.defaultCharset().name())));
 
-        Assert.assertEquals(" * I'm a javadoc", check.getLine(3));
+        Assert.assertEquals("Invalid line content", " * I'm a javadoc", check.getLine(3));
     }
 
     @Test
@@ -148,7 +157,7 @@ public class AbstractCheckTest {
         final int tabWidth = 4;
         check.setTabWidth(tabWidth);
 
-        Assert.assertEquals(tabWidth, check.getTabWidth());
+        Assert.assertEquals("Invalid tab width", tabWidth, check.getTabWidth());
     }
 
     @Test
@@ -172,7 +181,7 @@ public class AbstractCheckTest {
         final ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         check.setClassLoader(classLoader);
 
-        Assert.assertEquals(classLoader, check.getClassLoader());
+        Assert.assertEquals("Invalid classloader", classLoader, check.getClassLoader());
     }
 
     @Test
@@ -197,9 +206,12 @@ public class AbstractCheckTest {
             }
         };
 
-        Assert.assertArrayEquals(defaultTokens, check.getDefaultTokens());
-        Assert.assertArrayEquals(defaultTokens, check.getAcceptableTokens());
-        Assert.assertArrayEquals(requiredTokens, check.getRequiredTokens());
+        Assert.assertArrayEquals("Invalid default tokens",
+                defaultTokens, check.getDefaultTokens());
+        Assert.assertArrayEquals("Invalid acceptable tokens",
+                defaultTokens, check.getAcceptableTokens());
+        Assert.assertArrayEquals("Invalid required tokens",
+                requiredTokens, check.getRequiredTokens());
     }
 
     @Test
@@ -210,9 +222,9 @@ public class AbstractCheckTest {
         check.log(0, "key", "args");
         final Collection<LocalizedMessage> messages =
                 (Collection<LocalizedMessage>) Whitebox.getInternalState(check, "messages");
-        Assert.assertEquals(1, messages.size());
+        Assert.assertEquals("Invalid message size", 1, messages.size());
         check.clearMessages();
-        Assert.assertEquals(0, messages.size());
+        Assert.assertEquals("Invalid message size", 0, messages.size());
     }
 
     private static final class DummyAbstractCheck extends AbstractCheck {

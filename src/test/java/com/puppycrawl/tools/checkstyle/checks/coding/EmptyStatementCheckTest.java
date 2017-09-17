@@ -38,7 +38,7 @@ public class EmptyStatementCheckTest
     public void testEmptyStatements()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(EmptyStatementCheck.class);
+            createModuleConfig(EmptyStatementCheck.class);
         final String[] expected = {
             "12:7: " + getCheckMessage(MSG_KEY),
             "17:7: " + getCheckMessage(MSG_KEY),
@@ -65,8 +65,8 @@ public class EmptyStatementCheckTest
     public void testTokensNotNull() {
 
         final EmptyStatementCheck check = new EmptyStatementCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

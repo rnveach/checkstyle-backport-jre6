@@ -251,4 +251,58 @@ public class JavadocParseTreeTest extends AbstractTreeTestSupport {
         verifyJavadocTree(getPath("expectedJavadocWithCrAsNewlineAst.txt"),
                 getPath("InputJavadocWithCrAsNewline.javadoc"));
     }
+
+    @Test
+    public void testNestingWithSingletonElement() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedNestingWithSingletonElementAst.txt"),
+                getHtmlPath("InputNestingWithSingletonElement.javadoc"));
+    }
+
+    @Test
+    public void testVoidElements() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedVoidElementsAst.txt"),
+                getHtmlPath("InputVoidElements.javadoc"));
+    }
+
+    @Test
+    public void testHtmlVoidElementEmbed() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedHtmlVoidElementEmbedAst.txt"),
+                getHtmlPath("InputHtmlVoidElementEmbed.javadoc"));
+    }
+
+    @Test
+    public void testSpaceBeforeDescriptionInBlockJavadocTags() throws Exception {
+        verifyJavadocTree(getDocPath("expectedSpaceBeforeDescriptionInBlockJavadocTagsAst.txt"),
+                getDocPath("InputSpaceBeforeDescriptionInBlockJavadocTags.javadoc"));
+    }
+
+    @Test
+    public void testSpaceBeforeDescriptionInInlineTags() throws Exception {
+        verifyJavadocTree(getDocPath("expectedSpaceBeforeArgsInInlineTagsAst.txt"),
+                getDocPath("InputSpaceBeforeArgsInInlineTags.javadoc"));
+    }
+
+    @Test
+    public void testHtmlVoidElementKeygen() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedHtmlVoidElementKeygenAst.txt"),
+                getHtmlPath("InputHtmlVoidElementKeygen.javadoc"));
+    }
+
+    @Test
+    public void testHtmlVoidElementSource() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedHtmlVoidElementSourceAst.txt"),
+                getHtmlPath("InputHtmlVoidElementSource.javadoc"));
+    }
+
+    @Test
+    public void testHtmlVoidElementTrack() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedHtmlVoidElementTrackAst.txt"),
+                getHtmlPath("InputHtmlVoidElementTrack.javadoc"));
+    }
+
+    @Test
+    public void testHtmlVoidElementWbr() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedHtmlVoidElementWbrAst.txt"),
+                getHtmlPath("InputHtmlVoidElementWbr.javadoc"));
+    }
 }

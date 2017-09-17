@@ -27,9 +27,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import antlr.collections.AST;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -723,13 +721,15 @@ public class VisibilityModifierCheck
      * @return true if all of generic type arguments are immutable.
      */
     private boolean areImmutableTypeArguments(List<String> typeArgsClassNames) {
-        return !Iterables.tryFind(typeArgsClassNames, new Predicate<String>() {
-            @Override
-            public boolean apply(String typeName) {
-                return !immutableClassShortNames.contains(typeName)
-                    && !immutableClassCanonicalNames.contains(typeName);
+        boolean result = true;
+        for (String typeName : typeArgsClassNames) {
+            if (!immutableClassShortNames.contains(typeName)
+                    && !immutableClassCanonicalNames.contains(typeName)) {
+                result = false;
+                break;
             }
-        }).isPresent();
+        }
+        return result;
     }
 
     /**
@@ -780,7 +780,7 @@ public class VisibilityModifierCheck
      * @return canonical type's name
      */
     private static String getCanonicalName(DetailAST type) {
-        final StringBuilder canonicalNameBuilder = new StringBuilder();
+        final StringBuilder canonicalNameBuilder = new StringBuilder(256);
         DetailAST toVisit = type.getFirstChild();
         while (toVisit != null) {
             toVisit = getNextSubTreeNode(toVisit, type);

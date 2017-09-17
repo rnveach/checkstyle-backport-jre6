@@ -111,7 +111,9 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
             }
             ++lineNumber;
         }
-        if (lineNumber > fileText.size()) {
+        // -1 as check seeks for the first duplicate occurance in file,
+        // so it cannot be the last line.
+        if (lineNumber > fileText.size() - 1) {
             lineNumber = 0;
         }
         return lineNumber;
@@ -145,6 +147,10 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
         private final Multiset<String> duplicatedKeys = HashMultiset
                 .create();
 
+        /**
+         * Puts the value into properties by the key specified.
+         * @noinspection UseOfPropertiesAsHashtable
+         */
         @Override
         public synchronized Object put(Object key, Object value) {
             final Object oldValue = super.put(key, value);

@@ -250,13 +250,15 @@ public class UnusedImportsCheck extends AbstractCheck {
      * @return a set of classes referenced in the javadoc block
      */
     private static Set<String> collectReferencesFromJavadoc(TextBlock textBlock) {
-        final Set<String> references = new HashSet<String>();
         final List<JavadocTag> tags = new ArrayList<JavadocTag>();
         // gather all the inline tags, like @link
         // INLINE tags inside BLOCKs get hidden when using ALL
         tags.addAll(getValidTags(textBlock, JavadocUtils.JavadocTagType.INLINE));
         // gather all the block-level tags, like @throws and @see
         tags.addAll(getValidTags(textBlock, JavadocUtils.JavadocTagType.BLOCK));
+
+        final Set<String> references = new HashSet<String>();
+
         for (JavadocTag tag : tags) {
             if (tag.canReferenceImports()) {
                 references.addAll(processJavadocTag(tag));

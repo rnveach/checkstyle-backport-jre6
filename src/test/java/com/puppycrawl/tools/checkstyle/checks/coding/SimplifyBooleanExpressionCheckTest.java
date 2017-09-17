@@ -37,7 +37,7 @@ public class SimplifyBooleanExpressionCheckTest
     @Test
     public void testIt() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(SimplifyBooleanExpressionCheck.class);
+            createModuleConfig(SimplifyBooleanExpressionCheck.class);
         final String[] expected = {
             "20:18: " + getCheckMessage(MSG_KEY),
             "41:36: " + getCheckMessage(MSG_KEY),
@@ -51,8 +51,8 @@ public class SimplifyBooleanExpressionCheckTest
     @Test
     public void testTokensNotNull() {
         final SimplifyBooleanExpressionCheck check = new SimplifyBooleanExpressionCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

@@ -358,6 +358,8 @@ public class PackageObjectFactory implements ModuleFactory {
     private static void fillChecksFromAnnotationPackage() {
         NAME_TO_FULL_MODULE_NAME.put("AnnotationLocationCheck",
                 BASE_PACKAGE + ".checks.annotation.AnnotationLocationCheck");
+        NAME_TO_FULL_MODULE_NAME.put("AnnotationOnSameLineCheck",
+                BASE_PACKAGE + ".checks.annotation.AnnotationOnSameLineCheck");
         NAME_TO_FULL_MODULE_NAME.put("AnnotationUseStyleCheck",
                 BASE_PACKAGE + ".checks.annotation.AnnotationUseStyleCheck");
         NAME_TO_FULL_MODULE_NAME.put("MissingDeprecatedCheck",
@@ -727,8 +729,6 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.AvoidEscapedUnicodeCharactersCheck");
         NAME_TO_FULL_MODULE_NAME.put("DescendantTokenCheck",
                 BASE_PACKAGE + ".checks.DescendantTokenCheck");
-        NAME_TO_FULL_MODULE_NAME.put("FileContentsHolder",
-                BASE_PACKAGE + ".checks.FileContentsHolder");
         NAME_TO_FULL_MODULE_NAME.put("FinalParametersCheck",
                 BASE_PACKAGE + ".checks.FinalParametersCheck");
         NAME_TO_FULL_MODULE_NAME.put("NewlineAtEndOfFileCheck",

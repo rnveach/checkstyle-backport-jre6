@@ -19,36 +19,32 @@
 
 package com.google.checkstyle.test.chapter5naming.rule528typevariablenames;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
-public class MethodTypeParameterNameTest extends BaseCheckTestSupport {
+public class MethodTypeParameterNameTest extends AbstractModuleTestSupport {
 
     private static final String MSG_KEY = "name.invalidPattern";
     private static String format;
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter5naming" + File.separator + "rule528typevariablenames"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter5naming/rule528typevariablenames";
     }
 
     @BeforeClass
     public static void setConfigurationBuilder() throws CheckstyleException {
-        format = getCheckConfig("ClassTypeParameterName").getAttribute("format");
+        format = getModuleConfig("ClassTypeParameterName").getAttribute("format");
     }
 
     @Test
     public void testMethodDefault() throws Exception {
 
-        final Configuration checkConfig = getCheckConfig("MethodTypeParameterName");
+        final Configuration checkConfig = getModuleConfig("MethodTypeParameterName");
 
         final String[] expected = {
             "9:6: " + getCheckMessage(checkConfig.getMessages(), MSG_KEY, "e_e", format),

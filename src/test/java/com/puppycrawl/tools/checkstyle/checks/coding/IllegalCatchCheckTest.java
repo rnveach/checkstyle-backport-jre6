@@ -35,7 +35,7 @@ public class IllegalCatchCheckTest extends AbstractModuleTestSupport {
 
     @Test
     public void testDefault() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(IllegalCatchCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(IllegalCatchCheck.class);
 
         final String[] expected = {
             "6:11: " + getCheckMessage(MSG_KEY, "RuntimeException"),
@@ -51,7 +51,7 @@ public class IllegalCatchCheckTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIllegalClassNames() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(IllegalCatchCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(IllegalCatchCheck.class);
         checkConfig.addAttribute("illegalClassNames",
                                  "java.lang.Error, java.lang.Exception, java.lang.Throwable");
 
@@ -67,7 +67,7 @@ public class IllegalCatchCheckTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIllegalClassNamesBad() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(IllegalCatchCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(IllegalCatchCheck.class);
         checkConfig.addAttribute("illegalClassNames",
                                  "java.lang.Error, java.lang.Exception, NullPointerException");
 
@@ -85,7 +85,7 @@ public class IllegalCatchCheckTest extends AbstractModuleTestSupport {
 
     @Test
     public void testMultipleTypes() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(IllegalCatchCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(IllegalCatchCheck.class);
 
         final String[] expected = {
             "7:11: " + getCheckMessage(MSG_KEY, "RuntimeException"),
@@ -100,8 +100,8 @@ public class IllegalCatchCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTokensNotNull() {
         final IllegalCatchCheck check = new IllegalCatchCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

@@ -21,21 +21,17 @@ package com.google.checkstyle.test.chapter4formatting.rule412nonemptyblocks;
 
 import static com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck.MSG_KEY_LINE_PREVIOUS;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck;
 
-public class LeftCurlyTest extends BaseCheckTestSupport {
+public class LeftCurlyTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter4formatting" + File.separator + "rule412nonemptyblocks"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter4formatting/rule412nonemptyblocks";
     }
 
     @Test
@@ -51,7 +47,7 @@ public class LeftCurlyTest extends BaseCheckTestSupport {
             "97:5: " + getCheckMessage(LeftCurlyCheck.class, MSG_KEY_LINE_PREVIOUS, "{", 5),
         };
 
-        final Configuration checkConfig = getCheckConfig("LeftCurly");
+        final Configuration checkConfig = getModuleConfig("LeftCurly");
         final String filePath = getPath("InputLeftCurlyBraces.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -69,7 +65,7 @@ public class LeftCurlyTest extends BaseCheckTestSupport {
             "50:5: " + getCheckMessage(LeftCurlyCheck.class, MSG_KEY_LINE_PREVIOUS, "{", 5),
         };
 
-        final Configuration checkConfig = getCheckConfig("LeftCurly");
+        final Configuration checkConfig = getModuleConfig("LeftCurly");
         final String filePath = getPath("InputLeftCurlyAnnotations.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -97,7 +93,7 @@ public class LeftCurlyTest extends BaseCheckTestSupport {
             "76:5: " + getCheckMessage(LeftCurlyCheck.class, MSG_KEY_LINE_PREVIOUS, "{", 5),
         };
 
-        final Configuration checkConfig = getCheckConfig("LeftCurly");
+        final Configuration checkConfig = getModuleConfig("LeftCurly");
         final String filePath = getPath("InputLeftCurlyMethod.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

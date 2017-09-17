@@ -48,7 +48,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testRequiredPass() throws Exception {
         final String required = "Test case file";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", required);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
@@ -58,7 +58,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testRequiredFail() throws Exception {
         final String required = "This text is not in the file";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", required);
         final String[] expected = {
             "0: " + getCheckMessage(MSG_REQUIRED_REGEXP, required),
@@ -70,7 +70,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testRequiredNoDuplicatesPass() throws Exception {
         final String required = "Test case file";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", required);
         checkConfig.addAttribute("duplicateLimit", "0");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -80,7 +80,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSetDuplicatesTrue() throws Exception {
         final String required = "Test case file";
-        final DefaultConfiguration checkConfig = createCheckConfig(RegexpCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", required);
         checkConfig.addAttribute("duplicateLimit", "-1");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -91,7 +91,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testRequiredNoDuplicatesFail() throws Exception {
         final String required = "Boolean x = new Boolean";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", required);
         checkConfig.addAttribute("duplicateLimit", "0");
         final String[] expected = {
@@ -104,7 +104,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIllegalPass() throws Exception {
         final String illegal = "This text is not in the file";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -115,7 +115,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIllegalFailBelowErrorLimit() throws Exception {
         final String illegal = "^import";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("errorLimit", "4");
@@ -131,16 +131,15 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIllegalFailAboveErrorLimit() throws Exception {
         final String illegal = "^import";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
-        checkConfig.addAttribute("errorLimit", "3");
+        checkConfig.addAttribute("errorLimit", "2");
         final String error = "The error limit has been exceeded, "
                 + "the check is aborting, there may be more unreported errors.";
         final String[] expected = {
             "7: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
-            "8: " + getCheckMessage(MSG_ILLEGAL_REGEXP, illegal),
-            "9: " + getCheckMessage(MSG_ILLEGAL_REGEXP, error + illegal),
+            "8: " + getCheckMessage(MSG_ILLEGAL_REGEXP, error + illegal),
         };
         verify(checkConfig, getPath("InputRegexpSemantic.java"), expected);
     }
@@ -150,7 +149,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final String illegal = "System\\.(out)|(err)\\.print(ln)?\\(";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         final String message = "Bad line :(";
@@ -166,7 +165,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final String illegal = "System\\.(out)|(err)\\.print(ln)?\\(";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("message", null);
@@ -180,7 +179,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIgnoreCaseTrue() throws Exception {
         final String illegal = "(?i)SYSTEM\\.(OUT)|(ERR)\\.PRINT(LN)?\\(";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         final String[] expected = {
@@ -193,7 +192,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIgnoreCaseFalse() throws Exception {
         final String illegalTrue = "(?i)SYSTEM\\.(OUT)|(ERR)\\.PRINT(LN)?\\(";
         final DefaultConfiguration checkConfigTrue =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfigTrue.addAttribute("format", illegalTrue);
         checkConfigTrue.addAttribute("illegalPattern", "true");
         final String[] expectedTrue = {
@@ -203,7 +202,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
 
         final String illegalFalse = "SYSTEM\\.(OUT)|(ERR)\\.PRINT(LN)?\\(";
         final DefaultConfiguration checkConfigFalse =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfigFalse.addAttribute("format", illegalFalse);
         checkConfigFalse.addAttribute("illegalPattern", "true");
         final String[] expectedFalse = CommonUtils.EMPTY_STRING_ARRAY;
@@ -215,7 +214,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
         // See if the comment is removed properly
         final String illegal = "don't use trailing comments";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
@@ -228,7 +227,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
         // See if the comment is removed properly
         final String illegal = "don't use trailing comments";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "false");
@@ -243,7 +242,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
         // See if the comment is removed properly
         final String illegal = "c-style 1";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
@@ -255,7 +254,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIgnoreCommentsFalseBlockStyle() throws Exception {
         final String illegal = "c-style 1";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "false");
@@ -270,7 +269,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
         // See if a second comment on the same line is removed properly
         final String illegal = "c-style 2";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
@@ -282,7 +281,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIgnoreCommentsMultiLine() throws Exception {
         final String illegal = "Let's check multi-line comments";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
@@ -294,7 +293,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIgnoreCommentsInlineStart() throws Exception {
         final String illegal = "long ms /";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
@@ -306,7 +305,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIgnoreCommentsInlineEnd() throws Exception {
         final String illegal = "int z";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
@@ -320,7 +319,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
     public void testIgnoreCommentsInlineMiddle() throws Exception {
         final String illegal = "int y";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
@@ -335,7 +334,7 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
         // make sure the comment is not turned into spaces
         final String illegal = "long ms  ";
         final DefaultConfiguration checkConfig =
-            createCheckConfig(RegexpCheck.class);
+            createModuleConfig(RegexpCheck.class);
         checkConfig.addAttribute("format", illegal);
         checkConfig.addAttribute("illegalPattern", "true");
         checkConfig.addAttribute("ignoreComments", "true");
@@ -345,8 +344,23 @@ public class RegexpCheckTest extends AbstractModuleTestSupport {
 
     @Test
     public void testOnFileStartingWithEmptyLine() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(RegexpCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(RegexpCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputRegexpStartingWithEmptyLine.java"), expected);
+    }
+
+    @Test
+    public void testIgnoreCommentsCppStyleWithIllegalPatternFalse() throws Exception {
+        // See if the comment is removed properly
+        final String illegal = "don't use trailing comments";
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(RegexpCheck.class);
+        checkConfig.addAttribute("format", illegal);
+        checkConfig.addAttribute("illegalPattern", "false");
+        checkConfig.addAttribute("ignoreComments", "true");
+        final String[] expected = {
+            "0: " + getCheckMessage(MSG_REQUIRED_REGEXP, illegal),
+        };
+        verify(checkConfig, getPath("InputRegexpTrailingComment.java"), expected);
     }
 }

@@ -35,10 +35,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.xml.bind.DatatypeConverter;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 import com.google.common.io.Flushables;
@@ -232,7 +229,7 @@ final class PropertyCacheFile {
             final MessageDigest digest = MessageDigest.getInstance("SHA-1");
             digest.update(outputStream.toByteArray());
 
-            return DatatypeConverter.printHexBinary(digest.digest());
+            return BaseEncoding.base16().upperCase().encode(digest.digest());
         }
         catch (final IOException ex) {
             // rethrow as unchecked exception
@@ -328,23 +325,22 @@ final class PropertyCacheFile {
      * @return true if the contents of external configuration resources were changed.
      */
     private boolean areExternalResourcesChanged(Set<ExternalResource> resources) {
-        return Iterables.tryFind(resources, new Predicate<ExternalResource>() {
-            @Override
-            public boolean apply(ExternalResource resource) {
-                boolean changed = false;
-                if (isResourceLocationInCache(resource.location)) {
-                    final String contentHashSum = resource.contentHashSum;
-                    final String cachedHashSum = details.getProperty(resource.location);
-                    if (!cachedHashSum.equals(contentHashSum)) {
-                        changed = true;
-                    }
+        boolean result = false;
+        for (ExternalResource resource : resources) {
+            if (isResourceLocationInCache(resource.location)) {
+                final String contentHashSum = resource.contentHashSum;
+                final String cachedHashSum = details.getProperty(resource.location);
+                if (!cachedHashSum.equals(contentHashSum)) {
+                    result = true;
+                    break;
                 }
-                else {
-                    changed = true;
-                }
-                return changed;
             }
-        }).isPresent();
+            else {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     /**

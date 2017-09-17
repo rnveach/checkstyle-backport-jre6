@@ -52,6 +52,7 @@ import com.puppycrawl.tools.checkstyle.PropertiesExpander;
 import com.puppycrawl.tools.checkstyle.ThreadModeSettings;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.RootModule;
@@ -393,9 +394,16 @@ public class CheckstyleAntTask extends Task {
             final Properties props = createOverridingProperties();
             final ThreadModeSettings threadModeSettings =
                     ThreadModeSettings.SINGLE_THREAD_MODE_INSTANCE;
-            final Configuration configuration = ConfigurationLoader.loadConfiguration(
-                    config, new PropertiesExpander(props),
-                    !executeIgnoredModules, threadModeSettings);
+            final ConfigurationLoader.IgnoredModulesOptions ignoredModulesOptions;
+            if (executeIgnoredModules) {
+                ignoredModulesOptions = ConfigurationLoader.IgnoredModulesOptions.EXECUTE;
+            }
+            else {
+                ignoredModulesOptions = ConfigurationLoader.IgnoredModulesOptions.OMIT;
+            }
+
+            final Configuration configuration = ConfigurationLoader.loadConfiguration(config,
+                    new PropertiesExpander(props), ignoredModulesOptions, threadModeSettings);
 
             final ClassLoader moduleClassLoader =
                 Checker.class.getClassLoader();
@@ -476,7 +484,8 @@ public class CheckstyleAntTask extends Task {
             if (formatters.isEmpty()) {
                 final OutputStream debug = new LogOutputStream(this, Project.MSG_DEBUG);
                 final OutputStream err = new LogOutputStream(this, Project.MSG_ERR);
-                listeners[0] = new DefaultLogger(debug, true, err, true);
+                listeners[0] = new DefaultLogger(debug, AutomaticBean.OutputStreamOptions.CLOSE,
+                        err, AutomaticBean.OutputStreamOptions.CLOSE);
             }
             else {
                 for (int i = 0; i < formatterCount; i++) {
@@ -496,7 +505,7 @@ public class CheckstyleAntTask extends Task {
      * Returns the list of files (full path name) to process.
      * @return the list of files included via the fileName, filesets and paths.
      */
-    protected List<File> getFilesToCheck() {
+    private List<File> getFilesToCheck() {
         final List<File> allFiles = new ArrayList<File>();
         if (fileName != null) {
             // oops we've got an additional one to process, don't
@@ -683,11 +692,16 @@ public class CheckstyleAntTask extends Task {
             if (toFile == null || !useFile) {
                 defaultLogger = new DefaultLogger(
                     new LogOutputStream(task, Project.MSG_DEBUG),
-                    true, new LogOutputStream(task, Project.MSG_ERR), true);
+                        AutomaticBean.OutputStreamOptions.CLOSE,
+                        new LogOutputStream(task, Project.MSG_ERR),
+                        AutomaticBean.OutputStreamOptions.CLOSE
+                );
             }
             else {
                 final FileOutputStream infoStream = new FileOutputStream(toFile);
-                defaultLogger = new DefaultLogger(infoStream, true, infoStream, false);
+                defaultLogger =
+                        new DefaultLogger(infoStream, AutomaticBean.OutputStreamOptions.CLOSE,
+                                infoStream, AutomaticBean.OutputStreamOptions.NONE);
             }
             return defaultLogger;
         }
@@ -701,10 +715,12 @@ public class CheckstyleAntTask extends Task {
         private AuditListener createXmlLogger(Task task) throws IOException {
             final AuditListener xmlLogger;
             if (toFile == null || !useFile) {
-                xmlLogger = new XMLLogger(new LogOutputStream(task, Project.MSG_INFO), true);
+                xmlLogger = new XMLLogger(new LogOutputStream(task, Project.MSG_INFO),
+                        AutomaticBean.OutputStreamOptions.CLOSE);
             }
             else {
-                xmlLogger = new XMLLogger(new FileOutputStream(toFile), true);
+                xmlLogger = new XMLLogger(new FileOutputStream(toFile),
+                        AutomaticBean.OutputStreamOptions.CLOSE);
             }
             return xmlLogger;
         }

@@ -209,9 +209,14 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
                         walk(astWithComments, contents, AstState.WITH_COMMENTS);
                     }
-                    final SortedSet<LocalizedMessage> filteredMessages =
-                            getFilteredMessages(fileName, contents);
-                    addMessages(filteredMessages);
+                    if (filters.isEmpty()) {
+                        addMessages(messages);
+                    }
+                    else {
+                        final SortedSet<LocalizedMessage> filteredMessages =
+                            getFilteredMessages(fileName, contents, rootAST);
+                        addMessages(filteredMessages);
+                    }
                     messages.clear();
                 }
             }
@@ -237,14 +242,15 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * Returns filtered set of {@link LocalizedMessage}.
      * @param fileName path to the file
      * @param fileContents the contents of the file
+     * @param rootAST root AST element {@link DetailAST} of the file
      * @return filtered set of messages
      */
-    private SortedSet<LocalizedMessage> getFilteredMessages(String fileName,
-                                                            FileContents fileContents) {
+    private SortedSet<LocalizedMessage> getFilteredMessages(
+            String fileName, FileContents fileContents, DetailAST rootAST) {
         final SortedSet<LocalizedMessage> result = new TreeSet<LocalizedMessage>(messages);
         for (LocalizedMessage element : messages) {
             final TreeWalkerAuditEvent event =
-                    new TreeWalkerAuditEvent(fileContents, fileName, element);
+                    new TreeWalkerAuditEvent(fileContents, fileName, element, rootAST);
             for (TreeWalkerFilter filter : filters) {
                 if (!filter.accept(event)) {
                     result.remove(element);
@@ -484,10 +490,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
         final String fullText = contents.getText().getFullText().toString();
         final Reader reader = new StringReader(fullText);
         final GeneratedJavaLexer lexer = new GeneratedJavaLexer(reader);
-        lexer.setFilename(contents.getFileName());
         lexer.setCommentListener(contents);
-        lexer.setTreatAssertAsKeyword(true);
-        lexer.setTreatEnumAsKeyword(true);
         lexer.setTokenObjectClass("antlr.CommonHiddenStreamToken");
 
         final TokenStreamHiddenTokenFilter filter =
@@ -531,7 +534,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     public Set<String> getExternalResourceLocations() {
         final Set<String> ordinaryChecksResources = getExternalResourceLocations(ordinaryChecks);
         final Set<String> commentChecksResources = getExternalResourceLocations(commentChecks);
-        final int resultListSize = ordinaryChecksResources.size() + commentChecksResources.size();
+        final int resultListSize = commentChecksResources.size() + ordinaryChecksResources.size();
         final Set<String> resourceLocations = new HashSet<String>(resultListSize);
         resourceLocations.addAll(ordinaryChecksResources);
         resourceLocations.addAll(commentChecksResources);
@@ -647,12 +650,9 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * @return true if position of ast1 is greater than position of ast2.
      */
     private static boolean isPositionGreater(DetailAST ast1, DetailAST ast2) {
-        final boolean isGreater;
-        if (ast1.getLineNo() == ast2.getLineNo()) {
+        boolean isGreater = ast1.getLineNo() > ast2.getLineNo();
+        if (!isGreater && ast1.getLineNo() == ast2.getLineNo()) {
             isGreater = ast1.getColumnNo() > ast2.getColumnNo();
-        }
-        else {
-            isGreater = ast1.getLineNo() > ast2.getLineNo();
         }
         return isGreater;
     }

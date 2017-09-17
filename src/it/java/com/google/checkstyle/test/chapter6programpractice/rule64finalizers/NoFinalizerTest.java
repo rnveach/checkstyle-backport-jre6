@@ -19,21 +19,17 @@
 
 package com.google.checkstyle.test.chapter6programpractice.rule64finalizers;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.coding.NoFinalizerCheck;
 
-public class NoFinalizerTest extends BaseCheckTestSupport {
+public class NoFinalizerTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter6programpractice" + File.separator + "rule64finalizers"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter6programpractice/rule64finalizers";
     }
 
     @Test
@@ -45,7 +41,7 @@ public class NoFinalizerTest extends BaseCheckTestSupport {
             "5: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("NoFinalizer");
+        final Configuration checkConfig = getModuleConfig("NoFinalizer");
         final String filePath = getPath("InputNoFinalizer.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -69,7 +65,7 @@ public class NoFinalizerTest extends BaseCheckTestSupport {
             "136: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("NoFinalizer");
+        final Configuration checkConfig = getModuleConfig("NoFinalizer");
         final String filePath = getPath("InputNoFinalizeExtend.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

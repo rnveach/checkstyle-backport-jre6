@@ -72,6 +72,12 @@
       <property name="violationSuppressXPath" value="//MethodDeclaration[@Name='getDetails' and ../../..[@Image='RightCurlyCheck']]"/>
     </properties>
   </rule>
+  <rule ref="rulesets/java/codesize.xml/ExcessiveParameterList">
+    <properties>
+      <!-- LocalizedMessage class has constructor with many parameters -->
+      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='LocalizedMessage']"/>
+    </properties>
+  </rule>
 
   <rule ref="rulesets/java/comments.xml">
     <!-- <exclude name="CommentRequired"/> -->
@@ -178,7 +184,7 @@
     <properties>
      <!-- Can not change API -->
     <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='AbstractFileSetCheck'
-    or @Image='AbstractCheck' or @Image='AbstractJavadocCheck']"/>
+    or @Image='AbstractCheck' or @Image='AbstractJavadocCheck' or @Image='AbstractNode']"/>
     </properties>
   </rule>
 

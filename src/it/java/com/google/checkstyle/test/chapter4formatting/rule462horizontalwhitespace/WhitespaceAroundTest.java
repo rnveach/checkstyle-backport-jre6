@@ -19,27 +19,23 @@
 
 package com.google.checkstyle.test.chapter4formatting.rule462horizontalwhitespace;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class WhitespaceAroundTest extends BaseCheckTestSupport {
+public class WhitespaceAroundTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter4formatting" + File.separator + "rule462horizontalwhitespace"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter4formatting/rule462horizontalwhitespace";
     }
 
     @Test
     public void testWhitespaceAroundBasic() throws Exception {
 
-        final Configuration checkConfig = getCheckConfig("WhitespaceAround");
+        final Configuration checkConfig = getModuleConfig("WhitespaceAround");
         final String msgPreceded = "ws.notPreceded";
         final String msgFollowed = "ws.notFollowed";
 
@@ -80,7 +76,7 @@ public class WhitespaceAroundTest extends BaseCheckTestSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("WhitespaceAround");
+        final Configuration checkConfig = getModuleConfig("WhitespaceAround");
         final String filePath = getPath("InputWhitespaceAroundEmptyTypesAndCycles.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

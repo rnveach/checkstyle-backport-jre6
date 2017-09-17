@@ -43,7 +43,7 @@ public class GenericWhitespaceCheckTest
 
     @Before
     public void setUp() {
-        checkConfig = createCheckConfig(GenericWhitespaceCheck.class);
+        checkConfig = createModuleConfig(GenericWhitespaceCheck.class);
     }
 
     @Override
@@ -93,6 +93,23 @@ public class GenericWhitespaceCheckTest
             "63:60: " + getCheckMessage(MSG_WS_FOLLOWED, ">"),
         };
         verify(checkConfig, getPath("InputGenericWhitespaceDefault.java"), expected);
+    }
+
+    @Test
+    public void testAtTheStartOfTheLine() throws Exception {
+        final String[] expected = {
+            "10:1: " + getCheckMessage(MSG_WS_PRECEDED, ">"),
+            "12:1: " + getCheckMessage(MSG_WS_PRECEDED, "<"),
+        };
+        verify(checkConfig, getPath("InputGenericWhitespaceAtStartOfTheLine.java"), expected);
+    }
+
+    @Test
+    public void testNestedGeneric() throws Exception {
+        final String[] expected = {
+            "11:2: " + getCheckMessage(MSG_WS_NOT_PRECEDED, "&"),
+        };
+        verify(checkConfig, getPath("InputGenericWhitespaceNested.java"), expected);
     }
 
     @Test

@@ -119,7 +119,6 @@ class ImportControl {
             patternForExactMatch = null;
             this.regex = false;
         }
-        parent.children.add(this);
     }
 
     /**
@@ -213,6 +212,14 @@ class ImportControl {
      */
     protected void addImportRule(AbstractImportRule rule) {
         rules.addFirst(rule);
+    }
+
+    /**
+     * Adds new child import control.
+     * @param importControl child import control
+     */
+    public void addChild(ImportControl importControl) {
+        children.add(importControl);
     }
 
     /**

@@ -37,7 +37,7 @@ public class StringLiteralEqualityCheckTest
     @Test
     public void testIt() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(StringLiteralEqualityCheck.class);
+            createModuleConfig(StringLiteralEqualityCheck.class);
         final String[] expected = {
             "11:18: " + getCheckMessage(MSG_KEY, "=="),
             "16:20: " + getCheckMessage(MSG_KEY, "=="),
@@ -49,8 +49,8 @@ public class StringLiteralEqualityCheckTest
     @Test
     public void testTokensNotNull() {
         final StringLiteralEqualityCheck check = new StringLiteralEqualityCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 import static com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck.MSG_ASSIGN;
 import static com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck.MSG_EXPR;
 import static com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck.MSG_IDENT;
+import static com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck.MSG_LAMBDA;
 import static com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck.MSG_LITERAL;
 import static com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck.MSG_RETURN;
 import static com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck.MSG_STRING;
@@ -47,7 +48,7 @@ public class UnnecessaryParenthesesCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testDefault() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(UnnecessaryParenthesesCheck.class);
+            createModuleConfig(UnnecessaryParenthesesCheck.class);
 
         final String[] expected = {
             "5:22: " + getCheckMessage(MSG_ASSIGN),
@@ -102,16 +103,34 @@ public class UnnecessaryParenthesesCheckTest extends AbstractModuleTestSupport {
     @Test
     public void test15Extensions() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(UnnecessaryParenthesesCheck.class);
+            createModuleConfig(UnnecessaryParenthesesCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputUnnecessaryParentheses15Extensions.java"), expected);
     }
 
     @Test
+    public void testLambdas() throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(UnnecessaryParenthesesCheck.class);
+        checkConfig.addAttribute("tokens", "LAMBDA");
+        final String[] expected = {
+            "10:35: " + getCheckMessage(MSG_LAMBDA),
+            "11:35: " + getCheckMessage(MSG_LAMBDA),
+            "18:18: " + getCheckMessage(MSG_LAMBDA),
+            "19:57: " + getCheckMessage(MSG_LAMBDA),
+            "38:25: " + getCheckMessage(MSG_LAMBDA),
+            "38:33: " + getCheckMessage(MSG_LAMBDA),
+            "41:25: " + getCheckMessage(MSG_LAMBDA),
+            "44:31: " + getCheckMessage(MSG_LAMBDA),
+        };
+        verify(checkConfig, getPath("InputUnnecessaryParenthesesLambdas.java"), expected);
+    }
+
+    @Test
     public void testTokensNotNull() {
         final UnnecessaryParenthesesCheck check = new UnnecessaryParenthesesCheck();
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

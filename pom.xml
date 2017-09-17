@@ -15,7 +15,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.1</version>
+  <version>8.2</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -44,6 +44,27 @@
       <id>rnveach</id>
       <name>Richard Veach</name>
       <roles>
+        <role>project admin, developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>sabaka</id>
+      <name>Ilja Dubinin</name>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>MEZk</id>
+      <name>Andrei Selkin</name>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>Vladlis</id>
+      <name>Vladislav Lisetskii</name>
+      <roles>
         <role>developer</role>
       </roles>
     </developer>
@@ -71,13 +92,6 @@
     <developer>
       <id>baratali</id>
       <name>Baratali Izmailov</name>
-      <roles>
-        <role>former developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>sabaka</id>
-      <name>Ilja Dubinin</name>
       <roles>
         <role>former developer</role>
       </roles>
@@ -158,14 +172,15 @@
     <projectVersion>${project.version}</projectVersion>
     <antlr4.version>4.5.3</antlr4.version>
     <maven.site.plugin.version>3.6</maven.site.plugin.version>
-    <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
+    <maven.findbugs.plugin.version>3.0.5</maven.findbugs.plugin.version>
     <maven.spotbugs.plugin.version>3.0.6</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.8</maven.pmd.plugin.version>
     <pmd.version>5.8.1</pmd.version>
     <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
+    <saxon.version>9.8.0-4</saxon.version>
     <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
     <maven.sevntu.checkstyle.plugin.version>1.24.2</maven.sevntu.checkstyle.plugin.version>
-    <maven.sevntu-checkstyle-check.checkstyle.version>8.0</maven.sevntu-checkstyle-check.checkstyle.version>
+    <maven.sevntu-checkstyle-check.checkstyle.version>8.1</maven.sevntu-checkstyle-check.checkstyle.version>
     <maven.versions.plugin.version>2.4</maven.versions.plugin.version>
     <java.version>1.6</java.version>
     <tools.jar.version>${java.version}.0</tools.jar.version>
@@ -240,13 +255,13 @@
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito</artifactId>
-      <version>1.7.0</version>
+      <version>1.7.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
-      <version>1.7.0</version>
+      <version>1.7.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -273,6 +288,11 @@
       <version>${maven.jacoco.plugin.version}</version>
       <scope>test</scope>
       <classifier>runtime</classifier>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>${saxon.version}</version>
     </dependency>
   </dependencies>
 
@@ -479,9 +499,6 @@
             <id>sevntu-checkstyle-check</id>
             <phase>verify</phase>
             <configuration>
-              <!-- skipped until sevntu-checks to 8.1 upgrade
-              see https://github.com/checkstyle/checkstyle/pull/4755 -->
-              <skip>true</skip>
               <configLocation>${project.basedir}/config/checkstyle_sevntu_checks.xml</configLocation>
               <failOnViolation>true</failOnViolation>
               <includeResources>false</includeResources>
@@ -560,7 +577,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.6.2</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -644,7 +661,7 @@
             <!-- add support for ssh/scp -->
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>2.12</version>
+            <version>3.0.0</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -939,6 +956,7 @@
               <excludes>
                 <exclude>java.header</exclude>
                 <exclude>java_regexp.header</exclude>
+                <exclude>org.eclipse.jdt.core.prefs</exclude>
               </excludes>
             </validationSet>
             <validationSet>
@@ -1266,11 +1284,16 @@
             <!-- permanent SSLHandshakeException https://issues.apache.org/jira/browse/MLINKCHECK-28 -->
             <excludedLink>https://sourceforge.net/projects/checkstyle/files/checkstyle/</excludedLink>
             <!-- permanent SSLHandshakeException -->
-            <excludedLink>http://vim.sourceforge.net/scripts/script.php?script_id=448</excludedLink>
+            <excludedLink>https://vim.sourceforge.io/</excludedLink>
+            <excludedLink>https://vim.sourceforge.io/scripts/script.php?script_id=448</excludedLink>
             <!-- permanent SSLException -->
             <excludedLink>https://button.flattr.com/flattr-badge-large.png</excludedLink>
             <!-- permanent SSLException -->
             <excludedLink>https://git-scm.com</excludedLink>
+            <!-- till https://github.com/gleclaire/findbugs-maven-plugin/pull/69 merged and released -->
+            <excludedLink>http://gleclaire.github.io/findbugs-maven-plugin/</excludedLink>
+            <!-- I do not know how to resolve this "302 Found" responce -->
+            <excludedLink>https://plus.google.com/+CheckstyleJava</excludedLink>
           </excludedLinks>
         </configuration>
       </plugin>
@@ -1389,7 +1412,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
             <executions>
               <execution>
                 <phase>package</phase>
@@ -1397,6 +1420,16 @@
                   <goal>shade</goal>
                 </goals>
                 <configuration>
+                  <filters>
+                    <filter>
+                      <artifact>*:*</artifact>
+                      <excludes>
+                        <exclude>META-INF/*.SF</exclude>
+                        <exclude>META-INF/*.DSA</exclude>
+                        <exclude>META-INF/*.RSA</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
                   <shadedArtifactAttached>true</shadedArtifactAttached>
                   <shadedClassifierName>all</shadedClassifierName>
                   <transformers>
@@ -1412,7 +1445,7 @@
           <!-- Creates the binary and source distributions -->
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
             <configuration>
               <descriptors>
                 <descriptor>config/assembly-bin.xml</descriptor>
@@ -1456,8 +1489,8 @@
                 <haltOnFailure>true</haltOnFailure>
                 <branchRate>100</branchRate>
                 <lineRate>100</lineRate>
-                <totalBranchRate>81</totalBranchRate>
-                <totalLineRate>84</totalLineRate>
+                <totalBranchRate>84</totalBranchRate>
+                <totalLineRate>89</totalLineRate>
                 <regexes>
                   <regex>
                     <pattern>com.puppycrawl.tools.checkstyle.grammars.GeneratedJavaRecognizer</pattern>
@@ -1467,17 +1500,17 @@
                   <regex>
                     <pattern>com.puppycrawl.tools.checkstyle.grammars.GeneratedJavaLexer</pattern>
                     <branchRate>79</branchRate>
-                    <lineRate>97</lineRate>
+                    <lineRate>96</lineRate>
                   </regex>
                   <regex>
                     <pattern>com.puppycrawl.tools.checkstyle.grammars.javadoc.JavadocParser</pattern>
-                    <branchRate>23</branchRate>
-                    <lineRate>27</lineRate>
+                    <branchRate>37</branchRate>
+                    <lineRate>48</lineRate>
                   </regex>
                   <regex>
                     <pattern>com.puppycrawl.tools.checkstyle.grammars.javadoc.JavadocLexer</pattern>
-                    <branchRate>41</branchRate>
-                    <lineRate>55</lineRate>
+                    <branchRate>63</branchRate>
+                    <lineRate>83</lineRate>
                   </regex>
                 </regexes>
               </check>
@@ -1534,7 +1567,6 @@
                 <param>com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.AvoidEscapedUnicodeCharactersCheck</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.DescendantTokenCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.FileContentsHolder</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.FileSetCheckLifecycle</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck</param>
@@ -1551,7 +1583,6 @@
                 <param>com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.AvoidEscapedUnicodeCharactersCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.DescendantTokenCheckTest</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.FileContentsHolderTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.FileSetCheckLifecycleTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.FinalParametersCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheckTest</param>
@@ -1564,7 +1595,7 @@
                 <param>com.puppycrawl.tools.checkstyle.checks.UniquePropertiesCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.UpperEllCheckTest</param>
               </targetTests>
-              <mutationThreshold>90</mutationThreshold>
+              <mutationThreshold>96</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -1587,6 +1618,7 @@
             <configuration>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationLocationCheck</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationOnSameLineCheck</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheck</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.MissingDeprecatedCheck</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.MissingOverrideCheck</param>
@@ -1595,13 +1627,14 @@
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationLocationCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationOnSameLineCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.MissingDeprecatedCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.MissingOverrideCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.PackageAnnotationCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.annotation.SuppressWarningsCheckTest</param>
               </targetTests>
-              <mutationThreshold>99</mutationThreshold>
+              <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -1655,7 +1688,7 @@
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.coding.*</param>
               </targetTests>
-              <mutationThreshold>95</mutationThreshold>
+              <mutationThreshold>96</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -1682,7 +1715,7 @@
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.design.*</param>
               </targetTests>
-              <mutationThreshold>98</mutationThreshold>
+              <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -1902,7 +1935,7 @@
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.regexp.*</param>
               </targetTests>
-              <mutationThreshold>93</mutationThreshold>
+              <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -1929,7 +1962,7 @@
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.sizes.*</param>
               </targetTests>
-              <mutationThreshold>94</mutationThreshold>
+              <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -1956,7 +1989,7 @@
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.whitespace.*</param>
               </targetTests>
-              <mutationThreshold>95</mutationThreshold>
+              <mutationThreshold>98</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -2032,23 +2065,6 @@
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.MainTest</param>
               </targetTests>
-              <excludedMethods>
-                <!-- till https://github.com/checkstyle/checkstyle/issues/4399 -->
-                <param>main</param>
-                <!-- till https://github.com/checkstyle/checkstyle/issues/4399 -->
-                <param>createListener</param>
-              </excludedMethods>
-              <avoidCallsTo>
-                <!-- till https://github.com/checkstyle/checkstyle/issues/4399 -->
-                <avoidCallsTo>com.google.common.io.Closeables</avoidCallsTo>
-                <!-- till https://github.com/checkstyle/checkstyle/issues/4399 -->
-                <avoidCallsTo>com.puppycrawl.tools.checkstyle.utils.CommonUtils</avoidCallsTo>
-                <!-- till https://github.com/checkstyle/checkstyle/issues/4399 -->
-                <avoidCallsTo>com.puppycrawl.tools.checkstyle.api.RootModule</avoidCallsTo>
-                <!-- add default suppressions -->
-                <avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
-                <avoidCallsTo>java.util.logging</avoidCallsTo>
-              </avoidCallsTo>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
@@ -2077,41 +2093,22 @@
                 <param>com.puppycrawl.tools.checkstyle.DetailNodeTreeStringPrinterTest</param>
                 <param>com.puppycrawl.tools.checkstyle.AstTreeStringPrinterTest</param>
                 <param>com.puppycrawl.tools.checkstyle.TreeWalkerTest</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.blocks.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.coding.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.design.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.header.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.imports.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.indentation.*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.coding.PackageDeclarationCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.imports.ImportControlCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.javadoc.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.metrics.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.modifiers.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.naming.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.regexp.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.sizes.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.whitespace.*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.metrics.ClassDataAbstractionCouplingCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.naming.TypeNameCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.sizes.MethodCountCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.whitespace.SingleSpaceSeparatorCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheckTest</param>
               </targetTests>
               <excludedMethods>
                 <!-- destroy in TreeWalker was added in case module had to free up resources before ending,
                 but currently it does nothing, so we cannot check it. If we remove this destroy we would have
                 to remove all of them as they are chained together, so we just exclude it from pitest check. -->
                 <param>destroy</param>
-                <!--till https://github.com/checkstyle/checkstyle/issues/4398 -->
-                <param>parseJavadocAsParseTree</param>
-                <!--till https://github.com/checkstyle/checkstyle/issues/4398 -->
-                <param>createJavadocNode</param>
-                <!--till https://github.com/checkstyle/checkstyle/issues/4398 -->
-                <param>getNextSibling</param>
-                <!--till https://github.com/checkstyle/checkstyle/issues/4398 -->
-                <param>isPositionGreater</param>
-                <!--till https://github.com/checkstyle/checkstyle/issues/4398 -->
-                <param>getExternalResourceLocations</param>
-                <!--till https://github.com/checkstyle/checkstyle/issues/4398 -->
-                <param>countLinesColumns</param>
-                <!--till https://github.com/checkstyle/checkstyle/issues/4398 -->
-                <param>getExternalResourceLocations</param>
-                <!--till https://github.com/checkstyle/checkstyle/issues/4398 -->
-                <param>parse</param>
               </excludedMethods>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2149,6 +2146,8 @@
               <excludedMethods>
                 <!--cause of https://github.com/checkstyle/checkstyle/issues/3605-->
                 <param>addFeaturesForVerySecureJavaInstallations</param>
+                <!-- till https://github.com/checkstyle/checkstyle/issues/4394 -->
+                <param>auditStarted</param>
               </excludedMethods>
               <avoidCallsTo>
                 <!--cause of https://github.com/checkstyle/checkstyle/issues/3605-->
@@ -2220,6 +2219,10 @@
                 <param>com.puppycrawl.tools.checkstyle.filters.SuppressWithNearbyCommentFilterTest</param>
                 <param>com.puppycrawl.tools.checkstyle.internal.AllChecksTest</param>
               </targetTests>
+              <excludedMethods>
+                <!-- till https://github.com/checkstyle/checkstyle/issues/4395 -->
+                <param>getTokenName</param>
+              </excludedMethods>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
@@ -2245,6 +2248,49 @@
                 <param>com.puppycrawl.tools.checkstyle.gui.*</param>
               </targetTests>
               <mutationThreshold>30</mutationThreshold>
+              <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
+              <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
+              <threads>${pitest.plugin.threads}</threads>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>eclipse-compiler</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <configuration>
+              <executable>.ci/eclipse-compiler-javac.sh</executable>
+              <classpathScope>compile</classpathScope>
+              <arguments>
+                <classpath />
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>pitest-checkstyle-xpath</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>${pitest.plugin.version}</version>
+            <configuration>
+              <targetClasses>
+                <param>com.puppycrawl.tools.checkstyle.xpath.*</param>
+              </targetClasses>
+              <targetTests>
+                <param>com.puppycrawl.tools.checkstyle.xpath.*</param>
+              </targetTests>
+              <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>

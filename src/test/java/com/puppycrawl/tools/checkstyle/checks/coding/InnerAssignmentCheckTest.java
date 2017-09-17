@@ -38,7 +38,7 @@ public class InnerAssignmentCheckTest
     @Test
     public void testIt() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(InnerAssignmentCheck.class);
+            createModuleConfig(InnerAssignmentCheck.class);
         final String[] expected = {
             "16:15: " + getCheckMessage(MSG_KEY),
             "16:19: " + getCheckMessage(MSG_KEY),
@@ -64,7 +64,7 @@ public class InnerAssignmentCheckTest
     @Test
     public void testLambdaExpression() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(InnerAssignmentCheck.class);
+            createModuleConfig(InnerAssignmentCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputInnerAssignmentLambdaExpressions.java"),
             expected);
@@ -73,8 +73,8 @@ public class InnerAssignmentCheckTest
     @Test
     public void testTokensNotNull() {
         final InnerAssignmentCheck check = new InnerAssignmentCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Unexpected acceptable tokenks", check.getAcceptableTokens());
+        Assert.assertNotNull("Unexpected default tokens", check.getDefaultTokens());
+        Assert.assertNotNull("Unexpected required tokens", check.getRequiredTokens());
     }
 }

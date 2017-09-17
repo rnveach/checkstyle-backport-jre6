@@ -38,7 +38,7 @@ public class CovariantEqualsCheckTest
     public void testDefault()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(CovariantEqualsCheck.class);
+            createModuleConfig(CovariantEqualsCheck.class);
         final String[] expected = {
             "11:24: " + getCheckMessage(MSG_KEY),
             "30:20: " + getCheckMessage(MSG_KEY),
@@ -53,8 +53,8 @@ public class CovariantEqualsCheckTest
     @Test
     public void testTokensNotNull() {
         final CovariantEqualsCheck check = new CovariantEqualsCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

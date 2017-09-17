@@ -101,9 +101,9 @@
   </module>
   <module name="RegexpOnFilename">
       <property name="folderPattern" value="[\\/]src[\\/]it[\\/]java[\\/]"/>
-      <property name="fileNamePattern" value="^((\w+Test)|(Base\w+))\.java$"/>
+      <property name="fileNamePattern" value="^((\w+Test)|(Abstract\w+))\.java$"/>
       <property name="match" value="false"/>
-      <message key="regexp.filepath.mismatch" value="All files in the ''src/it/java'' folder should be named ''*Test.java'' or ''Base*.java''."/>
+      <message key="regexp.filepath.mismatch" value="All files in the ''src/it/java'' folder should be named ''*Test.java'' or ''Abstract*.java''."/>
   </module>
 
   <!-- Size Violations -->
@@ -128,6 +128,25 @@
     <module name="AnnotationLocation">
       <property name="tokens" value="PARAMETER_DEF"/>
       <property name="allowSamelineMultipleAnnotations" value="true"/>
+    </module>
+    <module name="AnnotationOnSameLine">
+      <!-- we can not use it as it conflicts with AnnotationLocation -->
+      <property name="severity" value="ignore"/>
+      <property name="tokens" value="METHOD_DEF"/>
+      <property name="tokens" value="CTOR_DEF"/>
+      <property name="tokens" value="TYPECAST"/>
+      <property name="tokens" value="DOT"/>
+      <property name="tokens" value="CLASS_DEF"/>
+      <property name="tokens" value="ENUM_DEF"/>
+      <property name="tokens" value="INTERFACE_DEF"/>
+      <property name="tokens" value="TYPE_ARGUMENT"/>
+      <property name="tokens" value="ANNOTATION_DEF"/>
+      <property name="tokens" value="LITERAL_NEW"/>
+      <property name="tokens" value="LITERAL_THROWS"/>
+      <property name="tokens" value="VARIABLE_DEF"/>
+      <property name="tokens" value="PARAMETER_DEF"/>
+      <property name="tokens" value="IMPLEMENTS_CLAUSE"/>
+      <property name="tokens" value="ANNOTATION_FIELD_DEF"/>
     </module>
     <module name="AnnotationUseStyle"/>
     <module name="MissingDeprecated"/>
@@ -166,9 +185,7 @@
       <property name="option" value="text"/>
     </module>
     <module name="EmptyCatchBlock"/>
-    <module name="LeftCurly">
-      <property name="maxLineLength" value="100"/>
-    </module>
+    <module name="LeftCurly"/>
     <module name="NeedBraces"/>
     <module name="NeedBraces">
       <property name="tokens" value="LAMBDA"/>
@@ -270,11 +287,8 @@
     <module name="ParameterAssignment"/>
     <module name="RequireThis"/>
     <module name="ReturnCount">
-      <property name="maxForVoid" value="0"/>
-    </module>
-    <module name="ReturnCount">
-      <property name="id" value="returnCountMaxOne"/>
       <property name="max" value="1"/>
+      <property name="maxForVoid" value="0"/>
     </module>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
@@ -374,7 +388,6 @@
     </module>
     <module name="CommentsIndentation"/>
     <module name="DescendantToken"/>
-    <module name="FileContentsHolder"/>
     <module name="FinalParameters">
       <!--
         we will not use that fanatic validation, extra modifiers pollute a code
@@ -454,7 +467,7 @@
       <property name="ignorePattern" value="^ *\* *[^ ]+$"/>
     </module>
     <module name="MethodCount">
-      <property name="maxTotal" value="35"/>
+      <property name="maxTotal" value="34"/>
     </module>
     <module name="MethodLength"/>
     <module name="OuterTypeNumber"/>

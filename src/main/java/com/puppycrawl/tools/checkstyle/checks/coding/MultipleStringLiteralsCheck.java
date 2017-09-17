@@ -88,6 +88,7 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
      * Sets regular expression pattern for ignored strings.
      * @param ignoreStringsRegexp
      *        regular expression pattern for ignored strings
+     * @noinspection WeakerAccess
      */
     public final void setIgnoreStringsRegexp(Pattern ignoreStringsRegexp) {
         if (ignoreStringsRegexp == null || ignoreStringsRegexp.pattern().isEmpty()) {
@@ -151,15 +152,17 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
      *     token type in {@link #ignoreOccurrenceContext}.
      */
     private boolean isInIgnoreOccurrenceContext(DetailAST ast) {
+        boolean isInIgnoreOccurrenceContext = false;
         for (DetailAST token = ast;
              token.getParent() != null;
              token = token.getParent()) {
             final int type = token.getType();
             if (ignoreOccurrenceContext.get(type)) {
-                return true;
+                isInIgnoreOccurrenceContext = true;
+                break;
             }
         }
-        return false;
+        return isInIgnoreOccurrenceContext;
     }
 
     @Override

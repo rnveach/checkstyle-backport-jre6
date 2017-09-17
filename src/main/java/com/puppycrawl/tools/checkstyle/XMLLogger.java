@@ -23,8 +23,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
@@ -59,7 +64,16 @@ public class XMLLogger
     /** Close output stream in auditFinished. */
     private final boolean closeStream;
 
-    /** Helper writer that allows easy encoding and printing. */
+    /** The writer lock object. */
+    private final Object writerLock = new Object();
+
+    /** Holds all messages for the given file. */
+    private final Map<String, FileMessages> fileMessages =
+            new ConcurrentHashMap<String, FileMessages>();
+
+    /**
+     * Helper writer that allows easy encoding and printing.
+     */
     private PrintWriter writer;
 
     /**
@@ -67,10 +81,24 @@ public class XMLLogger
      * Sets the output to a defined stream.
      * @param outputStream the stream to write logs to.
      * @param closeStream close oS in auditFinished
+     * @deprecated in order to fullfil demands of BooleanParameter IDEA check.
+     * @noinspection BooleanParameter
      */
+    @Deprecated
     public XMLLogger(OutputStream outputStream, boolean closeStream) {
         setOutputStream(outputStream);
         this.closeStream = closeStream;
+    }
+
+    /**
+     * Creates a new {@code XMLLogger} instance.
+     * Sets the output to a defined stream.
+     * @param outputStream the stream to write logs to.
+     * @param outputStreamOptions if {@code CLOSE} stream should be closed in auditFinished()
+     */
+    public XMLLogger(OutputStream outputStream, OutputStreamOptions outputStreamOptions) {
+        setOutputStream(outputStream);
+        closeStream = outputStreamOptions == OutputStreamOptions.CLOSE;
     }
 
     /**
@@ -96,6 +124,10 @@ public class XMLLogger
 
     @Override
     public void auditFinished(AuditEvent event) {
+        for (Map.Entry<String, FileMessages> entry : fileMessages.entrySet()) {
+            writeFileMessages(entry.getKey(), entry.getValue());
+        }
+
         writer.println("</checkstyle>");
         if (closeStream) {
             writer.close();
@@ -107,35 +139,122 @@ public class XMLLogger
 
     @Override
     public void fileStarted(AuditEvent event) {
-        writer.println("<file name=\"" + encode(event.getFileName()) + "\">");
+        fileMessages.put(event.getFileName(), new FileMessages());
     }
 
     @Override
     public void fileFinished(AuditEvent event) {
+        final String fileName = event.getFileName();
+        final FileMessages messages = fileMessages.get(fileName);
+
+        synchronized (writerLock) {
+            writeFileMessages(fileName, messages);
+        }
+
+        fileMessages.remove(fileName);
+    }
+
+    /**
+     * Prints the file section with all file errors and exceptions.
+     * @param fileName The file name, as should be printed in the opening file tag.
+     * @param messages The file messages.
+     */
+    private void writeFileMessages(String fileName, FileMessages messages) {
+        writeFileOpeningTag(fileName);
+        if (messages != null) {
+            for (AuditEvent errorEvent : messages.getErrors()) {
+                writeFileError(errorEvent);
+            }
+            for (Throwable exception : messages.getExceptions()) {
+                writeException(exception);
+            }
+        }
+        writeFileClosingTag();
+    }
+
+    /**
+     * Prints the "file" opening tag with the given filename.
+     * @param fileName The filename to output.
+     */
+    private void writeFileOpeningTag(String fileName) {
+        writer.println("<file name=\"" + encode(fileName) + "\">");
+    }
+
+    /**
+     * Prints the "file" closing tag.
+     */
+    private void writeFileClosingTag() {
         writer.println("</file>");
     }
 
     @Override
     public void addError(AuditEvent event) {
         if (event.getSeverityLevel() != SeverityLevel.IGNORE) {
-            writer.print("<error" + " line=\"" + event.getLine() + "\"");
-            if (event.getColumn() > 0) {
-                writer.print(" column=\"" + event.getColumn() + "\"");
+            final String fileName = event.getFileName();
+            if (fileName == null) {
+                synchronized (writerLock) {
+                    writeFileError(event);
+                }
             }
-            writer.print(" severity=\""
+            else {
+                FileMessages messages = fileMessages.get(fileName);
+                if (messages == null) {
+                    messages = new FileMessages();
+                    fileMessages.put(fileName, messages);
+                }
+                messages.addError(event);
+            }
+        }
+    }
+
+    /**
+     * Outputs the given envet to the writer.
+     * @param event An event to print.
+     */
+    private void writeFileError(AuditEvent event) {
+        writer.print("<error" + " line=\"" + event.getLine() + "\"");
+        if (event.getColumn() > 0) {
+            writer.print(" column=\"" + event.getColumn() + "\"");
+        }
+        writer.print(" severity=\""
                 + event.getSeverityLevel().getName()
                 + "\"");
-            writer.print(" message=\""
+        writer.print(" message=\""
                 + encode(event.getMessage())
                 + "\"");
-            writer.println(" source=\""
-                + encode(event.getSourceName())
-                + "\"/>");
+        writer.print(" source=\"");
+        if (event.getModuleId() == null) {
+            writer.print(encode(event.getSourceName()));
         }
+        else {
+            writer.print(encode(event.getModuleId()));
+        }
+        writer.println("\"/>");
     }
 
     @Override
     public void addException(AuditEvent event, Throwable throwable) {
+        final String fileName = event.getFileName();
+        if (fileName == null) {
+            synchronized (writerLock) {
+                writeException(throwable);
+            }
+        }
+        else {
+            FileMessages messages = fileMessages.get(fileName);
+            if (messages == null) {
+                messages = new FileMessages();
+                fileMessages.put(fileName, messages);
+            }
+            messages.addException(throwable);
+        }
+    }
+
+    /**
+     * Writes the exception event to the print writer.
+     * @param throwable The
+     */
+    private void writeException(Throwable throwable) {
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter printer = new PrintWriter(stringWriter);
         printer.println("<exception>");
@@ -152,7 +271,7 @@ public class XMLLogger
      * @return the escaped value if necessary.
      */
     public static String encode(String value) {
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder(256);
         for (int i = 0; i < value.length(); i++) {
             final char chr = value.charAt(i);
             switch (chr) {
@@ -242,5 +361,48 @@ public class XMLLogger
             result = "&";
         }
         return result;
+    }
+
+    /**
+     * The registered file messages.
+     */
+    private static class FileMessages {
+        /** The file error events. */
+        private final List<AuditEvent> errors = Collections.synchronizedList(new ArrayList<AuditEvent>());
+
+        /** The file exceptions. */
+        private final List<Throwable> exceptions = Collections.synchronizedList(new ArrayList<Throwable>());
+
+        /**
+         * Returns the file error events.
+         * @return the file error events.
+         */
+        public List<AuditEvent> getErrors() {
+            return Collections.unmodifiableList(errors);
+        }
+
+        /**
+         * Adds the given error event to the messages.
+         * @param event the error event.
+         */
+        public void addError(AuditEvent event) {
+            errors.add(event);
+        }
+
+        /**
+         * Returns the file exceptions.
+         * @return the file exceptions.
+         */
+        public List<Throwable> getExceptions() {
+            return Collections.unmodifiableList(exceptions);
+        }
+
+        /**
+         * Adds the given exception to the messages.
+         * @param throwable the file exception
+         */
+        public void addException(Throwable throwable) {
+            exceptions.add(throwable);
+        }
     }
 }

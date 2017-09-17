@@ -28,7 +28,6 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class FileLengthCheckTest
@@ -38,18 +37,10 @@ public class FileLengthCheckTest
         return "com/puppycrawl/tools/checkstyle/checks/sizes/filelength";
     }
 
-    @Override
-    protected DefaultConfiguration createCheckerConfig(
-        Configuration config) {
-        final DefaultConfiguration dc = new DefaultConfiguration("root");
-        dc.addChild(config);
-        return dc;
-    }
-
     @Test
     public void testAlarm() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(FileLengthCheck.class);
+            createModuleConfig(FileLengthCheck.class);
         checkConfig.addAttribute("max", "20");
         final String[] expected = {
             "1: " + getCheckMessage(MSG_KEY, 225, 20),
@@ -60,10 +51,21 @@ public class FileLengthCheckTest
     }
 
     @Test
+    public void testFileLengthEqualToMaxLength() throws Exception {
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(FileLengthCheck.class);
+        checkConfig.addAttribute("max", "225");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(createChecker(checkConfig),
+                getPath("InputFileLength.java"),
+                getPath("InputFileLength.java"), expected);
+    }
+
+    @Test
     public void testOk() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(FileLengthCheck.class);
-        checkConfig.addAttribute("max", "2000");
+            createModuleConfig(FileLengthCheck.class);
+        checkConfig.addAttribute("max", "1000");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(createChecker(checkConfig),
                 getPath("InputFileLength.java"),
@@ -73,7 +75,7 @@ public class FileLengthCheckTest
     @Test
     public void testArgs() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(FileLengthCheck.class);
+            createModuleConfig(FileLengthCheck.class);
         try {
             checkConfig.addAttribute("max", "abc");
             createChecker(checkConfig);
@@ -92,7 +94,7 @@ public class FileLengthCheckTest
     @Test
     public void testNoAlarmByExtension() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(FileLengthCheck.class);
+                createModuleConfig(FileLengthCheck.class);
         checkConfig.addAttribute("fileExtensions", "txt");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 

@@ -47,6 +47,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
@@ -174,7 +175,7 @@ public final class Main {
      * is the number of errors found in all the files.
      * @param args the command line arguments.
      * @throws IOException if there is a problem with files access
-     * @noinspection CallToPrintStackTrace
+     * @noinspection CallToPrintStackTrace, CallToSystemExit
      **/
     public static void main(String... args) throws IOException {
         int errorCounter = 0;
@@ -228,11 +229,14 @@ public final class Main {
         }
         finally {
             // return exit code base on validation of Checker
-            if (errorCounter != 0 && !cliViolations) {
-                final LocalizedMessage errorCounterMessage = new LocalizedMessage(0,
-                        Definitions.CHECKSTYLE_BUNDLE, ERROR_COUNTER,
-                        new String[] {String.valueOf(errorCounter)}, null, Main.class, null);
-                System.out.println(errorCounterMessage.getMessage());
+            // two ifs exist till https://github.com/hcoles/pitest/issues/377
+            if (errorCounter != 0) {
+                if (!cliViolations) {
+                    final LocalizedMessage errorCounterMessage = new LocalizedMessage(0,
+                            Definitions.CHECKSTYLE_BUNDLE, ERROR_COUNTER,
+                            new String[] {String.valueOf(errorCounter)}, null, Main.class, null);
+                    System.out.println(errorCounterMessage.getMessage());
+                }
             }
             if (exitStatus != 0) {
                 System.exit(exitStatus);
@@ -389,12 +393,14 @@ public final class Main {
         if (commandLine.hasOption(OPTION_T_NAME)) {
             // print AST
             final File file = config.files.get(0);
-            final String stringAst = AstTreeStringPrinter.printFileAst(file, false);
+            final String stringAst = AstTreeStringPrinter.printFileAst(file,
+                    AstTreeStringPrinter.PrintOptions.WITHOUT_COMMENTS);
             System.out.print(stringAst);
         }
         else if (commandLine.hasOption(OPTION_CAPITAL_T_NAME)) {
             final File file = config.files.get(0);
-            final String stringAst = AstTreeStringPrinter.printFileAst(file, true);
+            final String stringAst = AstTreeStringPrinter.printFileAst(file,
+                    AstTreeStringPrinter.PrintOptions.WITH_COMMENTS);
             System.out.print(stringAst);
         }
         else if (commandLine.hasOption(OPTION_J_NAME)) {
@@ -488,9 +494,18 @@ public final class Main {
         final ThreadModeSettings multiThreadModeSettings =
                 new ThreadModeSettings(
                         cliOptions.checkerThreadsNumber, cliOptions.treeWalkerThreadsNumber);
+
+        final ConfigurationLoader.IgnoredModulesOptions ignoredModulesOptions;
+        if (cliOptions.executeIgnoredModules) {
+            ignoredModulesOptions = ConfigurationLoader.IgnoredModulesOptions.EXECUTE;
+        }
+        else {
+            ignoredModulesOptions = ConfigurationLoader.IgnoredModulesOptions.OMIT;
+        }
+
         final Configuration config = ConfigurationLoader.loadConfiguration(
                 cliOptions.configLocation, new PropertiesExpander(props),
-                !cliOptions.executeIgnoredModules, multiThreadModeSettings);
+                ignoredModulesOptions, multiThreadModeSettings);
 
         // create a listener for output
         final AuditListener listener = createListener(cliOptions.format, cliOptions.outputLocation);
@@ -579,14 +594,14 @@ public final class Main {
 
         // setup the output stream
         final OutputStream out;
-        final boolean closeOutputStream;
+        final AutomaticBean.OutputStreamOptions closeOutputStream;
         if (outputLocation == null) {
             out = System.out;
-            closeOutputStream = false;
+            closeOutputStream = AutomaticBean.OutputStreamOptions.NONE;
         }
         else {
             out = new FileOutputStream(outputLocation);
-            closeOutputStream = true;
+            closeOutputStream = AutomaticBean.OutputStreamOptions.CLOSE;
         }
 
         // setup a listener
@@ -596,11 +611,12 @@ public final class Main {
 
         }
         else if (PLAIN_FORMAT_NAME.equals(format)) {
-            listener = new DefaultLogger(out, closeOutputStream, out, false);
+            listener = new DefaultLogger(out, closeOutputStream, out,
+                    AutomaticBean.OutputStreamOptions.NONE);
 
         }
         else {
-            if (closeOutputStream) {
+            if (closeOutputStream == AutomaticBean.OutputStreamOptions.CLOSE) {
                 CommonUtils.close(out);
             }
             final LocalizedMessage outputFormatExceptionMessage = new LocalizedMessage(0,

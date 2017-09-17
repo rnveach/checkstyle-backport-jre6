@@ -20,20 +20,18 @@
 package com.google.checkstyle.test.chapter4formatting.rule43onestatement;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck;
 
-public class OneStatementPerLineTest extends BaseCheckTestSupport {
+public class OneStatementPerLineTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter4formatting" + File.separator + "rule43onestatement"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter4formatting/rule43onestatement";
     }
 
     @Test
@@ -66,7 +64,7 @@ public class OneStatementPerLineTest extends BaseCheckTestSupport {
             "307:39: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("OneStatementPerLine");
+        final Configuration checkConfig = getModuleConfig("OneStatementPerLine");
         final String filePath = getPath("InputOneStatementPerLine.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -88,7 +86,7 @@ public class OneStatementPerLineTest extends BaseCheckTestSupport {
             "43:91: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("OneStatementPerLine");
+        final Configuration checkConfig = getModuleConfig("OneStatementPerLine");
         final String filePath = new File("src/test/resources-noncompilable/"
             + "com/puppycrawl/tools/checkstyle/checks/coding/onestatementperline/"
             + "InputOneStatementPerLine.java").getCanonicalPath();

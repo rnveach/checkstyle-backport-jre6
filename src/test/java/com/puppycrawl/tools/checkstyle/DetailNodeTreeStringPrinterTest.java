@@ -19,59 +19,60 @@
 
 package com.puppycrawl.tools.checkstyle;
 
+import static com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.MSG_JAVADOC_MISSED_HTML_CLOSE;
+import static com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.MSG_JAVADOC_PARSE_RULE_ERROR;
+import static com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.MSG_JAVADOC_WRONG_SINGLETON_TAG;
 import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
+import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.ParseErrorMessage;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
-import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
-import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
-public class DetailNodeTreeStringPrinterTest {
+public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
 
-    private static String getPath(String filename) {
-        return "src/test/resources/com/puppycrawl/tools/checkstyle/astprinter/" + filename;
+    // [REFLECTION]
+    // DetailNodeTreeStringPrinter#getParseErrorMessage is used for creating error messages
+    // for validating those obtained in UTs against the ones created.
+    private static final Method GET_PARSE_ERROR_MESSAGE = Whitebox.getMethod(
+            DetailNodeTreeStringPrinter.class, "getParseErrorMessage", ParseErrorMessage.class);
+
+    @Override
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/astprinter";
     }
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(DetailNodeTreeStringPrinter.class);
+        assertUtilsClassHasPrivateConstructor(DetailNodeTreeStringPrinter.class, true);
     }
 
     @Test
     public void testParseFile() throws Exception {
-        final String actual = DetailNodeTreeStringPrinter.printFileAst(
-            new File(getPath("InputJavadocComment.javadoc")))
-                .replaceAll("\\\\r\\\\n", "\\\\n");
-        final String expected = new String(Files7.readAllBytes(Paths.get(
-            getPath("expectedInputJavadocComment.txt"))), StandardCharsets.UTF_8)
-            .replaceAll("\\\\r\\\\n", "\\\\n");
-        assertEquals(expected, actual);
+        verifyJavadocTree(getPath("expectedInputJavadocComment.txt"),
+                getPath("InputJavadocComment.javadoc"));
     }
 
     @Test
     public void testParseFileWithError() throws Exception {
-        LocalizedMessage.setLocale(Locale.ROOT);
         try {
             DetailNodeTreeStringPrinter.printFileAst(
                     new File(getPath("InputJavadocWithError.javadoc")));
-            Assert.fail("Javadoc parser didn't failed on missing end tag");
+            Assert.fail("Javadoc parser didn't fail on missing end tag");
         }
         catch (IllegalArgumentException ex) {
-            final String expected = "[ERROR:0] Javadoc comment at column 1 has parse error. "
-                    + "Missed HTML close tag 'qwe'. Sometimes it means that close tag missed "
-                    + "for one of previous tags.";
-            assertEquals(expected, ex.getMessage());
+            final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                    new ParseErrorMessage(0, MSG_JAVADOC_MISSED_HTML_CLOSE, 1, "qwe"));
+            assertEquals("Generated and expected parse error messages don't match",
+                    expected, ex.getMessage());
         }
     }
 
@@ -83,29 +84,154 @@ public class DetailNodeTreeStringPrinterTest {
 
         final DetailAST testCommentBlock =
                 (DetailAST) createFakeBlockComment.invoke(null, "test_comment");
-        assertEquals(TokenTypes.BLOCK_COMMENT_BEGIN, testCommentBlock.getType());
-        assertEquals("/*", testCommentBlock.getText());
-        assertEquals(0, testCommentBlock.getLineNo());
+        assertEquals("Invalid token type",
+                TokenTypes.BLOCK_COMMENT_BEGIN, testCommentBlock.getType());
+        assertEquals("Invalid text", "/*", testCommentBlock.getText());
+        assertEquals("Invalid line number", 0, testCommentBlock.getLineNo());
 
         final DetailAST contentCommentBlock = testCommentBlock.getFirstChild();
-        assertEquals(TokenTypes.COMMENT_CONTENT, contentCommentBlock.getType());
-        assertEquals("*test_comment", contentCommentBlock.getText());
-        assertEquals(0, contentCommentBlock.getLineNo());
-        assertEquals(-1, contentCommentBlock.getColumnNo());
+        assertEquals("Invalid tiken type",
+                TokenTypes.COMMENT_CONTENT, contentCommentBlock.getType());
+        assertEquals("Invalid text", "*test_comment", contentCommentBlock.getText());
+        assertEquals("Invalid line number", 0, contentCommentBlock.getLineNo());
+        assertEquals("Invalid column number", -1, contentCommentBlock.getColumnNo());
 
         final DetailAST endCommentBlock = contentCommentBlock.getNextSibling();
-        assertEquals(TokenTypes.BLOCK_COMMENT_END, endCommentBlock.getType());
-        assertEquals("*/", endCommentBlock.getText());
+        assertEquals("Invalid tiken type", TokenTypes.BLOCK_COMMENT_END, endCommentBlock.getType());
+        assertEquals("Invalid text", "*/", endCommentBlock.getText());
     }
 
     @Test
     public void testNoUnnecessaryTextinJavadocAst() throws Exception {
-        final String actual = DetailNodeTreeStringPrinter.printFileAst(
-                new File(getPath("InputNoUnnecessaryTextInJavadocAst.javadoc")))
-                .replaceAll("\\\\r\\\\n", "\\\\n");
-        final String expected = new String(Files7.readAllBytes(Paths.get(
-                getPath("expectedNoUnnecessaryTextInJavadocAst.txt"))), StandardCharsets.UTF_8)
-                .replaceAll("\\\\r\\\\n", "\\\\n");
-        assertEquals(expected, actual);
+        verifyJavadocTree(getPath("expectedNoUnnecessaryTextInJavadocAst.txt"),
+                getPath("InputNoUnnecessaryTextInJavadocAst.javadoc"));
     }
+
+    @Test
+    public void testMissedHtmlTagParseErrorMessage() throws Exception {
+        final String actual = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                new ParseErrorMessage(35, MSG_JAVADOC_MISSED_HTML_CLOSE, 7, "xyz"));
+        final LocalizedMessage localizedMessage = new LocalizedMessage(
+                35,
+                "com.puppycrawl.tools.checkstyle.checks.javadoc.messages",
+                MSG_JAVADOC_MISSED_HTML_CLOSE,
+                new Object[] {7, "xyz"},
+                "",
+                DetailNodeTreeStringPrinter.class,
+                null);
+        final String expected = "[ERROR:35] " + localizedMessage.getMessage();
+        assertEquals("Javadoc parse error message for missed HTML tag doesn't meet expectations",
+                expected, actual);
+    }
+
+    @Test
+    public void testParseErrorMessage() throws Exception {
+        final String actual = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                new ParseErrorMessage(10, MSG_JAVADOC_PARSE_RULE_ERROR,
+                        9, "no viable alternative at input ' xyz'", "SOME_JAVADOC_ELEMENT"));
+        final LocalizedMessage localizedMessage = new LocalizedMessage(
+                10,
+                "com.puppycrawl.tools.checkstyle.checks.javadoc.messages",
+                MSG_JAVADOC_PARSE_RULE_ERROR,
+                new Object[] {9, "no viable alternative at input ' xyz'", "SOME_JAVADOC_ELEMENT"},
+                "",
+                DetailNodeTreeStringPrinter.class,
+                null);
+        final String expected = "[ERROR:10] " + localizedMessage.getMessage();
+        assertEquals("Javadoc parse error message doesn't meet expectations", expected, actual);
+    }
+
+    @Test
+    public void testWrongSingletonParseErrorMessage() throws Exception {
+        final String actual = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                new ParseErrorMessage(100, MSG_JAVADOC_WRONG_SINGLETON_TAG,
+                        9, "tag"));
+        final LocalizedMessage localizedMessage = new LocalizedMessage(
+                100,
+                "com.puppycrawl.tools.checkstyle.checks.javadoc.messages",
+                MSG_JAVADOC_WRONG_SINGLETON_TAG,
+                new Object[] {9, "tag"},
+                "",
+                DetailNodeTreeStringPrinter.class,
+                null);
+        final String expected = "[ERROR:100] " + localizedMessage.getMessage();
+        assertEquals("Javadoc parse error message for void elements with close tag "
+                + "doesn't meet expectations", expected, actual);
+    }
+
+    @Test
+    public void testUnescapedJavaCodeWithGenericsInJavadoc() throws Exception {
+        try {
+            DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
+                    "InputUnescapedJavaCodeWithGenericsInJavadoc.javadoc")));
+        }
+        catch (IllegalArgumentException ex) {
+            final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                    new ParseErrorMessage(35, MSG_JAVADOC_MISSED_HTML_CLOSE, 7, "parsing"));
+            assertEquals("Generated and expected parse error messages don't match",
+                    expected, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testNoViableAltException() throws Exception {
+        try {
+            DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
+                    "InputNoViableAltException.javadoc")));
+        }
+        catch (IllegalArgumentException ex) {
+            final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                    new ParseErrorMessage(0, MSG_JAVADOC_PARSE_RULE_ERROR,
+                            9, "no viable alternative at input ' <<'", "JAVADOC_TAG"));
+            assertEquals("Generated and expected parse error messages don't match",
+                    expected, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testHtmlTagCloseBeforeTagOpen() throws Exception {
+        try {
+            DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
+                    "InputHtmlTagCloseBeforeTagOpen.javadoc"
+            )));
+        }
+        catch (IllegalArgumentException ex) {
+            final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                    new ParseErrorMessage(0, MSG_JAVADOC_PARSE_RULE_ERROR,
+                            4, "no viable alternative at input '</tag'", "HTML_ELEMENT"));
+            assertEquals("Generated and expected parse error messages don't match",
+                    expected, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testWrongHtmlTagOrder() throws Exception {
+        try {
+            DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
+                    "InputWrongHtmlTagOrder.javadoc"
+            )));
+        }
+        catch (IllegalArgumentException ex) {
+            final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                    new ParseErrorMessage(0, MSG_JAVADOC_MISSED_HTML_CLOSE, 10, "tag2"));
+            assertEquals("Generated and expected parse error messages don't match",
+                    expected, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testOmittedStartTagForHtmlElement() throws Exception {
+        try {
+            DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
+                    "InputOmittedStartTagForHtmlElement.javadoc"
+            )));
+        }
+        catch (IllegalArgumentException ex) {
+            final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
+                    new ParseErrorMessage(0, MSG_JAVADOC_MISSED_HTML_CLOSE, 3, "a"));
+            assertEquals("Generated and expected parse error messages don't match",
+                    expected, ex.getMessage());
+        }
+    }
+
 }

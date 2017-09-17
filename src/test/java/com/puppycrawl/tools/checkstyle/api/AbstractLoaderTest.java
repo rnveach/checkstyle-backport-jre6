@@ -44,14 +44,14 @@ public class AbstractLoaderTest {
     public void testParserConfiguratedSuccefully() throws Exception {
         final DummyLoader dummyLoader = new DummyLoader(new HashMap<String, String>(1));
         final XMLReader parser = Whitebox.getInternalState(dummyLoader, "parser");
-        assertTrue(parser.getFeature(NAMESPACES_FEATURE));
-        assertEquals(dummyLoader, parser.getEntityResolver());
+        assertTrue("Invalid feature state", parser.getFeature(NAMESPACES_FEATURE));
+        assertEquals("Invalid entity resoler", dummyLoader, parser.getEntityResolver());
     }
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
         assertUtilsClassHasPrivateConstructor(
-                AbstractLoader.FeaturesForVerySecureJavaInstallations.class);
+                AbstractLoader.FeaturesForVerySecureJavaInstallations.class, true);
     }
 
     private static final class DummyLoader extends AbstractLoader {

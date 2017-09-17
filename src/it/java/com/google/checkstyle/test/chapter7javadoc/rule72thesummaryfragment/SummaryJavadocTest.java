@@ -19,22 +19,18 @@
 
 package com.google.checkstyle.test.chapter7javadoc.rule72thesummaryfragment;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class SummaryJavadocTest extends BaseCheckTestSupport {
+public class SummaryJavadocTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter7javadoc" + File.separator + "rule72thesummaryfragment"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter7javadoc/rule72thesummaryfragment";
     }
 
     @Test
@@ -42,7 +38,7 @@ public class SummaryJavadocTest extends BaseCheckTestSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("SummaryJavadoc");
+        final Configuration checkConfig = getModuleConfig("SummaryJavadoc");
         final String filePath = getPath("InputCorrectSummaryJavaDocCheck.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -65,14 +61,13 @@ public class SummaryJavadocTest extends BaseCheckTestSupport {
             "37: " + msgFirstSentence,
             "47: " + msgForbiddenFragment,
             "53: " + msgMissingDoc,
-            "58: " + msgForbiddenFragment,
             "58: " + msgMissingDoc,
             "69: " + msgMissingDoc,
             "83: " + msgForbiddenFragment,
             "103: " + msgMissingDoc,
         };
 
-        final Configuration checkConfig = getCheckConfig("SummaryJavadoc");
+        final Configuration checkConfig = getModuleConfig("SummaryJavadoc");
         final String filePath = getPath("InputIncorrectSummaryJavaDocCheck.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

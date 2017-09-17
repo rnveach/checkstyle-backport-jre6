@@ -22,35 +22,42 @@ package com.puppycrawl.tools.checkstyle.checks.imports;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class ImportControlRegExpInPkgTest {
-    private final ImportControl icRoot = new ImportControl("com\\.[^.]+\\.courtlink", true);
-    private final ImportControl icCommon = new ImportControl(icRoot, "com+on", true);
+    private ImportControl icRoot;
+    private ImportControl icCommon;
+
+    @Before
+    public void setUp() {
+        icRoot = new ImportControl("com\\.[^.]+\\.courtlink", true);
+        icCommon = new ImportControl(icRoot, "com+on", true);
+        icRoot.addChild(icCommon);
+    }
 
     @Test
     public void testRegExpInRootIsConsidered() {
-        assertNull(icRoot.locateFinest("com"));
-        assertNull(icRoot.locateFinest("com/hurz/courtlink"));
-        assertNull(icRoot.locateFinest("com.hurz.hurz.courtlink"));
-        assertEquals(icRoot, icRoot
-                .locateFinest("com.hurz.courtlink.domain"));
-        assertEquals(icRoot, icRoot
+        assertNull("Package should not be null", icRoot.locateFinest("com"));
+        assertNull("Package should not be null", icRoot.locateFinest("com/hurz/courtlink"));
+        assertNull("Package should not be null", icRoot.locateFinest("com.hurz.hurz.courtlink"));
+        assertEquals("Invalid package", icRoot, icRoot.locateFinest("com.hurz.courtlink.domain"));
+        assertEquals("Invalid package", icRoot, icRoot
                 .locateFinest("com.kazgroup.courtlink.domain"));
     }
 
     @Test
     public void testRegExpInSubpackageIsConsidered() {
-        assertEquals(icCommon, icRoot
+        assertEquals("Invalid package", icCommon, icRoot
                 .locateFinest("com.kazgroup.courtlink.common.api"));
-        assertEquals(icCommon, icRoot
+        assertEquals("Invalid package", icCommon, icRoot
                 .locateFinest("com.kazgroup.courtlink.comon.api"));
     }
 
     @Test
     public void testEnsureTrailingDot() {
-        assertNull(icRoot.locateFinest("com.kazgroup.courtlinkkk"));
-        assertNull(icRoot.locateFinest("com.kazgroup.courtlink/common.api"));
+        assertNull("Invalid package", icRoot.locateFinest("com.kazgroup.courtlinkkk"));
+        assertNull("Invalid package", icRoot.locateFinest("com.kazgroup.courtlink/common.api"));
     }
 
     @Test
@@ -58,10 +65,11 @@ public class ImportControlRegExpInPkgTest {
         // the regular expression has to be adjusted to (com\.foo|com\.bar)
         final ImportControl root = new ImportControl("com\\.foo|com\\.bar", true);
         final ImportControl common = new ImportControl(root, "common", false);
-        assertEquals(root, root.locateFinest("com.foo"));
-        assertEquals(common, root.locateFinest("com.foo.common"));
-        assertEquals(root, root.locateFinest("com.bar"));
-        assertEquals(common, root.locateFinest("com.bar.common"));
+        root.addChild(common);
+        assertEquals("Invalid package", root, root.locateFinest("com.foo"));
+        assertEquals("Invalid package", common, root.locateFinest("com.foo.common"));
+        assertEquals("Invalid package", root, root.locateFinest("com.bar"));
+        assertEquals("Invalid package", common, root.locateFinest("com.bar.common"));
     }
 
     @Test
@@ -69,10 +77,11 @@ public class ImportControlRegExpInPkgTest {
         // the regular expression has to be adjusted to (com\.foo|com\.bar)
         final ImportControl root = new ImportControl("(com\\.foo|com\\.bar)", true);
         final ImportControl common = new ImportControl(root, "common", false);
-        assertEquals(root, root.locateFinest("com.foo"));
-        assertEquals(common, root.locateFinest("com.foo.common"));
-        assertEquals(root, root.locateFinest("com.bar"));
-        assertEquals(common, root.locateFinest("com.bar.common"));
+        root.addChild(common);
+        assertEquals("Invalid package", root, root.locateFinest("com.foo"));
+        assertEquals("Invalid package", common, root.locateFinest("com.foo.common"));
+        assertEquals("Invalid package", root, root.locateFinest("com.bar"));
+        assertEquals("Invalid package", common, root.locateFinest("com.bar.common"));
     }
 
     @Test
@@ -80,13 +89,14 @@ public class ImportControlRegExpInPkgTest {
         final ImportControl root = new ImportControl("org.somewhere", false);
         // the regular expression has to be adjusted to (foo|bar)
         final ImportControl subpackages = new ImportControl(root, "foo|bar", true);
-        assertEquals(root, root.locateFinest("org.somewhere"));
-        assertEquals(subpackages, root.locateFinest("org.somewhere.foo"));
-        assertEquals(subpackages, root.locateFinest("org.somewhere.bar"));
+        root.addChild(subpackages);
+        assertEquals("Invalid package", root, root.locateFinest("org.somewhere"));
+        assertEquals("Invalid package", subpackages, root.locateFinest("org.somewhere.foo"));
+        assertEquals("Invalid package", subpackages, root.locateFinest("org.somewhere.bar"));
     }
 
     @Test
     public void testUnknownPkg() {
-        assertNull(icRoot.locateFinest("net.another"));
+        assertNull("Package should not be null", icRoot.locateFinest("net.another"));
     }
 }

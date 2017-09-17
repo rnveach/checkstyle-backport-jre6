@@ -6,7 +6,7 @@
 
 <suppressions>
     <suppress checks="FileLength"
-              files="TokenTypes.java"
+              files="TokenTypes.java|IndentationCheckTest.java"
               lines="1"/>
 
     <!-- illegal words are part of Javadoc -->
@@ -21,7 +21,7 @@
               files="AbstractClassNameCheck.java"/>
     <!-- test should be named as their main class -->
     <suppress checks="AbstractClassNameCheck"
-              files="AbstractCheckTest.java|AbstractClassNameCheckTest.java|AbstractTypeAwareCheckTest.java|AbstractJavadocCheckTest.java|AbstractViolationReporterTest.java|AbstractFileSetCheckTest.java|AbstractLoaderTest.java"/>
+              files="AbstractCheckTest.java|AbstractClassNameCheckTest.java|AbstractTypeAwareCheckTest.java|AbstractJavadocCheckTest.java|AbstractViolationReporterTest.java|AbstractFileSetCheckTest.java|AbstractLoaderTest.java|AbstractNodeTest.java"/>
 
     <!-- Tone down the checking for test code -->
     <suppress checks="CyclomaticComplexity" files="[\\/]XdocsPagesTest\.java"/>
@@ -32,7 +32,7 @@
     <suppress checks="Javadoc" files=".*[\\/]src[\\/](test|it)[\\/]"/>
     <suppress checks="MagicNumber" files=".*[\\/]src[\\/](test|it)[\\/]"/>
     <suppress checks="AvoidStaticImport" files=".*[\\/]src[\\/](test|it)[\\/]"/>
-    <suppress checks="ClassDataAbstractionCoupling" files="[\\/]IndentationCheckTest.java$|[\\/]SuppressWithNearbyCommentFilterTest.java$|[\\/]SuppressionCommentFilterTest.java$"/>
+    <suppress checks="ClassDataAbstractionCoupling" files="[\\/]IndentationCheckTest.java$|[\\/]SuppressWithNearbyCommentFilterTest.java$|[\\/]SuppressionCommentFilterTest.java|[\\/]DetailASTTest.java$"/>
     <suppress checks="EqualsAvoidNull" files="[\\/]Int.*FilterTest.java$"/>
     <suppress checks="VisibilityModifier" files="[\\/]BaseCheckTestSupport.java$|[\\/]AbstractModuleTestSupport.java$"/>
     <suppress checks="WriteTag" files=".*[\\/]src[\\/](test|it)[\\/]"/>
@@ -49,9 +49,12 @@
     <suppress checks="ExecutableStatementCount" files=".*GeneratedJavaTokenTypesTest\.java"/>
     <suppress checks="JavaNCSS" files=".*GeneratedJavaTokenTypesTest\.java"/>
     <suppress checks="ExecutableStatementCount" files=".*IllegalInstantiationCheckTest\.java"/>
+    <suppress checks="ExecutableStatementCount" files=".*Main\.java"/>
 
-    <suppress checks="." files=".*JavadocTokenTypes\.java"/>
-    <suppress checks="." files=".*ParseTreeBuilder\.java"/>
+    <!-- till https://github.com/checkstyle/checkstyle/issues/4983 -->
+    <suppress checks="MissingDeprecated" files=".*JavadocTokenTypes\.java"/>
+    <!-- till https://github.com/checkstyle/checkstyle/issues/4984 -->
+    <suppress checks="DeclarationOrder" files=".*JavadocTokenTypes\.java"/>
 
     <!-- Till https://github.com/checkstyle/checkstyle/issues/1854 -->
     <suppress checks="TrailingComment" files="(InnerAssignmentCheck\.java|OperatorWrapCheck\.java|XMLLoggerTest\.java|AbbreviationAsWordInNameCheckTest\.java)"/>
@@ -82,17 +85,14 @@
     <!-- a lot of GUI elements is OK -->
     <suppress checks="ClassDataAbstractionCoupling" files="(TreeTable|MainFrame)\.java"/>
 
-    <!-- Should be fixed after moving https://github.com/sevntu-checkstyle/sevntu.checkstyle/blob/master/sevntu-checks/src/main/java/com/github/sevntu/checkstyle/checks/coding/ReturnCountExtendedCheck.java into the main repo -->
-    <suppress checks="ReturnCount" files="(ClassResolver|ConfigurationLoader|IndentationCheckTest)\.java"/>
+    <!-- Should be fixed after moving https://github.com/sevntu-checkstyle/sevntu.checkstyle/blob/master/sevntu-checks/src/main/java/com/github/sevntu/checkstyle/checks/coding/ReturnCountExtendedCheck.java into the main repo, to allow skip guard sentences(or by topLinesToIgnoreCount) -->
+    <suppress checks="ReturnCount" files="(ConfigurationLoader|LambdaHandler)\.java"/>
 
     <!-- Suppressions from PMD configuration-->
     <!-- JavadocMethodCheck, JavadocStyleCheck, JavadocUtils.getJavadocTags() - deprecated -->
     <suppress checks="CyclomaticComplexity" files="JavadocMethodCheck\.java"/>
     <suppress checks="CyclomaticComplexity" files="JavadocStyleCheck\.java"/>
     <suppress checks="CyclomaticComplexity" files="CustomImportOrderCheck\.java"/>
-
-    <!-- Until https://github.com/checkstyle/checkstyle/issues/3496 -->
-    <suppress id="returnCountMaxOne" files=".*[\\/]coding[\\/]|.*[\\/]indentation[\\/]"/>
 
     <!-- HandlerFactory crosses allowed limit for executable statements -->
     <suppress checks="ExecutableStatementCount" files="HandlerFactory\.java"/>

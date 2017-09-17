@@ -19,21 +19,17 @@
 
 package com.google.checkstyle.test.chapter4formatting.rule4841indentation;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseIndentationCheckSupport;
+import com.google.checkstyle.test.base.AbstractIndentationTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class IndentationTest extends BaseIndentationCheckSupport {
+public class IndentationTest extends AbstractIndentationTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter4formatting" + File.separator + "rule4841indentation"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter4formatting/rule4841indentation";
     }
 
     @Test
@@ -41,7 +37,7 @@ public class IndentationTest extends BaseIndentationCheckSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("Indentation");
+        final Configuration checkConfig = getModuleConfig("Indentation");
         final String filePath = getPath("InputIndentationCorrectClass.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -53,7 +49,7 @@ public class IndentationTest extends BaseIndentationCheckSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("Indentation");
+        final Configuration checkConfig = getModuleConfig("Indentation");
         final String filePath = getPath("InputIndentationCorrectFieldAndParameter.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -65,7 +61,7 @@ public class IndentationTest extends BaseIndentationCheckSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("Indentation");
+        final Configuration checkConfig = getModuleConfig("Indentation");
         final String filePath = getPath("InputIndentationCorrectForAndParameter.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -77,7 +73,7 @@ public class IndentationTest extends BaseIndentationCheckSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("Indentation");
+        final Configuration checkConfig = getModuleConfig("Indentation");
         final String filePath = getPath("InputIndentationCorrectIfAndParameter.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -89,7 +85,7 @@ public class IndentationTest extends BaseIndentationCheckSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("Indentation");
+        final Configuration checkConfig = getModuleConfig("Indentation");
         final String filePath = getPath("InputIndentationCorrect.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -101,7 +97,7 @@ public class IndentationTest extends BaseIndentationCheckSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("Indentation");
+        final Configuration checkConfig = getModuleConfig("Indentation");
         final String filePath = getPath("InputIndentationCorrectReturnAndParameter.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -113,7 +109,7 @@ public class IndentationTest extends BaseIndentationCheckSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("Indentation");
+        final Configuration checkConfig = getModuleConfig("Indentation");
         final String filePath = getPath("InputIndentationCorrectWhileDoWhileAndParameter.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

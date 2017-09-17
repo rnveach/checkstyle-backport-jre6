@@ -363,11 +363,12 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
      * @return the next relevant token
      */
     private static DetailAST skipVariableAssign(final DetailAST currentAST) {
+        DetailAST result = currentAST;
         if (currentAST.getType() == TokenTypes.ASSIGN
                 && currentAST.getFirstChild().getType() == TokenTypes.IDENT) {
-            return currentAST.getFirstChild().getNextSibling();
+            result = currentAST.getFirstChild().getNextSibling();
         }
-        return currentAST;
+        return result;
     }
 
     /**
@@ -607,12 +608,14 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
          * @return true if this FieldFrame contains instance field field.
          */
         public DetailAST findField(String name) {
+            DetailAST resultField = null;
             for (DetailAST field: fields) {
                 if (getFieldName(field).equals(name)) {
-                    return field;
+                    resultField = field;
+                    break;
                 }
             }
-            return null;
+            return resultField;
         }
 
         /**

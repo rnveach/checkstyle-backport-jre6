@@ -19,14 +19,24 @@
 
 package com.puppycrawl.tools.checkstyle;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.FailedPredicateException;
+import org.antlr.v4.runtime.InputMismatchException;
+import org.antlr.v4.runtime.NoViableAltException;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -71,12 +81,6 @@ public class JavadocDetailNodeParser {
      * Error message key for common javadoc errors.
      */
     public static final String MSG_KEY_PARSE_ERROR = "javadoc.parse.error";
-
-    /**
-     * Unrecognized error from antlr parser.
-     */
-    public static final String MSG_KEY_UNRECOGNIZED_ANTLR_ERROR =
-            "javadoc.unrecognized.antlr.error";
 
     /** Symbols with which javadoc starts. */
     private static final String JAVADOC_START = "/**";
@@ -125,31 +129,51 @@ public class JavadocDetailNodeParser {
             result.setTree(tree);
         }
         catch (ParseCancellationException ex) {
-            // If syntax error occurs then message is printed by error listener
-            // and parser throws this runtime exception to stop parsing.
-            // Just stop processing current Javadoc comment.
-            ParseErrorMessage parseErrorMessage = errorListener.getErrorMessage();
+            ParseErrorMessage parseErrorMessage = null;
 
-            // There are cases when antlr error listener does not handle syntax error
+            if (ex.getCause() instanceof FailedPredicateException
+                    || ex.getCause() instanceof NoViableAltException) {
+                final RecognitionException recognitionEx = (RecognitionException) ex.getCause();
+                if (recognitionEx.getCtx() instanceof JavadocParser.HtmlTagContext) {
+                    final Token htmlTagNameStart = getMissedHtmlTag(recognitionEx);
+                    parseErrorMessage = new ParseErrorMessage(
+                            errorListener.offset + htmlTagNameStart.getLine(),
+                            MSG_JAVADOC_MISSED_HTML_CLOSE,
+                            htmlTagNameStart.getCharPositionInLine(),
+                            htmlTagNameStart.getText());
+                }
+            }
+
             if (parseErrorMessage == null) {
-                parseErrorMessage = new ParseErrorMessage(javadocCommentAst.getLineNo(),
-                        MSG_KEY_UNRECOGNIZED_ANTLR_ERROR,
-                        javadocCommentAst.getColumnNo(), ex.getMessage());
+                // If syntax error occurs then message is printed by error listener
+                // and parser throws this runtime exception to stop parsing.
+                // Just stop processing current Javadoc comment.
+                parseErrorMessage = errorListener.getErrorMessage();
             }
 
             result.setParseErrorMessage(parseErrorMessage);
         }
         catch (IllegalArgumentException ex) {
-            // If syntax error occurs then message is printed by error listener
-            // and parser throws this runtime exception to stop parsing.
-            // Just stop processing current Javadoc comment.
-            ParseErrorMessage parseErrorMessage = errorListener.getErrorMessage();
+            ParseErrorMessage parseErrorMessage = null;
 
-            // There are cases when antlr error listener does not handle syntax error
+            if (ex.getCause() instanceof FailedPredicateException
+                    || ex.getCause() instanceof NoViableAltException) {
+                final RecognitionException recognitionEx = (RecognitionException) ex.getCause();
+                if (recognitionEx.getCtx() instanceof JavadocParser.HtmlTagContext) {
+                    final Token htmlTagNameStart = getMissedHtmlTag(recognitionEx);
+                    parseErrorMessage = new ParseErrorMessage(
+                            errorListener.offset + htmlTagNameStart.getLine(),
+                            MSG_JAVADOC_MISSED_HTML_CLOSE,
+                            htmlTagNameStart.getCharPositionInLine(),
+                            htmlTagNameStart.getText());
+                }
+            }
+
             if (parseErrorMessage == null) {
-                parseErrorMessage = new ParseErrorMessage(javadocCommentAst.getLineNo(),
-                        MSG_KEY_UNRECOGNIZED_ANTLR_ERROR,
-                        javadocCommentAst.getColumnNo(), ex.getMessage());
+                // If syntax error occurs then message is printed by error listener
+                // and parser throws this runtime exception to stop parsing.
+                // Just stop processing current Javadoc comment.
+                parseErrorMessage = errorListener.getErrorMessage();
             }
 
             result.setParseErrorMessage(parseErrorMessage);
@@ -170,12 +194,6 @@ public class JavadocDetailNodeParser {
 
         final JavadocLexer lexer = new JavadocLexer(input);
 
-        // remove default error listeners
-        lexer.removeErrorListeners();
-
-        // add custom error listener that logs parsing errors
-        lexer.addErrorListener(errorListener);
-
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
 
         final JavadocParser parser = new JavadocParser(tokens);
@@ -188,7 +206,7 @@ public class JavadocDetailNodeParser {
 
         // This strategy stops parsing when parser error occurs.
         // By default it uses Error Recover Strategy which is slow and useless.
-        parser.setErrorHandler(new BailErrorStrategy());
+        parser.setErrorHandler(new JavadocParserErrorStrategy());
 
         return parser.javadoc();
     }
@@ -297,14 +315,14 @@ public class JavadocDetailNodeParser {
         final JavadocNodeImpl rootJavadocNode = createJavadocNode(parseTreeNode, null, -1);
 
         final int childCount = parseTreeNode.getChildCount();
-        final JavadocNodeImpl[] children = new JavadocNodeImpl[childCount];
+        final DetailNode[] children = rootJavadocNode.getChildren();
 
         for (int i = 0; i < childCount; i++) {
             final JavadocNodeImpl child = createJavadocNode(parseTreeNode.getChild(i),
                     rootJavadocNode, i);
             children[i] = child;
         }
-        rootJavadocNode.setChildren((DetailNode[]) children);
+        rootJavadocNode.setChildren(children);
         return rootJavadocNode;
     }
 
@@ -395,15 +413,11 @@ public class JavadocDetailNodeParser {
 
         if (node.getParent() != null) {
             final ParseTree parent = node.getParent();
-            final int childCount = parent.getChildCount();
-
             int index = 0;
             while (true) {
                 final ParseTree currentNode = parent.getChild(index);
                 if (currentNode.equals(node)) {
-                    if (index != childCount - 1) {
-                        nextSibling = parent.getChild(index + 1);
-                    }
+                    nextSibling = parent.getChild(index + 1);
                     break;
                 }
                 index++;
@@ -460,6 +474,60 @@ public class JavadocDetailNodeParser {
     }
 
     /**
+     * Method to get the missed HTML tag to generate more informative error message for the user.
+     * This method doesn't concern itself with
+     * <a href="https://www.w3.org/TR/html51/syntax.html#void-elements">void elements</a>
+     * since it is forbidden to close them.
+     * Missed HTML tags for the following tags will <i>not</i> generate an error message from ANTLR:
+     * {@code
+     * <p>
+     * <li>
+     * <tr>
+     * <td>
+     * <th>
+     * <body>
+     * <colgroup>
+     * <dd>
+     * <dt>
+     * <head>
+     * <html>
+     * <option>
+     * <tbody>
+     * <thead>
+     * <tfoot>
+     * }
+     * @param exception {@code NoViableAltException} object catched while parsing javadoc
+     * @return returns appropriate {@link Token} if a HTML close tag is missed;
+     *     null otherwise
+     */
+    private static Token getMissedHtmlTag(RecognitionException exception) {
+        Token htmlTagNameStart = null;
+        final Interval sourceInterval = exception.getCtx().getSourceInterval();
+        final List<Token> tokenList = ((BufferedTokenStream) exception.getInputStream())
+                .getTokens(sourceInterval.a, sourceInterval.b);
+        final Deque<Token> stack = new ArrayDeque<Token>();
+        for (int i = 0; i < tokenList.size(); i++) {
+            final Token token = tokenList.get(i);
+            if (token.getType() == JavadocTokenTypes.HTML_TAG_NAME
+                    && tokenList.get(i - 1).getType() == JavadocTokenTypes.START) {
+                stack.push(token);
+            }
+            else if (token.getType() == JavadocTokenTypes.HTML_TAG_NAME && !stack.isEmpty()) {
+                if (stack.peek().getText().equals(token.getText())) {
+                    stack.pop();
+                }
+                else {
+                    htmlTagNameStart = stack.pop();
+                }
+            }
+        }
+        if (htmlTagNameStart == null) {
+            htmlTagNameStart = stack.pop();
+        }
+        return htmlTagNameStart;
+    }
+
+    /**
      * Custom error listener for JavadocParser that prints user readable errors.
      */
     private static class DescriptiveErrorListener extends BaseErrorListener {
@@ -511,17 +579,11 @@ public class JavadocDetailNodeParser {
                 int line, int charPositionInLine,
                 String msg, RecognitionException ex) {
             final int lineNumber = offset + line;
-            final Token token = (Token) offendingSymbol;
 
-            if (MSG_JAVADOC_MISSED_HTML_CLOSE.equals(msg)) {
+            if (MSG_JAVADOC_WRONG_SINGLETON_TAG.equals(msg)) {
                 errorMessage = new ParseErrorMessage(lineNumber,
-                        MSG_JAVADOC_MISSED_HTML_CLOSE, charPositionInLine, token.getText());
-
-                throw new IllegalArgumentException(msg);
-            }
-            else if (MSG_JAVADOC_WRONG_SINGLETON_TAG.equals(msg)) {
-                errorMessage = new ParseErrorMessage(lineNumber,
-                        MSG_JAVADOC_WRONG_SINGLETON_TAG, charPositionInLine, token.getText());
+                        MSG_JAVADOC_WRONG_SINGLETON_TAG, charPositionInLine,
+                        ((Token) offendingSymbol).getText());
 
                 throw new IllegalArgumentException(msg);
             }
@@ -640,6 +702,24 @@ public class JavadocDetailNodeParser {
          */
         public Object[] getMessageArguments() {
             return messageArguments.clone();
+        }
+    }
+
+    /**
+     * <a href="http://www.antlr.org/api/Java/org/antlr/v4/runtime/BailErrorStrategy.html">
+     * BailErrorStrategy</a> is used to make ANTLR generated parser bail out on the first error
+     * in parser and not attempt any recovery methods but it doesn't report error to the
+     * listeners. This class is to ensure proper error reporting.
+     *
+     * @see DescriptiveErrorListener
+     * @see <a href="http://www.antlr.org/api/Java/org/antlr/v4/runtime/ANTLRErrorStrategy.html">
+     *     ANTLRErrorStrategy</a>
+     */
+    private static class JavadocParserErrorStrategy extends BailErrorStrategy {
+        @Override
+        public Token recoverInline(Parser recognizer) {
+            reportError(recognizer, new InputMismatchException(recognizer));
+            return super.recoverInline(recognizer);
         }
     }
 

@@ -44,7 +44,7 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testCalculation() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(NPathComplexityCheck.class);
+            createModuleConfig(NPathComplexityCheck.class);
 
         checkConfig.addAttribute("max", "0");
         final String[] expected = {
@@ -65,7 +65,7 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testCalculation2() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(NPathComplexityCheck.class);
+            createModuleConfig(NPathComplexityCheck.class);
 
         checkConfig.addAttribute("max", "0");
         final String[] expected = {
@@ -91,7 +91,7 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIntegerOverflow() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(NPathComplexityCheck.class);
+            createModuleConfig(NPathComplexityCheck.class);
 
         checkConfig.addAttribute("max", "0");
 
@@ -107,7 +107,7 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testDefaultConfiguration() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(NPathComplexityCheck.class);
+            createModuleConfig(NPathComplexityCheck.class);
 
         createChecker(checkConfig);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -136,8 +136,8 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
             TokenTypes.LITERAL_RETURN,
             TokenTypes.LITERAL_DEFAULT,
         };
-        Assert.assertNotNull(actual);
-        Assert.assertArrayEquals(expected, actual);
+        Assert.assertNotNull("Acceptable tokens should not be null", actual);
+        Assert.assertArrayEquals("Invalid acceptable tokens", expected, actual);
     }
 
     @Test
@@ -162,8 +162,8 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
             TokenTypes.LITERAL_RETURN,
             TokenTypes.LITERAL_DEFAULT,
         };
-        Assert.assertNotNull(actual);
-        Assert.assertArrayEquals(expected, actual);
+        Assert.assertNotNull("Required tokens should not be null", actual);
+        Assert.assertArrayEquals("Invalid required tokens", expected, actual);
     }
 
     @Test

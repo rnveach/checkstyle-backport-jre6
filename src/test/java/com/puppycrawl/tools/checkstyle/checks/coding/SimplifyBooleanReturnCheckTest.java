@@ -37,7 +37,7 @@ public class SimplifyBooleanReturnCheckTest
     @Test
     public void testIt() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(SimplifyBooleanReturnCheck.class);
+            createModuleConfig(SimplifyBooleanReturnCheck.class);
         final String[] expected = {
             "20:9: " + getCheckMessage(MSG_KEY),
             "33:9: " + getCheckMessage(MSG_KEY),
@@ -48,8 +48,8 @@ public class SimplifyBooleanReturnCheckTest
     @Test
     public void testTokensNotNull() {
         final SimplifyBooleanReturnCheck check = new SimplifyBooleanReturnCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

@@ -33,7 +33,7 @@ public class NoWhitespaceBeforeCheckTest
 
     @Before
     public void setUp() {
-        checkConfig = createCheckConfig(NoWhitespaceBeforeCheck.class);
+        checkConfig = createModuleConfig(NoWhitespaceBeforeCheck.class);
     }
 
     @Override
@@ -94,5 +94,24 @@ public class NoWhitespaceBeforeCheckTest
             "18:60: " + getCheckMessage(MSG_KEY, "::"),
         };
         verify(checkConfig, getPath("InputNoWhitespaceBeforeMethodRef.java"), expected);
+    }
+
+    @Test
+    public void testDotAtTheStartOfTheLine() throws Exception {
+        checkConfig.addAttribute("tokens", "DOT");
+        final String[] expected = {
+            "2:1: " + getCheckMessage(MSG_KEY, "."),
+        };
+        verify(checkConfig, getPath("InputNoWhitespaceBeforeAtStartOfTheLine.java"), expected);
+    }
+
+    @Test
+    public void testMethodRefAtTheStartOfTheLine() throws Exception {
+        checkConfig.addAttribute("tokens", "METHOD_REF");
+        checkConfig.addAttribute("allowLineBreaks", "yes");
+        final String[] expected = {
+            "14:2: " + getCheckMessage(MSG_KEY, "::"),
+        };
+        verify(checkConfig, getPath("InputNoWhitespaceBeforeAtStartOfTheLine.java"), expected);
     }
 }

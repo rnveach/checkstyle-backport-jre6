@@ -61,7 +61,7 @@ public class ParameterNumberCheckTest
     public void testDefault()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ParameterNumberCheck.class);
+            createModuleConfig(ParameterNumberCheck.class);
         final String[] expected = {
             "194:10: " + getCheckMessage(MSG_KEY, 7, 9),
         };
@@ -72,7 +72,7 @@ public class ParameterNumberCheckTest
     public void testNum()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ParameterNumberCheck.class);
+            createModuleConfig(ParameterNumberCheck.class);
         checkConfig.addAttribute("max", "2");
         final String[] expected = {
             "71:9: " + getCheckMessage(MSG_KEY, 2, 3),
@@ -82,10 +82,20 @@ public class ParameterNumberCheckTest
     }
 
     @Test
+    public void testMaxParam()
+            throws Exception {
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(ParameterNumberCheck.class);
+        checkConfig.addAttribute("max", "9");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(checkConfig, getPath("InputParameterNumberSimple.java"), expected);
+    }
+
+    @Test
     public void shouldLogActualParameterNumber()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ParameterNumberCheck.class);
+            createModuleConfig(ParameterNumberCheck.class);
         checkConfig.addMessage("maxParam", "{0},{1}");
         final String[] expected = {
             "194:10: 7,9",
@@ -97,7 +107,7 @@ public class ParameterNumberCheckTest
     public void shouldIgnoreMethodsWithOverrideAnnotation()
             throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(ParameterNumberCheck.class);
+                createModuleConfig(ParameterNumberCheck.class);
         checkConfig.addAttribute("ignoreOverriddenMethods", "true");
         final String[] expected = {
             "6:10: " + getCheckMessage(MSG_KEY, 7, 8),

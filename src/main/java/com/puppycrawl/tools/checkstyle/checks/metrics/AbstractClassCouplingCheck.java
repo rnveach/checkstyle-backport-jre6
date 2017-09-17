@@ -112,14 +112,6 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     }
 
     /**
-     * Returns allowed complexity.
-     * @return allowed complexity.
-     */
-    public final int getMax() {
-        return max;
-    }
-
-    /**
      * Sets maximum allowed complexity.
      * @param max allowed complexity.
      */
@@ -249,6 +241,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
 
     /**
      * Encapsulates information about classes coupling inside single file.
+     * @noinspection ThisEscapedInObjectConstruction
      */
     private class FileContext {
         /** A map of (imported class name -> class name with package) pairs. */
@@ -438,7 +431,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
 
             if (referencedClassNames.size() > max) {
                 log(lineNo, columnNo, getLogMessageId(),
-                        referencedClassNames.size(), getMax(),
+                        referencedClassNames.size(), max,
                         referencedClassNames.toString());
             }
         }

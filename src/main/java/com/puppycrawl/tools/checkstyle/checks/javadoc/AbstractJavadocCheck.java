@@ -70,11 +70,6 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
      */
     public static final String MSG_KEY_PARSE_ERROR =
             JavadocDetailNodeParser.MSG_KEY_PARSE_ERROR;
-    /**
-     * Unrecognized error from antlr parser.
-     */
-    public static final String MSG_KEY_UNRECOGNIZED_ANTLR_ERROR =
-            JavadocDetailNodeParser.MSG_KEY_UNRECOGNIZED_ANTLR_ERROR;
 
     /**
      * Key is "line:column". Value is {@link DetailNode} tree. Map is stored in {@link ThreadLocal}
@@ -89,18 +84,19 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
         };
 
     /**
-     * Parses content of Javadoc comment as DetailNode tree.
+     * The file context.
+     * @noinspection ThreadLocalNotStaticFinal
      */
-    private final JavadocDetailNodeParser parser = new JavadocDetailNodeParser();
+    private final ThreadLocal<FileContext> context =
+        new ThreadLocal<FileContext>() {
+            @Override
+            protected FileContext initialValue() {
+                return new FileContext();
+            }
+        };
 
     /** The javadoc tokens the check is interested in. */
     private final Set<Integer> javadocTokens = new HashSet<Integer>();
-
-    /**
-     * DetailAST node of considered Javadoc comment that is just a block comment
-     * in Java language syntax tree.
-     */
-    private DetailAST blockCommentAst;
 
     /**
      * Returns the default javadoc token types a check is interested in.
@@ -198,6 +194,7 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
      * Called before the starting to process a tree.
      * @param rootAst
      *        the root of the tree
+     * @noinspection WeakerAccess
      */
     public void beginJavadocTree(DetailNode rootAst) {
         // No code by default, should be overridden only by demand at subclasses
@@ -207,6 +204,7 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
      * Called after finished processing a tree.
      * @param rootAst
      *        the root of the tree
+     * @noinspection WeakerAccess
      */
     public void finishJavadocTree(DetailNode rootAst) {
         // No code by default, should be overridden only by demand at subclasses
@@ -263,7 +261,7 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
     public final void visitToken(DetailAST blockCommentNode) {
         if (JavadocUtils.isJavadocComment(blockCommentNode)) {
             // store as field, to share with child Checks
-            blockCommentAst = blockCommentNode;
+            context.get().blockCommentAst = blockCommentNode;
 
             final String treeCacheKey = blockCommentNode.getLineNo() + ":"
                     + blockCommentNode.getColumnNo();
@@ -274,7 +272,7 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
                 result = TREE_CACHE.get().get(treeCacheKey);
             }
             else {
-                result = parser.parseJavadocAsDetailNode(blockCommentNode);
+                result = context.get().parser.parseJavadocAsDetailNode(blockCommentNode);
                 TREE_CACHE.get().put(treeCacheKey, result);
             }
 
@@ -296,7 +294,7 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
      * @return A block comment in the syntax tree.
      */
     protected DetailAST getBlockCommentAst() {
-        return blockCommentAst;
+        return context.get().blockCommentAst;
     }
 
     /**
@@ -351,4 +349,19 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
         return javadocTokens.contains(curNode.getType());
     }
 
+    /**
+     * The file context holder.
+     */
+    private static class FileContext {
+        /**
+         * Parses content of Javadoc comment as DetailNode tree.
+         */
+        private final JavadocDetailNodeParser parser = new JavadocDetailNodeParser();
+
+        /**
+         * DetailAST node of considered Javadoc comment that is just a block comment
+         * in Java language syntax tree.
+         */
+        private DetailAST blockCommentAst;
+    }
 }

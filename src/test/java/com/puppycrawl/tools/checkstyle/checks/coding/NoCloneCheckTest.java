@@ -41,7 +41,7 @@ public class NoCloneCheckTest
     public void testHasClone()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(NoCloneCheck.class);
+            createModuleConfig(NoCloneCheck.class);
         final String[] expected = {
             "10: " + getCheckMessage(MSG_KEY),
             "27: " + getCheckMessage(MSG_KEY),
@@ -57,8 +57,8 @@ public class NoCloneCheckTest
     @Test
     public void testTokensNotNull() {
         final NoCloneCheck check = new NoCloneCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

@@ -19,20 +19,16 @@
 
 package com.google.checkstyle.test.chapter2filebasic.rule232specialescape;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
-public class IllegalTokenTextTest extends BaseCheckTestSupport {
+public class IllegalTokenTextTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter2filebasic" + File.separator + "rule232specialescape"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter2filebasic/rule232specialescape";
     }
 
     @Test
@@ -103,7 +99,7 @@ public class IllegalTokenTextTest extends BaseCheckTestSupport {
             "162:29: " + message,
         };
 
-        final Configuration checkConfig = getCheckConfig("IllegalTokenText");
+        final Configuration checkConfig = getModuleConfig("IllegalTokenText");
         final String filePath = getPath("InputIllegalTokenText.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

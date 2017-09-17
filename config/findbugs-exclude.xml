@@ -98,9 +98,9 @@
         <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
     </Match>
     <Match>
-        <!-- Until https://github.com/checkstyle/checkstyle/issues/3573 -->
-        <Class name="com.puppycrawl.tools.checkstyle.checks.FileContentsHolder" />
-        <Method name="beginTree"/>
-        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+        <!-- false-positive. Bugs reported even though casting is done only after verification using instanceof -->
+        <Class name="com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser"/>
+        <Method name="parseJavadocAsDetailNode"/>
+        <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
     </Match>
 </FindBugsFilter>

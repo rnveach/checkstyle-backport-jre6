@@ -263,7 +263,7 @@ public final class CheckUtil {
             tokenText = "TokenTypes.";
         }
         else {
-            final StringBuilder result = new StringBuilder();
+            final StringBuilder result = new StringBuilder(50);
             boolean first = true;
 
             for (int token : tokens) {
@@ -313,7 +313,7 @@ public final class CheckUtil {
     }
 
     public static String getJavadocTokenText(int[] tokens, int... subtractions) {
-        final StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder(50);
         boolean first = true;
 
         for (int token : tokens) {

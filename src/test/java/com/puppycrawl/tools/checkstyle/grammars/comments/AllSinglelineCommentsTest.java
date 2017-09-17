@@ -19,45 +19,36 @@
 
 package com.puppycrawl.tools.checkstyle.grammars.comments;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class AllSinglelineCommentsTest extends BaseCheckTestSupport {
+public class AllSinglelineCommentsTest extends AbstractModuleTestSupport {
     private static final Set<String> ALL_COMMENTS = new LinkedHashSet<String>();
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("grammars" + File.separator
-                + "comments" + File.separator + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/grammars/comments";
     }
 
     @Test
     public void testAllBlockComments() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(SinglelineCommentListenerCheck.class);
+            createModuleConfig(SinglelineCommentListenerCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputFullOfSinglelineComments.java"), expected);
-        Assert.assertTrue(ALL_COMMENTS.isEmpty());
-    }
-
-    @Test
-    public void testAstTree() throws Exception {
-        verifyAst(getPath("InputFullOfSinglelineCommentsAst.txt"),
-                getPath("InputFullOfSinglelineComments.java"), true);
+        Assert.assertTrue("All comments should be empty", ALL_COMMENTS.isEmpty());
     }
 
     private static class SinglelineCommentListenerCheck extends AbstractCheck {

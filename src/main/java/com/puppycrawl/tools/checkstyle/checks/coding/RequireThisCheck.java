@@ -527,12 +527,19 @@ public class RequireThisCheck extends AbstractCheck {
      * @return the token which ends the code block.
      */
     private static DetailAST getBlockEndToken(DetailAST blockNameIdent, DetailAST blockStartToken) {
-        final Set<DetailAST> rcurlyTokens = getAllTokensOfType(blockNameIdent, TokenTypes.RCURLY);
         DetailAST blockEndToken = null;
-        for (DetailAST currentRcurly : rcurlyTokens) {
-            final DetailAST parent = currentRcurly.getParent();
-            if (blockStartToken.getLineNo() == parent.getLineNo()) {
-                blockEndToken = currentRcurly;
+        final DetailAST blockNameIdentParent = blockNameIdent.getParent();
+        if (blockNameIdentParent.getType() == TokenTypes.CASE_GROUP) {
+            blockEndToken = blockNameIdentParent.getNextSibling();
+        }
+        else {
+            final Set<DetailAST> rcurlyTokens = getAllTokensOfType(blockNameIdent,
+                    TokenTypes.RCURLY);
+            for (DetailAST currentRcurly : rcurlyTokens) {
+                final DetailAST parent = currentRcurly.getParent();
+                if (blockStartToken.getLineNo() == parent.getLineNo()) {
+                    blockEndToken = currentRcurly;
+                }
             }
         }
         return blockEndToken;
@@ -795,11 +802,13 @@ public class RequireThisCheck extends AbstractCheck {
      */
     private AbstractFrame getMethodWithoutThis(DetailAST ast) {
         AbstractFrame result = null;
-        final AbstractFrame frame = findFrame(ast, true);
-        if (!validateOnlyOverlapping
-                && ((ClassFrame) frame).hasInstanceMethod(ast)
-                && !((ClassFrame) frame).hasStaticMethod(ast)) {
-            result = frame;
+        if (!validateOnlyOverlapping) {
+            final AbstractFrame frame = findFrame(ast, true);
+            if (frame != null
+                    && ((ClassFrame) frame).hasInstanceMethod(ast)
+                    && !((ClassFrame) frame).hasStaticMethod(ast)) {
+                result = frame;
+            }
         }
         return result;
     }

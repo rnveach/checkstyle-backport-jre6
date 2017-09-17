@@ -19,33 +19,34 @@
 
 package com.puppycrawl.tools.checkstyle.checks.regexp;
 
-import static com.puppycrawl.tools.checkstyle.checks.regexp.MultilineDetector.MSG_REGEXP_EXCEEDED;
-import static com.puppycrawl.tools.checkstyle.checks.regexp.MultilineDetector.MSG_REGEXP_MINIMUM;
+import static com.puppycrawl.tools.checkstyle.checks.regexp.SinglelineDetector.MSG_REGEXP_EXCEEDED;
+import static com.puppycrawl.tools.checkstyle.checks.regexp.SinglelineDetector.MSG_REGEXP_MINIMUM;
 
 import java.io.File;
-import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.BaseFileSetCheckTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.TestLoggingReporter;
+import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class RegexpSinglelineCheckTest extends BaseFileSetCheckTestSupport {
+public class RegexpSinglelineCheckTest extends AbstractModuleTestSupport {
+    private static final String[] EMPTY = {};
     private DefaultConfiguration checkConfig;
 
     @Before
     public void setUp() {
-        checkConfig = createCheckConfig(RegexpSinglelineCheck.class);
+        checkConfig = createModuleConfig(RegexpSinglelineCheck.class);
     }
 
     @Override
-    protected String getPath(String filename) throws IOException {
-        return super.getPath("checks" + File.separator
-                + "regexp" + File.separator
-                + "regexpsingleline" + File.separator
-                + filename);
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/checks/regexp/regexpsingleline";
     }
 
     @Test
@@ -116,5 +117,37 @@ public class RegexpSinglelineCheckTest extends BaseFileSetCheckTestSupport {
         };
 
         verify(checkConfig, getPath("InputRegexpSinglelineSemantic.java"), expected);
+    }
+
+    @Test
+    public void testMaximum() throws Exception {
+        final String illegal = "System\\.(out)|(err)\\.print(ln)?\\(";
+        checkConfig.addAttribute("format", illegal);
+        checkConfig.addAttribute("maximum", "1");
+        verify(checkConfig, getPath("InputRegexpSinglelineSemantic.java"), EMPTY);
+    }
+
+    /**
+     * Done as a UT cause new instance of Detector is created each time 'verify' executed.
+     * @throws Exception some Exception
+     */
+    @Test
+    public void testStateIsBeingReset() throws Exception {
+        final String illegal = "System\\.(out)|(err)\\.print(ln)?\\(";
+        final TestLoggingReporter reporter = new TestLoggingReporter();
+        final DetectorOptions detectorOptions = DetectorOptions.newBuilder()
+                .reporter(reporter)
+                .format(illegal)
+                .maximum(1)
+                .build();
+
+        final SinglelineDetector detector =
+                new SinglelineDetector(detectorOptions);
+        final File file = new File(getPath("InputRegexpSinglelineSemantic.java"));
+
+        detector.processLines(new FileText(file, StandardCharsets.UTF_8.name()));
+        detector.processLines(new FileText(file, StandardCharsets.UTF_8.name()));
+        Assert.assertEquals("Logged unexpected amount of issues",
+                0, reporter.getLogCount());
     }
 }

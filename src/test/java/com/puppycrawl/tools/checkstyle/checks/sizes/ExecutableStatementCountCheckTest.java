@@ -23,13 +23,19 @@ import static com.puppycrawl.tools.checkstyle.checks.sizes.ExecutableStatementCo
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Collection;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import antlr.CommonHiddenStreamToken;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.api.Context;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.internal.TestUtils;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class ExecutableStatementCountCheckTest
@@ -40,9 +46,25 @@ public class ExecutableStatementCountCheckTest
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testStatefulFieldsClearedOnBeginTree() throws Exception {
+        final DetailAST ast = new DetailAST();
+        ast.setType(TokenTypes.STATIC_INIT);
+        final ExecutableStatementCountCheck check = new ExecutableStatementCountCheck();
+        Assert.assertTrue("Stateful field is not cleared after beginTree",
+                TestUtils.isStatefulFieldClearedDuringBeginTree(check, ast, "contextStack",
+                    new Predicate<Object>() {
+                        @Override
+                        public boolean test(Object contextStack) {
+                            return ((Collection<Context>) contextStack).isEmpty();
+                        }
+                    }));
+    }
+
+    @Test
     public void testMaxZero() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ExecutableStatementCountCheck.class);
+            createModuleConfig(ExecutableStatementCountCheck.class);
 
         checkConfig.addAttribute("max", "0");
 
@@ -65,7 +87,7 @@ public class ExecutableStatementCountCheckTest
     @Test
     public void testMethodDef() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ExecutableStatementCountCheck.class);
+            createModuleConfig(ExecutableStatementCountCheck.class);
 
         checkConfig.addAttribute("max", "0");
         checkConfig.addAttribute("tokens", "METHOD_DEF");
@@ -85,7 +107,7 @@ public class ExecutableStatementCountCheckTest
     @Test
     public void testCtorDef() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ExecutableStatementCountCheck.class);
+            createModuleConfig(ExecutableStatementCountCheck.class);
 
         checkConfig.addAttribute("max", "0");
         checkConfig.addAttribute("tokens", "CTOR_DEF");
@@ -101,7 +123,7 @@ public class ExecutableStatementCountCheckTest
     @Test
     public void testStaticInit() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ExecutableStatementCountCheck.class);
+            createModuleConfig(ExecutableStatementCountCheck.class);
 
         checkConfig.addAttribute("max", "0");
         checkConfig.addAttribute("tokens", "STATIC_INIT");
@@ -116,7 +138,7 @@ public class ExecutableStatementCountCheckTest
     @Test
     public void testInstanceInit() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ExecutableStatementCountCheck.class);
+            createModuleConfig(ExecutableStatementCountCheck.class);
 
         checkConfig.addAttribute("max", "0");
         checkConfig.addAttribute("tokens", "INSTANCE_INIT");
@@ -163,7 +185,7 @@ public class ExecutableStatementCountCheckTest
     @Test
     public void testDefaultConfiguration() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ExecutableStatementCountCheck.class);
+            createModuleConfig(ExecutableStatementCountCheck.class);
 
         createChecker(checkConfig);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;

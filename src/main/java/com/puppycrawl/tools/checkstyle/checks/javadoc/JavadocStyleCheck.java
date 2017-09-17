@@ -255,7 +255,7 @@ public class JavadocStyleCheck
      * @return a comment text String.
      */
     private static String getCommentText(String... comments) {
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(1024);
         for (final String line : comments) {
             final int textStart = findTextStart(line);
 
@@ -337,6 +337,7 @@ public class JavadocStyleCheck
      * @param ast the node with the Javadoc
      * @param comment the {@code TextBlock} which represents
      *                 the Javadoc comment.
+     * @noinspection MethodWithMultipleReturnPoints
      */
     // -@cs[ReturnCount] Too complex to break apart.
     private void checkHtmlTags(final DetailAST ast, final TextBlock comment) {

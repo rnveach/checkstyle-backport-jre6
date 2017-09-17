@@ -39,7 +39,6 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.tree.TreePath;
 
 import com.google.common.collect.ImmutableList;
-
 import com.google.common.primitives.Ints;
 
 /**
@@ -54,6 +53,7 @@ import com.google.common.primitives.Ints;
  * @author Philip Milne
  * @author Scott Violet
  * @author Lars Kühne
+ * @noinspection ThisEscapedInObjectConstruction
  */
 public class TreeTable extends JTable {
     private static final long serialVersionUID = -8493693409423365387L;

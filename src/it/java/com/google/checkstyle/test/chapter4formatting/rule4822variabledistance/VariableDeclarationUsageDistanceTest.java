@@ -19,21 +19,17 @@
 
 package com.google.checkstyle.test.chapter4formatting.rule4822variabledistance;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.coding.VariableDeclarationUsageDistanceCheck;
 
-public class VariableDeclarationUsageDistanceTest extends BaseCheckTestSupport {
+public class VariableDeclarationUsageDistanceTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter4formatting" + File.separator + "rule4822variabledistance"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter4formatting/rule4822variabledistance";
     }
 
     @Test
@@ -51,7 +47,7 @@ public class VariableDeclarationUsageDistanceTest extends BaseCheckTestSupport {
         };
 
         final Configuration checkConfig =
-            getCheckConfig("VariableDeclarationUsageDistance");
+            getModuleConfig("VariableDeclarationUsageDistance");
         final String filePath = getPath("InputVariableDeclarationUsageDistanceCheck.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

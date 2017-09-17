@@ -19,21 +19,17 @@
 
 package com.google.checkstyle.test.chapter7javadoc.rule711generalform;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.SingleLineJavadocCheck;
 
-public class SingleLineJavadocTest extends BaseCheckTestSupport {
+public class SingleLineJavadocTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter7javadoc" + File.separator + "rule711generalform"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter7javadoc/rule711generalform";
     }
 
     @Test
@@ -51,7 +47,7 @@ public class SingleLineJavadocTest extends BaseCheckTestSupport {
             "41: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("SingleLineJavadoc");
+        final Configuration checkConfig = getModuleConfig("SingleLineJavadoc");
         final String filePath = getPath("InputSingleLineJavadocCheck.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

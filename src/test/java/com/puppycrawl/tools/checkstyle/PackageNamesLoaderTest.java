@@ -24,13 +24,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
@@ -40,10 +48,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 
 /**
@@ -51,18 +63,47 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
  * @author Rick Giles
  * @author lkuehne
  */
-public class PackageNamesLoaderTest {
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({PackageNamesLoader.class, Closeables.class})
+public class PackageNamesLoaderTest extends AbstractPathTestSupport {
+    @Override
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/packagenamesloader";
+    }
+
     @Test
     public void testDefault()
             throws CheckstyleException {
         final Set<String> packageNames = PackageNamesLoader
                 .getPackageNames(Thread.currentThread()
                         .getContextClassLoader());
-        validatePackageNames(packageNames);
+        assertEquals("pkgNames.length.", 0,
+                packageNames.size());
     }
 
-    private static void validatePackageNames(Set<String> pkgNames) {
-        final String[] checkstylePackages = {
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testPackagesFile() throws Exception {
+        mockStatic(Closeables.class);
+        doNothing().when(Closeables.class);
+        Closeables.closeQuietly(any(InputStream.class));
+
+        final Method processFileMethod = PackageNamesLoader.class.getDeclaredMethod("processFile",
+                URL.class, PackageNamesLoader.class);
+        processFileMethod.setAccessible(true);
+        final Constructor<PackageNamesLoader> constructor = PackageNamesLoader.class
+                .getDeclaredConstructor();
+        constructor.setAccessible(true);
+        final PackageNamesLoader namesLoader = constructor.newInstance();
+        final URL input = new File(getPath("InputPackageNamesLoaderFile.xml")).toURI().toURL();
+
+        processFileMethod.invoke(null, input, namesLoader);
+
+        final Field packageNamesField = PackageNamesLoader.class.getDeclaredField("packageNames");
+        packageNamesField.setAccessible(true);
+
+        final Set<String> actualPackageNames = (Set<String>) packageNamesField.get(namesLoader);
+        final String[] expectedPackageNames = {
             "com.puppycrawl.tools.checkstyle",
             "com.puppycrawl.tools.checkstyle.checks",
             "com.puppycrawl.tools.checkstyle.checks.annotation",
@@ -83,10 +124,14 @@ public class PackageNamesLoaderTest {
             "com.puppycrawl.tools.checkstyle.filters",
         };
 
-        assertEquals("pkgNames.length.", checkstylePackages.length,
-            pkgNames.size());
-        final Set<String> checkstylePackagesSet = new HashSet<String>(Arrays.asList(checkstylePackages));
-        assertEquals("names set.", checkstylePackagesSet, pkgNames);
+        assertEquals("Invalid package names length.", expectedPackageNames.length,
+            actualPackageNames.size());
+        final Set<String> checkstylePackagesSet =
+                new HashSet<String>(Arrays.asList(expectedPackageNames));
+        assertEquals("Invalid names set.", checkstylePackagesSet, actualPackageNames);
+
+        verifyStatic(times(1));
+        Closeables.closeQuietly(any(InputStream.class));
     }
 
     @Test
@@ -106,7 +151,7 @@ public class PackageNamesLoaderTest {
         final Field field = PackageNamesLoader.class.getDeclaredField("packageNames");
         field.setAccessible(true);
         final Set<String> list = (Set<String>) field.get(loader);
-        assertEquals("coding.", list.iterator().next());
+        assertEquals("Invalid package name", "coding.", list.iterator().next());
     }
 
     @Test
@@ -131,7 +176,7 @@ public class PackageNamesLoaderTest {
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue(ex.getCause() instanceof SAXException);
+            assertTrue("Invalid exception cause class", ex.getCause() instanceof SAXException);
         }
     }
 
@@ -156,8 +201,9 @@ public class PackageNamesLoaderTest {
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue(ex.getCause() instanceof IOException);
-            assertNotEquals("unable to get package file resources", ex.getMessage());
+            assertTrue("Invalid exception cause class", ex.getCause() instanceof IOException);
+            assertNotEquals("Invalid exception message",
+                    "unable to get package file resources", ex.getMessage());
         }
     }
 
@@ -173,8 +219,9 @@ public class PackageNamesLoaderTest {
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue(ex.getCause() instanceof IOException);
-            assertEquals("unable to get package file resources", ex.getMessage());
+            assertTrue("Invalid exception cause class", ex.getCause() instanceof IOException);
+            assertEquals("Invalid exception message",
+                    "unable to get package file resources", ex.getMessage());
         }
     }
 

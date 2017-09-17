@@ -35,7 +35,7 @@ public class OneStatementPerLineCheckTest extends AbstractModuleTestSupport {
 
     @Test
     public void testMultiCaseClass() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(OneStatementPerLineCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(OneStatementPerLineCheck.class);
         final String[] expected = {
             "24:59: " + getCheckMessage(MSG_KEY),
             "104:21: " + getCheckMessage(MSG_KEY),
@@ -54,14 +54,14 @@ public class OneStatementPerLineCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTokensNotNull() {
         final OneStatementPerLineCheck check = new OneStatementPerLineCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 
     @Test
     public void testWithMultilineStatements() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(OneStatementPerLineCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(OneStatementPerLineCheck.class);
         final String[] expected = {
             "44:21: " + getCheckMessage(MSG_KEY),
             "61:17: " + getCheckMessage(MSG_KEY),
@@ -80,7 +80,7 @@ public class OneStatementPerLineCheckTest extends AbstractModuleTestSupport {
 
     @Test
     public void oneStatementNonCompilableInputTest() throws Exception {
-        final DefaultConfiguration checkConfig = createCheckConfig(OneStatementPerLineCheck.class);
+        final DefaultConfiguration checkConfig = createModuleConfig(OneStatementPerLineCheck.class);
         final String[] expected = {
             "32:6: " + getCheckMessage(MSG_KEY),
             "37:58: " + getCheckMessage(MSG_KEY),

@@ -37,7 +37,7 @@ public class WhitespaceAroundCheckTest
 
     @Before
     public void setUp() {
-        checkConfig = createCheckConfig(WhitespaceAroundCheck.class);
+        checkConfig = createModuleConfig(WhitespaceAroundCheck.class);
     }
 
     @Override
@@ -109,6 +109,15 @@ public class WhitespaceAroundCheckTest
             "158:27: " + getCheckMessage(MSG_WS_NOT_FOLLOWED, "="),
         };
         verify(checkConfig, getPath("InputWhitespaceAroundSimple.java"), expected);
+    }
+
+    @Test
+    public void testStartOfTheLine()
+            throws Exception {
+        final String[] expected = {
+            "5:2: " + getCheckMessage(MSG_WS_NOT_PRECEDED, "{"),
+        };
+        verify(checkConfig, getPath("InputWhitespaceAroundStartOfTheLine.java"), expected);
     }
 
     @Test

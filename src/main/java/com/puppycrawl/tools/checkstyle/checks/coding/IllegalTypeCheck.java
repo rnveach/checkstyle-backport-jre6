@@ -124,6 +124,8 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /** Illegal classes. */
     private final Set<String> illegalClassNames = new HashSet<String>();
+    /** Illegal short classes. */
+    private final Set<String> illegalShortClassNames = new HashSet<String>();
     /** Legal abstract classes. */
     private final Set<String> legalAbstractClassNames = new HashSet<String>();
     /** Methods which should be ignored. */
@@ -175,6 +177,17 @@ public final class IllegalTypeCheck extends AbstractCheck {
             TokenTypes.METHOD_DEF,
             TokenTypes.IMPORT,
         };
+    }
+
+    @Override
+    public void beginTree(DetailAST rootAST) {
+        illegalShortClassNames.clear();
+
+        for (String s : illegalClassNames) {
+            if (s.indexOf('.') == -1) {
+                illegalShortClassNames.add(s);
+            }
+        }
     }
 
     @Override
@@ -333,7 +346,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
     private boolean isMatchingClassName(String className) {
         final String shortName = className.substring(className.lastIndexOf('.') + 1);
         return illegalClassNames.contains(className)
-                || illegalClassNames.contains(shortName)
+                || illegalShortClassNames.contains(shortName)
                 || validateAbstractClassNames
                     && !legalAbstractClassNames.contains(className)
                     && format.matcher(className).find();
@@ -349,7 +362,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
         if (illegalClassNames.contains(canonicalName)) {
             final String shortName = canonicalName
                 .substring(canonicalName.lastIndexOf('.') + 1);
-            illegalClassNames.add(shortName);
+            illegalShortClassNames.add(shortName);
         }
     }
 
@@ -361,7 +374,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * @return Imported canonical type's name.
      */
     private static String getImportedTypeCanonicalName(DetailAST importAst) {
-        final StringBuilder canonicalNameBuilder = new StringBuilder();
+        final StringBuilder canonicalNameBuilder = new StringBuilder(256);
         DetailAST toVisit = importAst;
         while (toVisit != null) {
             toVisit = getNextSubTreeNode(toVisit, importAst);
@@ -414,6 +427,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
     /**
      * Set the list of illegal variable types.
      * @param classNames array of illegal variable types
+     * @noinspection WeakerAccess
      */
     public void setIllegalClassNames(String... classNames) {
         illegalClassNames.clear();
@@ -423,6 +437,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
     /**
      * Set the list of ignore method names.
      * @param methodNames array of ignored method names
+     * @noinspection WeakerAccess
      */
     public void setIgnoredMethodNames(String... methodNames) {
         ignoredMethodNames.clear();
@@ -432,6 +447,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
     /**
      * Set the list of legal abstract class names.
      * @param classNames array of legal abstract class names
+     * @noinspection WeakerAccess
      */
     public void setLegalAbstractClassNames(String... classNames) {
         legalAbstractClassNames.clear();

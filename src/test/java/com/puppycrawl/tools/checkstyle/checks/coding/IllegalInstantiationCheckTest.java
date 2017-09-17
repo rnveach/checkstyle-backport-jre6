@@ -46,7 +46,7 @@ public class IllegalInstantiationCheckTest
     @Test
     public void testDefault() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(IllegalInstantiationCheck.class);
+            createModuleConfig(IllegalInstantiationCheck.class);
         checkConfig.addAttribute(
             "classes",
             "java.lang.Boolean,"
@@ -70,7 +70,7 @@ public class IllegalInstantiationCheckTest
     @Test
     public void testJava8() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(IllegalInstantiationCheck.class);
+                createModuleConfig(IllegalInstantiationCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig,
                 getPath("InputIllegalInstantiation.java"),
@@ -80,7 +80,7 @@ public class IllegalInstantiationCheckTest
     @Test
     public void testNoPackage() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(IllegalInstantiationCheck.class);
+                createModuleConfig(IllegalInstantiationCheck.class);
         checkConfig.addAttribute(
                 "classes",
                 "java.lang.Boolean");
@@ -95,7 +95,7 @@ public class IllegalInstantiationCheckTest
     @Test
     public void testJavaLangPackage() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(IllegalInstantiationCheck.class);
+                createModuleConfig(IllegalInstantiationCheck.class);
         checkConfig.addAttribute(
                 "classes",
                 "java.lang.Boolean,java.lang.String");
@@ -111,7 +111,7 @@ public class IllegalInstantiationCheckTest
     @Test
     public void testWrongPackage() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(IllegalInstantiationCheck.class);
+                createModuleConfig(IllegalInstantiationCheck.class);
         checkConfig.addAttribute(
                 "classes",
                 "jjva.lang.Boolean,java.lang*Boolean");
@@ -153,7 +153,7 @@ public class IllegalInstantiationCheckTest
         final IllegalInstantiationCheck check = new IllegalInstantiationCheck();
         final File inputFile = new File(getNonCompilablePath("InputIllegalInstantiationLang.java"));
         check.setFileContents(new FileContents(new FileText(inputFile, "UTF-8")));
-        check.configure(createCheckConfig(IllegalInstantiationCheck.class));
+        check.configure(createModuleConfig(IllegalInstantiationCheck.class));
         check.setClasses("java.lang.Boolean");
 
         check.visitToken(newAst);
@@ -176,9 +176,9 @@ public class IllegalInstantiationCheckTest
     @Test
     public void testTokensNotNull() {
         final IllegalInstantiationCheck check = new IllegalInstantiationCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 
     @Test

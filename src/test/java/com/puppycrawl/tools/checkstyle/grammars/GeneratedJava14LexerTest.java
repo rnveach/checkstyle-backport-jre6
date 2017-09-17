@@ -51,10 +51,10 @@ public class GeneratedJava14LexerTest
     @Test
     public void testUnexpectedChar() throws Exception {
         // Encoding problems can occur in Windows
-        Assume.assumeFalse(IS_WINDOWS);
+        Assume.assumeFalse("Problems with encoding may occur", IS_WINDOWS);
 
         final DefaultConfiguration checkConfig =
-            createCheckConfig(MemberNameCheck.class);
+            createModuleConfig(MemberNameCheck.class);
         // input is 'ÃЯ'
         final String[] expected = {
             "7:9: " + getCheckMessage(MemberNameCheck.class, MSG_INVALID_PATTERN,
@@ -66,7 +66,7 @@ public class GeneratedJava14LexerTest
     @Test
     public void testSemicolonBetweenImports() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(MemberNameCheck.class);
+            createModuleConfig(MemberNameCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getNonCompilablePath("InputSemicolonBetweenImports.java"), expected);
     }

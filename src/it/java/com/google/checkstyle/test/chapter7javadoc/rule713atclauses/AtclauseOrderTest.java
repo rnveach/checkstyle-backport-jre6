@@ -19,22 +19,18 @@
 
 package com.google.checkstyle.test.chapter7javadoc.rule713atclauses;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.AtclauseOrderCheck;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-public class AtclauseOrderTest extends BaseCheckTestSupport {
+public class AtclauseOrderTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter7javadoc" + File.separator + "rule713atclauses"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter7javadoc/rule713atclauses";
     }
 
     @Test
@@ -42,7 +38,7 @@ public class AtclauseOrderTest extends BaseCheckTestSupport {
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        final Configuration checkConfig = getCheckConfig("AtclauseOrder");
+        final Configuration checkConfig = getModuleConfig("AtclauseOrder");
         final String filePath = getPath("InputCorrectAtClauseOrderCheck.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
@@ -84,7 +80,7 @@ public class AtclauseOrderTest extends BaseCheckTestSupport {
             "261: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("AtclauseOrder");
+        final Configuration checkConfig = getModuleConfig("AtclauseOrder");
         final String filePath = getPath("InputIncorrectAtClauseOrderCheck.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

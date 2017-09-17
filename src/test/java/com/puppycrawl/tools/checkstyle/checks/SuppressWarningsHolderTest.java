@@ -67,7 +67,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testOnComplexAnnotations() throws Exception {
-        final Configuration checkConfig = createCheckConfig(SuppressWarningsHolder.class);
+        final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
@@ -76,7 +76,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testCustomAnnotation() throws Exception {
-        final Configuration checkConfig = createCheckConfig(SuppressWarningsHolder.class);
+        final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
@@ -112,65 +112,60 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
         final SuppressWarningsHolder holder = new SuppressWarningsHolder();
 
         try {
-            holder.setAliasList("SomeAlias");
+            holder.setAliasList("=SomeAlias");
             fail("Exception expected");
         }
         catch (IllegalArgumentException ex) {
             assertEquals("Error message is unexpected",
-                    "'=' expected in alias list item: SomeAlias", ex.getMessage());
+                    "'=' expected in alias list item: =SomeAlias", ex.getMessage());
         }
 
     }
 
     @Test
     public void testIsSuppressed() throws Exception {
-        final Class<?> entry = Class
-                .forName("com.puppycrawl.tools.checkstyle.checks.SuppressWarningsHolder$Entry");
-        final Constructor<?> entryConstructor = entry.getDeclaredConstructor(String.class,
-                int.class, int.class, int.class, int.class);
-        entryConstructor.setAccessible(true);
-
-        final Object entryInstance = entryConstructor.newInstance("MockEntry", 100, 100, 350, 350);
-
-        final List<Object> entriesList = new ArrayList<Object>();
-        entriesList.add(entryInstance);
-
-        final ThreadLocal<?> threadLocal = mock(ThreadLocal.class);
-        PowerMockito.doReturn(entriesList).when(threadLocal, "get");
-
-        final SuppressWarningsHolder holder = new SuppressWarningsHolder();
-        final Field entries = holder.getClass().getDeclaredField("ENTRIES");
-        entries.setAccessible(true);
-        entries.set(holder, threadLocal);
-
-        final Checker source = new Checker();
-        final LocalizedMessage message =
-            new LocalizedMessage(100, 10, null, null, null, "id", MemberNameCheck.class, "message");
-        final AuditEvent event = new AuditEvent(source, "fileName", message);
+        createHolder("MockEntry", 100, 100, 350, 350);
+        final AuditEvent event = createAuditEvent("check", 100, 10);
 
         assertFalse("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
     }
 
     @Test
+    public void testIsSuppressedByName() throws Exception {
+        final SuppressWarningsHolder holder = createHolder("check", 100, 100, 350, 350);
+        final AuditEvent event = createAuditEvent("id", 110, 10);
+        holder.setAliasList(MemberNameCheck.class.getName() + "=check");
+
+        assertTrue("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
+    }
+
+    @Test
+    public void testIsSuppressedByModuleId() throws Exception {
+        createHolder("check", 100, 100, 350, 350);
+        final AuditEvent event = createAuditEvent("check", 350, 350);
+
+        assertTrue("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
+    }
+
+    @Test
+    public void testIsSuppressedAfterEventEnd() throws Exception {
+        createHolder("check", 100, 100, 350, 350);
+        final AuditEvent event = createAuditEvent("check", 350, 352);
+
+        assertFalse("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
+    }
+
+    @Test
+    public void testIsSuppressedAfterEventStart() throws Exception {
+        createHolder("check", 100, 100, 350, 350);
+        final AuditEvent event = createAuditEvent("check", 100, 100);
+
+        assertTrue("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
+    }
+
+    @Test
     public void testIsSuppressedWithAllArgument() throws Exception {
-        final Class<?> entry = Class
-                .forName("com.puppycrawl.tools.checkstyle.checks.SuppressWarningsHolder$Entry");
-        final Constructor<?> entryConstr = entry.getDeclaredConstructor(String.class, int.class,
-                int.class, int.class, int.class);
-        entryConstr.setAccessible(true);
-
-        final Object entryInstance = entryConstr.newInstance("all", 100, 100, 350, 350);
-
-        final List<Object> entriesList = new ArrayList<Object>();
-        entriesList.add(entryInstance);
-
-        final ThreadLocal<?> threadLocal = mock(ThreadLocal.class);
-        PowerMockito.doReturn(entriesList).when(threadLocal, "get");
-
-        final SuppressWarningsHolder holder = new SuppressWarningsHolder();
-        final Field entries = holder.getClass().getDeclaredField("ENTRIES");
-        entries.setAccessible(true);
-        entries.set(holder, threadLocal);
+        createHolder("all", 100, 100, 350, 350);
 
         final Checker source = new Checker();
         final LocalizedMessage firstMessageForTest =
@@ -197,10 +192,10 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAnnotationInTry() throws Exception {
-        final Configuration checkConfig = createCheckConfig(SuppressWarningsHolder.class);
+        final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
         final String[] expected = {
-            "11: " + getCheckMessage("suppress.warnings.invalid.target"),
+            "11: " + getCheckMessage(SuppressWarningsHolder.MSG_KEY),
         };
 
         verify(checkConfig, getPath("InputSuppressWarningsHolder2.java"), expected);
@@ -208,7 +203,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testEmptyAnnotation() throws Exception {
-        final Configuration checkConfig = createCheckConfig(SuppressWarningsHolder.class);
+        final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
@@ -322,10 +317,42 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAnnotationWithFullName() throws Exception {
-        final Configuration checkConfig = createCheckConfig(SuppressWarningsHolder.class);
+        final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputSuppressWarningsHolder4.java"), expected);
+    }
+
+    private static SuppressWarningsHolder createHolder(String checkName, int firstLine,
+                                                       int firstColumn, int lastLine,
+                                                       int lastColumn) throws Exception {
+        final Class<?> entry = Class
+                .forName("com.puppycrawl.tools.checkstyle.checks.SuppressWarningsHolder$Entry");
+        final Constructor<?> entryConstr = entry.getDeclaredConstructor(String.class, int.class,
+                int.class, int.class, int.class);
+        entryConstr.setAccessible(true);
+
+        final Object entryInstance = entryConstr.newInstance(checkName, firstLine,
+                firstColumn, lastLine, lastColumn);
+
+        final List<Object> entriesList = new ArrayList<Object>();
+        entriesList.add(entryInstance);
+
+        final ThreadLocal<?> threadLocal = mock(ThreadLocal.class);
+        PowerMockito.doReturn(entriesList).when(threadLocal, "get");
+
+        final SuppressWarningsHolder holder = new SuppressWarningsHolder();
+        final Field entries = holder.getClass().getDeclaredField("ENTRIES");
+        entries.setAccessible(true);
+        entries.set(holder, threadLocal);
+        return holder;
+    }
+
+    private static AuditEvent createAuditEvent(String moduleId, int line, int column) {
+        final Checker source = new Checker();
+        final LocalizedMessage message = new LocalizedMessage(line, column, null, null, null,
+                moduleId, MemberNameCheck.class, "message");
+        return new AuditEvent(source, "filename", message);
     }
 }

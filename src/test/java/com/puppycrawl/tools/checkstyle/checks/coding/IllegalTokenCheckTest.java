@@ -39,7 +39,7 @@ public class IllegalTokenCheckTest
     public void testCheckWithDefaultSettings()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(IllegalTokenCheck.class);
+            createModuleConfig(IllegalTokenCheck.class);
         final String[] expected = {
             "29:14: " + getCheckMessage(MSG_KEY, "label:"),
             "31:25: " + getCheckMessage(MSG_KEY, "anotherLabel:"),
@@ -51,7 +51,7 @@ public class IllegalTokenCheckTest
     public void testPreviouslyIllegalTokens()
             throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(IllegalTokenCheck.class);
+            createModuleConfig(IllegalTokenCheck.class);
         checkConfig.addAttribute("tokens", "LITERAL_SWITCH,POST_INC,POST_DEC");
         final String[] expected = {
             "11:9: " + getCheckMessage(MSG_KEY, "switch"),
@@ -64,7 +64,7 @@ public class IllegalTokenCheckTest
     @Test
     public void testNative() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(IllegalTokenCheck.class);
+            createModuleConfig(IllegalTokenCheck.class);
         checkConfig.addAttribute("tokens", "LITERAL_NATIVE");
         final String[] expected = {
             "20:12: " + getCheckMessage(MSG_KEY, "native"),
@@ -76,7 +76,7 @@ public class IllegalTokenCheckTest
     public void testCommentContentToken()
             throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(IllegalTokenCheck.class);
+                createModuleConfig(IllegalTokenCheck.class);
         checkConfig.addAttribute("tokens", "COMMENT_CONTENT");
 
         final String[] expected = {
@@ -99,7 +99,7 @@ public class IllegalTokenCheckTest
     public void testBlockCommentBeginToken()
             throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(IllegalTokenCheck.class);
+                createModuleConfig(IllegalTokenCheck.class);
         checkConfig.addAttribute("tokens", "BLOCK_COMMENT_BEGIN");
 
         final String[] expected = {
@@ -112,7 +112,7 @@ public class IllegalTokenCheckTest
     public void testBlockCommentEndToken()
             throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(IllegalTokenCheck.class);
+                createModuleConfig(IllegalTokenCheck.class);
         checkConfig.addAttribute("tokens", "BLOCK_COMMENT_END");
 
         final String[] expected = {
@@ -125,7 +125,7 @@ public class IllegalTokenCheckTest
     public void testSingleLineCommentToken()
             throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(IllegalTokenCheck.class);
+                createModuleConfig(IllegalTokenCheck.class);
         checkConfig.addAttribute("tokens", "SINGLE_LINE_COMMENT");
 
         final String[] expected = {

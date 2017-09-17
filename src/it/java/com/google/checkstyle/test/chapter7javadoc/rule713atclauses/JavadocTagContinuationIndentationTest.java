@@ -19,21 +19,17 @@
 
 package com.google.checkstyle.test.chapter7javadoc.rule713atclauses;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 
-import com.google.checkstyle.test.base.BaseCheckTestSupport;
+import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTagContinuationIndentationCheck;
 
-public class JavadocTagContinuationIndentationTest extends BaseCheckTestSupport {
+public class JavadocTagContinuationIndentationTest extends AbstractModuleTestSupport {
 
     @Override
-    protected String getPath(String fileName) throws IOException {
-        return super.getPath("chapter7javadoc" + File.separator + "rule713atclauses"
-                + File.separator + fileName);
+    protected String getPackageLocation() {
+        return "com/google/checkstyle/test/chapter7javadoc/rule713atclauses";
     }
 
     @Test
@@ -56,7 +52,7 @@ public class JavadocTagContinuationIndentationTest extends BaseCheckTestSupport 
             "322: " + msg,
         };
 
-        final Configuration checkConfig = getCheckConfig("JavadocTagContinuationIndentation");
+        final Configuration checkConfig = getModuleConfig("JavadocTagContinuationIndentation");
         final String filePath = getPath("InputJavaDocTagContinuationIndentation.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);

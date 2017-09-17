@@ -37,7 +37,7 @@ public class EqualsAvoidNullCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testEqualsWithDefault() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(EqualsAvoidNullCheck.class);
+            createModuleConfig(EqualsAvoidNullCheck.class);
 
         final String[] expected = {
             "37:27: " + getCheckMessage(MSG_EQUALS_IGNORE_CASE_AVOID_NULL),
@@ -101,7 +101,7 @@ public class EqualsAvoidNullCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testEqualsWithoutEqualsIgnoreCase() throws Exception {
         final DefaultConfiguration checkConfig =
-                createCheckConfig(EqualsAvoidNullCheck.class);
+                createModuleConfig(EqualsAvoidNullCheck.class);
         checkConfig.addAttribute("ignoreEqualsIgnoreCase", "true");
 
         final String[] expected = {
@@ -154,8 +154,8 @@ public class EqualsAvoidNullCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTokensNotNull() {
         final EqualsAvoidNullCheck check = new EqualsAvoidNullCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }

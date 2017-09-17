@@ -40,7 +40,7 @@ public class ModifiedControlVariableCheckTest
     @Test
     public void testModifiedControlVariable() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ModifiedControlVariableCheck.class);
+            createModuleConfig(ModifiedControlVariableCheck.class);
         final String[] expected = {
             "14:14: " + getCheckMessage(MSG_KEY, "i"),
             "17:15: " + getCheckMessage(MSG_KEY, "i"),
@@ -57,7 +57,7 @@ public class ModifiedControlVariableCheckTest
     @Test
     public void testEnhancedForLoopVariableTrue() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ModifiedControlVariableCheck.class);
+            createModuleConfig(ModifiedControlVariableCheck.class);
         checkConfig.addAttribute("skipEnhancedForLoopVariable", "true");
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -68,7 +68,7 @@ public class ModifiedControlVariableCheckTest
     @Test
     public void testEnhancedForLoopVariableFalse() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(ModifiedControlVariableCheck.class);
+            createModuleConfig(ModifiedControlVariableCheck.class);
 
         final String[] expected = {
             "9:18: " + getCheckMessage(MSG_KEY, "line"),
@@ -78,11 +78,24 @@ public class ModifiedControlVariableCheckTest
     }
 
     @Test
+    public void testEnhancedForLoopVariable2() throws Exception {
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(ModifiedControlVariableCheck.class);
+        checkConfig.addAttribute("skipEnhancedForLoopVariable", "true");
+
+        final String[] expected = {
+            "14:18: " + getCheckMessage(MSG_KEY, "i"),
+        };
+        verify(checkConfig, getPath("InputModifiedControlVariableEnhancedForLoopVariable2.java"),
+            expected);
+    }
+
+    @Test
     public void testTokensNotNull() {
         final ModifiedControlVariableCheck check = new ModifiedControlVariableCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 
     @Test

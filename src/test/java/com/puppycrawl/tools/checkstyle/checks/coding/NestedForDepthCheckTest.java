@@ -50,7 +50,7 @@ public class NestedForDepthCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testNestedTooDeep() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(NestedForDepthCheck.class);
+            createModuleConfig(NestedForDepthCheck.class);
         checkConfig.addAttribute("max", "2");
 
         final String[] expected = {
@@ -75,7 +75,7 @@ public class NestedForDepthCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testNestedOk() throws Exception {
         final DefaultConfiguration checkConfig =
-            createCheckConfig(NestedForDepthCheck.class);
+            createModuleConfig(NestedForDepthCheck.class);
         checkConfig.addAttribute("max", "4");
 
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
@@ -87,8 +87,8 @@ public class NestedForDepthCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTokensNotNull() {
         final NestedForDepthCheck check = new NestedForDepthCheck();
-        Assert.assertNotNull(check.getAcceptableTokens());
-        Assert.assertNotNull(check.getDefaultTokens());
-        Assert.assertNotNull(check.getRequiredTokens());
+        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
+        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
+        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
     }
 }
