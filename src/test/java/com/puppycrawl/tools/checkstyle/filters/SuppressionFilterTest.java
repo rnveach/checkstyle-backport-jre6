@@ -26,18 +26,11 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -49,8 +42,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({SuppressionFilter.class, CommonUtils.class})
 public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
     @Rule
@@ -58,7 +49,7 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle/filters";
+        return "com/puppycrawl/tools/checkstyle/filters/suppressionfilter";
     }
 
     @Test
@@ -71,9 +62,8 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testAccept() throws CheckstyleException {
-        final String fileName = "src/test/resources/com/puppycrawl/tools/checkstyle/filters/"
-                          + "suppressions_none.xml";
+    public void testAccept() throws Exception {
+        final String fileName = getPath("InputSuppressionFilterNone.xml");
         final boolean optional = false;
         final SuppressionFilter filter = createSuppressionFilter(fileName, optional);
 
@@ -95,8 +85,7 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
     @Test
     public void testNonExistingSuppressionFileWithFalseOptional() {
-        final String fileName = "src/test/resources/com/puppycrawl/tools/checkstyle/filters/"
-                + "non_existing_suppression_file.xml";
+        final String fileName = "non_existing_suppression_file.xml";
         try {
             final boolean optional = false;
             createSuppressionFilter(fileName, optional);
@@ -109,9 +98,8 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testExistingInvalidSuppressionFileWithTrueOptional() {
-        final String fileName = "src/test/resources/com/puppycrawl/tools/checkstyle/filters/"
-                + "suppressions_invalid_file.xml";
+    public void testExistingInvalidSuppressionFileWithTrueOptional() throws IOException {
+        final String fileName = getPath("InputSuppressionFilterInvalidFile.xml");
         try {
             final boolean optional = true;
             createSuppressionFilter(fileName, optional);
@@ -126,8 +114,7 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
     @Test
     public void testExistingSuppressionFileWithTrueOptional() throws Exception {
-        final String fileName = "src/test/resources/com/puppycrawl/tools/checkstyle/filters/"
-                + "suppressions_none.xml";
+        final String fileName = getPath("InputSuppressionFilterNone.xml");
         final boolean optional = true;
         final SuppressionFilter filter = createSuppressionFilter(fileName, optional);
 
@@ -138,35 +125,8 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testExistingConfigWithTrueOptionalThrowsIoErrorWhileClosing()
-            throws Exception {
-        final InputStream inputStream = PowerMockito.mock(InputStream.class);
-        Mockito.doThrow(IOException.class).when(inputStream).close();
-
-        final URL url = PowerMockito.mock(URL.class);
-        BDDMockito.given(url.openStream()).willReturn(inputStream);
-
-        final URI uri = PowerMockito.mock(URI.class);
-        BDDMockito.given(uri.toURL()).willReturn(url);
-
-        PowerMockito.mockStatic(CommonUtils.class);
-
-        final String fileName = "src/test/resources/com/puppycrawl/tools/checkstyle/filters/"
-                + "suppressions_none.xml";
-        BDDMockito.given(CommonUtils.getUriByFilename(fileName)).willReturn(uri);
-
-        final boolean optional = true;
-        final SuppressionFilter filter = createSuppressionFilter(fileName, optional);
-        final AuditEvent ev = new AuditEvent(this, "AnyFile.java", null);
-        assertTrue(
-            "Event was not excepted when IOException is thrown while reading suppression file",
-            filter.accept(ev));
-    }
-
-    @Test
     public void testNonExistingSuppressionFileWithTrueOptional() throws Exception {
-        final String fileName = "src/test/resources/com/puppycrawl/tools/checkstyle/filters/"
-                + "non_existing_suppression_file.xml";
+        final String fileName = "non_existing_suppression_file.xml";
         final boolean optional = true;
         final SuppressionFilter filter = createSuppressionFilter(fileName, optional);
 
@@ -192,7 +152,7 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testLocalFileExternalResourceContentDoesNotChange() throws Exception {
         final DefaultConfiguration filterConfig = createModuleConfig(SuppressionFilter.class);
-        filterConfig.addAttribute("file", getPath("suppressions_none.xml"));
+        filterConfig.addAttribute("file", getPath("InputSuppressionFilterNone.xml"));
 
         final DefaultConfiguration checkerConfig = new DefaultConfiguration("checkstyle_checks");
         checkerConfig.addChild(filterConfig);

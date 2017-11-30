@@ -81,6 +81,7 @@ import com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck;
 import com.puppycrawl.tools.checkstyle.checks.TranslationCheck;
 import com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionFilter;
+import com.puppycrawl.tools.checkstyle.internal.utils.CloseAndFlushTestByteArrayOutputStream;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
@@ -107,7 +108,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle";
+        return "com/puppycrawl/tools/checkstyle/checker";
     }
 
     @Test
@@ -746,7 +747,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
         // Cache should not be reused.
 
         final DynamicalResourceHolderCheck check = new DynamicalResourceHolderCheck();
-        final String firstExternalResourceLocation = getPath("InputImportControlOne.xml");
+        final String firstExternalResourceLocation = getPath("InputCheckerImportControlOne.xml");
         final String firstExternalResourceKey = PropertyCacheFile.EXTERNAL_RESOURCE_KEY_PREFIX
                 + firstExternalResourceLocation;
         check.setFirstExternalResourceLocation(firstExternalResourceLocation);
@@ -774,7 +775,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
                 expectedNumberOfObjectsInCacheAfterFirstRun, cacheAfterFirstRun.size());
 
         // Change a list of external resources which are used by the check
-        final String secondExternalResourceLocation = "InputImportControlOneRegExp.xml";
+        final String secondExternalResourceLocation = "InputCheckerImportControlTwo.xml";
         final String secondExternalResourceKey = PropertyCacheFile.EXTERNAL_RESOURCE_KEY_PREFIX
                 + secondExternalResourceLocation;
         check.setSecondExternalResourceLocation(secondExternalResourceLocation);
@@ -826,7 +827,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
         checker.configure(checkerConfig);
         checker.addListener(getBriefUtLogger());
 
-        final String filePath = getPath("api/InputClearDetailAstLazyLoadCache.java");
+        final String filePath = getPath("InputCheckerClearDetailAstLazyLoadCache.java");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
         verify(checker, filePath, filePath, expected);
@@ -842,7 +843,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
         defaultConfig.addChild(violationCheck);
 
         final DefaultConfiguration filterConfig = createModuleConfig(SuppressionFilter.class);
-        filterConfig.addAttribute("file", getPath("suppress_all.xml"));
+        filterConfig.addAttribute("file", getPath("InputCheckerSuppressAll.xml"));
         defaultConfig.addChild(filterConfig);
 
         final Checker checker = new Checker();
@@ -886,7 +887,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
         checker.configure(checkerConfig);
         checker.addListener(getBriefUtLogger());
 
-        final String filePath = getPath("InputMain.java");
+        final String filePath = getPath("InputChecker.java");
         final String[] expected = {
             "0: " + getCheckMessage(EXCEPTION_MSG, "java.lang.IndexOutOfBoundsException: test"),
         };
@@ -907,7 +908,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testSetFileSetCheckSetsMessageDispatcher() throws Exception {
+    public void testSetFileSetCheckSetsMessageDispatcher() {
         final DummyFileSet fileSet = new DummyFileSet();
         final Checker checker = new Checker();
         checker.addFileSetCheck(fileSet);

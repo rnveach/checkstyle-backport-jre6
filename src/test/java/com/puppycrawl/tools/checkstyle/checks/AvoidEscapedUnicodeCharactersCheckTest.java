@@ -148,7 +148,7 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle/checks/misc/avoidescapedunicodecharacters";
+        return "com/puppycrawl/tools/checkstyle/checks/avoidescapedunicodecharacters";
     }
 
     @Test
@@ -355,7 +355,9 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
                 expected.add(indexOfStartLineInInputFile + val + ": " + message);
             }
         }
-        verify(checkConfig, getPath("InputAllEscapedUnicodeCharacters.java"), expected.toArray(new String[expected.size()]));
+        verify(checkConfig,
+                getPath("InputAvoidEscapedUnicodeCharactersAllEscapedUnicodeCharacters.java"),
+                expected.toArray(new String[expected.size()]));
     }
 
     /**

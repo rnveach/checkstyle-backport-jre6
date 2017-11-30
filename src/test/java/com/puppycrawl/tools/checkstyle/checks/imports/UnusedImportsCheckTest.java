@@ -22,8 +22,13 @@ package com.puppycrawl.tools.checkstyle.checks.imports;
 import static com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck.MSG_KEY;
 import static org.junit.Assert.assertArrayEquals;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMap;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -33,6 +38,31 @@ public class UnusedImportsCheckTest extends AbstractModuleTestSupport {
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/imports/unusedimports";
+    }
+
+    @Test
+    public void testReferencedStateIsCleared() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(UnusedImportsCheck.class);
+        final String inputWithoutWarnings = getPath("InputUnusedImportsWithoutWarnings.java");
+        final String inputWithWarnings = getPath("InputUnusedImportsCheckClearState.java");
+        final List<String> expectedFirstInput = Arrays.asList(CommonUtils.EMPTY_STRING_ARRAY);
+        final List<String> expectedSecondInput = Arrays.asList(
+                "3:8: " + getCheckMessage(MSG_KEY, "java.util.Arrays"),
+                "4:8: " + getCheckMessage(MSG_KEY, "java.util.List"),
+                "5:8: " + getCheckMessage(MSG_KEY, "java.util.Set")
+        );
+        final File[] inputsWithWarningsFirst =
+            {new File(inputWithWarnings), new File(inputWithoutWarnings)};
+        final File[] inputsWithoutWarningFirst =
+            {new File(inputWithoutWarnings), new File(inputWithWarnings)};
+
+        verify(createChecker(checkConfig), inputsWithWarningsFirst, ImmutableMap.of(
+                inputWithoutWarnings, expectedFirstInput,
+                inputWithWarnings, expectedSecondInput));
+        verify(createChecker(checkConfig), inputsWithoutWarningFirst, ImmutableMap.of(
+                inputWithoutWarnings, expectedFirstInput,
+                inputWithWarnings, expectedSecondInput));
+
     }
 
     @Test
@@ -61,7 +91,8 @@ public class UnusedImportsCheckTest extends AbstractModuleTestSupport {
             "38:8: " + getCheckMessage(MSG_KEY, "com.puppycrawl.tools.checkstyle.CheckerTest"),
             "39:8: " + getCheckMessage(MSG_KEY, "com.puppycrawl.tools.checkstyle.Definitions"),
             "40:8: " + getCheckMessage(MSG_KEY,
-                "com.puppycrawl.tools.checkstyle.checks.imports.unusedimports.Input15Extensions"),
+                "com.puppycrawl.tools.checkstyle.checks.imports.unusedimports."
+                        + "InputUnusedImports15Extensions"),
             "41:8: " + getCheckMessage(MSG_KEY,
                 "com.puppycrawl.tools.checkstyle.ConfigurationLoaderTest"),
             "42:8: " + getCheckMessage(MSG_KEY,
@@ -105,7 +136,7 @@ public class UnusedImportsCheckTest extends AbstractModuleTestSupport {
     public void testProcessJavadocWithBlockTagContainingMethodParameters() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(UnusedImportsCheck.class);
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputUnusedImportWithBlockMethodParameters.java"), expected);
+        verify(checkConfig, getPath("InputUnusedImportsWithBlockMethodParameters.java"), expected);
     }
 
     @Test
@@ -207,5 +238,14 @@ public class UnusedImportsCheckTest extends AbstractModuleTestSupport {
             "13:8: " + getCheckMessage(MSG_KEY, "java.lang.Short"),
         };
         verify(checkConfig, getPath("InputUnusedImportsFromJavaLang.java"), expected);
+    }
+
+    @Test
+    public void testImportsJavadocQualifiedName() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(UnusedImportsCheck.class);
+        final String[] expected = {
+            "4:8: " + getCheckMessage(MSG_KEY, "java.util.List"),
+        };
+        verify(checkConfig, getPath("InputUnusedImportsJavadocQualifiedName.java"), expected);
     }
 }

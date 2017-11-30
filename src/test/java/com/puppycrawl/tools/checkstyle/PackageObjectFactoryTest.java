@@ -54,7 +54,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
-import com.puppycrawl.tools.checkstyle.internal.CheckUtil;
+import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
 
 /**
  * Enter a description of class PackageObjectFactoryTest.java.
@@ -69,8 +69,8 @@ public class PackageObjectFactoryTest {
     @Test
     public void testCtorNullLoaderException1() {
         try {
-            new PackageObjectFactory(new HashSet<String>(), null);
-            fail("Exception is expected");
+            final Object test = new PackageObjectFactory(new HashSet<String>(), null);
+            fail("Exception is expected but got " + test);
         }
         catch (IllegalArgumentException ex) {
             assertEquals("Invalid exception message", NULL_LOADER_MESSAGE, ex.getMessage());
@@ -80,8 +80,8 @@ public class PackageObjectFactoryTest {
     @Test
     public void testCtorNullLoaderException2() {
         try {
-            new PackageObjectFactory("test", null);
-            fail("Exception is expected");
+            final Object test = new PackageObjectFactory("test", null);
+            fail("Exception is expected but got " + test);
         }
         catch (IllegalArgumentException ex) {
             assertEquals("Invalid exception message", NULL_LOADER_MESSAGE, ex.getMessage());
@@ -92,8 +92,8 @@ public class PackageObjectFactoryTest {
     public void testCtorNullPackageException1() {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
-            new PackageObjectFactory(Collections.<String>singleton(null), classLoader);
-            fail("Exception is expected");
+            final Object test = new PackageObjectFactory(Collections.<String>singleton(null), classLoader);
+            fail("Exception is expected but got " + test);
         }
         catch (IllegalArgumentException ex) {
             assertEquals("Invalid exception message", NULL_PACKAGE_MESSAGE, ex.getMessage());
@@ -104,8 +104,8 @@ public class PackageObjectFactoryTest {
     public void testCtorNullPackageException2() {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
-            new PackageObjectFactory((String) null, classLoader);
-            fail("Exception is expected");
+            final Object test = new PackageObjectFactory((String) null, classLoader);
+            fail("Exception is expected but got " + test);
         }
         catch (IllegalArgumentException ex) {
             assertEquals("Invalid exception message", NULL_PACKAGE_MESSAGE, ex.getMessage());
@@ -131,7 +131,7 @@ public class PackageObjectFactoryTest {
     }
 
     @Test
-    public void testCreateModuleWithNonExistName() throws CheckstyleException {
+    public void testCreateModuleWithNonExistName() {
         testCreateModuleWithNonExistName("NonExistClassOne");
         testCreateModuleWithNonExistName("NonExistClassTwo");
     }
@@ -169,7 +169,7 @@ public class PackageObjectFactoryTest {
     }
 
     @Test
-    public void testCreateObjectFromFullModuleNamesWithAmbiguousException() throws Exception {
+    public void testCreateObjectFromFullModuleNamesWithAmbiguousException() {
         final String barPackage = BASE_PACKAGE + ".packageobjectfactory.bar";
         final String fooPackage = BASE_PACKAGE + ".packageobjectfactory.foo";
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

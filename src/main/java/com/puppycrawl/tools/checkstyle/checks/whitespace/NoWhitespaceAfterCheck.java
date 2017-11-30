@@ -34,6 +34,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * </p>
   * <p> By default the check will check the following operators:
  *  {@link TokenTypes#ARRAY_INIT ARRAY_INIT},
+ *  {@link TokenTypes#AT AT},
  *  {@link TokenTypes#BNOT BNOT},
  *  {@link TokenTypes#DEC DEC},
  *  {@link TokenTypes#DOT DOT},
@@ -51,6 +52,9 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * {@link TokenTypes#INDEX_OP INDEX_OP}
  * specially from other tokens. Actually it is checked that there is
  * no whitespace before this tokens, not after them.
+ * Spaces after the {@link TokenTypes#ANNOTATIONS ANNOTATIONS}
+ * before {@link TokenTypes#ARRAY_DECLARATOR ARRAY_DECLARATOR}
+ * and {@link TokenTypes#INDEX_OP INDEX_OP} will be ignored.
  * </p>
  * <p>
  * An example of how to configure the check is:
@@ -66,6 +70,12 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  *     &lt;property name="tokens" value="DOT"/&gt;
  *     &lt;property name="allowLineBreaks" value="false"/&gt;
  * &lt;/module&gt;
+ * </pre>
+ * <p>
+ * If the annotation is between the type and the array, the check will skip validation for spaces:
+ * </p>
+ * <pre>
+ * public void foo(final char @NotNull [] param) {} // No violation
  * </pre>
  * @author Rick Giles
  * @author lkuehne
@@ -87,6 +97,7 @@ public class NoWhitespaceAfterCheck extends AbstractCheck {
     public int[] getDefaultTokens() {
         return new int[] {
             TokenTypes.ARRAY_INIT,
+            TokenTypes.AT,
             TokenTypes.INC,
             TokenTypes.DEC,
             TokenTypes.UNARY_MINUS,
@@ -103,6 +114,7 @@ public class NoWhitespaceAfterCheck extends AbstractCheck {
     public int[] getAcceptableTokens() {
         return new int[] {
             TokenTypes.ARRAY_INIT,
+            TokenTypes.AT,
             TokenTypes.INC,
             TokenTypes.DEC,
             TokenTypes.UNARY_MINUS,
@@ -136,12 +148,15 @@ public class NoWhitespaceAfterCheck extends AbstractCheck {
     public void visitToken(DetailAST ast) {
         final DetailAST whitespaceFollowedAst = getWhitespaceFollowedNode(ast);
 
-        final int whitespaceColumnNo = getPositionAfter(whitespaceFollowedAst);
-        final int whitespaceLineNo = whitespaceFollowedAst.getLineNo();
+        if (whitespaceFollowedAst.getNextSibling() == null
+                || whitespaceFollowedAst.getNextSibling().getType() != TokenTypes.ANNOTATIONS) {
+            final int whitespaceColumnNo = getPositionAfter(whitespaceFollowedAst);
+            final int whitespaceLineNo = whitespaceFollowedAst.getLineNo();
 
-        if (hasTrailingWhitespace(ast, whitespaceColumnNo, whitespaceLineNo)) {
-            log(whitespaceLineNo, whitespaceColumnNo,
-                MSG_KEY, whitespaceFollowedAst.getText());
+            if (hasTrailingWhitespace(ast, whitespaceColumnNo, whitespaceLineNo)) {
+                log(whitespaceLineNo, whitespaceColumnNo,
+                        MSG_KEY, whitespaceFollowedAst.getText());
+            }
         }
     }
 
@@ -294,8 +309,16 @@ public class NoWhitespaceAfterCheck extends AbstractCheck {
         else {
             final DetailAST ident = getIdentLastToken(ast);
             if (ident == null) {
+                final DetailAST rparen = ast.findFirstToken(TokenTypes.RPAREN);
+                // construction like new int[]{1}[0]
+                if (rparen == null) {
+                    final DetailAST lastChild = firstChild.getLastChild();
+                    result = lastChild.findFirstToken(TokenTypes.RCURLY);
+                }
                 // construction like ((byte[]) pixels)[0]
-                result = ast.findFirstToken(TokenTypes.RPAREN);
+                else {
+                    result = rparen;
+                }
             }
             else {
                 result = ident;

@@ -25,6 +25,7 @@ assembly-run-all-jar)
 
 sonarqube)
   if [[ $TRAVIS_PULL_REQUEST =~ ^([0-9]*)$ ]]; then exit 0; fi
+  export MAVEN_OPTS='-Xmx2000m'
   mvn clean package cobertura:cobertura sonar:sonar \
        -Dsonar.host.url=https://sonarqube.com \
        -Dsonar.login=$SONAR_TOKEN \
@@ -57,8 +58,9 @@ all-sevntu-checks)
     | grep -vE "Checker|TreeWalker|Filter|Holder" | grep -v "^$" \
     | sed "s/com\.github\.sevntu\.checkstyle\.checks\..*\.//" \
     | sort | uniq | sed "s/Check$//" > file.txt
-  wget -q http://sevntu-checkstyle.github.io/sevntu.checkstyle/apidocs/allclasses-frame.html -O - | html2text \
-    | grep -E "Check$" | cut -d " " -f6 \
+  wget -q http://sevntu-checkstyle.github.io/sevntu.checkstyle/apidocs/allclasses-frame.html -O - \
+    | grep "<li>" | cut -d '>' -f 3 | sed "s/<\/a//" \
+    | grep -E "Check$" \
     | sort | uniq | sed "s/Check$//" > web.txt
   diff -u web.txt file.txt
   ;;
@@ -83,6 +85,7 @@ no-exception-test-checkstyle-sevntu-checkstyle)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
@@ -90,10 +93,11 @@ no-exception-test-guava)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
-  sed -i.'' 's/#guava/guava/' projects-to-test-on.properties
+  sed -i.'' 's/#guava|/guava|/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
@@ -101,11 +105,12 @@ no-exception-test-guava-with-google-checks)
   git clone https://github.com/checkstyle/contribution
   cd contribution/checkstyle-tester
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
-  sed -i.'' 's/#guava/guava/' projects-to-test-on.properties
+  sed -i.'' 's/#guava|/guava|/' projects-to-test-on.properties
   cd ../../
   mvn clean install -Pno-validations
   sed -i.'' 's/warning/ignore/' src/main/resources/google_checks.xml
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config ../../src/main/resources/google_checks.xml
   ;;
 
@@ -117,6 +122,7 @@ no-exception-test-hibernate)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
@@ -128,6 +134,7 @@ no-exception-test-findbugs)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
@@ -139,6 +146,7 @@ no-exception-test-spring-framework)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
@@ -150,6 +158,7 @@ no-exception-test-hbase)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
@@ -163,6 +172,7 @@ no-exception-test-Pmd-elasticsearch-lombok-ast)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 
@@ -179,6 +189,7 @@ no-exception-test-alot-of-project1)
   cd ../../
   mvn clean install -Pno-validations
   cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties --config checks-nonjavadoc-error.xml
   ;;
 

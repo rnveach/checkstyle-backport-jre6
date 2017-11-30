@@ -34,7 +34,7 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.Context;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.internal.TestUtils;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
@@ -52,7 +52,7 @@ public class ExecutableStatementCountCheckTest
         ast.setType(TokenTypes.STATIC_INIT);
         final ExecutableStatementCountCheck check = new ExecutableStatementCountCheck();
         Assert.assertTrue("Stateful field is not cleared after beginTree",
-                TestUtils.isStatefulFieldClearedDuringBeginTree(check, ast, "contextStack",
+                TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "contextStack",
                     new Predicate<Object>() {
                         @Override
                         public boolean test(Object contextStack) {

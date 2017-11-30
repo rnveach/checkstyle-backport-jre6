@@ -19,9 +19,10 @@
 
 package com.puppycrawl.tools.checkstyle.doclets;
 
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -48,12 +49,13 @@ import com.sun.tools.javadoc.ModifierFilter;
 public class TokenTypesDocletTest extends AbstractPathTestSupport {
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle/doclets";
+        return "com/puppycrawl/tools/checkstyle/doclets/tokentypesdoclet";
     }
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(TokenTypesDoclet.class, true);
+        assertTrue("Constructor is not private",
+                isUtilsClassHasPrivateConstructor(TokenTypesDoclet.class, true));
     }
 
     @Test
@@ -105,7 +107,8 @@ public class TokenTypesDocletTest extends AbstractPathTestSupport {
         names.add(getPath("InputTokenTypesDocletNotConstants.java"));
 
         final Context context = new Context();
-        new TestMessager(context);
+        final TestMessager test = new TestMessager(context);
+        assertNotNull("should be able to create TestMessager without issue", test);
         final JavadocTool javadocTool = JavadocTool.make0(context);
         final RootDoc rootDoc = getRootDoc(javadocTool, options, names);
 
@@ -121,7 +124,8 @@ public class TokenTypesDocletTest extends AbstractPathTestSupport {
         names.add(getPath("InputTokenTypesDocletEmptyJavadoc.java"));
 
         final Context context = new Context();
-        new TestMessager(context);
+        final TestMessager test = new TestMessager(context);
+        assertNotNull("should be able to create TestMessager without issue", test);
         final JavadocTool javadocTool = JavadocTool.make0(context);
         final RootDoc rootDoc = getRootDoc(javadocTool, options, names);
 
@@ -145,7 +149,8 @@ public class TokenTypesDocletTest extends AbstractPathTestSupport {
         names.add(getPath("InputTokenTypesDocletCorrect.java"));
 
         final Context context = new Context();
-        new TestMessager(context);
+        final TestMessager test = new TestMessager(context);
+        assertNotNull("should be able to create TestMessager without issue", test);
         final JavadocTool javadocTool = JavadocTool.make0(context);
         final RootDoc rootDoc = getRootDoc(javadocTool, options, names);
 
@@ -167,7 +172,8 @@ public class TokenTypesDocletTest extends AbstractPathTestSupport {
         names.add(getPath("InputTokenTypesDocletJavadocParseError.java"));
 
         final Context context = new Context();
-        new TestMessager(context);
+        final TestMessager test = new TestMessager(context);
+        assertNotNull("should be able to create TestMessager without issue", test);
         final JavadocTool javadocTool = JavadocTool.make0(context);
         final RootDoc rootDoc = getRootDoc(javadocTool, options, names);
 

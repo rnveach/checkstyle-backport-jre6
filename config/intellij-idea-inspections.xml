@@ -2103,6 +2103,7 @@ isolated classes and we cannot put them to separate package as it will affect us
                 <option value="MagicNumber"/>
                 <!-- it is used for test purposes -->
                 <option value="AssignmentToStaticFieldFromInstanceMethod" />
+                <option value="SuperClassHasFrequentlyUsedInheritors" />
                 <!-- we still have classes derived from deprecated ones -->
                 <option value="DeprecatedIsStillUsed" />
                 <!-- these are base classes for checks and not all their methods may need to be overwritten -->
@@ -2144,6 +2145,12 @@ isolated classes and we cannot put them to separate package as it will affect us
                 <option value="ThisEscapedInObjectConstruction" />
                 <!-- it will makes code too complicated in some cases -->
                 <option value="MultipleReturnPointsPerMethod" />
+                <!-- MT check markers are annotations -->
+                <option value="AnnotationClass" />
+                <!-- till #4870, used in MT check markers -->
+                <option value="ClassIndependentOfModule" />
+                <!-- till #4870, used in MT check markers -->
+                <option value="unused" />
             </list>
         </option>
     </inspection_tool>

@@ -56,7 +56,7 @@ public class AbstractFileSetCheckTest {
     }
 
     @Test
-    public void testGetFileExtention() throws Exception {
+    public void testGetFileExtention() {
         final DummyFileSetCheck check = new DummyFileSetCheck();
         check.setFileExtensions("tmp", ".java");
         final String[] expectedExtentions = {".tmp", ".java"};
@@ -67,14 +67,12 @@ public class AbstractFileSetCheckTest {
 
     /**
      * This javadoc exists only to suppress Intellij Idea inspection
-     * @throws Exception it happens
-     * @noinspection NullArgumentToVariableArgMethod
      */
     @Test
-    public void testSetExtentionThrowsExceptionWhenTheyAreNull() throws Exception {
+    public void testSetExtentionThrowsExceptionWhenTheyAreNull() {
         final DummyFileSetCheck check = new DummyFileSetCheck();
         try {
-            check.setFileExtensions(null);
+            check.setFileExtensions((String[]) null);
             fail("Expected exception.");
         }
         catch (IllegalArgumentException exception) {
@@ -84,7 +82,7 @@ public class AbstractFileSetCheckTest {
     }
 
     @Test
-    public void testGetMessageDispatcher() throws Exception {
+    public void testGetMessageDispatcher() {
         final DummyFileSetCheck check = new DummyFileSetCheck();
         final Checker checker = new Checker();
         check.setMessageDispatcher(checker);

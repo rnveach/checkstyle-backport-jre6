@@ -47,7 +47,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  *
  * @author Oliver Burn
  * @author lkuehne
- * @noinspection ConstructorWithTooManyParameters, SerializableHasSerializationMethods
+ * @noinspection SerializableHasSerializationMethods, ClassWithTooManyConstructors
  */
 public final class LocalizedMessage
     implements Comparable<LocalizedMessage>, Serializable {
@@ -70,6 +70,8 @@ public final class LocalizedMessage
     private final int lineNo;
     /** The column number. **/
     private final int columnNo;
+    /** The column char index. **/
+    private final int columnCharIndex;
     /** The token type constant. See {@link TokenTypes}. **/
     private final int tokenType;
 
@@ -101,6 +103,7 @@ public final class LocalizedMessage
      *
      * @param lineNo line number associated with the message
      * @param columnNo column number associated with the message
+     * @param columnCharIndex column char index associated with the message
      * @param tokenType token type of the event associated with the message. See {@link TokenTypes}
      * @param bundle resource bundle name
      * @param key the key to locate the translation
@@ -109,10 +112,12 @@ public final class LocalizedMessage
      * @param moduleId the id of the module the message is associated with
      * @param sourceClass the Class that is the source of the message
      * @param customMessage optional custom message overriding the default
+     * @noinspection ConstructorWithTooManyParameters
      */
     // -@cs[ParameterNumber] Class is immutable, we need that amount of arguments.
     public LocalizedMessage(int lineNo,
                             int columnNo,
+                            int columnCharIndex,
                             int tokenType,
                             String bundle,
                             String key,
@@ -123,6 +128,7 @@ public final class LocalizedMessage
                             String customMessage) {
         this.lineNo = lineNo;
         this.columnNo = columnNo;
+        this.columnCharIndex = columnCharIndex;
         this.tokenType = tokenType;
         this.key = key;
 
@@ -144,6 +150,7 @@ public final class LocalizedMessage
      *
      * @param lineNo line number associated with the message
      * @param columnNo column number associated with the message
+     * @param tokenType token type of the event associated with the message. See {@link TokenTypes}
      * @param bundle resource bundle name
      * @param key the key to locate the translation
      * @param args arguments for the translation
@@ -151,6 +158,36 @@ public final class LocalizedMessage
      * @param moduleId the id of the module the message is associated with
      * @param sourceClass the Class that is the source of the message
      * @param customMessage optional custom message overriding the default
+     * @noinspection ConstructorWithTooManyParameters
+     */
+    // -@cs[ParameterNumber] Class is immutable, we need that amount of arguments.
+    public LocalizedMessage(int lineNo,
+                            int columnNo,
+                            int tokenType,
+                            String bundle,
+                            String key,
+                            Object[] args,
+                            SeverityLevel severityLevel,
+                            String moduleId,
+                            Class<?> sourceClass,
+                            String customMessage) {
+        this(lineNo, columnNo, columnNo, tokenType, bundle, key, args, severityLevel, moduleId,
+                sourceClass, customMessage);
+    }
+
+    /**
+     * Creates a new {@code LocalizedMessage} instance.
+     *
+     * @param lineNo line number associated with the message
+     * @param columnNo column number associated with the message
+     * @param bundle resource bundle name
+     * @param key the key to locate the translation
+     * @param args arguments for the translation
+     * @param severityLevel severity level for the message
+     * @param moduleId the id of the module the message is associated with
+     * @param sourceClass the Class that is the source of the message
+     * @param customMessage optional custom message overriding the default
+     * @noinspection ConstructorWithTooManyParameters
      */
     // -@cs[ParameterNumber] Class is immutable, we need that amount of arguments.
     public LocalizedMessage(int lineNo,
@@ -177,6 +214,7 @@ public final class LocalizedMessage
      * @param moduleId the id of the module the message is associated with
      * @param sourceClass the Class that is the source of the message
      * @param customMessage optional custom message overriding the default
+     * @noinspection ConstructorWithTooManyParameters
      */
     // -@cs[ParameterNumber] Class is immutable, we need that amount of arguments.
     public LocalizedMessage(int lineNo,
@@ -209,6 +247,7 @@ public final class LocalizedMessage
      * @param moduleId the id of the module the message is associated with
      * @param sourceClass the source class for the message
      * @param customMessage optional custom message overriding the default
+     * @noinspection ConstructorWithTooManyParameters
      */
     // -@cs[ParameterNumber] Class is immutable, we need that amount of arguments.
     public LocalizedMessage(int lineNo,
@@ -234,6 +273,7 @@ public final class LocalizedMessage
      * @param moduleId the id of the module the message is associated with
      * @param sourceClass the name of the source for the message
      * @param customMessage optional custom message overriding the default
+     * @noinspection ConstructorWithTooManyParameters
      */
     public LocalizedMessage(
         int lineNo,
@@ -259,6 +299,7 @@ public final class LocalizedMessage
         final LocalizedMessage localizedMessage = (LocalizedMessage) object;
         return Objects.equals(lineNo, localizedMessage.lineNo)
                 && Objects.equals(columnNo, localizedMessage.columnNo)
+                && Objects.equals(columnCharIndex, localizedMessage.columnCharIndex)
                 && Objects.equals(tokenType, localizedMessage.tokenType)
                 && Objects.equals(severityLevel, localizedMessage.severityLevel)
                 && Objects.equals(moduleId, localizedMessage.moduleId)
@@ -271,8 +312,8 @@ public final class LocalizedMessage
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineNo, columnNo, tokenType, severityLevel, moduleId, key, bundle,
-                sourceClass, customMessage, Arrays.hashCode(args));
+        return Objects.hash(lineNo, columnNo, columnCharIndex, tokenType, severityLevel, moduleId,
+                key, bundle, sourceClass, customMessage, Arrays.hashCode(args));
     }
 
     /** Clears the cache. */
@@ -355,6 +396,14 @@ public final class LocalizedMessage
      */
     public int getColumnNo() {
         return columnNo;
+    }
+
+    /**
+     * Gets the column char index.
+     * @return the column char index
+     */
+    public int getColumnCharIndex() {
+        return columnCharIndex;
     }
 
     /**

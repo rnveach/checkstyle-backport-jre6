@@ -169,8 +169,5 @@ public class EqualsHashCodeCheck
             final DetailAST equalsAST = detailASTDetailASTEntry.getValue();
             log(equalsAST.getLineNo(), equalsAST.getColumnNo(), MSG_KEY_EQUALS);
         }
-
-        objBlockWithEquals.clear();
-        objBlockWithHashCode.clear();
     }
 }

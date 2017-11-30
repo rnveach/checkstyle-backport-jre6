@@ -20,12 +20,22 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import static com.puppycrawl.tools.checkstyle.checks.coding.AbstractSuperCheck.MSG_KEY;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 public class SuperCloneCheckTest
     extends AbstractModuleTestSupport {
@@ -62,5 +72,37 @@ public class SuperCloneCheckTest
         Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
         Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
         Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
+    }
+
+    /**
+     * We cannot reproduce situation when visitToken is called and leaveToken is not.
+     * So, we have to use reflection to be sure that even in such situation
+     * state of the field will be cleared.
+     *
+     * @throws Exception when code tested throws exception
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testClearState() throws Exception {
+        final AbstractSuperCheck check = new SuperCloneCheck();
+        final Optional<DetailAST> methodDef = TestUtil.findTokenInAstByPredicate(
+            TestUtil.parseFile(new File(getPath("InputSuperCloneWithoutWarnings.java"))),
+                new Predicate<DetailAST>() {
+                    @Override
+                    public boolean test(DetailAST ast) {
+                        return ast.getType() == TokenTypes.METHOD_DEF;
+                    }
+                });
+
+        assertTrue("Ast should contain METHOD_DEF", methodDef.isPresent());
+        assertTrue("State is not cleared on beginTree",
+            TestUtil.isStatefulFieldClearedDuringBeginTree(check, methodDef.get(),
+                "methodStack",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object methodStack) {
+                        return ((Collection<Set<String>>) methodStack).isEmpty();
+                    }
+                }));
     }
 }

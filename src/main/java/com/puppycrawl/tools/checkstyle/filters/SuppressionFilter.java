@@ -19,10 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.filters;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 
@@ -33,7 +29,7 @@ import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
 import com.puppycrawl.tools.checkstyle.api.Filter;
 import com.puppycrawl.tools.checkstyle.api.FilterSet;
 import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.FilterUtils;
 
 /**
  * <p>
@@ -95,7 +91,7 @@ public class SuppressionFilter extends AutomaticBean implements Filter, External
     protected void finishLocalSetup() throws CheckstyleException {
         if (file != null) {
             if (optional) {
-                if (suppressionSourceExists(file)) {
+                if (FilterUtils.isFileExists(file)) {
                     filters = SuppressionsLoader.loadSuppressions(file);
                 }
                 else {
@@ -111,37 +107,5 @@ public class SuppressionFilter extends AutomaticBean implements Filter, External
     @Override
     public Set<String> getExternalResourceLocations() {
         return Collections.singleton(file);
-    }
-
-    /**
-     * Checks if suppression source with given fileName exists.
-     * @param fileName name of the suppressions file.
-     * @return true if suppression file exists, otherwise false
-     */
-    private static boolean suppressionSourceExists(String fileName) {
-        boolean suppressionSourceExists = true;
-        InputStream sourceInput = null;
-        try {
-            final URI uriByFilename = CommonUtils.getUriByFilename(fileName);
-            final URL url = uriByFilename.toURL();
-            sourceInput = url.openStream();
-        }
-        catch (CheckstyleException ignored) {
-            suppressionSourceExists = false;
-        }
-        catch (IOException ignored) {
-            suppressionSourceExists = false;
-        }
-        finally {
-            if (sourceInput != null) {
-                try {
-                    sourceInput.close();
-                }
-                catch (IOException ignored) {
-                    suppressionSourceExists = false;
-                }
-            }
-        }
-        return suppressionSourceExists;
     }
 }

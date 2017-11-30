@@ -73,15 +73,21 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyCacheFile.class, ByteStreams.class,
         CommonUtils.class, Closeables.class, Flushables.class})
-public class PropertyCacheFileTest {
+public class PropertyCacheFileTest extends AbstractPathTestSupport {
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
+    @Override
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/propertycachefile";
+    }
+
     @Test
     public void testCtor() {
         try {
-            new PropertyCacheFile(null, "");
+            final Object test = new PropertyCacheFile(null, "");
+            fail("exception expected but got " + test);
         }
         catch (IllegalArgumentException ex) {
             assertEquals("Invalid exception message",
@@ -89,7 +95,8 @@ public class PropertyCacheFileTest {
         }
         try {
             final Configuration config = new DefaultConfiguration("myName");
-            new PropertyCacheFile(config, null);
+            final Object test = new PropertyCacheFile(config, null);
+            fail("exception expected but got " + test);
         }
         catch (IllegalArgumentException ex) {
             assertEquals("Invalid exception message",
@@ -150,7 +157,7 @@ public class PropertyCacheFileTest {
 
         final Configuration config = new DefaultConfiguration("myName");
         final PropertyCacheFile cache = new PropertyCacheFile(config,
-                "src/test/resources/com/puppycrawl/tools/checkstyle/cache.tmp");
+                getPath("InputPropertyCacheFile"));
         cache.load();
 
         final String hash = cache.get(PropertyCacheFile.CONFIG_HASH_KEY);
@@ -218,8 +225,7 @@ public class PropertyCacheFileTest {
         cache.load();
 
         final Set<String> resources = new HashSet<String>();
-        final String pathToResource =
-                "src/test/resources/com/puppycrawl/tools/checkstyle/externalResourse.tmp";
+        final String pathToResource = getPath("InputPropertyCacheFileExternal.properties");
         resources.add(pathToResource);
         cache.putExternalResources(resources);
 
@@ -264,7 +270,7 @@ public class PropertyCacheFileTest {
 
         // apply new external resource to clear cache
         final Set<String> resources = new HashSet<String>();
-        final String resource = "/com/puppycrawl/tools/checkstyle/java.header";
+        final String resource = getPath("InputPropertyCacheFile.header");
         resources.add(resource);
         cache.putExternalResources(resources);
 

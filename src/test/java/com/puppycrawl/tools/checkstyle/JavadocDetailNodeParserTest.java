@@ -27,7 +27,7 @@ import java.io.File;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.internal.TestUtils;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
@@ -38,14 +38,14 @@ public class JavadocDetailNodeParserTest extends AbstractModuleTestSupport {
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle";
+        return "com/puppycrawl/tools/checkstyle/javadocdetailnodeparser";
     }
 
     @Test
     public void testParseJavadocAsDetailNode() throws Exception {
-        final DetailAST ast = TestUtils.parseFile(new File("src/test/resources/"
-                + getPackageLocation() + "/InputJavadocDetailNodeParser.java"))
-                .getNextSibling().getFirstChild().getFirstChild();
+        final DetailAST ast = TestUtil
+                .parseFile(new File(getPath("InputJavadocDetailNodeParser.java"))).getNextSibling()
+                .getFirstChild().getFirstChild();
         final JavadocDetailNodeParser parser = new JavadocDetailNodeParser();
         final JavadocDetailNodeParser.ParseStatus status = parser.parseJavadocAsDetailNode(ast);
         final String actual = DetailNodeTreeStringPrinter.printTree(status.getTree(), "", "");
@@ -56,12 +56,12 @@ public class JavadocDetailNodeParserTest extends AbstractModuleTestSupport {
         // and linux.
         if (OS_NAME.startsWith("windows")) {
             expected = new String(Files7.readAllBytes(Paths.get(
-                    getPath("OutputWindowsJavadocDetailedNodeParser.txt"))),
+                    getPath("ExpectedJavadocDetailNodeParserWindows.txt"))),
                     StandardCharsets.UTF_8);
         }
         else {
             expected = new String(Files7.readAllBytes(Paths.get(
-                    getPath("OutputJavadocDetailedNodeParser.txt"))),
+                    getPath("ExpectedJavadocDetailNodeParser.txt"))),
                     StandardCharsets.UTF_8);
         }
 

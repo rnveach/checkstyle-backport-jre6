@@ -19,8 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.xpath;
 
-import static com.puppycrawl.tools.checkstyle.internal.XpathUtil.getXpathItems;
-
+import static com.puppycrawl.tools.checkstyle.internal.utils.XpathUtil.getXpathItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,23 +31,28 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.internal.TestUtils;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import net.sf.saxon.om.AxisInfo;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamespaceBinding;
 import net.sf.saxon.tree.iter.EmptyIterator;
 
-public class RootNodeTest {
+public class RootNodeTest extends AbstractPathTestSupport {
 
     private static RootNode rootNode;
 
+    @Override
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/xpath/xpathmapper";
+    }
+
     @Before
     public void init() throws Exception {
-        final File file = new File("src/test/resources/com/puppycrawl/tools/"
-                + "checkstyle/xpath/InputXpathMapperAst.java");
-        final DetailAST rootAst = TestUtils.parseFile(file);
+        final File file = new File(getPath("InputXpathMapperAst.java"));
+        final DetailAST rootAst = TestUtil.parseFile(file);
         rootNode = new RootNode(rootAst);
     }
 
@@ -65,32 +69,32 @@ public class RootNodeTest {
     }
 
     @Test
-    public void testGetTokenType() throws Exception {
+    public void testGetTokenType() {
         assertEquals("Invalid token type", TokenTypes.EOF, rootNode.getTokenType());
     }
 
     @Test
-    public void testGetLineNumber() throws Exception {
+    public void testGetLineNumber() {
         assertEquals("Invalid line number", 1, rootNode.getLineNumber());
     }
 
     @Test
-    public void testGetColumnNumber() throws Exception {
+    public void testGetColumnNumber() {
         assertEquals("Invalid column number", 0, rootNode.getColumnNumber());
     }
 
     @Test
-    public void testGetLocalPart() throws Exception {
+    public void testGetLocalPart() {
         assertEquals("Invalid local part", "ROOT", rootNode.getLocalPart());
     }
 
     @Test
-    public void testGetStringValue() throws Exception {
+    public void testGetStringValue() {
         assertEquals("Invalid string value", "ROOT", rootNode.getStringValue());
     }
 
     @Test
-    public void testIterate() throws Exception {
+    public void testIterate() {
         assertEquals("Result iterator does not match expected",
                 EmptyIterator.OfNodes.THE_INSTANCE, rootNode.iterateAxis(AxisInfo.PARENT));
         assertEquals("Result iterator does not match expected",
@@ -99,7 +103,7 @@ public class RootNodeTest {
     }
 
     @Test
-    public void testIterateWithoutArgument() throws Exception {
+    public void testIterateWithoutArgument() {
         try {
             rootNode.iterate();
             fail("Exception is excepted");
@@ -112,7 +116,7 @@ public class RootNodeTest {
     }
 
     @Test
-    public void testGetAttributeValue() throws Exception {
+    public void testGetAttributeValue() {
         try {
             rootNode.getAttributeValue("", "");
             fail("Exception is excepted");
@@ -126,9 +130,10 @@ public class RootNodeTest {
     }
 
     @Test
-    public void testGetDeclaredNamespaces() throws Exception {
+    public void testGetDeclaredNamespaces() {
         try {
-            rootNode.getDeclaredNamespaces(new NamespaceBinding("prefix", "uri"));
+            rootNode.getDeclaredNamespaces(
+                    new NamespaceBinding[] {new NamespaceBinding("prefix", "uri")});
             fail("Exception is excepted");
         }
         catch (UnsupportedOperationException ex) {
@@ -392,7 +397,7 @@ public class RootNodeTest {
     }
 
     @Test
-    public void testAtomize() throws Exception {
+    public void testAtomize() {
         try {
             rootNode.atomize();
             fail("Exception is excepted");
@@ -420,7 +425,7 @@ public class RootNodeTest {
     }
 
     @Test
-    public void testCopy() throws Exception {
+    public void testCopy() {
         try {
             rootNode.copy(null, -1, null);
             fail("Exception is excepted");

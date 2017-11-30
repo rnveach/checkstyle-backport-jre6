@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,8 +61,11 @@ import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.TypeNameCheck;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionCommentFilter;
-import com.puppycrawl.tools.checkstyle.internal.TestUtils;
+import com.puppycrawl.tools.checkstyle.filters.SuppressionXpathFilter;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
@@ -73,7 +77,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle";
+        return "com/puppycrawl/tools/checkstyle/treewalker";
     }
 
     @Test
@@ -124,7 +128,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
                 + "IMPORT");
         try {
             final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-            verify(checkConfig, getPath("InputMain.java"), expected);
+            verify(checkConfig, getPath("InputTreeWalker.java"), expected);
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
@@ -468,9 +472,9 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     @Test
     public void testAppendHiddenBlockCommentNodes() throws Exception {
         final DetailAST root =
-            TestUtils.parseFile(new File(getPath("InputTreeWalkerHiddenComments.java")));
+            TestUtil.parseFile(new File(getPath("InputTreeWalkerHiddenComments.java")));
 
-        final Optional<DetailAST> blockComment = TestUtils.findTokenInAstByPredicate(root,
+        final Optional<DetailAST> blockComment = TestUtil.findTokenInAstByPredicate(root,
             new Predicate<DetailAST>() {
                 @Override
                 public boolean test(DetailAST ast) {
@@ -492,10 +496,10 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     @Test
     public void testAppendHiddenSingleLineCommentNodes() throws Exception {
         final DetailAST root =
-            TestUtils.parseFile(new File(getPath("InputTreeWalkerHiddenComments.java")));
+            TestUtil.parseFile(new File(getPath("InputTreeWalkerHiddenComments.java")));
 
-        final Optional<DetailAST> singleLineComment = TestUtils.findTokenInAstByPredicate(root,
-                new Predicate<DetailAST>() {
+        final Optional<DetailAST> singleLineComment = TestUtil.findTokenInAstByPredicate(root,
+            new Predicate<DetailAST>() {
                 @Override
                 public boolean test(DetailAST ast) {
                     return ast.getType() == TokenTypes.SINGLE_LINE_COMMENT;
@@ -513,7 +517,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testFinishLocalSetupFullyInitialized() throws Exception {
+    public void testFinishLocalSetupFullyInitialized() {
         final TreeWalker treeWalker = new TreeWalker();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         treeWalker.setClassLoader(contextClassLoader);
@@ -560,6 +564,36 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
         assertTrue("Destroy was not called", VerifyDestroyCheck.isDestroyWasCalled());
+    }
+
+    @Test
+    public void testCacheWhenFileExternalResourceContentDoesNotChange() throws Exception {
+        final DefaultConfiguration filterConfig = createModuleConfig(SuppressionXpathFilter.class);
+        filterConfig.addAttribute("file", getPath("InputTreeWalkerSuppressionXpathFilter.xml"));
+        final DefaultConfiguration treeWalkerConfig = createModuleConfig(TreeWalker.class);
+        treeWalkerConfig.addChild(filterConfig);
+
+        final DefaultConfiguration checkerConfig = new DefaultConfiguration("checkstyle_checks");
+        checkerConfig.addChild(treeWalkerConfig);
+        final File cacheFile = temporaryFolder.newFile();
+        checkerConfig.addAttribute("cacheFile", cacheFile.getPath());
+
+        final Checker checker = new Checker();
+        checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
+        checker.addListener(getBriefUtLogger());
+        checker.configure(checkerConfig);
+
+        final String filePath = temporaryFolder.newFile("file.java").getPath();
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+
+        verify(checker, filePath, expected);
+        // One more time to use cache.
+        verify(checker, filePath, expected);
+
+        assertTrue("External resource is not present in cache",
+                new String(Files7.readAllBytes(new Path(cacheFile)),
+                        Charset.forName("UTF-8")).contains(
+                                "InputTreeWalkerSuppressionXpathFilter.xml"));
     }
 
     /**

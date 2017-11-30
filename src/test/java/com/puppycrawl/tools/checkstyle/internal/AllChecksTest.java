@@ -45,6 +45,10 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.checks.imports.ImportControlCheck;
+import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.internal.utils.ConfigurationUtil;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.internal.utils.XdocUtil;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
 
@@ -153,6 +157,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WhitespaceAround", ImmutableSet.of(
                 // we prefer no spaces on one side or both for these tokens
                 "ARRAY_INIT",
+                "ELLIPSIS",
                 // these are covered by GenericWhitespaceCheck
                 "WILDCARD_TYPE", "GENERIC_END", "GENERIC_START"));
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("RightCurly", ImmutableSet.of(
@@ -202,6 +207,8 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WhitespaceAround", ImmutableSet.of(
                 //  allowed via '4.8.3 Arrays'
                 "ARRAY_INIT",
+                //  '...' is almost same as '[]' by meaning
+                "ELLIPSIS",
                 // google prefers no spaces on one side or both for these tokens
                 "GENERIC_START", "GENERIC_END", "WILDCARD_TYPE"));
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("IllegalTokenText", ImmutableSet.of(
@@ -220,11 +227,14 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("RightCurly", ImmutableSet.of(
                 // Until https://github.com/checkstyle/checkstyle/issues/4178
                 "LAMBDA"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceBefore", ImmutableSet.of(
+                // google uses GenericWhitespace for this behavior
+                "GENERIC_START", "GENERIC_END"));
     }
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle/internal";
+        return "com/puppycrawl/tools/checkstyle/internal/allchecks";
     }
 
     @Test
@@ -243,7 +253,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 // ImportControlCheck must have the import control configuration file to avoid
                 // violation.
                 moduleConfig.addAttribute("file", getPath(
-                        "InputAllChecksImport-control_complete.xml"));
+                        "InputAllChecksImportControl.xml"));
             }
             checker = createChecker(moduleConfig);
             verify(checker, inputFilePath, expected);
@@ -311,6 +321,8 @@ public class AllChecksTest extends AbstractModuleTestSupport {
     public void testAllModulesAreReferencedInConfigFile() throws Exception {
         final Set<String> modulesReferencedInConfig = CheckUtil.getConfigCheckStyleModules();
         final Set<String> moduleNames = CheckUtil.getSimpleNames(CheckUtil.getCheckstyleModules());
+        //Issue: https://github.com/checkstyle/checkstyle/issues/4421
+        moduleNames.remove("SuppressionXpathFilter");
 
         for (String check : moduleNames) {
             if (!modulesReferencedInConfig.contains(check)) {
@@ -342,7 +354,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
 
     private static void validateAllCheckTokensAreReferencedInConfigFile(String configName,
             Configuration configuration, Map<String, Set<String>> tokensToIgnore) throws Exception {
-        final ModuleFactory moduleFactory = TestUtils.getPackageObjectFactory();
+        final ModuleFactory moduleFactory = TestUtil.getPackageObjectFactory();
         final Set<Configuration> configChecks = ConfigurationUtil.getChecks(configuration);
 
         final Map<String, Set<String>> configCheckTokens = new HashMap<String, Set<String>>();
@@ -409,6 +421,8 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         // these are documented on non-'config_' pages
         checkstyleModulesNames.remove("TreeWalker");
         checkstyleModulesNames.remove("Checker");
+        //Issue: https://github.com/checkstyle/checkstyle/issues/4421
+        checkstyleModulesNames.remove("SuppressionXpathFilter");
 
         for (String moduleName : checkstyleModulesNames) {
             if (!modulesNamesWhichHaveXdocs.contains(moduleName)) {
@@ -423,8 +437,11 @@ public class AllChecksTest extends AbstractModuleTestSupport {
     @Test
     public void testAllCheckstyleModulesInCheckstyleConfig() throws Exception {
         final Set<String> configChecks = CheckUtil.getConfigCheckStyleModules();
+        final Set<String> moduleNames = CheckUtil.getSimpleNames(CheckUtil.getCheckstyleModules());
+        //Issue: https://github.com/checkstyle/checkstyle/issues/4421
+        moduleNames.remove("SuppressionXpathFilter");
 
-        for (String moduleName : CheckUtil.getSimpleNames(CheckUtil.getCheckstyleModules())) {
+        for (String moduleName : moduleNames) {
             Assert.assertTrue("checkstyle_checks.xml is missing module: " + moduleName,
                     configChecks.contains(moduleName));
         }

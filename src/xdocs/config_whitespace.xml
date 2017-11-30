@@ -962,6 +962,15 @@ import static java.math.BigInteger.ZERO;
           href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INDEX_OP">INDEX_OP</a>
           tokens specially from other tokens. Actually it is checked that there is
           no whitespace before this tokens, not after them.
+          Space after the
+          <a
+          href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATIONS">ANNOTATIONS</a> before
+          <a
+          href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ARRAY_DECLARATOR">ARRAY_DECLARATOR</a>
+          and
+          <a
+          href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INDEX_OP">INDEX_OP</a>
+          will be ignored.
           </p>
       </subsection>
 
@@ -991,6 +1000,8 @@ import static java.math.BigInteger.ZERO;
               subset of tokens <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ARRAY_INIT">ARRAY_INIT</a>,
               <a
+              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#AT">AT</a>,
+              <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INC">INC</a>,
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#DEC">DEC</a>,
@@ -1019,6 +1030,8 @@ import static java.math.BigInteger.ZERO;
             <td>
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ARRAY_INIT">ARRAY_INIT</a>,
+              <a
+              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#AT">AT</a>,
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INC">INC</a>,
               <a
@@ -1059,6 +1072,12 @@ import static java.math.BigInteger.ZERO;
     &lt;property name=&quot;tokens&quot; value=&quot;DOT&quot;/&gt;
     &lt;property name=&quot;allowLineBreaks&quot; value=&quot;false&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <p>
+         If the annotation is between the type and the array, the check will skip validation for spaces:
+        </p>
+        <source>
+public void foo(final char @NotNull [] param) {} // No violation
         </source>
       </subsection>
 
@@ -1109,7 +1128,8 @@ import static java.math.BigInteger.ZERO;
           specifically, it checks that it is not preceded with whitespace, or
           (if linebreaks are allowed) all characters on the line before are
           whitespace. To allow linebreaks before a token, set property <code>allowLineBreaks</code> to <code>
-          true</code>.
+          true</code>. No check occurs before semi-colons in empty for loop
+          initializers or conditions.
         </p>
       </subsection>
 
@@ -1180,6 +1200,10 @@ import static java.math.BigInteger.ZERO;
 
       <subsection name="Example of Usage">
         <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+NoWhitespaceBefore">
+            Google Style</a>
+          </li>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Asun_checks.xml+repo%3Acheckstyle%2Fcheckstyle+NoWhitespaceBefore">
             Sun Style</a>
@@ -1391,9 +1415,11 @@ import static java.math.BigInteger.ZERO;
         <p>
           Checks the policy on the padding of parentheses; i.e. whether a
           space is required after a left parenthesis and before a right
-          parenthesis, or such spaces are forbidden, with the exception that it does
-          not check for padding of the right parenthesis at an empty for iterator and
-          empty for initializer.
+          parenthesis, or such spaces are forbidden. No check occurs at
+          the right parenthesis after an empty for iterator, at the left
+          parenthesis before an empty for initialization, or at the right
+          parenthesis of a try-with-resources resource specification where
+          the last resource variable has a trailing semi-colon.
           Use Check <a
           href="config_whitespace.html#EmptyForIteratorPad">EmptyForIteratorPad</a>
           to validate empty for iterators and <a
@@ -1537,6 +1563,16 @@ import static java.math.BigInteger.ZERO;
     &lt;property name=&quot;option&quot; value=&quot;space&quot;/&gt;
 &lt;/module&gt;
         </source>
+
+        <p>
+          The following cases not checked:
+        </p>
+        <source>
+for ( ; i &lt; j; i++, j--) // no check after left parenthesis
+for (Iterator it = xs.iterator(); it.hasNext(); ) // no check before right parenthesis
+try (Closeable resource = acquire(); ) // no check before right parenthesis
+        </source>
+
       </subsection>
 
       <subsection name="Example of Usage">
@@ -2257,7 +2293,8 @@ try {
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#TYPE_EXTENSION_AND">TYPE_EXTENSION_AND</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#WILDCARD_TYPE">WILDCARD_TYPE</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#GENERIC_START">GENERIC_START</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#GENERIC_END">GENERIC_END</a>.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#GENERIC_END">GENERIC_END</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELLIPSIS">ELLIPSIS</a>.
             </td>
             <td>
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ASSIGN">ASSIGN</a>,

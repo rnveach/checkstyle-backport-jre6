@@ -23,16 +23,26 @@ import static com.puppycrawl.tools.checkstyle.checks.TranslationCheck.MSG_KEY;
 import static com.puppycrawl.tools.checkstyle.checks.TranslationCheck.MSG_KEY_MISSING_TRANSLATION_FILE;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -41,24 +51,34 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.XMLLogger;
+import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
+import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+import com.puppycrawl.tools.checkstyle.api.SeverityLevelCounter;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Closeables.class)
 public class TranslationCheckTest extends AbstractModuleTestSupport {
     @Captor
     private ArgumentCaptor<SortedSet<LocalizedMessage>> captor;
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle/checks/misc/translation";
+        return "com/puppycrawl/tools/checkstyle/checks/translation";
     }
 
     @Test
@@ -76,6 +96,74 @@ public class TranslationCheckTest extends AbstractModuleTestSupport {
             propertyFiles,
             getPath("messages_test_de.properties"),
             expected);
+    }
+
+    /**
+     * Even when we pass several files to AbstractModuleTestSupport#verify,
+     * the check processes it during one run, so we cannot reproduce situation
+     * when TranslationCheck#beginProcessing called several times during single run.
+     * So, we have to use reflection to check this particular case.
+     *
+     * @throws Exception when code tested throws exception
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testStateIsCleared() throws Exception {
+        final File fileToProcess = new File(
+                getPath("InputTranslationCheckFireErrors_de.properties")
+        );
+        final String charset = StandardCharsets.UTF_8.name();
+        final TranslationCheck check = new TranslationCheck();
+        check.beginProcessing(charset);
+        check.processFiltered(fileToProcess, new FileText(fileToProcess, charset));
+        check.beginProcessing(charset);
+        final Field field = check.getClass().getDeclaredField("filesToProcess");
+        field.setAccessible(true);
+
+        assertTrue("Stateful field is not cleared on beginProcessing",
+            ((Collection<File>) field.get(check)).isEmpty());
+    }
+
+    @Test
+    public void testFileExtension() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
+        checkConfig.addAttribute("baseName", "^InputTranslation.*$");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final File[] propertyFiles = {
+            new File(getPath("InputTranslation_de.txt")),
+        };
+        verify(createChecker(checkConfig),
+            propertyFiles,
+            getPath("InputTranslation_de.txt"),
+            expected);
+    }
+
+    @Test
+    public void testLogOutput() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
+        checkConfig.addAttribute("requiredTranslations", "ja,de");
+        checkConfig.addAttribute("baseName", "^InputTranslation.*$");
+        final Checker checker = createChecker(checkConfig);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final XMLLogger logger = new XMLLogger(out, AutomaticBean.OutputStreamOptions.NONE);
+        checker.addListener(logger);
+
+        final String defaultProps = getPath("InputTranslationCheckFireErrors.properties");
+        final String translationProps = getPath("InputTranslationCheckFireErrors_de.properties");
+
+        final File[] propertyFiles = {
+            new File(defaultProps),
+            new File(translationProps),
+        };
+
+        final String line = "0: ";
+        final String firstErrorMessage = getCheckMessage(MSG_KEY_MISSING_TRANSLATION_FILE,
+                "InputTranslationCheckFireErrors_ja.properties");
+        final String secondErrorMessage = getCheckMessage(MSG_KEY, "anotherKey");
+
+        verify(checker, propertyFiles, ImmutableMap.of(
+            getPath(""), Collections.singletonList(line + firstErrorMessage),
+            translationProps, Collections.singletonList(line + secondErrorMessage)));
     }
 
     @Test
@@ -102,6 +190,8 @@ public class TranslationCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
         check.configure(checkConfig);
         final Checker checker = createChecker(checkConfig);
+        final SeverityLevelCounter counter = new SeverityLevelCounter(SeverityLevel.ERROR);
+        checker.addListener(counter);
         check.setMessageDispatcher(checker);
 
         final Method loadKeys =
@@ -109,6 +199,7 @@ public class TranslationCheckTest extends AbstractModuleTestSupport {
         loadKeys.setAccessible(true);
         final Set<String> keys = (Set<String>) loadKeys.invoke(check, new File(""));
         assertTrue("Translation keys should be empty when File is not found", keys.isEmpty());
+        assertEquals("Invalid error count", 1, counter.getCount());
     }
 
     @Test
@@ -274,6 +365,36 @@ public class TranslationCheckTest extends AbstractModuleTestSupport {
             propertyFiles,
             getPath(""),
             expected);
+    }
+
+    /**
+     * Pitest requires all closes of streams and readers to be verified. Using PowerMock
+     * is almost only posibility to check it without rewriting production code.
+     *
+     * @throws Exception when code tested throws some exception
+     */
+    @Test
+    public void testResourcesAreClosed() throws Exception {
+        mockStatic(Closeables.class);
+        doNothing().when(Closeables.class);
+        Closeables.closeQuietly(any(InputStream.class));
+
+        final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
+        checkConfig.addAttribute("requiredTranslations", "es");
+
+        final File[] propertyFiles = {
+            new File(getPath("messages_home.properties")),
+            new File(getPath("messages_home_es_US.properties")),
+            };
+
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(
+            createChecker(checkConfig),
+            propertyFiles,
+            getPath(""),
+            expected);
+        verifyStatic(times(2));
+        Closeables.closeQuietly(any(FileInputStream.class));
     }
 
     @Test

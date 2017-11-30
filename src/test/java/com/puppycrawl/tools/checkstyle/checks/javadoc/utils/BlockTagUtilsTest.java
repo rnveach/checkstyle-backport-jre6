@@ -20,12 +20,13 @@
 package com.puppycrawl.tools.checkstyle.checks.javadoc.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.internal.TestUtils;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 
 /**
  * Tests BlockTagUtils.
@@ -34,7 +35,8 @@ public class BlockTagUtilsTest {
 
     @Test
     public void testHasPrivateConstructor() throws Exception {
-        TestUtils.assertUtilsClassHasPrivateConstructor(BlockTagUtils.class, true);
+        assertTrue("Constructor is not private",
+                TestUtil.isUtilsClassHasPrivateConstructor(BlockTagUtils.class, true));
     }
 
     @Test

@@ -37,7 +37,7 @@ import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.internal.TestUtils;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class VisibilityModifierCheckTest
@@ -197,7 +197,7 @@ public class VisibilityModifierCheckTest
                  "com.puppycrawl.tools.checkstyle.checks.design."
                          + "visibilitymodifier.InputVisibilityModifierGregorianCalendar,"
                  + "com.puppycrawl.tools.checkstyle.checks.design."
-                         + "visibilitymodifier.InetSocketAddress");
+                         + "visibilitymodifier.inputs.InetSocketAddress");
         final String[] expected = {
             "7:46: " + getCheckMessage(MSG_KEY, "calendar"),
             "12:45: " + getCheckMessage(MSG_KEY, "adr"),
@@ -453,7 +453,7 @@ public class VisibilityModifierCheckTest
      */
     @Test
     public void testIsStarImportNullAst() throws Exception {
-        final DetailAST importAst = TestUtils.parseFile(new File(getPath(
+        final DetailAST importAst = TestUtil.parseFile(new File(getPath(
             "InputVisibilityModifierIsStarImport.java"))).getNextSibling();
         final VisibilityModifierCheck check = new VisibilityModifierCheck();
         final Method isStarImport = Whitebox.getMethod(VisibilityModifierCheck.class,

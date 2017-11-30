@@ -22,8 +22,9 @@ package com.puppycrawl.tools.checkstyle;
 import static com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.MSG_JAVADOC_MISSED_HTML_CLOSE;
 import static com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.MSG_JAVADOC_PARSE_RULE_ERROR;
 import static com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.MSG_JAVADOC_WRONG_SINGLETON_TAG;
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -47,25 +48,26 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle/astprinter";
+        return "com/puppycrawl/tools/checkstyle/detailnodetreestringprinter";
     }
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(DetailNodeTreeStringPrinter.class, true);
+        assertTrue("Constructor is not private",
+                isUtilsClassHasPrivateConstructor(DetailNodeTreeStringPrinter.class, true));
     }
 
     @Test
     public void testParseFile() throws Exception {
-        verifyJavadocTree(getPath("expectedInputJavadocComment.txt"),
-                getPath("InputJavadocComment.javadoc"));
+        verifyJavadocTree(getPath("ExpectedDetailNodeTreeStringPrinterJavadocComment.txt"),
+                getPath("InputDetailNodeTreeStringPrinterJavadocComment.javadoc"));
     }
 
     @Test
     public void testParseFileWithError() throws Exception {
         try {
             DetailNodeTreeStringPrinter.printFileAst(
-                    new File(getPath("InputJavadocWithError.javadoc")));
+                    new File(getPath("InputDetailNodeTreeStringPrinterJavadocWithError.javadoc")));
             Assert.fail("Javadoc parser didn't fail on missing end tag");
         }
         catch (IllegalArgumentException ex) {
@@ -103,8 +105,9 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
 
     @Test
     public void testNoUnnecessaryTextinJavadocAst() throws Exception {
-        verifyJavadocTree(getPath("expectedNoUnnecessaryTextInJavadocAst.txt"),
-                getPath("InputNoUnnecessaryTextInJavadocAst.javadoc"));
+        verifyJavadocTree(
+                getPath("ExpectedDetailNodeTreeStringPrinterNoUnnecessaryTextInJavadocAst.txt"),
+                getPath("InputDetailNodeTreeStringPrinterNoUnnecessaryTextInJavadocAst.javadoc"));
     }
 
     @Test
@@ -162,8 +165,9 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
     @Test
     public void testUnescapedJavaCodeWithGenericsInJavadoc() throws Exception {
         try {
-            DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
-                    "InputUnescapedJavaCodeWithGenericsInJavadoc.javadoc")));
+            DetailNodeTreeStringPrinter.printFileAst(new File(
+                    getPath("InputDetailNodeTreeStringPrinter"
+                            + "UnescapedJavaCodeWithGenericsInJavadoc.javadoc")));
         }
         catch (IllegalArgumentException ex) {
             final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
@@ -177,12 +181,12 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
     public void testNoViableAltException() throws Exception {
         try {
             DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
-                    "InputNoViableAltException.javadoc")));
+                    "InputDetailNodeTreeStringPrinterNoViableAltException.javadoc")));
         }
         catch (IllegalArgumentException ex) {
             final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
                     new ParseErrorMessage(0, MSG_JAVADOC_PARSE_RULE_ERROR,
-                            9, "no viable alternative at input ' <<'", "JAVADOC_TAG"));
+                            9, "no viable alternative at input '<<'", "HTML_ELEMENT"));
             assertEquals("Generated and expected parse error messages don't match",
                     expected, ex.getMessage());
         }
@@ -192,7 +196,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
     public void testHtmlTagCloseBeforeTagOpen() throws Exception {
         try {
             DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
-                    "InputHtmlTagCloseBeforeTagOpen.javadoc"
+                    "InputDetailNodeTreeStringPrinterHtmlTagCloseBeforeTagOpen.javadoc"
             )));
         }
         catch (IllegalArgumentException ex) {
@@ -208,7 +212,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
     public void testWrongHtmlTagOrder() throws Exception {
         try {
             DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
-                    "InputWrongHtmlTagOrder.javadoc"
+                    "InputDetailNodeTreeStringPrinterWrongHtmlTagOrder.javadoc"
             )));
         }
         catch (IllegalArgumentException ex) {
@@ -223,7 +227,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
     public void testOmittedStartTagForHtmlElement() throws Exception {
         try {
             DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
-                    "InputOmittedStartTagForHtmlElement.javadoc"
+                    "InputDetailNodeTreeStringPrinterOmittedStartTagForHtmlElement.javadoc"
             )));
         }
         catch (IllegalArgumentException ex) {

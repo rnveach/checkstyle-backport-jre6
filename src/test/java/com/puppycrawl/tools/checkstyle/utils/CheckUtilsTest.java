@@ -19,9 +19,9 @@
 
 package com.puppycrawl.tools.checkstyle.utils;
 
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.findTokenInAstByPredicate;
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.parseFile;
+import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.findTokenInAstByPredicate;
+import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
+import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.parseFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -35,17 +35,24 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
-public class CheckUtilsTest {
+public class CheckUtilsTest extends AbstractPathTestSupport {
+
+    @Override
+    protected String getPackageLocation() {
+        return "com/puppycrawl/tools/checkstyle/utils/checkutils";
+    }
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(CheckUtils.class, true);
+        assertTrue("Constructor is not private",
+                isUtilsClassHasPrivateConstructor(CheckUtils.class, true));
     }
 
     @Test
@@ -289,7 +296,7 @@ public class CheckUtilsTest {
     }
 
     @Test
-    public void testGetFirstNode1() throws Exception {
+    public void testGetFirstNode1() {
         final DetailAST child = new DetailAST();
         child.setLineNo(5);
         child.setColumnNo(6);
@@ -319,7 +326,7 @@ public class CheckUtilsTest {
     }
 
     @Test
-    public void testParseDouble() throws Exception {
+    public void testParseDouble() {
         assertEquals("Invalid parse result", 1.0,
                 CheckUtils.parseDouble("1", TokenTypes.NUM_INT), 0);
         assertEquals("Invalid parse result", -0.05,
@@ -345,13 +352,8 @@ public class CheckUtilsTest {
         assertEquals("Result is not expected", expected, result);
     }
 
-    private static File getPath(String filename) {
-        return new File("src/test/resources/com/puppycrawl/tools/checkstyle/utils/checkutils/"
-                + filename);
-    }
-
-    private static DetailAST getNodeFromFile(int type) throws Exception {
-        return getNode(parseFile(getPath("InputCheckUtilsTest.java")), type);
+    private DetailAST getNodeFromFile(int type) throws Exception {
+        return getNode(parseFile(new File(getPath("InputCheckUtilsTest.java"))), type);
     }
 
     private static DetailAST getNode(DetailAST root, final int type) {

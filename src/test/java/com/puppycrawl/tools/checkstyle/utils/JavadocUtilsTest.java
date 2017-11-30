@@ -19,7 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.utils;
 
-import static com.puppycrawl.tools.checkstyle.internal.TestUtils.assertUtilsClassHasPrivateConstructor;
+import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -221,7 +221,8 @@ public class JavadocUtilsTest {
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertUtilsClassHasPrivateConstructor(JavadocUtils.class, true);
+        assertTrue("Constructor is not private",
+                isUtilsClassHasPrivateConstructor(JavadocUtils.class, true));
     }
 
     @Test
@@ -275,6 +276,18 @@ public class JavadocUtilsTest {
         catch (IllegalArgumentException ex) {
             assertEquals("Invalid exception message",
                     "Unknown javadoc token id. Given id: 100", ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetTokenNameForLowerBoundInvalidId() {
+        try {
+            JavadocUtils.getTokenName(20079);
+            fail("exception expected");
+        }
+        catch (IllegalArgumentException ex) {
+            assertEquals("Invalid exception message",
+                    "Unknown javadoc token id. Given id: 20079", ex.getMessage());
         }
     }
 

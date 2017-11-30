@@ -62,6 +62,9 @@ public class NoWhitespaceAfterCheckTest
             "132:11: " + getCheckMessage(MSG_KEY, "."),
             "136:12: " + getCheckMessage(MSG_KEY, "."),
             "264:2: " + getCheckMessage(MSG_KEY, "."),
+            "289:6: " + getCheckMessage(MSG_KEY, "@"),
+            "290:6: " + getCheckMessage(MSG_KEY, "@"),
+            "291:6: " + getCheckMessage(MSG_KEY, "@"),
         };
         verify(checkConfig, getPath("InputNoWhitespaceAfter.java"), expected);
     }
@@ -109,6 +112,11 @@ public class NoWhitespaceAfterCheckTest
             "39:24: " + getCheckMessage(MSG_KEY, "int"),
             "40:16: " + getCheckMessage(MSG_KEY, "int"),
             "43:63: " + getCheckMessage(MSG_KEY, "getLongMultArray"),
+            "47:26: " + getCheckMessage(MSG_KEY, "}"),
+            "49:22: " + getCheckMessage(MSG_KEY, "int"),
+            "50:24: " + getCheckMessage(MSG_KEY, "]"),
+            "51:35: " + getCheckMessage(MSG_KEY, "}"),
+            "52:38: " + getCheckMessage(MSG_KEY, "]"),
         };
         verify(checkConfig, getPath("InputNoWhitespaceAfterArrayDeclarations.java"), expected);
     }
@@ -161,6 +169,13 @@ public class NoWhitespaceAfterCheckTest
             "100:43: " + getCheckMessage(MSG_KEY, "]"),
         };
         verify(checkConfig, getPath("InputNoWhitespaceAfterArrayDeclarations2.java"), expected);
+    }
+
+    @Test
+    public void testArrayDeclarations3() throws Exception {
+        checkConfig.addAttribute("tokens", "ARRAY_DECLARATOR");
+        checkConfig.addAttribute("tokens", "INDEX_OP");
+        verify(checkConfig, getPath("InputNoWhitespaceAfterArrayDeclarations3.java"));
     }
 
     @Test

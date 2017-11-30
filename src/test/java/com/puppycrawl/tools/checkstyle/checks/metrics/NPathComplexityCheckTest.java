@@ -21,6 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks.metrics;
 
 import static com.puppycrawl.tools.checkstyle.checks.metrics.NPathComplexityCheck.MSG_KEY;
 
+import java.util.Collection;
 import java.util.SortedSet;
 
 import org.junit.Assert;
@@ -29,9 +30,12 @@ import org.junit.Test;
 import antlr.CommonHiddenStreamToken;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.api.Context;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 // -@cs[AbbreviationAsWordInName] Can't change check name
@@ -102,6 +106,52 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
         };
 
         verify(checkConfig, getPath("InputNPathComplexityOverflow.java"), expected);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testStatefulFieldsClearedOnBeginTree1() throws Exception {
+        final DetailAST ast = new DetailAST();
+        ast.setType(TokenTypes.LITERAL_ELSE);
+
+        final NPathComplexityCheck check = new NPathComplexityCheck();
+        Assert.assertTrue("Stateful field is not cleared after beginTree",
+            TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "rangeValues",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object rangeValues) {
+                        return ((Collection<Context>) rangeValues).isEmpty();
+                    }
+                }));
+        Assert.assertTrue("Stateful field is not cleared after beginTree",
+            TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "expressionValues",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object expressionValues) {
+                        return ((Collection<Context>) expressionValues).isEmpty();
+                    }
+                }));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testStatefulFieldsClearedOnBeginTree2() throws Exception {
+        final DetailAST ast = new DetailAST();
+        ast.setType(TokenTypes.LITERAL_RETURN);
+        ast.setLineNo(5);
+        final DetailAST child = new DetailAST();
+        child.setType(TokenTypes.SEMI);
+        ast.addChild(child);
+
+        final NPathComplexityCheck check = new NPathComplexityCheck();
+        Assert.assertTrue("Stateful field is not cleared after beginTree",
+            TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "isAfterValues",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object isAfterValues) {
+                        return ((Collection<Context>) isAfterValues).isEmpty();
+                    }
+                }));
     }
 
     @Test
