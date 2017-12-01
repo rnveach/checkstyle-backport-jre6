@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TextBlock;
@@ -108,6 +109,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author maxvetrenko
  *
  */
+@FileStatefulCheck
 public class AvoidEscapedUnicodeCharactersCheck
     extends AbstractCheck {
     /**
@@ -211,17 +213,17 @@ public class AvoidEscapedUnicodeCharactersCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.STRING_LITERAL, TokenTypes.CHAR_LITERAL};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.STRING_LITERAL, TokenTypes.CHAR_LITERAL};
     }
 
     @Override

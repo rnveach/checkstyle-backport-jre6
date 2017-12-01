@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -44,6 +45,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *
  * @author Oliver Burn
  */
+@FileStatefulCheck
 public class ImportControlCheck extends AbstractCheck implements ExternalResourceHolder {
 
     /**
@@ -90,18 +92,17 @@ public class ImportControlCheck extends AbstractCheck implements ExternalResourc
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.IMPORT,
-                          TokenTypes.STATIC_IMPORT, };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT, };
     }
 
     @Override

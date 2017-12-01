@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import antlr.collections.AST;
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -60,6 +61,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * </pre>
  * @author lkuehne
  */
+@FileStatefulCheck
 public class IllegalInstantiationCheck
     extends AbstractCheck {
 

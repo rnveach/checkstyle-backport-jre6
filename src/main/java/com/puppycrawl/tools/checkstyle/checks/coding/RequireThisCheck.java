@@ -29,6 +29,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -89,6 +90,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  * @author o_sukhodolsky
  * @author Andrei Selkin
  */
+@FileStatefulCheck
 public class RequireThisCheck extends AbstractCheck {
 
     /**
@@ -181,16 +183,11 @@ public class RequireThisCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
-    }
-
-    @Override
-    public int[] getAcceptableTokens() {
         return new int[] {
             TokenTypes.CLASS_DEF,
             TokenTypes.INTERFACE_DEF,
@@ -200,6 +197,11 @@ public class RequireThisCheck extends AbstractCheck {
             TokenTypes.SLIST,
             TokenTypes.IDENT,
         };
+    }
+
+    @Override
+    public int[] getAcceptableTokens() {
+        return getRequiredTokens();
     }
 
     @Override
@@ -604,7 +606,8 @@ public class RequireThisCheck extends AbstractCheck {
             else {
                 final DetailAST frameNameIdent = variableDeclarationFrame.getFrameNameIdent();
                 final DetailAST definitionToken = frameNameIdent.getParent();
-                staticContext = definitionToken.branchContains(TokenTypes.LITERAL_STATIC);
+                staticContext = definitionToken.findFirstToken(TokenTypes.MODIFIERS)
+                        .findFirstToken(TokenTypes.LITERAL_STATIC) != null;
             }
         }
         return !staticContext;

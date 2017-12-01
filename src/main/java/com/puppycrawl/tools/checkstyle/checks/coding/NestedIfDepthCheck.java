@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -29,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
  *
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
+@FileStatefulCheck
 public final class NestedIfDepthCheck extends AbstractCheck {
 
     /**
@@ -52,17 +54,17 @@ public final class NestedIfDepthCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.LITERAL_IF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.LITERAL_IF};
     }
 
     @Override

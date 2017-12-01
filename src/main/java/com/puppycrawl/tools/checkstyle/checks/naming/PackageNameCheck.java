@@ -21,6 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks.naming;
 
 import java.util.regex.Pattern;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -62,6 +63,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *
  * @author Oliver Burn
  */
+@StatelessCheck
 public class PackageNameCheck
     extends AbstractCheck {
     /**
@@ -86,17 +88,17 @@ public class PackageNameCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.PACKAGE_DEF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.PACKAGE_DEF};
     }
 
     @Override

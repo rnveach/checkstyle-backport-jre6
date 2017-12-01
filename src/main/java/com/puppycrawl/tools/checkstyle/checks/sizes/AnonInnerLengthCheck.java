@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.sizes;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -56,6 +57,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *
  * @author Rob Worth
  */
+@StatelessCheck
 public class AnonInnerLengthCheck extends AbstractCheck {
 
     /**
@@ -72,17 +74,17 @@ public class AnonInnerLengthCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.LITERAL_NEW};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.LITERAL_NEW};
     }
 
     @Override

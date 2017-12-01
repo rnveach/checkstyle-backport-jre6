@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -31,6 +32,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * <p>By default the Check enforces Java style.
  * @author lkuehne
  */
+@StatelessCheck
 public class ArrayTypeStyleCheck extends AbstractCheck {
     /**
      * A key is pointing to the warning message text in "messages.properties"
@@ -43,17 +45,17 @@ public class ArrayTypeStyleCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.ARRAY_DECLARATOR};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.ARRAY_DECLARATOR};
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -58,6 +59,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author Travis Schneeberger
  * @author Vladislav Lisetskiy
  */
+@FileStatefulCheck
 public class EqualsAvoidNullCheck extends AbstractCheck {
 
     /**
@@ -86,11 +88,16 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
+        return getRequiredTokens();
+    }
+
+    @Override
+    public int[] getRequiredTokens() {
         return new int[] {
             TokenTypes.METHOD_CALL,
             TokenTypes.CLASS_DEF,
@@ -109,11 +116,6 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
             TokenTypes.ENUM_CONSTANT_DEF,
             TokenTypes.LITERAL_NEW,
         };
-    }
-
-    @Override
-    public int[] getRequiredTokens() {
-        return getAcceptableTokens();
     }
 
     /**
@@ -160,7 +162,7 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
                 && astType != TokenTypes.SLIST
                 && astType != TokenTypes.LITERAL_NEW
                 || astType == TokenTypes.LITERAL_NEW
-                    && ast.branchContains(TokenTypes.LCURLY)) {
+                    && ast.findFirstToken(TokenTypes.OBJBLOCK) != null) {
             currentFrame = currentFrame.getParent();
         }
         else if (astType == TokenTypes.SLIST) {
@@ -241,7 +243,7 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
      * @param ast LITERAL_NEW ast.
      */
     private void processLiteralNew(DetailAST ast) {
-        if (ast.branchContains(TokenTypes.LCURLY)) {
+        if (ast.findFirstToken(TokenTypes.OBJBLOCK) != null) {
             final FieldFrame frame = new FieldFrame(currentFrame);
             currentFrame.addChild(frame);
             currentFrame = frame;

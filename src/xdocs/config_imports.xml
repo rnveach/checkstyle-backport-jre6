@@ -1113,7 +1113,7 @@ import java.util.stream.IntStream;
         </p>
         <source>
 &lt;import-control pkg=&quot;com.puppycrawl.tools.checkstyle.checks&quot;&gt;
-    &lt;allow pkg=&quot;.*&quot; regexp=&quot;true&quot;/&gt;
+    &lt;allow pkg=&quot;.*&quot; regex=&quot;true&quot;/&gt;
     &lt;subpackage name=&quot;imports&quot;&gt;
         &lt;disallow class=&quot;java.util.Date&quot;/&gt;
         &lt;disallow class=&quot;java.util.List&quot;/&gt;
@@ -1167,9 +1167,10 @@ import java.util.stream.IntStream;
             you want to match only a certain package level instead.
           </li>
         </ul>
-        <h4 id="innerclass-notes">Notes on inner classes</h4>
+        <h4 id="static-import-notes">Notes on static imports</h4>
         <p>
-          Static inner classes have to be explicitly allowed when they are imported, they
+          Static members (including methods, constants and static inner classes) have to be
+          explicitly allowed when they are imported, they
           are not automatically allowed along with their enclosing class.
         </p>
         <p>
@@ -1180,6 +1181,13 @@ import java.util.stream.IntStream;
 &lt;import-control pkg=&quot;com.puppycrawl.tools.checkstyle&quot;&gt;
     &lt;allow class=&quot;java.util.Map&quot;/&gt;
     &lt;allow class=&quot;java.util.Map.Entry&quot;/&gt;
+&lt;/import-control&gt;
+        </source>
+        <p>It is also possible to use a regex with a wildcard:</p>
+        <source>
+&lt;import-control pkg=&quot;com.puppycrawl.tools.checkstyle&quot;&gt;
+    &lt;allow class=&quot;java.util.Map&quot;/&gt;
+    &lt;allow class=&quot;java.util.Map.*&quot; regex=&quot;true&quot; /&gt;
 &lt;/import-control&gt;
         </source>
       </subsection>
@@ -1283,7 +1291,8 @@ import java.util.stream.IntStream;
           </tr>
           <tr>
             <td>ordered</td>
-            <td>whether imports within group should be sorted</td>
+            <td>whether imports within group should be sorted
+              (It doesn't affect sorting for static imports.)</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>true</td>
             <td>3.2</td>
@@ -1310,8 +1319,9 @@ import java.util.stream.IntStream;
           </tr>
           <tr>
             <td>sortStaticImportsAlphabetically</td>
-            <td>whether static imports grouped by <b>top</b> or <b>bottom</b> option
-            are sorted alphabetically or not</td>
+            <td>whether <b>static imports</b> grouped by <b>top</b> or <b>bottom</b> option
+                are sorted alphabetically or not.
+                Attention: It is applied to all static imports as one group.</td>>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td>false</td>
             <td>6.5</td>

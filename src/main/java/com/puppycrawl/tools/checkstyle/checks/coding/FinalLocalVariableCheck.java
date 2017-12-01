@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -74,6 +75,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  * @author k_gibbs, r_auckenthaler
  * @author Vladislav Lisetskiy
  */
+@FileStatefulCheck
 public class FinalLocalVariableCheck extends AbstractCheck {
 
     /**
@@ -201,7 +203,8 @@ public class FinalLocalVariableCheck extends AbstractCheck {
                 break;
             case TokenTypes.PARAMETER_DEF:
                 if (!isInLambda(ast)
-                        && !ast.branchContains(TokenTypes.FINAL)
+                        && ast.findFirstToken(TokenTypes.MODIFIERS)
+                            .findFirstToken(TokenTypes.FINAL) == null
                         && !isInAbstractOrNativeMethod(ast)
                         && !ScopeUtils.isInInterfaceBlock(ast)
                         && !isMultipleTypeCatch(ast)) {
@@ -440,7 +443,8 @@ public class FinalLocalVariableCheck extends AbstractCheck {
         DetailAST returnValue = null;
         for (DetailAST astIterator = ast.getFirstChild(); astIterator != null;
                 astIterator = astIterator.getNextSibling()) {
-            if (astIterator.getType() == childType && astIterator.branchContains(containType)) {
+            if (astIterator.getType() == childType
+                    && astIterator.findFirstToken(containType) != null) {
                 returnValue = astIterator;
             }
         }

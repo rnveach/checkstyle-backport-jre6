@@ -24,6 +24,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
@@ -107,6 +108,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  *
  * @author r_auckenthaler
  */
+@FileStatefulCheck
 public class DeclarationOrderCheck extends AbstractCheck {
 
     /**
@@ -161,11 +163,16 @@ public class DeclarationOrderCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
+        return getRequiredTokens();
+    }
+
+    @Override
+    public int[] getRequiredTokens() {
         return new int[] {
             TokenTypes.CTOR_DEF,
             TokenTypes.METHOD_DEF,
@@ -173,11 +180,6 @@ public class DeclarationOrderCheck extends AbstractCheck {
             TokenTypes.OBJBLOCK,
             TokenTypes.VARIABLE_DEF,
         };
-    }
-
-    @Override
-    public int[] getRequiredTokens() {
-        return getAcceptableTokens();
     }
 
     @Override

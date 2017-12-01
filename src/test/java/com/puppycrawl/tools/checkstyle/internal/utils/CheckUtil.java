@@ -181,7 +181,9 @@ public final class CheckUtil {
             if (ModuleReflectionUtils.isCheckstyleModule(cls)
                     && !cls.getName().endsWith("Stub")
                     && !cls.getCanonicalName()
-                        .startsWith("com.puppycrawl.tools.checkstyle.packageobjectfactory")) {
+                    .startsWith("com.puppycrawl.tools.checkstyle.internal.testmodules")
+                    && !cls.getCanonicalName()
+                    .startsWith("com.puppycrawl.tools.checkstyle.packageobjectfactory")) {
                 result.add(cls);
             }
         }

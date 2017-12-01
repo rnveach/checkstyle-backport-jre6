@@ -20,6 +20,7 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import antlr.collections.AST;
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -36,6 +37,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *
  * @author Lars K&uuml;hne
  */
+@StatelessCheck
 public class StringLiteralEqualityCheck extends AbstractCheck {
 
     /**
@@ -46,17 +48,17 @@ public class StringLiteralEqualityCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.EQUAL, TokenTypes.NOT_EQUAL};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.EQUAL, TokenTypes.NOT_EQUAL};
     }
 
     @Override

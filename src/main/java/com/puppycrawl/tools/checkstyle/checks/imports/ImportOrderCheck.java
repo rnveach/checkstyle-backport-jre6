@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -181,6 +182,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
  * @author Andrei Selkin
  */
+@FileStatefulCheck
 public class ImportOrderCheck
     extends AbstractCheck {
 
@@ -438,8 +440,7 @@ public class ImportOrderCheck
         final int groupIdx = getGroupNumber(name);
         final int line = ident.getLineNo();
 
-        if (groupIdx == lastGroup
-            || !beforeFirstImport && isAlphabeticallySortableStaticImport(isStatic)) {
+        if (isInSameGroup(groupIdx, isStatic)) {
             doVisitTokenInSameGroup(isStatic, previous, name, line);
         }
         else if (groupIdx > lastGroup) {
@@ -500,18 +501,6 @@ public class ImportOrderCheck
     }
 
     /**
-     * Checks whether static imports grouped by <b>top</b> or <b>bottom</b> option
-     * are sorted alphabetically or not.
-     * @param isStatic if current import is static.
-     * @return true if static imports should be sorted alphabetically.
-     */
-    private boolean isAlphabeticallySortableStaticImport(boolean isStatic) {
-        return isStatic && sortStaticImportsAlphabetically
-                && (option == ImportOrderOption.TOP
-                    || option == ImportOrderOption.BOTTOM);
-    }
-
-    /**
      * Shares processing...
      *
      * @param isStatic whether the token is static or not.
@@ -555,12 +544,22 @@ public class ImportOrderCheck
      */
     private boolean isWrongOrder(String name, boolean isStatic) {
         final boolean result;
-        if (isStatic && useContainerOrderingForStatic) {
-            result = compareContainerOrder(lastImport, name, caseSensitive) > 0;
+        if (isStatic) {
+            if (useContainerOrderingForStatic) {
+                result = compareContainerOrder(lastImport, name, caseSensitive) >= 0;
+            }
+            else if (option == ImportOrderOption.TOP
+                || option == ImportOrderOption.BOTTOM) {
+                result = sortStaticImportsAlphabetically
+                    && compare(lastImport, name, caseSensitive) >= 0;
+            }
+            else {
+                result = compare(lastImport, name, caseSensitive) >= 0;
+            }
         }
         else {
             // out of lexicographic order
-            result = compare(lastImport, name, caseSensitive) > 0;
+            result = compare(lastImport, name, caseSensitive) >= 0;
         }
         return result;
     }
@@ -639,20 +638,22 @@ public class ImportOrderCheck
      */
     private int getGroupNumber(String name) {
         int bestIndex = groups.length;
-        int bestLength = -1;
-        int bestPos = 0;
+        int bestEnd = -1;
+        int bestPos = Integer.MAX_VALUE;
 
         // find out what group this belongs in
         // loop over groups and get index
         for (int i = 0; i < groups.length; i++) {
             final Matcher matcher = groups[i].matcher(name);
-            while (matcher.find()) {
-                final int length = matcher.end() - matcher.start();
-                if (length > bestLength
-                    || length == bestLength && matcher.start() < bestPos) {
+            if (matcher.find()) {
+                if (matcher.start() < bestPos) {
                     bestIndex = i;
-                    bestLength = length;
+                    bestEnd = matcher.end();
                     bestPos = matcher.start();
+                }
+                else if (matcher.start() == bestPos && matcher.end() > bestEnd) {
+                    bestIndex = i;
+                    bestEnd = matcher.end();
                 }
             }
         }

@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -47,6 +48,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * </pre>
  * @author maxvetrenko
  */
+@StatelessCheck
 public class OverloadMethodsDeclarationOrderCheck extends AbstractCheck {
 
     /**
@@ -57,19 +59,19 @@ public class OverloadMethodsDeclarationOrderCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {
-            TokenTypes.OBJBLOCK,
-        };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {
+            TokenTypes.OBJBLOCK,
+        };
     }
 
     @Override

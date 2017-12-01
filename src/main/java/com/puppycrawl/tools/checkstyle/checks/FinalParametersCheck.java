@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -52,6 +53,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author Michael Studman
  * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
  */
+@StatelessCheck
 public class FinalParametersCheck extends AbstractCheck {
 
     /**
@@ -138,7 +140,8 @@ public class FinalParametersCheck extends AbstractCheck {
             method.findFirstToken(TokenTypes.MODIFIERS);
         // exit on fast lane if there is nothing to check here
 
-        if (method.branchContains(TokenTypes.PARAMETER_DEF)
+        if (method.findFirstToken(TokenTypes.PARAMETERS)
+                .findFirstToken(TokenTypes.PARAMETER_DEF) != null
                 // ignore abstract and native methods
                 && modifiers.findFirstToken(TokenTypes.ABSTRACT) == null
                 && modifiers.findFirstToken(TokenTypes.LITERAL_NATIVE) == null) {
@@ -177,7 +180,8 @@ public class FinalParametersCheck extends AbstractCheck {
      * @param param parameter to check.
      */
     private void checkParam(final DetailAST param) {
-        if (!param.branchContains(TokenTypes.FINAL) && !isIgnoredParam(param)
+        if (param.findFirstToken(TokenTypes.MODIFIERS).findFirstToken(TokenTypes.FINAL) == null
+                && !isIgnoredParam(param)
                 && !CheckUtils.isReceiverParameter(param)) {
             final DetailAST paramName = param.findFirstToken(TokenTypes.IDENT);
             final DetailAST firstNode = CheckUtils.getFirstNode(param);

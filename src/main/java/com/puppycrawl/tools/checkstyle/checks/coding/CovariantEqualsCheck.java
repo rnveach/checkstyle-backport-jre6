@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -42,6 +43,7 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
  * </pre>
  * @author Rick Giles
  */
+@FileStatefulCheck
 public class CovariantEqualsCheck extends AbstractCheck {
 
     /**
@@ -55,17 +57,17 @@ public class CovariantEqualsCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[] {TokenTypes.CLASS_DEF, TokenTypes.LITERAL_NEW, TokenTypes.ENUM_DEF, };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return new int[] {TokenTypes.CLASS_DEF, TokenTypes.LITERAL_NEW, TokenTypes.ENUM_DEF, };
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.CLASS_DEF, TokenTypes.LITERAL_NEW, TokenTypes.ENUM_DEF, };
+        return getRequiredTokens();
     }
 
     @Override

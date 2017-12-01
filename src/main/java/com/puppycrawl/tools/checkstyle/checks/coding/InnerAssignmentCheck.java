@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 import java.util.Arrays;
 
 import antlr.collections.AST;
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -40,6 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *
  * @author lkuehne
  */
+@StatelessCheck
 public class InnerAssignmentCheck
         extends AbstractCheck {
 
@@ -104,11 +106,16 @@ public class InnerAssignmentCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
+        return getRequiredTokens();
+    }
+
+    @Override
+    public int[] getRequiredTokens() {
         return new int[] {
             TokenTypes.ASSIGN,            // '='
             TokenTypes.DIV_ASSIGN,        // "/="
@@ -123,11 +130,6 @@ public class InnerAssignmentCheck
             TokenTypes.BOR_ASSIGN,        // "|="
             TokenTypes.BAND_ASSIGN,       // "&="
         };
-    }
-
-    @Override
-    public int[] getRequiredTokens() {
-        return getAcceptableTokens();
     }
 
     @Override

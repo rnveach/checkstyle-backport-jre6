@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
@@ -38,7 +39,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  *
  * <p>
  * Nothing wrong could be with founded classes.
- * This check makes sense only for library projects (not an application projects)
+ * This check makes sense only for library projects (not application projects)
  * which care of ideal OOP-design to make sure that class works in all cases even misusage.
  * Even in library projects this check most likely will find classes that are designed for extension
  * by somebody. User needs to use suppressions extensively to got a benefit from this check,
@@ -91,6 +92,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  * @author lkuehne
  * @author Andrei Selkin
  */
+@StatelessCheck
 public class DesignForExtensionCheck extends AbstractCheck {
 
     /**
@@ -116,20 +118,20 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        // The check does not subscribe to CLASS_DEF token as now it is stateless. If the check
-        // subscribes to CLASS_DEF token it will become stateful, since we need to have additional
-        // stack to hold CLASS_DEF tokens.
-        return new int[] {TokenTypes.METHOD_DEF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        // The check does not subscribe to CLASS_DEF token as now it is stateless. If the check
+        // subscribes to CLASS_DEF token it will become stateful, since we need to have additional
+        // stack to hold CLASS_DEF tokens.
+        return new int[] {TokenTypes.METHOD_DEF};
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import antlr.collections.AST;
 import com.google.common.collect.ImmutableList;
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -235,6 +236,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  *
  * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
  */
+@FileStatefulCheck
 public class VisibilityModifierCheck
     extends AbstractCheck {
 
@@ -396,20 +398,20 @@ public class VisibilityModifierCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {
-            TokenTypes.VARIABLE_DEF,
-            TokenTypes.IMPORT,
-        };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {
+            TokenTypes.VARIABLE_DEF,
+            TokenTypes.IMPORT,
+        };
     }
 
     @Override

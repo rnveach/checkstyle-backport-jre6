@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -37,6 +38,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *
  * @author o_sukhodolsky
  */
+@StatelessCheck
 public class MissingCtorCheck extends AbstractCheck {
 
     /**
@@ -47,17 +49,17 @@ public class MissingCtorCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[] {TokenTypes.CLASS_DEF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return getDefaultTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return new int[] {TokenTypes.CLASS_DEF};
     }
 
     @Override

@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks.imports;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -50,6 +51,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *
  * @author Oliver Burn
  */
+@FileStatefulCheck
 public class RedundantImportCheck
     extends AbstractCheck {
 
@@ -88,20 +90,19 @@ public class RedundantImportCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[]
-        {TokenTypes.IMPORT,
-         TokenTypes.STATIC_IMPORT,
-         TokenTypes.PACKAGE_DEF, };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {
+            TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT, TokenTypes.PACKAGE_DEF,
+        };
     }
 
     @Override

@@ -21,6 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import java.io.File;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -40,6 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author Oliver Burn
  * @author Vikramaditya Kukreja
  */
+@FileStatefulCheck
 public final class PackageDeclarationCheck extends AbstractCheck {
 
     /**
@@ -73,17 +75,17 @@ public final class PackageDeclarationCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[] {TokenTypes.PACKAGE_DEF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return new int[] {TokenTypes.PACKAGE_DEF};
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.PACKAGE_DEF};
+        return getRequiredTokens();
     }
 
     @Override

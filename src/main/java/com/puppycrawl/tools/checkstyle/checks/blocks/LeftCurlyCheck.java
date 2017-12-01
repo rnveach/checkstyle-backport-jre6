@@ -21,6 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks.blocks;
 
 import java.util.Locale;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -43,9 +44,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  *
  * <p>
  * The policy to verify is specified using the {@link LeftCurlyOption} class and
- * defaults to {@link LeftCurlyOption#EOL}. Policies {@link LeftCurlyOption#EOL}
- * and {@link LeftCurlyOption#NLOW} take into account property maxLineLength.
- * The default value for maxLineLength is 80.
+ * defaults to {@link LeftCurlyOption#EOL}.
  * </p>
  * <p>
  * An example of how to configure the check is:
@@ -55,13 +54,12 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * </pre>
  * <p>
  * An example of how to configure the check with policy
- * {@link LeftCurlyOption#NLOW} and maxLineLength 120 is:
+ * {@link LeftCurlyOption#NLOW} is:
  * </p>
  * <pre>
  * &lt;module name="LeftCurly"&gt;
- *      &lt;property name="option"
- * value="nlow"/&gt;     &lt;property name="maxLineLength" value="120"/&gt; &lt;
- * /module&gt;
+ *      &lt;property name="option" value="nlow"/&gt;
+ * &lt;/module&gt;
  * </pre>
  * <p>
  * An example of how to configure the check to validate enum definitions:
@@ -76,6 +74,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author lkuehne
  * @author maxvetrenko
  */
+@StatelessCheck
 public class LeftCurlyCheck
     extends AbstractCheck {
     /**

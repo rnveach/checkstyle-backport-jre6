@@ -23,6 +23,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import antlr.collections.AST;
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -35,6 +36,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  * </p>
  * @author Rick Giles
  */
+@FileStatefulCheck
 public abstract class AbstractSuperCheck
         extends AbstractCheck {
 
@@ -55,20 +57,20 @@ public abstract class AbstractSuperCheck
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {
-            TokenTypes.METHOD_DEF,
-            TokenTypes.LITERAL_SUPER,
-        };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return new int[] {
+            TokenTypes.METHOD_DEF,
+            TokenTypes.LITERAL_SUPER,
+        };
     }
 
     @Override

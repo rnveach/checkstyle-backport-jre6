@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -44,6 +45,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  * </pre>
  * @author o_sukhodolsky
  */
+@FileStatefulCheck
 public class FinalClassCheck
     extends AbstractCheck {
 
@@ -66,17 +68,17 @@ public class FinalClassCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.CLASS_DEF, TokenTypes.CTOR_DEF, TokenTypes.PACKAGE_DEF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.CLASS_DEF, TokenTypes.CTOR_DEF, TokenTypes.PACKAGE_DEF};
     }
 
     @Override

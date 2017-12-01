@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -42,6 +43,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  * </pre>
  * @author o_sukhodolsky
  */
+@StatelessCheck
 public class DefaultComesLastCheck extends AbstractCheck {
 
     /**
@@ -62,19 +64,19 @@ public class DefaultComesLastCheck extends AbstractCheck {
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {
-            TokenTypes.LITERAL_DEFAULT,
-        };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {
+            TokenTypes.LITERAL_DEFAULT,
+        };
     }
 
     /**

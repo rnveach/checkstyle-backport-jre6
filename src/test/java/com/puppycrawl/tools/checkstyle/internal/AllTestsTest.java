@@ -81,7 +81,7 @@ public class AllTestsTest {
     }
 
     @Test
-    public void testAllTestsHaveProductionCode() throws Exception {
+    public void testAllTestsHaveProductionCode() {
         final Map<String, List<String>> allTests = new HashMap<String, List<String>>();
 
         walk(new File("src/main/java"),

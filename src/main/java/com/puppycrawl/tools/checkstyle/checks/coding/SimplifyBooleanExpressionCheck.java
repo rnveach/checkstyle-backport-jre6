@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -40,6 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * </pre>
  * @author lkuehne
  */
+@StatelessCheck
 public class SimplifyBooleanExpressionCheck
         extends AbstractCheck {
 
@@ -51,17 +53,17 @@ public class SimplifyBooleanExpressionCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.LITERAL_TRUE, TokenTypes.LITERAL_FALSE};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.LITERAL_TRUE, TokenTypes.LITERAL_FALSE};
     }
 
     @Override

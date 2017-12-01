@@ -20,6 +20,7 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import antlr.collections.AST;
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -37,6 +38,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * </pre>
  * @author Lars Kühne
  */
+@StatelessCheck
 public class SimplifyBooleanReturnCheck
     extends AbstractCheck {
 
@@ -48,17 +50,17 @@ public class SimplifyBooleanReturnCheck
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.LITERAL_IF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.LITERAL_IF};
     }
 
     @Override

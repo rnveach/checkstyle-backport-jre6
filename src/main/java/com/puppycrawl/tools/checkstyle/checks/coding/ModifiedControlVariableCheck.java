@@ -28,6 +28,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -95,6 +96,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author Daniel Grenner
  * @author <a href="mailto:piotr.listkiewicz@gmail.com">liscju</a>
  */
+@FileStatefulCheck
 public final class ModifiedControlVariableCheck extends AbstractCheck {
 
     /**
@@ -134,16 +136,11 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
-    }
-
-    @Override
-    public int[] getAcceptableTokens() {
         return new int[] {
             TokenTypes.OBJBLOCK,
             TokenTypes.LITERAL_FOR,
@@ -166,6 +163,11 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
             TokenTypes.DEC,
             TokenTypes.POST_DEC,
         };
+    }
+
+    @Override
+    public int[] getAcceptableTokens() {
+        return getRequiredTokens();
     }
 
     @Override

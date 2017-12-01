@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -51,6 +52,7 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
  * @author John Sirois
  * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
  */
+@StatelessCheck
 public final class IllegalThrowsCheck extends AbstractCheck {
 
     /**
@@ -86,17 +88,17 @@ public final class IllegalThrowsCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[] {TokenTypes.LITERAL_THROWS};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return new int[] {TokenTypes.LITERAL_THROWS};
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.LITERAL_THROWS};
+        return getRequiredTokens();
     }
 
     @Override

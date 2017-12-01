@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -44,6 +45,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * </pre>
  * @author o_sukhodolsky
  */
+@StatelessCheck
 public class MissingSwitchDefaultCheck extends AbstractCheck {
 
     /**
@@ -54,17 +56,17 @@ public class MissingSwitchDefaultCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[] {TokenTypes.LITERAL_SWITCH};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return getDefaultTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return new int[] {TokenTypes.LITERAL_SWITCH};
     }
 
     @Override

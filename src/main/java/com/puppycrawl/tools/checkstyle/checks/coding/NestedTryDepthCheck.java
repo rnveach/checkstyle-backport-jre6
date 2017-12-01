@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -27,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * Restricts nested try-catch-finally blocks to a specified depth (default = 1).
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
+@FileStatefulCheck
 public final class NestedTryDepthCheck extends AbstractCheck {
 
     /**
@@ -50,17 +52,17 @@ public final class NestedTryDepthCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.LITERAL_TRY};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.LITERAL_TRY};
     }
 
     @Override

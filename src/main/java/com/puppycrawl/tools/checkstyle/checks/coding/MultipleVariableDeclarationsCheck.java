@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -43,6 +44,7 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
  * </pre>
  * @author o_sukhodolsky
  */
+@StatelessCheck
 public class MultipleVariableDeclarationsCheck extends AbstractCheck {
 
     /**
@@ -59,17 +61,17 @@ public class MultipleVariableDeclarationsCheck extends AbstractCheck {
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.VARIABLE_DEF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {TokenTypes.VARIABLE_DEF};
     }
 
     @Override

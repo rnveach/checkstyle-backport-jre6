@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -31,6 +32,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author Oliver Burn
  * @author maxvetrenko
  */
+@FileStatefulCheck
 public class OuterTypeFilenameCheck extends AbstractCheck {
     /**
      * A key is pointing to the warning message text in "messages.properties"
@@ -58,20 +60,22 @@ public class OuterTypeFilenameCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {
-            TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF,
-            TokenTypes.ENUM_DEF, TokenTypes.ANNOTATION_DEF,
-        };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {
+            TokenTypes.CLASS_DEF,
+            TokenTypes.INTERFACE_DEF,
+            TokenTypes.ENUM_DEF,
+            TokenTypes.ANNOTATION_DEF,
+        };
     }
 
     @Override

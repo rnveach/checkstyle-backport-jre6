@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import antlr.collections.AST;
+import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
@@ -165,6 +166,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  * @author Tim Tyler &lt;tim@tt1.org&gt;
  * @author Rick Giles
  */
+@FileStatefulCheck
 public class DescendantTokenCheck extends AbstractCheck {
 
     /**
@@ -216,7 +218,7 @@ public class DescendantTokenCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return CommonUtils.EMPTY_INT_ARRAY;
+        return getRequiredTokens();
     }
 
     @Override

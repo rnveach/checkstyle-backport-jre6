@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.whitespace;
 
+import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
@@ -83,6 +84,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author Robert Whitebit
  * @author Richard Veach
  */
+@StatelessCheck
 public class SingleSpaceSeparatorCheck extends AbstractCheck {
     /**
      * A key is pointing to the warning message text in "messages.properties"
@@ -104,17 +106,17 @@ public class SingleSpaceSeparatorCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return CommonUtils.EMPTY_INT_ARRAY;
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return getDefaultTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return CommonUtils.EMPTY_INT_ARRAY;
     }
 
     // -@cs[SimpleAccessorNameNotation] Overrides method from base class.

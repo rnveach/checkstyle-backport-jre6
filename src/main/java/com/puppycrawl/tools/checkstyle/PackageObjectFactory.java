@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +50,23 @@ import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
  * @author lkuehne
  */
 public class PackageObjectFactory implements ModuleFactory {
+
+    /**
+     * Enum class to define loading options.
+     */
+    public enum ModuleLoadOption {
+        /**
+         * Searching from registred checkstyle modules and from packages given in countructor.
+         **/
+        SEARCH_REGISTERED_PACKAGES,
+        /**
+         * As SEARCH_REGISTERED_PACKAGES and also try to load class from all of packages given in
+         * constructor.
+         * Required for eclipse-cs plugin.
+         **/
+        TRY_IN_ALL_REGISTERED_PACKAGES,
+    }
+
     /** Base package of checkstyle modules checks. */
     public static final String BASE_PACKAGE = "com.puppycrawl.tools.checkstyle";
 
@@ -87,6 +105,9 @@ public class PackageObjectFactory implements ModuleFactory {
     /** Map of third party Checkstyle module names to the set of their fully qualified names. */
     private Map<String, Set<String>> thirdPartyNameToFullModuleNames;
 
+    /** Module load option which defines class search type. */
+    private ModuleLoadOption moduleLoadOption;
+
     static {
         fillShortToFullModuleNamesMap();
     }
@@ -98,6 +119,18 @@ public class PackageObjectFactory implements ModuleFactory {
      *          core and custom modules
      */
     public PackageObjectFactory(Set<String> packageNames, ClassLoader moduleClassLoader) {
+        this(packageNames, moduleClassLoader, ModuleLoadOption.SEARCH_REGISTERED_PACKAGES);
+    }
+
+    /**
+     * Creates a new {@code PackageObjectFactory} instance.
+     * @param packageNames the list of package names to use
+     * @param moduleClassLoader class loader used to load Checkstyle
+     *          core and custom modules
+     * @param moduleLoadOption loading option
+     */
+    public PackageObjectFactory(Set<String> packageNames, ClassLoader moduleClassLoader,
+            ModuleLoadOption moduleLoadOption) {
         if (moduleClassLoader == null) {
             throw new IllegalArgumentException(NULL_LOADER_MESSAGE);
         }
@@ -108,6 +141,7 @@ public class PackageObjectFactory implements ModuleFactory {
         //create a copy of the given set, but retain ordering
         packages = new LinkedHashSet<String>(packageNames);
         this.moduleClassLoader = moduleClassLoader;
+        this.moduleLoadOption = moduleLoadOption;
     }
 
     /**
@@ -144,19 +178,7 @@ public class PackageObjectFactory implements ModuleFactory {
         Object instance = null;
         // if the name is a simple class name, try to find it in maps at first
         if (!name.contains(PACKAGE_SEPARATOR)) {
-            // find the name in hardcode map
-            final String fullModuleName = NAME_TO_FULL_MODULE_NAME.get(name);
-            if (fullModuleName == null) {
-                final String fullCheckModuleName =
-                        NAME_TO_FULL_MODULE_NAME.get(name + CHECK_SUFFIX);
-                if (fullCheckModuleName != null) {
-                    instance = createObject(fullCheckModuleName);
-                }
-            }
-            else {
-                instance = createObject(fullModuleName);
-            }
-
+            instance = createFromStandardCheckSet(name);
             // find the name in third party map
             if (instance == null) {
                 if (thirdPartyNameToFullModuleNames == null) {
@@ -166,9 +188,12 @@ public class PackageObjectFactory implements ModuleFactory {
                 instance = createObjectFromMap(name, thirdPartyNameToFullModuleNames);
             }
         }
-
         if (instance == null) {
             instance = createObject(name);
+        }
+        if (instance == null
+                && moduleLoadOption == ModuleLoadOption.TRY_IN_ALL_REGISTERED_PACKAGES) {
+            instance = createModuleByTryInEachPackage(name);
         }
         if (instance == null) {
             String attemptedNames = null;
@@ -182,6 +207,28 @@ public class PackageObjectFactory implements ModuleFactory {
                 Definitions.CHECKSTYLE_BUNDLE, UNABLE_TO_INSTANTIATE_EXCEPTION_MESSAGE,
                 new String[] {name, attemptedNames}, null, getClass(), null);
             throw new CheckstyleException(exceptionMessage.getMessage());
+        }
+        return instance;
+    }
+
+    /**
+     * Create object from one of Checkstyle module names.
+     * @param name name of module.
+     * @return instance of module.
+     * @throws CheckstyleException if the class fails to instantiate or there are ambiguous classes.
+     */
+    private Object createFromStandardCheckSet(String name) throws CheckstyleException {
+        final String fullModuleName = NAME_TO_FULL_MODULE_NAME.get(name);
+        Object instance = null;
+        if (fullModuleName == null) {
+            final String fullCheckModuleName =
+                    NAME_TO_FULL_MODULE_NAME.get(name + CHECK_SUFFIX);
+            if (fullCheckModuleName != null) {
+                instance = createObject(fullCheckModuleName);
+            }
+        }
+        else {
+            instance = createObject(fullModuleName);
         }
         return instance;
     }
@@ -325,6 +372,33 @@ public class PackageObjectFactory implements ModuleFactory {
             }
         }
 
+        return instance;
+    }
+
+    /**
+     * Searching to class with given name (or name concatinated with &quot;Check&quot;) in existing
+     * packages. Returns instance if class found or, otherwise, null.
+     * @param name the name of a class.
+     * @return the {@code Object} created by loader.
+     * @throws CheckstyleException if an error occurs.
+     */
+    private Object createModuleByTryInEachPackage(String name) throws CheckstyleException {
+        final Set<String> possibleNames = new HashSet<String>();
+        for (String packageName : packages) {
+            possibleNames.add(packageName + PACKAGE_SEPARATOR + name);
+        }
+        final Set<String> temp = new HashSet<String>();
+        for (String possibleName : possibleNames) {
+            temp.add(possibleName + CHECK_SUFFIX);
+        }
+        possibleNames.addAll(temp);
+        Object instance = null;
+        for (String possibleName : possibleNames) {
+            instance = createObject(possibleName);
+            if (instance != null) {
+                break;
+            }
+        }
         return instance;
     }
 
@@ -790,4 +864,5 @@ public class PackageObjectFactory implements ModuleFactory {
         NAME_TO_FULL_MODULE_NAME.put("Checker", BASE_PACKAGE + ".Checker");
         NAME_TO_FULL_MODULE_NAME.put("TreeWalker", BASE_PACKAGE + ".TreeWalker");
     }
+
 }
