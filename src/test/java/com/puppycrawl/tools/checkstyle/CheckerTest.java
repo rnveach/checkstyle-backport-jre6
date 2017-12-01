@@ -81,6 +81,9 @@ import com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck;
 import com.puppycrawl.tools.checkstyle.checks.TranslationCheck;
 import com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionFilter;
+import com.puppycrawl.tools.checkstyle.internal.testmodules.DebugAuditAdapter;
+import com.puppycrawl.tools.checkstyle.internal.testmodules.DebugFilter;
+import com.puppycrawl.tools.checkstyle.internal.testmodules.TestBeforeExecutionFileFilter;
 import com.puppycrawl.tools.checkstyle.internal.utils.CloseAndFlushTestByteArrayOutputStream;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
@@ -272,7 +275,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
     @Test
     public void testFileExtensions() throws Exception {
         final DefaultConfiguration checkerConfig = new DefaultConfiguration("configuration");
-        checkerConfig.addAttribute("charset", "UTF-8");
+        checkerConfig.addAttribute("charset", StandardCharsets.UTF_8.name());
         checkerConfig.addAttribute("cacheFile", temporaryFolder.newFile().getPath());
 
         final Checker checker = new Checker();
@@ -309,7 +312,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
     @Test
     public void testIgnoredFileExtensions() throws Exception {
         final DefaultConfiguration checkerConfig = new DefaultConfiguration("configuration");
-        checkerConfig.addAttribute("charset", "UTF-8");
+        checkerConfig.addAttribute("charset", StandardCharsets.UTF_8.name());
         checkerConfig.addAttribute("cacheFile", temporaryFolder.newFile().getPath());
 
         final Checker checker = new Checker();
@@ -406,7 +409,8 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         final Context context = (Context) Whitebox.getInternalState(checker, "childContext");
         assertEquals("Charset was different than expected",
-                System.getProperty("file.encoding", "UTF-8"), context.get("charset"));
+                System.getProperty("file.encoding", StandardCharsets.UTF_8.name()),
+                context.get("charset"));
         assertEquals("Was used unsufficient classloader",
                 contextClassLoader, context.get("classLoader"));
         assertEquals("Severity is set to unexpected value",
@@ -493,7 +497,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
         treeWalkerConfig.addChild(checkConfig);
 
         final DefaultConfiguration checkerConfig = new DefaultConfiguration("checkstyleConfig");
-        checkerConfig.addAttribute("charset", "UTF-8");
+        checkerConfig.addAttribute("charset", StandardCharsets.UTF_8.name());
         checkerConfig.addChild(treeWalkerConfig);
 
         final File cacheFile = temporaryFolder.newFile();
@@ -562,7 +566,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
     @Test
     public void testClearExistingCache() throws Exception {
         final DefaultConfiguration checkerConfig = new DefaultConfiguration("myConfig");
-        checkerConfig.addAttribute("charset", "UTF-8");
+        checkerConfig.addAttribute("charset", StandardCharsets.UTF_8.name());
         final File cacheFile = temporaryFolder.newFile();
         checkerConfig.addAttribute("cacheFile", cacheFile.getPath());
 

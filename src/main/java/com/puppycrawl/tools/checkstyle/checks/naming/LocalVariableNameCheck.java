@@ -58,7 +58,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  * </pre>
  * <p>
  * An example of how to configure the check to allow one char variable name in
- * <a href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/for.html">
+ * <a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/for.html">
  * initialization expressions</a> in FOR loop:
  * </p>
  * <pre>
@@ -120,7 +120,7 @@ public class LocalVariableNameCheck
         }
         else {
             final DetailAST modifiersAST = ast.findFirstToken(TokenTypes.MODIFIERS);
-            final boolean isFinal = modifiersAST.branchContains(TokenTypes.FINAL);
+            final boolean isFinal = modifiersAST.findFirstToken(TokenTypes.FINAL) != null;
             result = !isFinal && ScopeUtils.isLocalVariableDef(ast);
         }
         return result;

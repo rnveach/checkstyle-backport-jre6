@@ -54,6 +54,7 @@ import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
 import com.puppycrawl.tools.checkstyle.api.RootModule;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevelCounter;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
@@ -68,7 +69,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
     public static final String EXCEPTION_MSG = "general.exception";
 
     /** Logger for Checker. */
-    private static final Log LOG = LogFactory.getLog(Checker.class);
+    private final Log log;
 
     /** Maintains error count. */
     private final SeverityLevelCounter counter = new SeverityLevelCounter(
@@ -124,7 +125,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
     private SeverityLevel severityLevel = SeverityLevel.ERROR;
 
     /** Name of a charset. */
-    private String charset = System.getProperty("file.encoding", "UTF-8");
+    private String charset = System.getProperty("file.encoding", StandardCharsets.UTF_8.name());
 
     /** Cache file. **/
     private PropertyCacheFile cache;
@@ -138,6 +139,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      */
     public Checker() {
         addListener(counter);
+        log = LogFactory.getLog(Checker.class);
     }
 
     /**
@@ -323,7 +325,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
             }
         }
         catch (final IOException ioe) {
-            LOG.debug("IOException occurred.", ioe);
+            log.debug("IOException occurred.", ioe);
             fileMessages.add(new LocalizedMessage(0,
                     Definitions.CHECKSTYLE_BUNDLE, EXCEPTION_MSG,
                     new String[] {ioe.getMessage()}, null, getClass(), null));
@@ -334,7 +336,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
                 throw ex;
             }
 
-            LOG.debug("Exception occurred.", ex);
+            log.debug("Exception occurred.", ex);
 
             final StringWriter sw = new StringWriter();
             final PrintWriter pw = new PrintWriter(sw, true);

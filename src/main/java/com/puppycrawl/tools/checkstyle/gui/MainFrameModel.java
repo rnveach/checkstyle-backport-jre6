@@ -32,6 +32,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 /**
@@ -274,6 +275,6 @@ public class MainFrameModel {
      */
     private static FileText getFileText(File file) throws IOException {
         return new FileText(file.getAbsoluteFile(),
-                System.getProperty("file.encoding", "UTF-8"));
+                System.getProperty("file.encoding", StandardCharsets.UTF_8.name()));
     }
 }

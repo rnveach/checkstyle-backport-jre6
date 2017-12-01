@@ -32,6 +32,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtils;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
@@ -234,7 +235,7 @@ public final class AstTreeStringPrinter {
     private static DetailAST parseFile(File file, PrintOptions withComments)
             throws IOException, CheckstyleException {
         final FileText text = new FileText(file.getAbsoluteFile(),
-            System.getProperty("file.encoding", "UTF-8"));
+            System.getProperty("file.encoding", StandardCharsets.UTF_8.name()));
         return parseFileText(text, withComments);
     }
 

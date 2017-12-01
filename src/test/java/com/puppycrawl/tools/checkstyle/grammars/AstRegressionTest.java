@@ -40,6 +40,7 @@ import antlr.TokenBuffer;
 import com.puppycrawl.tools.checkstyle.AbstractTreeTestSupport;
 import com.puppycrawl.tools.checkstyle.AstTreeStringPrinter;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class AstRegressionTest extends AbstractTreeTestSupport {
     @Override
@@ -217,7 +218,8 @@ public class AstRegressionTest extends AbstractTreeTestSupport {
             AstTreeStringPrinter.PrintOptions withComments) throws Exception {
         final File expectedFile = new File(expectedTextPrintFileName);
         final String expectedContents = new FileText(expectedFile, System.getProperty(
-                "file.encoding", "UTF-8")).getFullText().toString().replace("\r", "");
+                "file.encoding", StandardCharsets.UTF_8.name()))
+                .getFullText().toString().replace("\r", "");
 
         final FileText actualFileContents = new FileText(new File(""),
                 Arrays.asList(actualJava.split("\\n|\\r\\n?")));

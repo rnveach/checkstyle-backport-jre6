@@ -37,7 +37,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * <p>
  * Check has an option <b>ignorePrimitiveTypes</b> which allows ignoring lack of
  * final modifier at
- * <a href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html">
+ * <a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html">
  *  primitive data type</a> parameter. Default value <b>false</b>.
  * </p>
  * E.g.:
@@ -62,7 +62,7 @@ public class FinalParametersCheck extends AbstractCheck {
 
     /**
      * Contains
-     * <a href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html">
+     * <a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html">
      * primitive datatypes</a>.
      */
     private final Set<Integer> primitiveDataTypes = ImmutableSet.of(
@@ -140,8 +140,8 @@ public class FinalParametersCheck extends AbstractCheck {
 
         if (method.branchContains(TokenTypes.PARAMETER_DEF)
                 // ignore abstract and native methods
-                && !modifiers.branchContains(TokenTypes.ABSTRACT)
-                && !modifiers.branchContains(TokenTypes.LITERAL_NATIVE)) {
+                && modifiers.findFirstToken(TokenTypes.ABSTRACT) == null
+                && modifiers.findFirstToken(TokenTypes.LITERAL_NATIVE) == null) {
             // we can now be sure that there is at least one parameter
             final DetailAST parameters =
                 method.findFirstToken(TokenTypes.PARAMETERS);

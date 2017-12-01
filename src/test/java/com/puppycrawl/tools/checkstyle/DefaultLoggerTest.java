@@ -33,6 +33,7 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class DefaultLoggerTest {
@@ -44,7 +45,7 @@ public class DefaultLoggerTest {
         final DefaultLogger dl = new DefaultLogger(infoStream, true, errorStream, true);
         dl.addException(new AuditEvent(5000, "myfile"), new IllegalStateException("upsss"));
         dl.auditFinished(new AuditEvent(6000, "myfile"));
-        final String output = errorStream.toString("UTF-8");
+        final String output = errorStream.toString(StandardCharsets.UTF_8.name());
         final LocalizedMessage addExceptionMessage = new LocalizedMessage(0,
                 Definitions.CHECKSTYLE_BUNDLE, DefaultLogger.ADD_EXCEPTION_MESSAGE,
                 new String[] {"myfile"}, null,
@@ -76,7 +77,7 @@ public class DefaultLoggerTest {
         dl.auditStarted(null);
         dl.addException(new AuditEvent(5000, "myfile"), new IllegalStateException("upsss"));
         dl.auditFinished(new AuditEvent(6000, "myfile"));
-        final String output = errorStream.toString("UTF-8");
+        final String output = errorStream.toString(StandardCharsets.UTF_8.name());
         final LocalizedMessage addExceptionMessage = new LocalizedMessage(0,
                 Definitions.CHECKSTYLE_BUNDLE, DefaultLogger.ADD_EXCEPTION_MESSAGE,
                 new String[] {"myfile"}, null,

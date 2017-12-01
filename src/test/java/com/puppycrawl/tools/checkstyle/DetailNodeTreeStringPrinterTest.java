@@ -34,9 +34,7 @@ import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.ParseErrorMessage;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
-import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
 
@@ -76,31 +74,6 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
             assertEquals("Generated and expected parse error messages don't match",
                     expected, ex.getMessage());
         }
-    }
-
-    @Test
-    public void testCreationOfFakeCommentBlock() throws Exception {
-        final Method createFakeBlockComment =
-                Whitebox.getMethod(DetailNodeTreeStringPrinter.class,
-                        "createFakeBlockComment", String.class);
-
-        final DetailAST testCommentBlock =
-                (DetailAST) createFakeBlockComment.invoke(null, "test_comment");
-        assertEquals("Invalid token type",
-                TokenTypes.BLOCK_COMMENT_BEGIN, testCommentBlock.getType());
-        assertEquals("Invalid text", "/*", testCommentBlock.getText());
-        assertEquals("Invalid line number", 0, testCommentBlock.getLineNo());
-
-        final DetailAST contentCommentBlock = testCommentBlock.getFirstChild();
-        assertEquals("Invalid tiken type",
-                TokenTypes.COMMENT_CONTENT, contentCommentBlock.getType());
-        assertEquals("Invalid text", "*test_comment", contentCommentBlock.getText());
-        assertEquals("Invalid line number", 0, contentCommentBlock.getLineNo());
-        assertEquals("Invalid column number", -1, contentCommentBlock.getColumnNo());
-
-        final DetailAST endCommentBlock = contentCommentBlock.getNextSibling();
-        assertEquals("Invalid tiken type", TokenTypes.BLOCK_COMMENT_END, endCommentBlock.getType());
-        assertEquals("Invalid text", "*/", endCommentBlock.getText());
     }
 
     @Test
@@ -168,6 +141,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
             DetailNodeTreeStringPrinter.printFileAst(new File(
                     getPath("InputDetailNodeTreeStringPrinter"
                             + "UnescapedJavaCodeWithGenericsInJavadoc.javadoc")));
+            Assert.fail("Exception is expected");
         }
         catch (IllegalArgumentException ex) {
             final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
@@ -182,6 +156,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
         try {
             DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
                     "InputDetailNodeTreeStringPrinterNoViableAltException.javadoc")));
+            Assert.fail("Exception is expected");
         }
         catch (IllegalArgumentException ex) {
             final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
@@ -198,6 +173,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
             DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
                     "InputDetailNodeTreeStringPrinterHtmlTagCloseBeforeTagOpen.javadoc"
             )));
+            Assert.fail("Exception is expected");
         }
         catch (IllegalArgumentException ex) {
             final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
@@ -214,6 +190,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
             DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
                     "InputDetailNodeTreeStringPrinterWrongHtmlTagOrder.javadoc"
             )));
+            Assert.fail("Exception is expected");
         }
         catch (IllegalArgumentException ex) {
             final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,
@@ -229,6 +206,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
             DetailNodeTreeStringPrinter.printFileAst(new File(getPath(
                     "InputDetailNodeTreeStringPrinterOmittedStartTagForHtmlElement.javadoc"
             )));
+            Assert.fail("Exception is expected");
         }
         catch (IllegalArgumentException ex) {
             final String expected = (String) GET_PARSE_ERROR_MESSAGE.invoke(null,

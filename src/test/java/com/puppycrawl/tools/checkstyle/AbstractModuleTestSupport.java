@@ -150,7 +150,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                 new DefaultConfiguration("configuration");
         final DefaultConfiguration twConf = createModuleConfig(TreeWalker.class);
         // make sure that the tests always run with this charset
-        dc.addAttribute("charset", "UTF-8");
+        dc.addAttribute("charset", StandardCharsets.UTF_8.name());
         dc.addChild(twConf);
         twConf.addChild(config);
         return dc;
@@ -198,7 +198,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * Performs verification of the file with the given file name. Uses specified configuration.
      * Expected messages are represented by the array of strings.
      * This implementation uses overloaded
-     * {@link BaseCheckTestSupport#verify(Checker, File[], String, String...)} method inside.
+     * {@link AbstractModuleTestSupport#verify(Checker, File[], String, String...)} method inside.
      * @param aConfig configuration.
      * @param fileName file name to verify.
      * @param expected an array of expected messages.
@@ -214,7 +214,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * Uses provided {@link Checker} instance.
      * Expected messages are represented by the array of strings.
      * This implementation uses overloaded
-     * {@link BaseCheckTestSupport#verify(Checker, String, String, String...)} method inside.
+     * {@link AbstractModuleTestSupport#verify(Checker, String, String, String...)} method inside.
      * @param checker {@link Checker} instance.
      * @param fileName file name to verify.
      * @param expected an array of expected messages.
@@ -230,7 +230,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * Uses provided {@link Checker} instance.
      * Expected messages are represented by the array of strings.
      * This implementation uses overloaded
-     * {@link BaseCheckTestSupport#verify(Checker, File[], String, String...)} method inside.
+     * {@link AbstractModuleTestSupport#verify(Checker, File[], String, String...)} method inside.
      * @param checker {@link Checker} instance.
      * @param processedFilename file name to verify.
      * @param messageFileName message file name.

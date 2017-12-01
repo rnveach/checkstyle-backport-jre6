@@ -35,6 +35,7 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.gui.MainFrameModel.ParseMode;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
 public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
@@ -48,7 +49,9 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
 
     private static DetailAST parseFile(File file) throws Exception {
         final FileContents contents = new FileContents(
-                new FileText(file.getAbsoluteFile(), System.getProperty("file.encoding", "UTF-8")));
+                new FileText(file.getAbsoluteFile(),
+                        System.getProperty("file.encoding",
+                        StandardCharsets.UTF_8.name())));
         return TreeWalker.parseWithComments(contents);
     }
 

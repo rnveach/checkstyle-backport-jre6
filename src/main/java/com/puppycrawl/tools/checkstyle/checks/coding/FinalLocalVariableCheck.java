@@ -47,7 +47,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  * </pre>
  * <p>
  * By default, this Check skip final validation on
- *  <a href = "http://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.14.2">
+ *  <a href = "https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.14.2">
  * Enhanced For-Loop</a>
  * </p>
  * <p>
@@ -616,8 +616,8 @@ public class FinalLocalVariableCheck extends AbstractCheck {
             if (parent.getType() == TokenTypes.METHOD_DEF) {
                 final DetailAST modifiers =
                     parent.findFirstToken(TokenTypes.MODIFIERS);
-                abstractOrNative = modifiers.branchContains(TokenTypes.ABSTRACT)
-                        || modifiers.branchContains(TokenTypes.LITERAL_NATIVE);
+                abstractOrNative = modifiers.findFirstToken(TokenTypes.ABSTRACT) != null
+                        || modifiers.findFirstToken(TokenTypes.LITERAL_NATIVE) != null;
             }
             parent = parent.getParent();
         }

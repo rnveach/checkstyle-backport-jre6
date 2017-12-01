@@ -31,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -211,6 +210,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         try {
             final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
             verify(checkConfig, pathToEmptyFile, expected);
+            fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
             assertTrue("Error message is unexpected",
@@ -281,6 +281,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final FileText fileText = new FileText(file, lines);
         try {
             treeWalker.processFiltered(file, fileText);
+            fail("Exception is expected");
         }
         catch (CheckstyleException exception) {
             assertTrue("Error message is unexpected",
@@ -303,6 +304,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final FileText fileText = new FileText(file, lines);
         try {
             treeWalker.processFiltered(file, fileText);
+            fail("Exception is expected");
         }
         catch (CheckstyleException exception) {
             assertTrue("Error message is unexpected",
@@ -337,14 +339,8 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
             createModuleConfig(RequiredTokenIsEmptyIntArray.class);
         final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
 
-        try {
-            final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-            verify(checkConfig, pathToEmptyFile, expected);
-        }
-        catch (CheckstyleException ignored) {
-            // unexpected
-            fail("CheckstyleException is NOT expected");
-        }
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(checkConfig, pathToEmptyFile, expected);
     }
 
     @Test
@@ -592,7 +588,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
         assertTrue("External resource is not present in cache",
                 new String(Files7.readAllBytes(new Path(cacheFile)),
-                        Charset.forName("UTF-8")).contains(
+                        StandardCharsets.UTF_8).contains(
                                 "InputTreeWalkerSuppressionXpathFilter.xml"));
     }
 

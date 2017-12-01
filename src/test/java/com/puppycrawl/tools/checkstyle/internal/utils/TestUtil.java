@@ -36,6 +36,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
@@ -155,7 +156,7 @@ public final class TestUtil {
      * @throws ANTLRException       if parser or lexer failed
      */
     public static DetailAST parseFile(File file) throws IOException, ANTLRException {
-        final FileText text = new FileText(file.getAbsoluteFile(), "UTF-8");
+        final FileText text = new FileText(file.getAbsoluteFile(), StandardCharsets.UTF_8.name());
         final FileContents contents = new FileContents(text);
         return parseWithComments(contents);
     }

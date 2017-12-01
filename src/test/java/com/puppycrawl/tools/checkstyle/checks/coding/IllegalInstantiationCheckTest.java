@@ -34,6 +34,7 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class IllegalInstantiationCheckTest
@@ -152,7 +153,8 @@ public class IllegalInstantiationCheckTest
 
         final IllegalInstantiationCheck check = new IllegalInstantiationCheck();
         final File inputFile = new File(getNonCompilablePath("InputIllegalInstantiationLang.java"));
-        check.setFileContents(new FileContents(new FileText(inputFile, "UTF-8")));
+        check.setFileContents(new FileContents(new FileText(inputFile,
+                StandardCharsets.UTF_8.name())));
         check.configure(createModuleConfig(IllegalInstantiationCheck.class));
         check.setClasses("java.lang.Boolean");
 

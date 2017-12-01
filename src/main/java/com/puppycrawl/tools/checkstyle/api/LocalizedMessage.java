@@ -37,6 +37,7 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
@@ -527,7 +528,8 @@ public final class LocalizedMessage
             }
             ResourceBundle resourceBundle = null;
             if (stream != null) {
-                final Reader streamReader = new InputStreamReader(stream, "UTF-8");
+                final Reader streamReader = new InputStreamReader(stream,
+                        StandardCharsets.UTF_8.name());
                 try {
                     // Only this line is changed to make it to read properties files as UTF-8.
                     resourceBundle = new PropertyResourceBundle(streamReader);

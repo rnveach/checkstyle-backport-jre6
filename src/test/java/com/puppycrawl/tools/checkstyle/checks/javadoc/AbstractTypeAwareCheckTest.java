@@ -24,12 +24,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -38,13 +38,6 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class AbstractTypeAwareCheckTest extends AbstractModuleTestSupport {
-    private DefaultConfiguration checkConfig;
-
-    @Before
-    public void setUp() {
-        checkConfig = createModuleConfig(JavadocMethodCheck.class);
-    }
-
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/javadoc/abstracttypeaware";
@@ -86,6 +79,7 @@ public class AbstractTypeAwareCheckTest extends AbstractModuleTestSupport {
 
         try {
             regularClassConstructor.newInstance(null, "", new JavadocMethodCheck());
+            fail("Exception is expected");
         }
         catch (InvocationTargetException ex) {
             assertTrue("Invalid exception class, expected: IllegalArgumentException.class",
@@ -167,6 +161,7 @@ public class AbstractTypeAwareCheckTest extends AbstractModuleTestSupport {
         };
         try {
             verify(config, getPath("InputAbstractTypeAwareLoadErrors.java"), expected);
+            fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
             final IllegalStateException cause = (IllegalStateException) ex.getCause();
@@ -178,6 +173,7 @@ public class AbstractTypeAwareCheckTest extends AbstractModuleTestSupport {
 
     @Test
     public void testWithSuppressLoadErrors() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
         checkConfig.addAttribute("suppressLoadErrors", "true");
         checkConfig.addAttribute("allowUndeclaredRTE", "true");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;

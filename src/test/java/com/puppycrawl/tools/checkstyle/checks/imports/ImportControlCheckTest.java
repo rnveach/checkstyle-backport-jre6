@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.nio.charset.Charset;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +38,7 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
@@ -51,10 +51,6 @@ public class ImportControlCheckTest extends AbstractModuleTestSupport {
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/imports/importcontrol";
-    }
-
-    private static String getResourcePath(String filename) {
-        return "/com/puppycrawl/tools/checkstyle/checks/imports/importcontrol/" + filename;
     }
 
     @Test
@@ -352,7 +348,7 @@ public class ImportControlCheckTest extends AbstractModuleTestSupport {
 
         assertTrue("External resourse is not present in cache",
                 new String(Files7.readAllBytes(new Path(cacheFile)),
-                Charset.forName("UTF-8")).contains("InputImportControlOneRegExp.xml"));
+                        StandardCharsets.UTF_8).contains("InputImportControlOneRegExp.xml"));
     }
 
     @Test

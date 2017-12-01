@@ -279,7 +279,7 @@ public class XMLLogger
                     sb.append("&quot;");
                     break;
                 case '&':
-                    sb.append(encodeAmpersand(value, i));
+                    sb.append("&amp;");
                     break;
                 case '\r':
                     break;
@@ -287,7 +287,16 @@ public class XMLLogger
                     sb.append("&#10;");
                     break;
                 default:
-                    sb.append(chr);
+                    if (Character.isISOControl(chr)) {
+                        // true escape characters need '&' before but it also requires XML 1.1
+                        // until https://github.com/checkstyle/checkstyle/issues/5168
+                        sb.append("#x");
+                        sb.append(Integer.toHexString(chr));
+                        sb.append(';');
+                    }
+                    else {
+                        sb.append(chr);
+                    }
                     break;
             }
         }
@@ -333,25 +342,6 @@ public class XMLLogger
             }
         }
         return reference;
-    }
-
-    /**
-     * Encodes ampersand in value at required position.
-     * @param value string value, which contains ampersand
-     * @param ampPosition position of ampersand in value
-     * @return encoded ampersand which should be used in xml
-     */
-    private static String encodeAmpersand(String value, int ampPosition) {
-        final int nextSemi = value.indexOf(';', ampPosition);
-        final String result;
-        if (nextSemi == -1
-            || !isReference(value.substring(ampPosition, nextSemi + 1))) {
-            result = "&amp;";
-        }
-        else {
-            result = "&";
-        }
-        return result;
     }
 
     /**

@@ -39,6 +39,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Closeables.class)
@@ -70,7 +71,7 @@ public class FileTextTest extends AbstractPathTestSupport {
         doNothing().when(Closeables.class);
         Closeables.closeQuietly(any(Reader.class));
 
-        final String charsetName = "ISO-8859-1";
+        final String charsetName = StandardCharsets.ISO_8859_1.name();
         final FileText fileText = new FileText(new File(getPath("InputFileTextImportControl.xml")),
                 charsetName);
         assertEquals("Invalid charset name", charsetName, fileText.getCharset().name());
@@ -81,7 +82,7 @@ public class FileTextTest extends AbstractPathTestSupport {
 
     @Test
     public void testLineColumnBeforeCopyConstructor() throws IOException {
-        final String charsetName = "ISO-8859-1";
+        final String charsetName = StandardCharsets.ISO_8859_1.name();
         final FileText fileText = new FileText(new File(getPath("InputFileTextImportControl.xml")),
                 charsetName);
         final LineColumn lineColumn = fileText.lineColumn(100);
@@ -91,7 +92,7 @@ public class FileTextTest extends AbstractPathTestSupport {
 
     @Test
     public void testLineColumnAfterCopyConstructor() throws IOException {
-        final String charsetName = "ISO-8859-1";
+        final String charsetName = StandardCharsets.ISO_8859_1.name();
         final FileText fileText = new FileText(new File(getPath("InputFileTextImportControl.xml")),
                 charsetName);
         final FileText copy = new FileText(fileText);
@@ -107,7 +108,7 @@ public class FileTextTest extends AbstractPathTestSupport {
 
     @Test
     public void testLineColumnAtTheStartOfFile() throws IOException {
-        final String charsetName = "ISO-8859-1";
+        final String charsetName = StandardCharsets.ISO_8859_1.name();
         final FileText fileText = new FileText(new File(getPath("InputFileTextImportControl.xml")),
                 charsetName);
         final FileText copy = new FileText(fileText);

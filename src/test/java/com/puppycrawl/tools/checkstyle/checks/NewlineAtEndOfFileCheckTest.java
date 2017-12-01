@@ -250,6 +250,7 @@ public class NewlineAtEndOfFileCheckTest
         when(file.length()).thenReturn(2000000L);
         try {
             method.invoke(new NewlineAtEndOfFileCheck(), file);
+            fail("Exception is expected");
         }
         catch (InvocationTargetException ex) {
             assertTrue("Error type is unexpected",
