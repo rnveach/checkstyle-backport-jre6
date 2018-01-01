@@ -23,12 +23,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
 
 /**
@@ -47,7 +47,7 @@ public final class IllegalCatchCheck extends AbstractCheck {
     public static final String MSG_KEY = "illegal.catch";
 
     /** Illegal class names. */
-    private final Set<String> illegalClassNames = Sets.newHashSet("Exception", "Error",
+    private final Set<String> illegalClassNames = Collections7.newHashSet("Exception", "Error",
         "RuntimeException", "Throwable", "java.lang.Error", "java.lang.Exception",
         "java.lang.RuntimeException", "java.lang.Throwable");
 

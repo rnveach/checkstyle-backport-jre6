@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -41,8 +42,6 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 
 /**
@@ -252,8 +251,13 @@ public class CommitValidationTest {
 
     private static List<RevCommit> getCommitsByCounter(
             Iterator<RevCommit> previousCommitsIterator) {
-        return Lists.newArrayList(Iterators.limit(previousCommitsIterator,
-                PREVIOUS_COMMITS_TO_CHECK_COUNT));
+        final List<RevCommit> result = new ArrayList<RevCommit>();
+        int count = 0;
+        while (previousCommitsIterator.hasNext() && count < PREVIOUS_COMMITS_TO_CHECK_COUNT) {
+            result.add(previousCommitsIterator.next());
+            count++;
+        }
+        return result;
     }
 
     private static List<RevCommit> getCommitsByLastCommitAuthor(

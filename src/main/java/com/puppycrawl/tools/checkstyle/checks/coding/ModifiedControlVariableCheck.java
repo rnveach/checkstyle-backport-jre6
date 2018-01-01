@@ -20,18 +20,18 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 
 /**
  * Check for ensuring that for loop control variables are not modified
@@ -112,13 +112,13 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
 
     /** Operations which can change control variable in update part of the loop. */
     private static final Set<Integer> MUTATION_OPERATIONS =
-            ImmutableSet.of(
+            Collections.unmodifiableSet(Collections7.newHashSet(
                 TokenTypes.POST_INC,
                 TokenTypes.POST_DEC,
                 TokenTypes.DEC,
                 TokenTypes.INC,
                 TokenTypes.ASSIGN
-            );
+            ));
 
     /** Stack of block parameters. */
     private final Deque<Deque<String>> variableStack = new ArrayDeque<Deque<String>>();
@@ -313,7 +313,13 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
         final Set<String> initializedVariables = getForInitVariables(ast);
         final Set<String> iteratingVariables = getForIteratorVariables(ast);
 
-        return Sets.intersection(initializedVariables, iteratingVariables);
+        final Set<String> result = new HashSet<String>();
+        for (String item : initializedVariables) {
+            if (iteratingVariables.contains(item)) {
+                result.add(item);
+            }
+        }
+        return result;
     }
 
     /**

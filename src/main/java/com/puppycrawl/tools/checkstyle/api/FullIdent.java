@@ -22,7 +22,7 @@ package com.puppycrawl.tools.checkstyle.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.base.Joiner;
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
 
 /**
  * Represents a full identifier, including dots, with associated
@@ -76,7 +76,7 @@ public final class FullIdent {
      * @return the text
      */
     public String getText() {
-        return Joiner.on("").join(elements);
+        return String7.join("", elements);
     }
 
     /**
@@ -97,7 +97,7 @@ public final class FullIdent {
 
     @Override
     public String toString() {
-        return Joiner.on("").join(elements) + "[" + lineNo + "x" + columnNo + "]";
+        return String7.join("", elements) + "[" + lineNo + "x" + columnNo + "]";
     }
 
     /**

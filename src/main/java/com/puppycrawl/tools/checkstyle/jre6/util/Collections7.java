@@ -19,11 +19,32 @@
 
 package com.puppycrawl.tools.checkstyle.jre6.util;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public final class Collections7 {
     private Collections7() {
+    }
+
+    public static <T> Set<T> newHashSet(T... items) {
+        final Set<T> result = new HashSet<T>();
+        for (T item : items) {
+            result.add(item);
+        }
+        return result;
+    }
+
+    public static <T> SortedSet<T> newSortedSet(T... items) {
+        final SortedSet<T> result = new TreeSet<T>();
+        for (T item : items) {
+            result.add(item);
+        }
+        return result;
+
     }
 
     public static <T> Iterator<T> emptyIterator() {

@@ -21,13 +21,13 @@ package com.puppycrawl.tools.checkstyle.checks.design;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import antlr.collections.AST;
-import com.google.common.collect.ImmutableList;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -248,7 +248,7 @@ public class VisibilityModifierCheck
 
     /** Default immutable types canonical names. */
     private static final List<String> DEFAULT_IMMUTABLE_TYPES =
-        ImmutableList.of(
+        Collections.unmodifiableList(Arrays.asList(
             "java.lang.String",
             "java.lang.Integer",
             "java.lang.Byte",
@@ -269,15 +269,15 @@ public class VisibilityModifierCheck
             "java.net.Inet4Address",
             "java.net.Inet6Address",
             "java.net.InetSocketAddress"
-        );
+        ));
 
     /** Default ignore annotations canonical names. */
     private static final List<String> DEFAULT_IGNORE_ANNOTATIONS =
-        ImmutableList.of(
+        Collections.unmodifiableList(Arrays.asList(
             "org.junit.Rule",
             "org.junit.ClassRule",
             "com.google.common.annotations.VisibleForTesting"
-        );
+        ));
 
     /** Name for 'public' access modifier. */
     private static final String PUBLIC_ACCESS_MODIFIER = "public";

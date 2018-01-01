@@ -20,6 +20,7 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,11 +29,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
@@ -107,7 +108,7 @@ public class RequireThisCheck extends AbstractCheck {
 
     /** Set of all declaration tokens. */
     private static final Set<Integer> DECLARATION_TOKENS =
-        ImmutableSet.of(
+        Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.VARIABLE_DEF,
             TokenTypes.CTOR_DEF,
             TokenTypes.METHOD_DEF,
@@ -117,10 +118,10 @@ public class RequireThisCheck extends AbstractCheck {
             TokenTypes.INTERFACE_DEF,
             TokenTypes.PARAMETER_DEF,
             TokenTypes.TYPE_ARGUMENT
-        );
+        ));
     /** Set of all assign tokens. */
     private static final Set<Integer> ASSIGN_TOKENS =
-        ImmutableSet.of(
+        Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.ASSIGN,
             TokenTypes.PLUS_ASSIGN,
             TokenTypes.STAR_ASSIGN,
@@ -131,10 +132,10 @@ public class RequireThisCheck extends AbstractCheck {
             TokenTypes.SL_ASSIGN,
             TokenTypes.BAND_ASSIGN,
             TokenTypes.BXOR_ASSIGN
-        );
+        ));
     /** Set of all compound assign tokens. */
     private static final Set<Integer> COMPOUND_ASSIGN_TOKENS =
-        ImmutableSet.of(
+        Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.PLUS_ASSIGN,
             TokenTypes.STAR_ASSIGN,
             TokenTypes.DIV_ASSIGN,
@@ -144,7 +145,7 @@ public class RequireThisCheck extends AbstractCheck {
             TokenTypes.SL_ASSIGN,
             TokenTypes.BAND_ASSIGN,
             TokenTypes.BXOR_ASSIGN
-        );
+        ));
 
     /** Frame for the currently processed AST. */
     private final Deque<AbstractFrame> current = new ArrayDeque<AbstractFrame>();

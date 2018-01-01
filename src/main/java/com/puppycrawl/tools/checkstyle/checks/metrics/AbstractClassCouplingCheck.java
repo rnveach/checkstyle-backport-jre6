@@ -31,13 +31,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
@@ -55,7 +54,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
 
     /** Class names to ignore. */
     private static final Set<String> DEFAULT_EXCLUDED_CLASSES =
-            ImmutableSet.of(
+            Collections.unmodifiableSet(Collections7.newHashSet(
                 // primitives
                 "boolean", "byte", "char", "double", "float", "int",
                 "long", "short", "void",
@@ -75,7 +74,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
                 "List", "ArrayList", "Deque", "Queue", "LinkedList",
                 "Set", "HashSet", "SortedSet", "TreeSet",
                 "Map", "HashMap", "SortedMap", "TreeMap"
-            );
+            ));
 
     /** Package names to ignore. */
     private static final Set<String> DEFAULT_EXCLUDED_PACKAGES = Collections.emptySet();
@@ -166,7 +165,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
                     + error);
         }
 
-        this.excludedPackages = Collections.unmodifiableSet(Sets.newHashSet(excludedPackages));
+        this.excludedPackages = Collections.unmodifiableSet(Collections7.newHashSet(excludedPackages));
     }
 
     @Override

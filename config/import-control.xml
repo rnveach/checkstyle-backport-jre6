@@ -63,15 +63,10 @@
   <allow class="com.google.common.io.Flushables" local-only="true"/>
   <allow class="com.google.common.collect.HashMultimap" local-only="true"/>
   <allow class="com.google.common.collect.ImmutableCollection" local-only="true"/>
-  <allow class="com.google.common.collect.ImmutableList"/>
-  <allow class="com.google.common.collect.ImmutableMap"/>
-  <allow class="com.google.common.collect.ImmutableSet"/>
-  <allow class="com.google.common.collect.ImmutableSortedSet"/>
-  <allow class="com.google.common.collect.Iterables"/>
+  <allow class="com.google.common.collect.ImmutableList" local-only="true"/>
+  <allow class="com.google.common.collect.ImmutableMap" local-only="true"/>
   <allow class="com.google.common.collect.Multimap" local-only="true"/>
   <allow class="com.google.common.io.ByteStreams" local-only="true"/>
-  <allow class="com.google.common.collect.Sets"/>
-  <allow class="com.google.common.primitives.Ints"/>
 
   <subpackage name="utils">
     <allow pkg="java.lang.reflect" local-only="true" />

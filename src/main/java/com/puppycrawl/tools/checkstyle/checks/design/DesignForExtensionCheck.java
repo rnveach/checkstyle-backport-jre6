@@ -23,12 +23,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
@@ -104,7 +104,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
     /**
      * A set of annotations which allow the check to skip the method from validation.
      */
-    private Set<String> ignoredAnnotations = Sets.newHashSet("Test", "Before", "After",
+    private Set<String> ignoredAnnotations = Collections7.newHashSet("Test", "Before", "After",
         "BeforeClass", "AfterClass");
 
     /**

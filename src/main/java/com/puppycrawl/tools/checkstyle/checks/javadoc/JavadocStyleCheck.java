@@ -20,13 +20,13 @@
 package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.ImmutableSortedSet;
 import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser;
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
@@ -35,6 +35,7 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TextBlock;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
@@ -70,21 +71,21 @@ public class JavadocStyleCheck
 
     /** HTML tags that do not require a close tag. */
     private static final Set<String> SINGLE_TAGS =
-        ImmutableSortedSet.of("br", "li", "dt", "dd", "hr", "img", "p", "td", "tr", "th");
+        Collections.unmodifiableSet(Collections7.newSortedSet("br", "li", "dt", "dd", "hr", "img", "p", "td", "tr", "th"));
 
     /** HTML tags that are allowed in java docs.
      * From https://www.w3schools.com/tags/default.asp
      * The forms and structure tags are not allowed
      */
     private static final Set<String> ALLOWED_TAGS =
-        ImmutableSortedSet.of(
+        Collections.unmodifiableSet(Collections7.newSortedSet(
             "a", "abbr", "acronym", "address", "area", "b", "bdo", "big",
             "blockquote", "br", "caption", "cite", "code", "colgroup", "dd",
             "del", "div", "dfn", "dl", "dt", "em", "fieldset", "font", "h1",
             "h2", "h3", "h4", "h5", "h6", "hr", "i", "img", "ins", "kbd",
             "li", "ol", "p", "pre", "q", "samp", "small", "span", "strong",
             "style", "sub", "sup", "table", "tbody", "td", "tfoot", "th",
-            "thead", "tr", "tt", "u", "ul", "var");
+            "thead", "tr", "tt", "u", "ul", "var"));
 
     /** The scope to check. */
     private Scope scope = Scope.PRIVATE;

@@ -39,7 +39,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
@@ -461,7 +460,12 @@ public class TranslationCheck extends AbstractFileSetCheck {
             final String path = currentFile.getPath();
             dispatcher.fireFileStarted(path);
             final Set<String> currentFileKeys = fileKeys.get(currentFile);
-            final Set<String> missingKeys = Sets.difference(keysThatMustExist, currentFileKeys);
+            final Set<String> missingKeys = new HashSet<String>();
+            for (String e : keysThatMustExist) {
+                if (!currentFileKeys.contains(e)) {
+                    missingKeys.add(e);
+                }
+            }
             if (!missingKeys.isEmpty()) {
                 for (Object key : missingKeys) {
                     log(0, MSG_KEY, key);

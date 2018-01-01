@@ -22,12 +22,12 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 import java.util.Collections;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.utils.AnnotationUtility;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
 
@@ -63,11 +63,11 @@ public final class IllegalThrowsCheck extends AbstractCheck {
 
     /** Methods which should be ignored. */
     private final Set<String> ignoredMethodNames =
-        Sets.newHashSet("finalize");
+        Collections7.newHashSet("finalize");
 
     /** Illegal class names. */
     private final Set<String> illegalClassNames =
-        Sets.newHashSet("Error", "RuntimeException", "Throwable", "java.lang.Error",
+        Collections7.newHashSet("Error", "RuntimeException", "Throwable", "java.lang.Error",
                       "java.lang.RuntimeException", "java.lang.Throwable");
 
     /** Property for ignoring overridden methods. */

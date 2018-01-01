@@ -24,7 +24,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.primitives.Ints;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
@@ -77,7 +76,12 @@ public final class TokenUtils {
 
         TOKEN_NAME_TO_VALUE = builder.build();
         TOKEN_VALUE_TO_NAME = tempTokenValueToName;
-        TOKEN_IDS = Ints.toArray(TOKEN_NAME_TO_VALUE.values());
+        TOKEN_IDS = new int[TOKEN_NAME_TO_VALUE.size()];
+        int position = 0;
+        for (int item : TOKEN_NAME_TO_VALUE.values()) {
+            TOKEN_IDS[position] = item;
+            position++;
+        }
     }
 
     /** Stop instances being created. **/

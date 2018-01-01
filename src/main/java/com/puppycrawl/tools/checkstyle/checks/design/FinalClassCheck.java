@@ -24,11 +24,11 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.base.Joiner;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
 
 /**
@@ -160,7 +160,7 @@ public class FinalClassCheck
                 qualifiedNameParts.add(0, traverse.findFirstToken(TokenTypes.IDENT).getText());
                 traverse = traverse.findFirstToken(TokenTypes.DOT);
             }
-            className = Joiner.on(PACKAGE_SEPARATOR).join(qualifiedNameParts);
+            className = String7.join(PACKAGE_SEPARATOR, qualifiedNameParts);
         }
         else {
             className = classExtend.findFirstToken(TokenTypes.IDENT).getText();
