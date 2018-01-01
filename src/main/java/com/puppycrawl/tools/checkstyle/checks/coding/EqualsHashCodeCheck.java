@@ -166,9 +166,7 @@ public class EqualsHashCodeCheck
                 log(equalsAST.getLineNo(), equalsAST.getColumnNo(), MSG_KEY_HASHCODE);
             }
         }
-        for (Map.Entry<DetailAST, DetailAST> detailASTDetailASTEntry : objBlockWithHashCode
-                .entrySet()) {
-            final DetailAST equalsAST = detailASTDetailASTEntry.getValue();
+        for (DetailAST equalsAST : objBlockWithHashCode.values()) {
             log(equalsAST.getLineNo(), equalsAST.getColumnNo(), MSG_KEY_EQUALS);
         }
     }

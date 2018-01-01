@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE suppressions PUBLIC
-        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
-        "http://checkstyle.sourceforge.net/dtds/suppressions_1_1.dtd">
+        "-//Puppy Crawl//DTD Suppressions 1.2//EN"
+        "http://checkstyle.sourceforge.net/dtds/suppressions_1_2.dtd">
 
 <suppressions>
 
@@ -40,4 +40,21 @@
     so static Loggers are okay there. -->
     <suppress checks="AvoidModifiersForTypesCheck"
               files="Main\.java|MainTest\.java"/>
+
+    <!-- ========================================================= -->
+    <!-- backport suppressions -->
+    <!-- ========================================================= -->
+
+    <!-- separating lines causes issues with rebasing -->
+    <suppress checks="LineLengthExtended" files=".*"/>
+    <!-- result of duplicating exception handling -->
+    <suppress checks="MultipleStringLiteralsExtended" files=".*"/>
+    <!-- exception are from newer jdk -->
+    <suppress checks="IllegalCatchExtended" files=".*"/>
+    <!-- no other way to instantiate without lambdas -->
+    <suppress message="Instantiation of 'Predicate' is not allowed" files=".*"/>
+    <!-- old code is more complex then new and fixing would cause issues with rebasing -->
+    <suppress checks="ChildBlockLength|SingleBreakOrContinue|LogicConditionNeedOptimization" files=".*"/>
+    <!-- can relax more on this package -->
+    <suppress checks="ConstructorWithoutParams|ForbidInstantiation" files="[\\/]jre6[\\/]"/>
 </suppressions>

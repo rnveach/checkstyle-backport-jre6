@@ -36,6 +36,16 @@ public final class Files7 {
     private Files7() {
     }
 
+    public static BufferedReader newBufferedReader(Path path) throws IOException {
+        return newBufferedReader(path, StandardCharsets.UTF_8);
+    }
+
+    public static BufferedReader newBufferedReader(Path path, Charset cs) throws IOException {
+        final CharsetDecoder decoder = cs.newDecoder();
+        final Reader reader = new InputStreamReader(new FileInputStream(path.getFile()), decoder);
+        return new BufferedReader(reader);
+    }
+
     public static void createDirectories(Path directory) {
         directory.getFile().mkdirs();
     }
@@ -46,16 +56,6 @@ public final class Files7 {
 
     public static void delete(Path path) {
         path.getFile().delete();
-    }
-
-    public static BufferedReader newBufferedReader(Path path) throws IOException {
-        return newBufferedReader(path, StandardCharsets.UTF_8);
-    }
-
-    public static BufferedReader newBufferedReader(Path path, Charset cs) throws IOException {
-        final CharsetDecoder decoder = cs.newDecoder();
-        final Reader reader = new InputStreamReader(new FileInputStream(path.getFile()), decoder);
-        return new BufferedReader(reader);
     }
 
     public static byte[] readAllBytes(Path path) throws IOException {
