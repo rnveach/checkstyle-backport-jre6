@@ -5,6 +5,9 @@
 
 <import-control pkg="com.puppycrawl.tools.checkstyle">
 
+  <!-- ========================================================= -->
+  <!-- backport imports -->
+  <!-- ========================================================= -->
   <allow pkg="com.puppycrawl.tools.checkstyle.jre6.charset"/>
   <allow pkg="com.puppycrawl.tools.checkstyle.jre6.file"/>
   <allow pkg="com.puppycrawl.tools.checkstyle.jre6.lang"/>
@@ -69,10 +72,6 @@
   <allow class="com.google.common.io.ByteStreams" local-only="true"/>
   <allow class="com.google.common.collect.Sets"/>
   <allow class="com.google.common.primitives.Ints"/>
-
-  <subpackage name="jre6">
-    <allow class="java.nio.charset.Charset"/>
-  </subpackage>
 
   <subpackage name="utils">
     <allow pkg="java.lang.reflect" local-only="true" />
@@ -155,6 +154,14 @@
   </subpackage>
 
   <subpackage name="doclets" strategyOnMismatch="disallowed">
+    <!-- ========================================================= -->
+    <!-- backport imports -->
+    <!-- ========================================================= -->
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.charset"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.file"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.lang"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.util"/>
+
     <allow class="java.nio.charset.StandardCharsets"/>
     <allow pkg="com.sun.javadoc"/>
     <allow pkg="java.io"/>
@@ -174,6 +181,14 @@
   </subpackage>
 
   <subpackage name="gui" strategyOnMismatch="disallowed">
+    <!-- ========================================================= -->
+    <!-- backport imports -->
+    <!-- ========================================================= -->
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.charset"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.file"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.lang"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.util"/>
+
     <allow pkg="antlr"/>
     <allow pkg="java.awt"/>
     <allow pkg="java.io"/>
@@ -194,5 +209,11 @@
     <allow class="java.lang.reflect.Field"/>
     <allow class="java.nio.charset.StandardCharsets" local-only="true"/>
     <allow pkg="com.puppycrawl.tools.checkstyle.utils" local-only="true"/>
+  </subpackage>
+
+  <!-- ========================================================= -->
+  <!-- backport imports -->
+  <!-- ========================================================= -->
+  <subpackage name="jre6" strategyOnMismatch="allowed">
   </subpackage>
 </import-control>

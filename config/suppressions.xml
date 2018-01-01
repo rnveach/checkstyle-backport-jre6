@@ -85,4 +85,27 @@
 
     <!-- HandlerFactory crosses allowed limit for executable statements -->
     <suppress checks="ExecutableStatementCount" files="HandlerFactory\.java"/>
+
+    <!-- ========================================================= -->
+    <!-- backport suppressions -->
+    <!-- ========================================================= -->
+
+    <!-- separating lines causes issues with rebasing -->
+    <suppress checks="LineLength" files=".*"/>
+    <!-- result of duplicating exception handling -->
+    <suppress checks="MultipleStringLiterals" files=".*"/>
+    <!-- check doesn't validate lambdas the same as anonymous classes -->
+    <suppress checks="AnonInnerLength" files=".*"/>
+    <!-- exception are from newer jdk -->
+    <suppress checks="IllegalCatch" files=".*"/>
+    <!-- old code is more complex then new and fixing would cause issues with rebasing -->
+    <suppress checks="ClassDataAbstractionCoupling|NPathComplexity|ExecutableStatementCount|CyclomaticComplexity" files=".*"/>
+    <!-- makes code simpler and follow lambda original -->
+    <suppress checks="InnerAssignment" files=".*"/>
+    <!-- can relax more on this package -->
+    <suppress message="Missing a Javadoc" files="[\\/]jre6[\\/]"/>
+    <suppress checks="JavadocPackage|WriteTag|DesignForExtension|ReturnCount|ParameterName|AvoidInlineConditionals" files="[\\/]jre6[\\/]"/>
+
+    <!-- until https://github.com/checkstyle/checkstyle/issues/5412 -->
+    <suppress checks="LocalVariableName" files="ParameterNameCheck\.java"/>
 </suppressions>
