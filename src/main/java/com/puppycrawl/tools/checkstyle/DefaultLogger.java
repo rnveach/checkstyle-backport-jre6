@@ -27,6 +27,7 @@ import java.io.Writer;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
@@ -77,7 +78,7 @@ public class DefaultLogger extends AutomaticBean implements AuditListener {
      * Creates a new {@code DefaultLogger} instance.
      * @param outputStream where to log infos and errors
      * @param closeStreamsAfterUse if oS should be closed in auditFinished()
-     * @deprecated in order to fullfil demands of BooleanParameter IDEA check.
+     * @deprecated in order to fulfill demands of BooleanParameter IDEA check.
      * @noinspection BooleanParameter
      */
     @Deprecated
@@ -92,7 +93,7 @@ public class DefaultLogger extends AutomaticBean implements AuditListener {
      * @param closeInfoAfterUse auditFinished should close infoStream.
      * @param errorStream the {@code OutputStream} for error messages.
      * @param closeErrorAfterUse auditFinished should close errorStream
-     * @deprecated in order to fullfil demands of BooleanParameter IDEA check.
+     * @deprecated in order to fulfill demands of BooleanParameter IDEA check.
      * @noinspection BooleanParameter
      */
     @Deprecated
@@ -112,7 +113,7 @@ public class DefaultLogger extends AutomaticBean implements AuditListener {
      * @param errorStream the {@code OutputStream} for error messages
      * @param closeErrorAfterUse auditFinished should close errorStream
      * @param messageFormatter formatter for the log message.
-     * @deprecated in order to fullfil demands of BooleanParameter IDEA check.
+     * @deprecated in order to fulfill demands of BooleanParameter IDEA check.
      * @noinspection BooleanParameter, WeakerAccess
      */
     @Deprecated
@@ -191,6 +192,11 @@ public class DefaultLogger extends AutomaticBean implements AuditListener {
             errorWriter = new PrintWriter(errorStreamWriter);
         }
         formatter = messageFormatter;
+    }
+
+    @Override
+    protected void finishLocalSetup() throws CheckstyleException {
+        // No code by default
     }
 
     /**

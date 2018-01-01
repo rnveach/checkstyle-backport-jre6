@@ -24,15 +24,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 
-import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
-import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
-import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
-
 public abstract class AbstractTreeTestSupport extends AbstractPathTestSupport {
-
-    protected static final String LF_REGEX = "\\\\n";
-
-    protected static final String CRLF_REGEX = "\\\\r\\\\n";
 
     /**
      * Returns canonical path for the file with the given file name.
@@ -118,16 +110,5 @@ public abstract class AbstractTreeTestSupport extends AbstractPathTestSupport {
 
         assertEquals("Generated tree from the javadoc file should match the pre-defined tree",
                 expectedContents, actualContents);
-    }
-
-    /** Reads the contents of a file.
-     * @param filename the name of the file whose contents are to be read
-     * @return contents of the file with all {@code \r\n} replaced by {@code \n}
-     * @throws IOException if I/O exception occurs while reading
-     */
-    protected static String readFile(String filename) throws IOException {
-        return new String(Files7.readAllBytes(
-                Paths.get(filename)), StandardCharsets.UTF_8)
-                .replaceAll(CRLF_REGEX, LF_REGEX);
     }
 }

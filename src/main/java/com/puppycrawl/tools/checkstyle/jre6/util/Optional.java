@@ -21,6 +21,8 @@ package com.puppycrawl.tools.checkstyle.jre6.util;
 
 import java.util.NoSuchElementException;
 
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
+
 public final class Optional<T> {
     private static final Optional<?> EMPTY = new Optional<Object>();
 
@@ -61,5 +63,10 @@ public final class Optional<T> {
 
     public T orElse(T other) {
         return value != null ? value : other;
+    }
+
+    public void ifPresent(Consumer<? super T> consumer) {
+        if (value != null)
+            consumer.accept(value);
     }
 }

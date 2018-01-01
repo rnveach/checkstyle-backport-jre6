@@ -20,6 +20,7 @@
 package com.puppycrawl.tools.checkstyle.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -34,6 +35,12 @@ import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
 public class BlockCommentPositionTest extends AbstractPathTestSupport {
+
+    @Test
+    public void testPrivateConstr() throws Exception {
+        assertTrue("Constructor is not private",
+                TestUtil.isUtilsClassHasPrivateConstructor(BlockCommentPosition.class, true));
+    }
 
     @Test
     public void testJavaDocsRecognition() throws Exception {
@@ -51,7 +58,7 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
                         public Boolean apply(DetailAST node) {
                             return BlockCommentPosition.isOnMethod(node);
                         }
-                    }, 3),
+                    }, 4),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnField.java",
                     new Function<DetailAST, Boolean>() {
                         @Override
@@ -93,7 +100,14 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
                         public Boolean apply(DetailAST node) {
                             return BlockCommentPosition.isOnEnumConstant(node);
                         }
-                    }, 2)
+                    }, 2),
+                new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnAnnotationField.java",
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnAnnotationField(node);
+                        }
+                    }, 4)
         );
 
         for (BlockCommentPositionTestMetadata metadata : metadataList) {

@@ -187,23 +187,23 @@ public class CheckUtilsTest extends AbstractPathTestSupport {
 
     @Test
     public void testGetTypeParameterNames() throws Exception {
-        final DetailAST parameterisedClassNode = getNodeFromFile(TokenTypes.CLASS_DEF);
+        final DetailAST parameterizedClassNode = getNodeFromFile(TokenTypes.CLASS_DEF);
         final List<String> expected = Arrays.asList("V", "C");
 
         assertEquals("Invalid type parameters",
-                expected, CheckUtils.getTypeParameterNames(parameterisedClassNode));
+                expected, CheckUtils.getTypeParameterNames(parameterizedClassNode));
     }
 
     @Test
     public void testGetTypeParameters() throws Exception {
-        final DetailAST parameterisedClassNode = getNodeFromFile(TokenTypes.CLASS_DEF);
+        final DetailAST parameterizedClassNode = getNodeFromFile(TokenTypes.CLASS_DEF);
         final DetailAST firstTypeParameter =
-                getNode(parameterisedClassNode, TokenTypes.TYPE_PARAMETER);
+                getNode(parameterizedClassNode, TokenTypes.TYPE_PARAMETER);
         final List<DetailAST> expected = Arrays.asList(firstTypeParameter,
                 firstTypeParameter.getNextSibling().getNextSibling());
 
         assertEquals("Invalid type parameters", expected,
-                CheckUtils.getTypeParameters(parameterisedClassNode));
+                CheckUtils.getTypeParameters(parameterizedClassNode));
     }
 
     @Test
@@ -236,7 +236,7 @@ public class CheckUtilsTest extends AbstractPathTestSupport {
     }
 
     @Test
-    public void testIsNonViodMethod() throws Exception {
+    public void testIsNonVoidMethod() throws Exception {
         final DetailAST nonVoidMethod = getNodeFromFile(TokenTypes.METHOD_DEF);
         final DetailAST voidMethod = nonVoidMethod.getNextSibling();
 
@@ -277,13 +277,13 @@ public class CheckUtilsTest extends AbstractPathTestSupport {
         final DetailAST publicVariable = protectedVariable.getNextSibling();
         final DetailAST packageVariable = publicVariable.getNextSibling();
 
-        assertEquals("Invalid access modofier", AccessModifier.PRIVATE,
+        assertEquals("Invalid access modifier", AccessModifier.PRIVATE,
                 CheckUtils.getAccessModifierFromModifiersToken(privateVariable.getFirstChild()));
-        assertEquals("Invalid access modofier", AccessModifier.PROTECTED,
+        assertEquals("Invalid access modifier", AccessModifier.PROTECTED,
                 CheckUtils.getAccessModifierFromModifiersToken(protectedVariable.getFirstChild()));
-        assertEquals("Invalid access modofier", AccessModifier.PUBLIC,
+        assertEquals("Invalid access modifier", AccessModifier.PUBLIC,
                 CheckUtils.getAccessModifierFromModifiersToken(publicVariable.getFirstChild()));
-        assertEquals("Invalid access modofier", AccessModifier.PACKAGE,
+        assertEquals("Invalid access modifier", AccessModifier.PACKAGE,
                 CheckUtils.getAccessModifierFromModifiersToken(packageVariable.getFirstChild()));
     }
 
@@ -300,6 +300,21 @@ public class CheckUtilsTest extends AbstractPathTestSupport {
         final DetailAST child = new DetailAST();
         child.setLineNo(5);
         child.setColumnNo(6);
+
+        final DetailAST root = new DetailAST();
+        root.setLineNo(5);
+        root.setColumnNo(6);
+
+        root.addChild(child);
+
+        assertEquals("Unexpected node", root, CheckUtils.getFirstNode(root));
+    }
+
+    @Test
+    public void testGetFirstNode2() {
+        final DetailAST child = new DetailAST();
+        child.setLineNo(6);
+        child.setColumnNo(5);
 
         final DetailAST root = new DetailAST();
         root.setLineNo(5);
@@ -345,11 +360,14 @@ public class CheckUtilsTest extends AbstractPathTestSupport {
 
     @Test
     public void testParseClassNames() {
-        final String className = "I.am.class.name.with.dot.in.the.end.";
-        final Set<String> result = CheckUtils.parseClassNames(className);
+        final Set<String> actual = CheckUtils.parseClassNames(
+                "I.am.class.name.with.dot.in.the.end.", "ClassOnly", "my.Class");
         final Set<String> expected = new HashSet<String>();
-        expected.add(className);
-        assertEquals("Result is not expected", expected, result);
+        expected.add("I.am.class.name.with.dot.in.the.end.");
+        expected.add("ClassOnly");
+        expected.add("my.Class");
+        expected.add("Class");
+        assertEquals("Result is not expected", expected, actual);
     }
 
     private DetailAST getNodeFromFile(int type) throws Exception {

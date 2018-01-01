@@ -84,6 +84,7 @@ public class XdocsPagesTest {
             "name=\"Header\"",
             "name=\"Translation\"",
             "name=\"SeverityMatchFilter\"",
+            "name=\"SuppressWithPlainTextCommentFilter\"",
             "name=\"SuppressionFilter\"",
             "name=\"SuppressWarningsFilter\"",
             "name=\"BeforeExecutionExclusionFileFilter\"",
@@ -214,6 +215,7 @@ public class XdocsPagesTest {
         // can't process non-existent examples, or out of context snippets
         if (!code.contains("com.mycompany") && !code.contains("checkstyle-packages")
                 && !code.contains("MethodLimit") && !code.contains("<suppress ")
+                && !code.contains("<suppress-xpath ")
                 && !code.contains("<import-control ")
                 && !unserializedSource.startsWith("<property ")
                 && !unserializedSource.startsWith("<taskdef ")) {
@@ -291,7 +293,7 @@ public class XdocsPagesTest {
     }
 
     /**
-     * Test contains asserts in callstack, but idea does not see them
+     * Test contains asserts in callstack, but idea does not see them.
      * @noinspection JUnitTestMethodWithNoAssertions
      */
     @Test
@@ -449,6 +451,9 @@ public class XdocsPagesTest {
         if (hasParentModule(sectionName)) {
             if (AbstractJavadocCheck.class.isAssignableFrom(clss)) {
                 properties.removeAll(JAVADOC_CHECK_PROPERTIES);
+
+                // override
+                properties.add("violateExecutionOnNonTightHtml");
             }
             else if (AbstractCheck.class.isAssignableFrom(clss)) {
                 properties.removeAll(CHECK_PROPERTIES);
@@ -644,7 +649,14 @@ public class XdocsPagesTest {
                         .replaceAll("\\s+", " ").trim());
     }
 
-    /** @noinspection IfStatementWithTooManyBranches */
+    /**
+     * Get's the name of the bean property's type for the class.
+     * @param clss The bean property's defined type.
+     * @param instance The class instance to work with.
+     * @param propertyName The property name to work with.
+     * @return String form of property's type.
+     * @noinspection IfStatementWithTooManyBranches
+     */
     private static String getModulePropertyExpectedTypeName(Class<?> clss, Object instance,
             String propertyName) {
         final String instanceName = instance.getClass().getSimpleName();

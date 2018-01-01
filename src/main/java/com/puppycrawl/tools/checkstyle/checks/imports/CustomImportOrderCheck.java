@@ -30,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
@@ -436,7 +437,6 @@ public class CustomImportOrderCheck extends AbstractCheck {
      *        user value.
      */
     public final void setCustomImportOrderRules(final String inputCustomImportOrder) {
-        customImportOrderRules.clear();
         for (String currentState : GROUP_SEPARATOR_PATTERN.split(inputCustomImportOrder)) {
             addRulesToList(currentState);
         }
@@ -636,7 +636,7 @@ public class CustomImportOrderCheck extends AbstractCheck {
                 }
                 if (SPECIAL_IMPORTS_RULE_GROUP.equals(group)) {
                     bestMatch = findBetterPatternMatch(importPath,
-                            SPECIAL_IMPORTS_RULE_GROUP, specialImportsRegExp, bestMatch);
+                            group, specialImportsRegExp, bestMatch);
                 }
             }
         }
@@ -691,13 +691,16 @@ public class CustomImportOrderCheck extends AbstractCheck {
         final String separator = "\\.";
         final String[] import1Tokens = import1.split(separator);
         final String[] import2Tokens = import2.split(separator);
-        for (int i = 0; i < import1Tokens.length && i != import2Tokens.length; i++) {
+        for (int i = 0; i != import1Tokens.length && i != import2Tokens.length; i++) {
             final String import1Token = import1Tokens[i];
             final String import2Token = import2Tokens[i];
             result = import1Token.compareTo(import2Token);
             if (result != 0) {
                 break;
             }
+        }
+        if (result == 0) {
+            result = Integer7.compare(import1Tokens.length, import2Tokens.length);
         }
         return result;
     }

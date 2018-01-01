@@ -58,6 +58,7 @@ public class NoWhitespaceAfterCheckTest
             "289:6: " + getCheckMessage(MSG_KEY, "@"),
             "290:6: " + getCheckMessage(MSG_KEY, "@"),
             "291:6: " + getCheckMessage(MSG_KEY, "@"),
+            "296:27: " + getCheckMessage(MSG_KEY, "int"),
         };
         verify(checkConfig, getPath("InputNoWhitespaceAfter.java"), expected);
     }
@@ -107,7 +108,7 @@ public class NoWhitespaceAfterCheckTest
             "39:11: " + getCheckMessage(MSG_KEY, "ar"),
             "39:24: " + getCheckMessage(MSG_KEY, "int"),
             "40:16: " + getCheckMessage(MSG_KEY, "int"),
-            "43:63: " + getCheckMessage(MSG_KEY, "getLongMultArray"),
+            "43:64: " + getCheckMessage(MSG_KEY, "getLongMultiArray"),
             "47:26: " + getCheckMessage(MSG_KEY, "}"),
             "49:22: " + getCheckMessage(MSG_KEY, "int"),
             "50:24: " + getCheckMessage(MSG_KEY, "]"),
@@ -164,6 +165,7 @@ public class NoWhitespaceAfterCheckTest
             "94:45: " + getCheckMessage(MSG_KEY, ")"),
             "97:41: " + getCheckMessage(MSG_KEY, "Object"),
             "100:43: " + getCheckMessage(MSG_KEY, "]"),
+            "108:31: " + getCheckMessage(MSG_KEY, "Object"),
         };
         verify(checkConfig, getPath("InputNoWhitespaceAfterArrayDeclarations2.java"), expected);
     }
@@ -234,7 +236,7 @@ public class NoWhitespaceAfterCheckTest
     }
 
     /**
-     * Creates MOCK lexical token and returns AST node for this token
+     * Creates MOCK lexical token and returns AST node for this token.
      * @param tokenType type of token
      * @param tokenText text of token
      * @param tokenFileName file name of token

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.puppycrawl.tools.checkstyle.api;
+package com.puppycrawl.tools.checkstyle;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Oliver Burn
  * @noinspection ThisEscapedInObjectConstruction
  */
-public abstract class AbstractLoader
+public class XmlLoader
     extends DefaultHandler {
     /** Maps public id to resolve to resource name for the DTD. */
     private final Map<String, String> publicIdToResourceNameMap;
@@ -62,7 +62,7 @@ public abstract class AbstractLoader
      * @throws SAXException if an error occurs
      * @throws ParserConfigurationException if an error occurs
      */
-    protected AbstractLoader(String publicId, String dtdResourceName)
+    protected XmlLoader(String publicId, String dtdResourceName)
             throws SAXException, ParserConfigurationException {
         this(new HashMap<String, String>(1));
         publicIdToResourceNameMap.put(publicId, dtdResourceName);
@@ -74,7 +74,7 @@ public abstract class AbstractLoader
      * @throws SAXException if an error occurs
      * @throws ParserConfigurationException if an error occurs
      */
-    protected AbstractLoader(Map<String, String> publicIdToResourceNameMap)
+    protected XmlLoader(Map<String, String> publicIdToResourceNameMap)
             throws SAXException, ParserConfigurationException {
         this.publicIdToResourceNameMap = new HashMap<String, String>(publicIdToResourceNameMap);
         final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -145,9 +145,9 @@ public abstract class AbstractLoader
         }
 
         /**
-         * Configures SAXParserFactory with features requered
-         * for exectution on very secured environments.
-         * @param factory factory to be configured with spectial features
+         * Configures SAXParserFactory with features required
+         * for execution on very secured environments.
+         * @param factory factory to be configured with special features
          * @throws SAXException if an error occurs
          * @throws ParserConfigurationException if an error occurs
          */

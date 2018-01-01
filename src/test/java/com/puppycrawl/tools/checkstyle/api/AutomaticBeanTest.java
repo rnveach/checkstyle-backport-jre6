@@ -42,13 +42,13 @@ public class AutomaticBeanTest {
     public void testConfigureNoSuchAttribute() {
         final TestBean testBean = new TestBean();
         final DefaultConfiguration conf = new DefaultConfiguration("testConf");
-        conf.addAttribute("NonExisting", "doesn't matter");
+        conf.addAttribute("NonExistent", "doesn't matter");
         try {
             testBean.configure(conf);
             fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
-            final String expected = "Property 'NonExisting' in module ";
+            final String expected = "Property 'NonExistent' in module ";
             assertNull("Exceptions cause should be null", ex.getCause());
             assertTrue("Invalid exception message, should start with: " + expected,
                     ex.getMessage().startsWith(expected));
@@ -207,6 +207,11 @@ public class AutomaticBeanTest {
 
         public void setExceptionalMethod(String value) {
             throw new IllegalStateException(privateField + "," + wrong + "," + val + "," + value);
+        }
+
+        @Override
+        protected void finishLocalSetup() throws CheckstyleException {
+            // No code by default
         }
 
     }

@@ -315,7 +315,7 @@ public class DetailASTTest extends AbstractModuleTestSupport {
     }
 
     /**
-     * There are asserts in checkNode, but idea does not see them
+     * There are asserts in checkNode, but idea does not see them.
      * @noinspection JUnitTestMethodWithNoAssertions
      */
     @Test

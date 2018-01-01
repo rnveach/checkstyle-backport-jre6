@@ -191,18 +191,19 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
         final ParseTreeTablePresentation parseTree = new ParseTreeTablePresentation(null);
         int index = 0;
         while (ithChild != null) {
-            Assert.assertEquals("Invalud child index",
+            Assert.assertEquals("Invalid child index",
                     index, parseTree.getIndexOfChild(tree, ithChild));
             ithChild = ithChild.getNextSibling();
             index++;
         }
 
-        Assert.assertEquals("Invalud child index",
+        Assert.assertEquals("Invalid child index",
                 -1, parseTree.getIndexOfChild(tree, new DetailAST()));
     }
 
     /**
-     * The path to class name in InputJavadocAttributesAndMethods.java
+     * The path to class name in InputJavadocAttributesAndMethods.java.
+     * <pre>
      * CLASS_DEF
      *  - MODIFIERS
      *  - Comment node
@@ -210,6 +211,7 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
      *  - IDENT -> this is the node that holds the class name
      *  Line number 4 - first three lines are taken by javadoc
      *  Column 6 - first five columns taken by 'class '
+     *  </pre>
      */
     @Test
     public void testGetValueAt() {

@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class VariableDeclarationUsageDistanceCheckTest extends
         AbstractModuleTestSupport {
@@ -76,6 +77,7 @@ public class VariableDeclarationUsageDistanceCheckTest extends
             "891: " + getCheckMessage(MSG_KEY, "a", 4, 1),
             "901: " + getCheckMessage(MSG_KEY, "a", 4, 1),
             "967: " + getCheckMessage(MSG_KEY, "a", 4, 1),
+            "978: " + getCheckMessage(MSG_KEY, "a", 2, 1),
         };
         verify(checkConfig, getPath("InputVariableDeclarationUsageDistance.java"), expected);
     }
@@ -170,6 +172,7 @@ public class VariableDeclarationUsageDistanceCheckTest extends
             "505: " + getCheckMessage(MSG_KEY, "files", 2, 1),
             "540: " + getCheckMessage(MSG_KEY, "id", 2, 1),
             "542: " + getCheckMessage(MSG_KEY, "parentId", 4, 1),
+            "978: " + getCheckMessage(MSG_KEY, "a", 2, 1),
         };
         verify(checkConfig, getPath("InputVariableDeclarationUsageDistance.java"), expected);
     }
@@ -239,7 +242,27 @@ public class VariableDeclarationUsageDistanceCheckTest extends
             "542: " + getCheckMessage(MSG_KEY_EXT, "parentId", 4, 3),
         };
 
-        createChecker(checkConfig);
         verify(checkConfig, getPath("InputVariableDeclarationUsageDistance.java"), expected);
+    }
+
+    @Test
+    public void testAnonymousClass() throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(VariableDeclarationUsageDistanceCheck.class);
+        final String[] expected = {
+            "9: " + getCheckMessage(MSG_KEY_EXT, "prefs", 4, 3),
+        };
+
+        verify(checkConfig, getPath("InputVariableDeclarationUsageDistanceAnonymous.java"),
+                expected);
+    }
+
+    @Test
+    public void testLabels() throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(VariableDeclarationUsageDistanceCheck.class);
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getPath("InputVariableDeclarationUsageDistanceLabels.java"), expected);
     }
 }

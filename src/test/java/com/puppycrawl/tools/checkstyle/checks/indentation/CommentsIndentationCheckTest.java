@@ -31,12 +31,6 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-/**
-*
-* @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
-* @author <a href="mailto:andreyselkin@gmail.com">Andrei Selkin</a>
-*
-*/
 public class CommentsIndentationCheckTest extends AbstractModuleTestSupport {
 
     @Override
@@ -221,7 +215,7 @@ public class CommentsIndentationCheckTest extends AbstractModuleTestSupport {
         }
         catch (IllegalArgumentException ex) {
             final String msg = ex.getMessage();
-            Assert.assertEquals("Invalid excpeton message",
+            Assert.assertEquals("Invalid exception message",
                     "Unexpected token type: methodStub", msg);
         }
     }

@@ -56,7 +56,7 @@ public class PackageObjectFactory implements ModuleFactory {
      */
     public enum ModuleLoadOption {
         /**
-         * Searching from registred checkstyle modules and from packages given in countructor.
+         * Searching from registered checkstyle modules and from packages given in constructor.
          **/
         SEARCH_REGISTERED_PACKAGES,
         /**
@@ -74,7 +74,7 @@ public class PackageObjectFactory implements ModuleFactory {
     public static final String UNABLE_TO_INSTANTIATE_EXCEPTION_MESSAGE =
             "PackageObjectFactory.unableToInstantiateExceptionMessage";
 
-    /** Exception message when there is ambigugous module name in config file. */
+    /** Exception message when there is ambiguous module name in config file. */
     public static final String AMBIGUOUS_MODULE_NAME_EXCEPTION_MESSAGE =
             "PackageObjectFactory.ambiguousModuleNameExceptionMessage";
 
@@ -376,7 +376,7 @@ public class PackageObjectFactory implements ModuleFactory {
     }
 
     /**
-     * Searching to class with given name (or name concatinated with &quot;Check&quot;) in existing
+     * Searching to class with given name (or name concatenated with &quot;Check&quot;) in existing
      * packages. Returns instance if class found or, otherwise, null.
      * @param name the name of a class.
      * @return the {@code Object} created by loader.
@@ -845,6 +845,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".filters.IntRangeFilter");
         NAME_TO_FULL_MODULE_NAME.put("SeverityMatchFilter",
                 BASE_PACKAGE + ".filters.SeverityMatchFilter");
+        NAME_TO_FULL_MODULE_NAME.put("SuppressWithPlainTextCommentFilter",
+            BASE_PACKAGE + ".filters.SuppressWithPlainTextCommentFilter");
         NAME_TO_FULL_MODULE_NAME.put("SuppressionCommentFilter",
                 BASE_PACKAGE + ".filters.SuppressionCommentFilter");
         NAME_TO_FULL_MODULE_NAME.put("SuppressionFilter",

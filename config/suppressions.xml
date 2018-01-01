@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE suppressions PUBLIC
-    "-//Puppy Crawl//DTD Suppressions 1.1//EN"
-    "http://checkstyle.sourceforge.net/dtds/suppressions_1_1.dtd">
+    "-//Puppy Crawl//DTD Suppressions 1.2//EN"
+    "http://checkstyle.sourceforge.net/dtds/suppressions_1_2.dtd">
 
 <suppressions>
     <suppress checks="FileLength"
@@ -21,14 +21,12 @@
               files="AbstractClassNameCheck.java"/>
     <!-- test should be named as their main class -->
     <suppress checks="AbstractClassNameCheck"
-              files="AbstractCheckTest.java|AbstractClassNameCheckTest.java|AbstractTypeAwareCheckTest.java|AbstractJavadocCheckTest.java|AbstractViolationReporterTest.java|AbstractFileSetCheckTest.java|AbstractLoaderTest.java|AbstractNodeTest.java"/>
+              files="AbstractCheckTest.java|AbstractClassNameCheckTest.java|AbstractTypeAwareCheckTest.java|AbstractJavadocCheckTest.java|AbstractViolationReporterTest.java|AbstractFileSetCheckTest.java|AbstractNodeTest.java"/>
 
     <!-- Tone down the checking for test code -->
-    <suppress checks="CyclomaticComplexity" files="[\\/]XdocsPagesTest\.java"/>
-    <suppress checks="NPathComplexity" files="[\\/]XdocsPagesTest\.java"/>
     <suppress checks="IllegalCatch" files="[\\/]internal[\\/].*[\\/]\w+Util\.java"/>
     <suppress checks="EmptyBlock" files=".*[\\/]src[\\/]test[\\/]"/>
-    <suppress checks="Javadoc" files=".*[\\/]src[\\/](test|it)[\\/]"/>
+    <suppress message="Missing a Javadoc comment|Missing package-info.java file|Expected @throws tag for|missing an @author tag" files=".*[\\/]src[\\/](test|it)[\\/]"/>
     <suppress checks="MagicNumber" files=".*[\\/]src[\\/](test|it)[\\/]"/>
     <suppress checks="AvoidStaticImport" files=".*[\\/]src[\\/](test|it)[\\/]"/>
     <suppress checks="ClassDataAbstractionCoupling" files="[\\/]IndentationCheckTest.java$|[\\/]SuppressWithNearbyCommentFilterTest.java$|[\\/]SuppressionCommentFilterTest.java|[\\/]DetailASTTest.java$"/>
@@ -84,12 +82,6 @@
 
     <!-- Should be fixed after moving https://github.com/sevntu-checkstyle/sevntu.checkstyle/blob/master/sevntu-checks/src/main/java/com/github/sevntu/checkstyle/checks/coding/ReturnCountExtendedCheck.java into the main repo, to allow skip guard sentences(or by topLinesToIgnoreCount) -->
     <suppress checks="ReturnCount" files="(ConfigurationLoader|LambdaHandler)\.java"/>
-
-    <!-- Suppressions from PMD configuration-->
-    <!-- JavadocMethodCheck, JavadocStyleCheck, JavadocUtils.getJavadocTags() - deprecated -->
-    <suppress checks="CyclomaticComplexity" files="JavadocMethodCheck\.java"/>
-    <suppress checks="CyclomaticComplexity" files="JavadocStyleCheck\.java"/>
-    <suppress checks="CyclomaticComplexity" files="CustomImportOrderCheck\.java"/>
 
     <!-- HandlerFactory crosses allowed limit for executable statements -->
     <suppress checks="ExecutableStatementCount" files="HandlerFactory\.java"/>

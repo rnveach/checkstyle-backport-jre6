@@ -251,7 +251,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
             case TokenTypes.SLIST:
                 // -@cs[MoveVariableInsideIf] assignment value is modified later so it can't be
                 // moved
-                final Deque<DetailAST> prevScopeUnitializedVariableData =
+                final Deque<DetailAST> prevScopeUninitializedVariableData =
                     prevScopeUninitializedVariables.peek();
                 boolean containsBreak = false;
                 if (ast.getParent().getType() != TokenTypes.CASE_GROUP
@@ -263,7 +263,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
                 }
                 final DetailAST parent = ast.getParent();
                 if (containsBreak || shouldUpdateUninitializedVariables(parent)) {
-                    updateAllUninitializedVariables(prevScopeUnitializedVariableData);
+                    updateAllUninitializedVariables(prevScopeUninitializedVariableData);
                 }
                 updateCurrentScopeAssignedVariables();
                 break;
@@ -348,24 +348,24 @@ public class FinalLocalVariableCheck extends AbstractCheck {
      */
     private void storePrevScopeUninitializedVariableData() {
         final ScopeData scopeData = scopeStack.peek();
-        final Deque<DetailAST> prevScopeUnitializedVariableData =
+        final Deque<DetailAST> prevScopeUninitializedVariableData =
                 new ArrayDeque<DetailAST>();
         for (DetailAST variable : scopeData.uninitializedVariables) {
-            prevScopeUnitializedVariableData.push(variable);
+            prevScopeUninitializedVariableData.push(variable);
         }
-        prevScopeUninitializedVariables.push(prevScopeUnitializedVariableData);
+        prevScopeUninitializedVariables.push(prevScopeUninitializedVariableData);
     }
 
     /**
      * Update current scope data uninitialized variable according to the whole scope data.
-     * @param prevScopeUnitializedVariableData variable for previous stack of uninitialized
+     * @param prevScopeUninitializedVariableData variable for previous stack of uninitialized
      *     variables
+     * @noinspection MethodParameterNamingConvention
      */
-    // -@cs[CyclomaticComplexity] Breaking apart will damage encapsulation.
     private void updateAllUninitializedVariables(
-            Deque<DetailAST> prevScopeUnitializedVariableData) {
+            Deque<DetailAST> prevScopeUninitializedVariableData) {
         // Check for only previous scope
-        updateUninitializedVariables(prevScopeUnitializedVariableData);
+        updateUninitializedVariables(prevScopeUninitializedVariableData);
         // Check for rest of the scope
         for (Deque<DetailAST> variable : prevScopeUninitializedVariables) {
             updateUninitializedVariables(variable);
@@ -374,13 +374,13 @@ public class FinalLocalVariableCheck extends AbstractCheck {
 
     /**
      * Update current scope data uninitialized variable according to the specific scope data.
-     * @param scopeUnitializedVariableData variable for specific stack of uninitialized variables
+     * @param scopeUninitializedVariableData variable for specific stack of uninitialized variables
      */
-    private void updateUninitializedVariables(Deque<DetailAST> scopeUnitializedVariableData) {
+    private void updateUninitializedVariables(Deque<DetailAST> scopeUninitializedVariableData) {
         final Iterator<DetailAST> iterator = currentScopeAssignedVariables.peek().iterator();
         while (iterator.hasNext()) {
             final DetailAST assignedVariable = iterator.next();
-            for (DetailAST variable : scopeUnitializedVariableData) {
+            for (DetailAST variable : scopeUninitializedVariableData) {
                 for (ScopeData scopeData : scopeStack) {
                     final FinalVariableCandidate candidate =
                         scopeData.scope.get(variable.getText());

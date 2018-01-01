@@ -78,7 +78,7 @@ public final class ModuleReflectionUtils {
      */
     public static boolean isCheckstyleModule(Class<?> clazz) {
         return isValidCheckstyleClass(clazz)
-            && (isCheckstyleCheck(clazz)
+            && (isCheckstyleTreeWalkerCheck(clazz)
                     || isFileSetModule(clazz)
                     || isFilterModule(clazz)
                     || isFileFilterModule(clazz)
@@ -116,12 +116,13 @@ public final class ModuleReflectionUtils {
     }
 
     /**
-     * Checks whether a class may be considered as the checkstyle check.
+     * Checks whether a class may be considered as the checkstyle check
+     * which has TreeWalker as a parent.
      * Checkstyle's checks are classes which implement 'AbstractCheck' interface.
      * @param clazz class to check.
      * @return true if a class may be considered as the checkstyle check.
      */
-    public static boolean isCheckstyleCheck(Class<?> clazz) {
+    public static boolean isCheckstyleTreeWalkerCheck(Class<?> clazz) {
         return AbstractCheck.class.isAssignableFrom(clazz);
     }
 

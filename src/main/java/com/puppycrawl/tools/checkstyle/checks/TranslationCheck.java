@@ -45,6 +45,7 @@ import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
@@ -131,19 +132,19 @@ public class TranslationCheck extends AbstractFileSetCheck {
     private static final String DEFAULT_TRANSLATION_REGEXP = "^.+\\..+$";
 
     /**
-     * Regexp pattern for bundles names wich end with language code, followed by country code and
+     * Regexp pattern for bundles names which end with language code, followed by country code and
      * variant suffix. For example, messages_es_ES_UNIX.properties.
      */
     private static final Pattern LANGUAGE_COUNTRY_VARIANT_PATTERN =
         CommonUtils.createPattern("^.+\\_[a-z]{2}\\_[A-Z]{2}\\_[A-Za-z]+\\..+$");
     /**
-     * Regexp pattern for bundles names wich end with language code, followed by country code
+     * Regexp pattern for bundles names which end with language code, followed by country code
      * suffix. For example, messages_es_ES.properties.
      */
     private static final Pattern LANGUAGE_COUNTRY_PATTERN =
         CommonUtils.createPattern("^.+\\_[a-z]{2}\\_[A-Z]{2}\\..+$");
     /**
-     * Regexp pattern for bundles names wich end with language code suffix.
+     * Regexp pattern for bundles names which end with language code suffix.
      * For example, messages_es.properties.
      */
     private static final Pattern LANGUAGE_PATTERN =
@@ -325,9 +326,11 @@ public class TranslationCheck extends AbstractFileSetCheck {
      * @param fileName file name.
      */
     private void logMissingTranslation(String filePath, String fileName) {
+        final MessageDispatcher dispatcher = getMessageDispatcher();
+        dispatcher.fireFileStarted(filePath);
         log(0, MSG_KEY_MISSING_TRANSLATION_FILE, fileName);
         fireErrors(filePath);
-        getMessageDispatcher().fireFileFinished(filePath);
+        dispatcher.fireFileFinished(filePath);
     }
 
     /**
@@ -454,6 +457,9 @@ public class TranslationCheck extends AbstractFileSetCheck {
     private void checkFilesForConsistencyRegardingTheirKeys(SetMultimap<File, String> fileKeys,
                                                             Set<String> keysThatMustExist) {
         for (File currentFile : fileKeys.keySet()) {
+            final MessageDispatcher dispatcher = getMessageDispatcher();
+            final String path = currentFile.getPath();
+            dispatcher.fireFileStarted(path);
             final Set<String> currentFileKeys = fileKeys.get(currentFile);
             final Set<String> missingKeys = Sets.difference(keysThatMustExist, currentFileKeys);
             if (!missingKeys.isEmpty()) {
@@ -461,9 +467,8 @@ public class TranslationCheck extends AbstractFileSetCheck {
                     log(0, MSG_KEY, key);
                 }
             }
-            final String path = currentFile.getPath();
             fireErrors(path);
-            getMessageDispatcher().fireFileFinished(path);
+            dispatcher.fireFileFinished(path);
         }
     }
 

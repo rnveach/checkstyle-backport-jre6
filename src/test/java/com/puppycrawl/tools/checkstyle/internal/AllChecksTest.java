@@ -321,8 +321,6 @@ public class AllChecksTest extends AbstractModuleTestSupport {
     public void testAllModulesAreReferencedInConfigFile() throws Exception {
         final Set<String> modulesReferencedInConfig = CheckUtil.getConfigCheckStyleModules();
         final Set<String> moduleNames = CheckUtil.getSimpleNames(CheckUtil.getCheckstyleModules());
-        //Issue: https://github.com/checkstyle/checkstyle/issues/4421
-        moduleNames.remove("SuppressionXpathFilter");
 
         for (String check : moduleNames) {
             if (!modulesReferencedInConfig.contains(check)) {
@@ -421,8 +419,6 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         // these are documented on non-'config_' pages
         checkstyleModulesNames.remove("TreeWalker");
         checkstyleModulesNames.remove("Checker");
-        //Issue: https://github.com/checkstyle/checkstyle/issues/4421
-        checkstyleModulesNames.remove("SuppressionXpathFilter");
 
         for (String moduleName : checkstyleModulesNames) {
             if (!modulesNamesWhichHaveXdocs.contains(moduleName)) {
@@ -438,8 +434,6 @@ public class AllChecksTest extends AbstractModuleTestSupport {
     public void testAllCheckstyleModulesInCheckstyleConfig() throws Exception {
         final Set<String> configChecks = CheckUtil.getConfigCheckStyleModules();
         final Set<String> moduleNames = CheckUtil.getSimpleNames(CheckUtil.getCheckstyleModules());
-        //Issue: https://github.com/checkstyle/checkstyle/issues/4421
-        moduleNames.remove("SuppressionXpathFilter");
 
         for (String moduleName : moduleNames) {
             Assert.assertTrue("checkstyle_checks.xml is missing module: " + moduleName,
@@ -541,6 +535,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
      * Checks that an array is a subset of other array.
      * @param array to check whether it is a subset.
      * @param arrayToCheckIn array to check in.
+     * @return {@code true} if all elements in {@code array} are in {@code arrayToCheckIn}.
      */
     private static boolean isSubset(int[] array, int... arrayToCheckIn) {
         Arrays.sort(arrayToCheckIn);

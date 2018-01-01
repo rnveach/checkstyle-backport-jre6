@@ -28,10 +28,6 @@ import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-/**
- * The unit-test for the {@code NestedForDepthCheck}-checkstyle enhancement.
- * @see NestedForDepthCheck
- */
 public class NestedForDepthCheckTest extends AbstractModuleTestSupport {
     @Override
     protected String getPackageLocation() {
@@ -56,6 +52,7 @@ public class NestedForDepthCheckTest extends AbstractModuleTestSupport {
         final String[] expected = {
             "43:11: " + getCheckMessage(MSG_KEY, 3, 2),
             "44:13: " + getCheckMessage(MSG_KEY, 4, 2),
+            "47:13: " + getCheckMessage(MSG_KEY, 4, 2),
         };
 
         verify(checkConfig, getPath("InputNestedForDepth.java"),

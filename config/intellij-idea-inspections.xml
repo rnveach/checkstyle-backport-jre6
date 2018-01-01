@@ -3,8 +3,7 @@
     <option name="myName" value="Checkstyle" />
     <inspection_tool class="AbsoluteAlignmentInUserInterface" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="AbstractBeanReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true" />
-    <!-- till https://github.com/checkstyle/checkstyle/issues/4716 -->
-    <inspection_tool class="AbstractClassExtendsConcreteClass" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AbstractClassExtendsConcreteClass" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="AbstractClassNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
         <option name="m_regex" value="[A-Z][A-Za-z\d]*|Check" />
         <option name="m_minLength" value="5" />
@@ -2091,8 +2090,6 @@ isolated classes and we cannot put them to separate package as it will affect us
                      See https://github.com/checkstyle/checkstyle/issues/2285-->
                 <option value="ProhibitedExceptionThrown" />
                 <option value="MismatchedQueryAndUpdateOfCollection" />
-                <!-- Till https://github.com/checkstyle/checkstyle/issues/3066 -->
-                <option value="ProhibitedExceptionCaught" />
                 <!-- No way to split apart huge if/else branches in test. -->
                 <option value="IfStatementWithTooManyBranches" />
                 <!-- we have to catch Exception in Checker and rethrow it -->

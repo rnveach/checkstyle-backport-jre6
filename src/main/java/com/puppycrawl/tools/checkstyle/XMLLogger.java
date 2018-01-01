@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
@@ -81,7 +82,7 @@ public class XMLLogger
      * Sets the output to a defined stream.
      * @param outputStream the stream to write logs to.
      * @param closeStream close oS in auditFinished
-     * @deprecated in order to fullfil demands of BooleanParameter IDEA check.
+     * @deprecated in order to fulfill demands of BooleanParameter IDEA check.
      * @noinspection BooleanParameter
      */
     @Deprecated
@@ -102,6 +103,11 @@ public class XMLLogger
     }
 
     @Override
+    protected void finishLocalSetup() throws CheckstyleException {
+        // No code by default
+    }
+
+    @Override
     public void auditStarted(AuditEvent event) {
         writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
@@ -115,10 +121,6 @@ public class XMLLogger
 
     @Override
     public void auditFinished(AuditEvent event) {
-        for (Map.Entry<String, FileMessages> entry : fileMessages.entrySet()) {
-            writeFileMessages(entry.getKey(), entry.getValue());
-        }
-
         writer.println("</checkstyle>");
         if (closeStream) {
             writer.close();
@@ -182,24 +184,20 @@ public class XMLLogger
     public void addError(AuditEvent event) {
         if (event.getSeverityLevel() != SeverityLevel.IGNORE) {
             final String fileName = event.getFileName();
-            if (fileName == null) {
+            if (fileName == null || !fileMessages.containsKey(fileName)) {
                 synchronized (writerLock) {
                     writeFileError(event);
                 }
             }
             else {
-                FileMessages messages = fileMessages.get(fileName);
-                if (messages == null) {
-                    messages = new FileMessages();
-                    fileMessages.put(fileName, messages);
-                }
+                final FileMessages messages = fileMessages.get(fileName);
                 messages.addError(event);
             }
         }
     }
 
     /**
-     * Outputs the given envet to the writer.
+     * Outputs the given event to the writer.
      * @param event An event to print.
      */
     private void writeFileError(AuditEvent event) {
@@ -226,17 +224,13 @@ public class XMLLogger
     @Override
     public void addException(AuditEvent event, Throwable throwable) {
         final String fileName = event.getFileName();
-        if (fileName == null) {
+        if (fileName == null || !fileMessages.containsKey(fileName)) {
             synchronized (writerLock) {
                 writeException(throwable);
             }
         }
         else {
-            FileMessages messages = fileMessages.get(fileName);
-            if (messages == null) {
-                messages = new FileMessages();
-                fileMessages.put(fileName, messages);
-            }
+            final FileMessages messages = fileMessages.get(fileName);
             messages.addException(throwable);
         }
     }

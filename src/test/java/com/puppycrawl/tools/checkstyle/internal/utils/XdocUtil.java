@@ -38,7 +38,10 @@ import org.xml.sax.SAXException;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
-/** @noinspection ClassOnlyUsedInOnePackage */
+/**
+ * XdocUtil.
+ * @noinspection ClassOnlyUsedInOnePackage
+ */
 public final class XdocUtil {
     public static final String DIRECTORY_PATH = "src/xdocs";
 

@@ -54,9 +54,6 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
-/**
- * JUnit tests for Unique Properties check.
- */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Closeables.class)
 public class UniquePropertiesCheckTest extends AbstractModuleTestSupport {
@@ -95,7 +92,7 @@ public class UniquePropertiesCheckTest extends AbstractModuleTestSupport {
 
     /**
      * Pitest requires all closes of streams and readers to be verified. Using PowerMock
-     * is almost only posibility to check it without rewriting production code.
+     * is almost only possibility to check it without rewriting production code.
      *
      * @throws Exception when code tested throws some exception
      */

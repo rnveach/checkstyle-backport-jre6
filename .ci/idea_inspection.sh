@@ -29,7 +29,7 @@ if [[ -z $IDEA_PATH ]]; then
 fi
 
 #Execute compilation of Checkstyle to generate all source files
-mvn compile
+mvn -e compile
 
 mkdir -p $RESULTS_DIR
 rm -rf $RESULTS_DIR/*
@@ -42,7 +42,7 @@ echo $IDEA_OUTPUT
 if [[ $IDEA_OUTPUT == "Already running" ]]; then
     echo "It might be that Intellij Idea is running, please close it."
     exit 1;
-else
+fi
 
 echo "Checking results ..."
 if [[ $(grep -R "<problems" $RESULTS_DIR/ | cat | wc -l ) > 0 ]]; then

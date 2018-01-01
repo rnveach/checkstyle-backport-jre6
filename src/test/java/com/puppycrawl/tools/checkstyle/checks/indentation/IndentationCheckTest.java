@@ -1750,6 +1750,39 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testMethodPrecedeByAnnotationsWithParameterOnSeparateLine() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
+        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addAttribute("basicOffset", "2");
+        checkConfig.addAttribute("braceAdjustment", "0");
+        checkConfig.addAttribute("caseIndent", "2");
+        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        checkConfig.addAttribute("arrayInitIndent", "2");
+        final String fileName =
+            getPath("InputIndentationMethodPrecededByAnnotationWithParameterOnSeparateLine.java");
+        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        verify(checkConfig, fileName, expected);
+    }
+
+    @Test
+    public void testAnnotationIncorrect() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
+        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addAttribute("basicOffset", "4");
+        checkConfig.addAttribute("braceAdjustment", "0");
+        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        final String fileName =
+            getPath("InputIndentationAnnotationIncorrect.java");
+        final String[] expected = {
+            "11: " + getCheckMessage(MSG_ERROR, "(", 4, 8),
+            "14: " + getCheckMessage(MSG_ERROR, "(", 8, 12),
+            "19: " + getCheckMessage(MSG_ERROR, "(", 4, 8),
+        };
+        verify(checkConfig, fileName, expected);
+    }
+
+    @Test
     public void testInputAnnotationScopeIndentationCheck() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
         checkConfig.addAttribute("tabWidth", "4");
@@ -1873,10 +1906,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
      * {@link IndentationCheck#MSG_CHILD_ERROR}, {@link IndentationCheck#MSG_CHILD_ERROR_MULTI},
      * {@link IndentationCheck#MSG_CHILD_ERROR_MULTI} are in appropriate order.
      *
-     * In other tests, the argument 0 and text before it are chopped off and only the rest of
+     * <p>In other tests, the argument 0 and text before it are chopped off and only the rest of
      * messages are verified. Therefore, the argument 0 is required to be the first argument in
      * the messages above. If we update the messages in the future, it is required to keep the
-     * arguments in appropriate order to ensure other tests will work.
+     * arguments in appropriate order to ensure other tests will work.</p>
      *
      * @see IndentComment#getExpectedMessagePostfix(String)
      */

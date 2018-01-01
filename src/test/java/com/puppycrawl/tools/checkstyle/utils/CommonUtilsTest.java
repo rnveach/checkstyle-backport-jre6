@@ -92,6 +92,13 @@ public class CommonUtilsTest {
     }
 
     @Test
+    public void testCreatePattern() {
+        assertEquals("invalid pattern", "Test", CommonUtils.createPattern("Test").pattern());
+        assertEquals("invalid pattern", ".*Pattern.*", CommonUtils.createPattern(".*Pattern.*")
+                .pattern());
+    }
+
+    @Test
     public void testBadRegex() {
         try {
             CommonUtils.createPattern("[");
@@ -125,14 +132,14 @@ public class CommonUtilsTest {
         assertEquals("Invalid line number", 0, testCommentBlock.getLineNo());
 
         final DetailAST contentCommentBlock = testCommentBlock.getFirstChild();
-        assertEquals("Invalid tiken type",
+        assertEquals("Invalid token type",
                 TokenTypes.COMMENT_CONTENT, contentCommentBlock.getType());
         assertEquals("Invalid text", "*test_comment", contentCommentBlock.getText());
         assertEquals("Invalid line number", 0, contentCommentBlock.getLineNo());
         assertEquals("Invalid column number", -1, contentCommentBlock.getColumnNo());
 
         final DetailAST endCommentBlock = contentCommentBlock.getNextSibling();
-        assertEquals("Invalid tiken type", TokenTypes.BLOCK_COMMENT_END, endCommentBlock.getType());
+        assertEquals("Invalid token type", TokenTypes.BLOCK_COMMENT_END, endCommentBlock.getType());
         assertEquals("Invalid text", "*/", endCommentBlock.getText());
     }
 
@@ -143,6 +150,8 @@ public class CommonUtilsTest {
         assertFalse("Invalid file extension",
             CommonUtils.matchesFileExtension(pdfFile, fileExtensions));
         assertTrue("Invalid file extension",
+            CommonUtils.matchesFileExtension(pdfFile));
+        assertTrue("Invalid file extension",
             CommonUtils.matchesFileExtension(pdfFile, (String[]) null));
         final File javaFile = new File("file.java");
         assertTrue("Invalid file extension",
@@ -150,6 +159,20 @@ public class CommonUtilsTest {
         final File emptyExtensionFile = new File("file.");
         assertTrue("Invalid file extension",
             CommonUtils.matchesFileExtension(emptyExtensionFile, ""));
+        assertFalse("Invalid file extension",
+            CommonUtils.matchesFileExtension(pdfFile, ".noMatch"));
+        assertTrue("Invalid file extension",
+            CommonUtils.matchesFileExtension(pdfFile, ".pdf"));
+    }
+
+    @Test
+    public void testHasWhitespaceBefore() {
+        assertTrue("Invalid result",
+            CommonUtils.hasWhitespaceBefore(0, "a"));
+        assertTrue("Invalid result",
+            CommonUtils.hasWhitespaceBefore(4, "    a"));
+        assertFalse("Invalid result",
+            CommonUtils.hasWhitespaceBefore(5, "    a"));
     }
 
     @Test
@@ -206,7 +229,7 @@ public class CommonUtilsTest {
     }
 
     @Test
-    public void testGetNonExistingConstructor() {
+    public void testGetNonExistentConstructor() {
         try {
             CommonUtils.getConstructor(Math.class);
             fail("IllegalStateException is expected");
@@ -269,10 +292,36 @@ public class CommonUtilsTest {
     }
 
     @Test
-    public void testGetFileExtensionForFileNameWithoutExtension() {
-        final String fileNameWithoutExtension = "file";
-        final String extension = CommonUtils.getFileExtension(fileNameWithoutExtension);
-        assertEquals("Invalid extension", "", extension);
+    public void testFillTemplateWithStringsByRegexp() {
+        assertEquals("invalid result", "template", CommonUtils.fillTemplateWithStringsByRegexp(
+                "template", "lineToPlaceInTemplate", Pattern.compile("NO MATCH")));
+        assertEquals(
+                "invalid result",
+                "before word after",
+                CommonUtils.fillTemplateWithStringsByRegexp("before $0 after", "word",
+                        Pattern.compile("\\w+")));
+        assertEquals("invalid result", "before word 123 after1 word after2 123 after3",
+                CommonUtils.fillTemplateWithStringsByRegexp("before $0 after1 $1 after2 $2 after3",
+                        "word 123", Pattern.compile("(\\w+) (\\d+)")));
+    }
+
+    @Test
+    public void testGetFileNameWithoutExtension() {
+        assertEquals("invalid result", "filename",
+                CommonUtils.getFileNameWithoutExtension("filename"));
+        assertEquals("invalid result", "filename",
+                CommonUtils.getFileNameWithoutExtension("filename.extension"));
+        assertEquals("invalid result", "filename.subext",
+                CommonUtils.getFileNameWithoutExtension("filename.subext.extension"));
+    }
+
+    @Test
+    public void testGetFileExtension() {
+        assertEquals("Invalid extension", "", CommonUtils.getFileExtension("filename"));
+        assertEquals("Invalid extension", "extension",
+                CommonUtils.getFileExtension("filename.extension"));
+        assertEquals("Invalid extension", "extension",
+                CommonUtils.getFileExtension("filename.subext.extension"));
     }
 
     @Test

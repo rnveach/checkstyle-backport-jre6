@@ -44,9 +44,8 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
-import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
-import com.puppycrawl.tools.checkstyle.utils.BlockCommentPosition;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.JavadocUtils;
 
 public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
 
@@ -180,7 +179,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputAbstractJavadocPosition.java"), expected);
         assertEquals("Invalid number of javadocs",
-            58, JavadocCatchCheck.javadocsNumber);
+            65, JavadocCatchCheck.javadocsNumber);
     }
 
     @Test
@@ -192,7 +191,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
         verify(checkConfig,
             getPath("InputAbstractJavadocPositionWithSinglelineComments.java"), expected);
         assertEquals("Invalid number of javadocs",
-                58, JavadocCatchCheck.javadocsNumber);
+                65, JavadocCatchCheck.javadocsNumber);
     }
 
     @Test
@@ -204,12 +203,6 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
         verify(checkConfig, getPath("InputAbstractJavadocPositionOnlyComments.java"), expected);
         assertEquals("Invalid number of javadocs",
                 0, JavadocCatchCheck.javadocsNumber);
-    }
-
-    @Test
-    public void testBlockCommentPositionHasPrivateConstr() throws Exception {
-        Assert.assertTrue("Constructor is not private",
-                TestUtil.isUtilsClassHasPrivateConstructor(BlockCommentPosition.class, true));
     }
 
     @Test
@@ -231,7 +224,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
         Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
         Assert.assertArrayEquals("Acceptable tokens should be equal to default",
                 check.getDefaultTokens(), check.getAcceptableTokens());
-        Assert.assertArrayEquals("REquired tokens should be equal to default",
+        Assert.assertArrayEquals("Required tokens should be equal to default",
                 check.getDefaultTokens(), check.getRequiredTokens());
         Assert.assertArrayEquals("Invalid default javadoc tokens",
                 defaultJavadocTokens, check.getDefaultJavadocTokens());
@@ -485,6 +478,9 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
         @Override
         public void visitJavadocToken(DetailNode ast) {
             assertEquals(ast.toString(), "JAVADOC", ast.getText());
+            final DetailNode text = JavadocUtils.findFirstToken(ast, JavadocTokenTypes.TEXT);
+            Assert.assertNotNull("Empty javadoc text at " + ast, text);
+            assertEquals(ast.toString(), "Javadoc", text.getText());
             javadocsNumber++;
         }
     }

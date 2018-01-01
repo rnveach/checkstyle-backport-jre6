@@ -109,11 +109,6 @@
            local-only="true"/>
     <allow pkg="org.antlr.v4.runtime" local-only="true"/>
 
-    <!-- allowed till https://github.com/checkstyle/checkstyle/issues/3455 -->
-    <allow class="com.google.common.io.Closeables" local-only="true"/>
-    <allow class="com.google.common.collect.ImmutableCollection" local-only="true"/>
-    <allow class="com.google.common.collect.ImmutableMap" local-only="true"/>
-
     <allow class="com.puppycrawl.tools.checkstyle.Checker" local-only="true"/>
     <!-- allowed till https://github.com/checkstyle/checkstyle/issues/3817 -->
     <allow pkg="com.puppycrawl.tools.checkstyle.utils"/>
@@ -134,6 +129,9 @@
     <allow class="com.google.common.collect.Multiset.Entry" local-only="true"/>
     <allow class="com.google.common.collect.SetMultimap" local-only="true"/>
 
+    <subpackage name="imports">
+      <allow class="com.puppycrawl.tools.checkstyle.XmlLoader" local-only="true"/>
+    </subpackage>
     <subpackage name="indentation">
       <allow pkg="java.lang.reflect"/>
     </subpackage>
@@ -168,9 +166,11 @@
     <allow class="java.lang.ref.WeakReference" local-only="true"/>
     <allow class="com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent" local-only="true"/>
     <allow class="com.puppycrawl.tools.checkstyle.TreeWalkerFilter" local-only="true"/>
+    <allow class="com.puppycrawl.tools.checkstyle.XmlLoader" local-only="true"/>
     <disallow pkg="com\.puppycrawl\.tools\.checkstyle\.checks\.[^.]+" regex="true"/>
     <allow pkg="com.puppycrawl.tools.checkstyle.utils"/>
     <allow pkg="com.puppycrawl.tools.checkstyle.xpath"/>
+    <allow class="java.nio.charset.StandardCharsets" local-only="true"/>
   </subpackage>
 
   <subpackage name="gui" strategyOnMismatch="disallowed">

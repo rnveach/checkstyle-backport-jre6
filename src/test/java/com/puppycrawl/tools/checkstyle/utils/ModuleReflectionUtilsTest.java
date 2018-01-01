@@ -87,9 +87,9 @@ public class ModuleReflectionUtilsTest {
     @Test
     public void testIsCheckstyleCheck() {
         assertTrue("Should return true when valid checkstyle check is passed",
-                ModuleReflectionUtils.isCheckstyleCheck(CheckClass.class));
+                ModuleReflectionUtils.isCheckstyleTreeWalkerCheck(CheckClass.class));
         assertFalse("Should return false when invalid class is passed",
-                ModuleReflectionUtils.isCheckstyleCheck(NotCheckstyleCheck.class));
+                ModuleReflectionUtils.isCheckstyleTreeWalkerCheck(NotCheckstyleCheck.class));
     }
 
     @Test
@@ -147,16 +147,23 @@ public class ModuleReflectionUtilsTest {
         assertEquals("should use field", 1, test.getField());
     }
 
-    /** @noinspection SuperClassHasFrequentlyUsedInheritors */
     private static class ValidCheckstyleClass extends AutomaticBean {
         // empty, use default constructor
+
+        @Override
+        protected void finishLocalSetup() throws CheckstyleException {
+            //dummy method
+        }
     }
 
     private static class InvalidNonAutomaticBeanClass {
         // empty, use default constructor
     }
 
-    /** @noinspection AbstractClassNeverImplemented */
+    /**
+     * AbstractInvalidClass.
+     * @noinspection AbstractClassNeverImplemented
+     */
     private abstract static class AbstractInvalidClass extends AutomaticBean {
         public abstract void method();
     }
@@ -187,6 +194,11 @@ public class ModuleReflectionUtilsTest {
 
     private static class FilterClass extends AutomaticBean implements Filter {
         @Override
+        protected void finishLocalSetup() throws CheckstyleException {
+            //dummy method
+        }
+
+        @Override
         public boolean accept(AuditEvent event) {
             return false;
         }
@@ -195,12 +207,22 @@ public class ModuleReflectionUtilsTest {
     private static class FileFilterModuleClass extends AutomaticBean
             implements BeforeExecutionFileFilter {
         @Override
+        protected void finishLocalSetup() throws CheckstyleException {
+            //dummy method
+        }
+
+        @Override
         public boolean accept(String uri) {
             return false;
         }
     }
 
     private static class RootModuleClass extends AutomaticBean implements RootModule {
+        @Override
+        protected void finishLocalSetup() throws CheckstyleException {
+            //dummy method
+        }
+
         @Override
         public void addListener(AuditListener listener) {
             //dummy method
@@ -224,12 +246,22 @@ public class ModuleReflectionUtilsTest {
 
     private static class TreeWalkerFilterClass extends AutomaticBean implements TreeWalkerFilter {
         @Override
+        protected void finishLocalSetup() throws CheckstyleException {
+            //dummy method
+        }
+
+        @Override
         public boolean accept(TreeWalkerAuditEvent treeWalkerAuditEvent) {
             return false;
         }
     }
 
     private static class AuditListenerClass extends AutomaticBean implements AuditListener {
+
+        @Override
+        protected void finishLocalSetup() throws CheckstyleException {
+            //dummy method
+        }
 
         @Override
         public void auditStarted(AuditEvent event) {
@@ -284,6 +316,11 @@ public class ModuleReflectionUtilsTest {
 
         public int getField() {
             return field;
+        }
+
+        @Override
+        protected void finishLocalSetup() throws CheckstyleException {
+            //dummy method
         }
     }
 }

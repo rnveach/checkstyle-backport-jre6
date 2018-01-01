@@ -424,8 +424,13 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
      */
     private static int getDistToVariableUsageInChildNode(DetailAST childNode, DetailAST varIdent,
                                                          int currentDistToVarUsage) {
+        DetailAST examineNode = childNode;
+        if (examineNode.getType() == TokenTypes.LABELED_STAT) {
+            examineNode = examineNode.getFirstChild().getNextSibling();
+        }
+
         int resultDist = currentDistToVarUsage;
-        switch (childNode.getType()) {
+        switch (examineNode.getType()) {
             case TokenTypes.VARIABLE_DEF:
                 resultDist++;
                 break;
@@ -437,7 +442,7 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
             case TokenTypes.LITERAL_DO:
             case TokenTypes.LITERAL_IF:
             case TokenTypes.LITERAL_SWITCH:
-                if (isVariableInOperatorExpr(childNode, varIdent)) {
+                if (isVariableInOperatorExpr(examineNode, varIdent)) {
                     resultDist++;
                 }
                 else {
@@ -447,11 +452,11 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
                 }
                 break;
             default:
-                if (childNode.branchContains(TokenTypes.SLIST)) {
-                    resultDist = 0;
+                if (examineNode.findFirstToken(TokenTypes.SLIST) == null) {
+                    resultDist++;
                 }
                 else {
-                    resultDist++;
+                    resultDist = 0;
                 }
         }
         return resultDist;
@@ -522,15 +527,16 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
                     variableUsageAst = exprWithVariableUsage;
                 }
             }
+
+            // If there's no any variable usage, then distance = 0.
+            else if (variableUsageExpressions.isEmpty()) {
+                variableUsageAst = null;
+            }
             // If variable usage exists in different scopes, then distance =
             // distance until variable first usage.
-            else if (variableUsageExpressions.size() > 1) {
+            else {
                 dist++;
                 variableUsageAst = variableUsageExpressions.get(0);
-            }
-            // If there's no any variable usage, then distance = 0.
-            else {
-                variableUsageAst = null;
             }
         }
         return new SimpleEntry<DetailAST, Integer>(variableUsageAst, dist);

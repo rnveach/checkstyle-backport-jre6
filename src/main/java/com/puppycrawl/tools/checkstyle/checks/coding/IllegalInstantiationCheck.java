@@ -115,7 +115,6 @@ public class IllegalInstantiationCheck
 
     @Override
     public void beginTree(DetailAST rootAST) {
-        super.beginTree(rootAST);
         pkgName = null;
         imports.clear();
         instantiations.clear();
@@ -329,7 +328,7 @@ public class IllegalInstantiationCheck
      * @return true if type is standard
      */
     private boolean isStandardClass(String className, String illegal) {
-        boolean isStandardCalss = false;
+        boolean isStandardClass = false;
         // class from java.lang
         if (illegal.length() - JAVA_LANG.length() == className.length()
             && illegal.endsWith(className)
@@ -344,10 +343,10 @@ public class IllegalInstantiationCheck
             final boolean isSamePackage = isSamePackage(className);
 
             if (!isSameFile && !isSamePackage) {
-                isStandardCalss = true;
+                isStandardClass = true;
             }
         }
-        return isStandardCalss;
+        return isStandardClass;
     }
 
     /**

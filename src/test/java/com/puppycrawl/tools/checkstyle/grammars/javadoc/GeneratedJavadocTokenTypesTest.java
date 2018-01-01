@@ -23,7 +23,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-/** @noinspection ClassIndependentOfModule */
+/**
+ * GeneratedJavadocTokenTypesTest.
+ * @noinspection ClassIndependentOfModule
+ */
 public class GeneratedJavadocTokenTypesTest {
 
     private static final String MSG = "Ensure that token numbers generated for the elements"
@@ -33,7 +36,7 @@ public class GeneratedJavadocTokenTypesTest {
      * This method checks that the numbers generated for tokens in <tt>JavadocLexer.g4</tt> don't
      * change with the lexer grammar itself.
      * <br>ANTLR maps all the lexer elements to compile time constants used internally by ANTLR.
-     * Compatability damange is incurred <i>(with respect to the previous checkstyle versions)
+     * Compatibility damage is incurred <i>(with respect to the previous checkstyle versions)
      * </i> if these compile time constants keep changing with the grammar.
      *
      * @see "https://github.com/checkstyle/checkstyle/issues/5139"
@@ -143,7 +146,7 @@ public class GeneratedJavadocTokenTypesTest {
      * This method checks that the numbers generated for rules in <tt>JavadocParser.g4</tt> don't
      * change with the Parser grammar itself.
      * <br>ANTLR maps all the parser rules to compile time constants used internally by ANTLR.
-     * Compatability damange is incurred <i>(with respect to the previous checkstyle versions)
+     * Compatibility damage is incurred <i>(with respect to the previous checkstyle versions)
      * </i> if these compile time constants keep changing with the grammar.
      *
      * @see "https://github.com/checkstyle/checkstyle/issues/5139"
