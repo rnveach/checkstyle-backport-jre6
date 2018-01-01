@@ -1,4 +1,4 @@
-package com.puppycrawl.tools.checkstyle.packageobjectfactory.bar;
+package com.puppycrawl.tools.checkstyle.internal.testmodules.packageobjectfactory.foo;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 
