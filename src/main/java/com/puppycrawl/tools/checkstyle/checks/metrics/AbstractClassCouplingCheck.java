@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -49,6 +49,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  */
 @FileStatefulCheck
 public abstract class AbstractClassCouplingCheck extends AbstractCheck {
+
     /** A package separator - "." */
     private static final String DOT = ".";
 
@@ -244,6 +245,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      * @noinspection ThisEscapedInObjectConstruction
      */
     private class FileContext {
+
         /** A map of (imported class name -> class name with package) pairs. */
         private final Map<String, String> importedClassPackage = new HashMap<String, String>();
 
@@ -336,6 +338,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
         public void visitLiteralThrows(DetailAST ast) {
             classContext.visitLiteralThrows(ast);
         }
+
     }
 
     /**
@@ -345,6 +348,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      * @author o_sukhodolsky
      */
     private class ClassContext {
+
         /** Parent file context. */
         private final FileContext parentContext;
         /**
@@ -475,5 +479,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
             }
             return isFromExcludedPackage;
         }
+
     }
+
 }

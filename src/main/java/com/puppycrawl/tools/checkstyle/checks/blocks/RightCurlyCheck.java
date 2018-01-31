@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -84,6 +84,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  */
 @StatelessCheck
 public class RightCurlyCheck extends AbstractCheck {
+
     /**
      * A key is pointing to the warning message text in "messages.properties"
      * file.
@@ -445,7 +446,6 @@ public class RightCurlyCheck extends AbstractCheck {
                     shouldCheckLastRcurly = true;
                     nextToken = getNextToken(ast);
                 }
-
             }
             else {
                 shouldCheckLastRcurly = true;
@@ -480,7 +480,6 @@ public class RightCurlyCheck extends AbstractCheck {
                 if (lcurly.getType() == TokenTypes.SLIST) {
                     rcurly = lcurly.getLastChild();
                 }
-
             }
             else {
                 shouldCheckLastRcurly = true;
@@ -589,5 +588,7 @@ public class RightCurlyCheck extends AbstractCheck {
             }
             return CheckUtils.getFirstNode(next);
         }
+
     }
+
 }

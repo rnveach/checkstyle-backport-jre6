@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ImportControlLoader.class, URI.class})
 public class ImportControlLoaderTest {
+
     private static String getPath(String filename) {
         return "src/test/resources/com/puppycrawl/tools/"
                 + "checkstyle/checks/imports/importcontrolloader/" + filename;
@@ -179,4 +180,5 @@ public class ImportControlLoaderTest {
                     SAXParseException.class, ex.getCause().getClass());
         }
     }
+
 }

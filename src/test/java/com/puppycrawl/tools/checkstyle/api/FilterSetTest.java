@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.filters.SeverityMatchFilter;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class FilterSetTest {
+
     @Test
     public void testEqualsAndHashCode() {
         EqualsVerifier.forClass(FilterSet.class).usingGetClass().verify();
@@ -58,4 +59,5 @@ public class FilterSetTest {
 
         assertEquals("Invalid filter set size", 0, filterSet.getFilters().size());
     }
+
 }

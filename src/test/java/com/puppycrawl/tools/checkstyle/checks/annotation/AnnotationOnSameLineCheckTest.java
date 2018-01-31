@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ public class AnnotationOnSameLineCheckTest extends AbstractModuleTestSupport {
     public void testGetRequiredTokens() {
         final AnnotationOnSameLineCheck check = new AnnotationOnSameLineCheck();
         assertArrayEquals(
-            "AnnotationOnSameLineCheck#getRequiredTockens should return empty array by default",
+            "AnnotationOnSameLineCheck#getRequiredTokens should return empty array by default",
             CommonUtils.EMPTY_INT_ARRAY, check.getRequiredTokens());
     }
 

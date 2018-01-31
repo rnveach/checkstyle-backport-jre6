@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -49,12 +49,14 @@ public final class JavadocUtils {
      * The type of Javadoc tag we want returned.
      */
     public enum JavadocTagType {
+
         /** Block type. */
         BLOCK,
         /** Inline type. */
         INLINE,
         /** All validTags. */
         ALL
+
     }
 
     /** Maps from a token name to value. */
@@ -85,7 +87,6 @@ public final class JavadocUtils {
         String[] tempTokenValueToName = CommonUtils.EMPTY_STRING_ARRAY;
 
         for (final Field field : fields) {
-
             // Only process public int fields.
             if (!Modifier.isPublic(field.getModifiers())
                     || field.getType() != Integer.TYPE) {
@@ -127,7 +128,6 @@ public final class JavadocUtils {
      */
     public static JavadocTags getJavadocTags(TextBlock textBlock,
             JavadocTagType tagType) {
-
         final boolean getBlockTags = tagType == JavadocTagType.ALL
                                          || tagType == JavadocTagType.BLOCK;
         final boolean getInlineTags = tagType == JavadocTagType.ALL
@@ -437,4 +437,5 @@ public final class JavadocUtils {
             && (BlockCommentPosition.isOnType(blockComment)
                 || BlockCommentPosition.isOnMember(blockComment));
     }
+
 }

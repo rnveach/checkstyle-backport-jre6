@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -60,6 +60,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * Enum to specify options for checker creation.
      */
     public enum ModuleCreationOption {
+
         /**
          * Points that the module configurations
          * has to be added under {@link TreeWalker}.
@@ -70,6 +71,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
          * a root of default configuration.
          */
         IN_CHECKER
+
     }
 
     private static final Pattern WARN_PATTERN = CommonUtils
@@ -77,11 +79,27 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
 
     private static final String XML_NAME = "/google_checks.xml";
 
-    private static Configuration configuration;
+    private static final Configuration CONFIGURATION;
 
-    private static Set<Class<?>> checkstyleModules;
+    private static final Set<Class<?>> CHECKSTYLE_MODULES;
 
     private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+    static {
+        try {
+            CONFIGURATION = ConfigurationLoader.loadConfiguration(XML_NAME,
+                    new PropertiesExpander(System.getProperties()));
+        }
+        catch (CheckstyleException ex) {
+            throw new IllegalStateException(ex);
+        }
+        try {
+            CHECKSTYLE_MODULES = CheckUtil.getCheckstyleModules();
+        }
+        catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
 
     /**
      * Returns test logger.
@@ -89,22 +107,6 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      */
     public final BriefUtLogger getBriefUtLogger() {
         return new BriefUtLogger(stream);
-    }
-
-    /**
-     * Returns {@link Configuration} based on Google's checks xml-configuration (google_checks.xml).
-     * This implementation uses {@link ConfigurationLoader} in order to load configuration
-     * from xml-file.
-     * @return {@link Configuration} based on Google's checks xml-configuration (google_checks.xml).
-     * @throws CheckstyleException if exception occurs during configuration loading.
-     */
-    protected static Configuration getConfiguration() throws CheckstyleException {
-        if (configuration == null) {
-            configuration = ConfigurationLoader.loadConfiguration(XML_NAME, new PropertiesExpander(
-                    System.getProperties()));
-        }
-
-        return configuration;
     }
 
     /**
@@ -124,14 +126,10 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      */
     public final Checker createChecker(Configuration moduleConfig)
             throws Exception {
-        if (checkstyleModules == null) {
-            checkstyleModules = CheckUtil.getCheckstyleModules();
-        }
-
         final String name = moduleConfig.getName();
         ModuleCreationOption moduleCreationOption = ModuleCreationOption.IN_CHECKER;
 
-        for (Class<?> moduleClass : checkstyleModules) {
+        for (Class<?> moduleClass : CHECKSTYLE_MODULES) {
             if (moduleClass.getSimpleName().equals(name)
                     || moduleClass.getSimpleName().equals(name + "Check")) {
                 if (ModuleReflectionUtils.isCheckstyleTreeWalkerCheck(moduleClass)
@@ -253,7 +251,6 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
         final LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         try {
-
             int previousLineNumber = 0;
             for (int i = 0; i < expected.length; i++) {
                 final String expectedResult = messageFileName + ":" + expected[i];
@@ -289,21 +286,15 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * @param messageKey the key of message in 'messages.properties' file.
      * @param arguments  the arguments of message in 'messages.properties' file.
      * @return The message of the check with the arguments applied.
+     * @throws IOException if there is a problem loading the property file.
      */
     protected static String getCheckMessage(Class<? extends AbstractViolationReporter> aClass,
-            String messageKey, Object... arguments) {
-        String checkMessage;
-        try {
-            final Properties pr = new Properties();
-            pr.load(aClass.getResourceAsStream("messages.properties"));
-            final MessageFormat formatter = new MessageFormat(pr.getProperty(messageKey),
-                    Locale.ROOT);
-            checkMessage = formatter.format(arguments);
-        }
-        catch (IOException ex) {
-            checkMessage = null;
-        }
-        return checkMessage;
+            String messageKey, Object... arguments) throws IOException {
+        final Properties pr = new Properties();
+        pr.load(aClass.getResourceAsStream("messages.properties"));
+        final MessageFormat formatter = new MessageFormat(pr.getProperty(messageKey),
+                Locale.ROOT);
+        return formatter.format(arguments);
     }
 
     /**
@@ -331,9 +322,8 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * This implementation uses {@link AbstractModuleTestSupport#getConfiguration()} method inside.
      * @param moduleName module name.
      * @return {@link Configuration} instance for the given module name.
-     * @throws CheckstyleException if exception occurs during configuration loading.
      */
-    protected static Configuration getModuleConfig(String moduleName) throws CheckstyleException {
+    protected static Configuration getModuleConfig(String moduleName) {
         return getModuleConfig(moduleName, null);
     }
 
@@ -345,8 +335,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * @return {@link Configuration} instance for the given module name.
      * @throws CheckstyleException if exception occurs during configuration loading.
      */
-    protected static Configuration getModuleConfig(String moduleName, String moduleId)
-            throws CheckstyleException {
+    protected static Configuration getModuleConfig(String moduleName, String moduleId) {
         Configuration result;
         final List<Configuration> configs = getModuleConfigs(moduleName);
         if (configs.size() == 1) {
@@ -378,12 +367,10 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * This implementation uses {@link AbstractModuleTestSupport#getConfiguration()} method inside.
      * @param moduleName module name.
      * @return {@link Configuration} instance for the given module name.
-     * @throws CheckstyleException if exception occurs during configuration loading.
      */
-    protected static List<Configuration> getModuleConfigs(String moduleName)
-            throws CheckstyleException {
+    protected static List<Configuration> getModuleConfigs(String moduleName) {
         final List<Configuration> result = new ArrayList<Configuration>();
-        for (Configuration currentConfig : getConfiguration().getChildren()) {
+        for (Configuration currentConfig : CONFIGURATION.getChildren()) {
             if ("TreeWalker".equals(currentConfig.getName())) {
                 for (Configuration moduleConfig : currentConfig.getChildren()) {
                     if (moduleName.equals(moduleConfig.getName())) {
@@ -436,4 +423,5 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
         }
         return result.toArray(new Integer[result.size()]);
     }
+
 }

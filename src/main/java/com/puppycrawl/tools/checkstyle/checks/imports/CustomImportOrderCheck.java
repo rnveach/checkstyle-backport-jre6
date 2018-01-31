@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -487,7 +487,6 @@ public class CustomImportOrderCheck extends AbstractCheck {
 
     @Override
     public void finishTree(DetailAST rootAST) {
-
         if (!importToGroupList.isEmpty()) {
             finishImportList();
         }
@@ -750,10 +749,8 @@ public class CustomImportOrderCheck extends AbstractCheck {
                 || STANDARD_JAVA_PACKAGE_RULE_GROUP.equals(ruleStr)
                 || SPECIAL_IMPORTS_RULE_GROUP.equals(ruleStr)) {
             customImportOrderRules.add(ruleStr);
-
         }
         else if (ruleStr.startsWith(SAME_PACKAGE_RULE_GROUP)) {
-
             final String rule = ruleStr.substring(ruleStr.indexOf('(') + 1,
                     ruleStr.indexOf(')'));
             samePackageMatchingDepth = Integer.parseInt(rule);
@@ -762,7 +759,6 @@ public class CustomImportOrderCheck extends AbstractCheck {
                         "SAME_PACKAGE rule parameter should be positive integer: " + ruleStr);
             }
             customImportOrderRules.add(SAME_PACKAGE_RULE_GROUP);
-
         }
         else {
             throw new IllegalStateException("Unexpected rule: " + ruleStr);
@@ -811,6 +807,7 @@ public class CustomImportOrderCheck extends AbstractCheck {
      * @author max
      */
     private static class ImportDetails {
+
         /** Import full path. */
         private final String importFullPath;
 
@@ -873,6 +870,7 @@ public class CustomImportOrderCheck extends AbstractCheck {
         public boolean isStaticImport() {
             return staticImport;
         }
+
     }
 
     /**
@@ -881,6 +879,7 @@ public class CustomImportOrderCheck extends AbstractCheck {
      * @author ivanov-alex
      */
     private static class RuleMatchForImport {
+
         /** Position of matching string for current best match. */
         private final int matchPosition;
         /** Length of matching string for current best match. */
@@ -901,5 +900,7 @@ public class CustomImportOrderCheck extends AbstractCheck {
             matchLength = length;
             matchPosition = position;
         }
+
     }
+
 }

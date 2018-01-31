@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -699,6 +699,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
      * Holder for the scope data.
      */
     private static class ScopeData {
+
         /** Contains variable definitions. */
         private final Map<String, FinalVariableCandidate> scope = new HashMap<String, FinalVariableCandidate>();
 
@@ -726,10 +727,12 @@ public class FinalLocalVariableCheck extends AbstractCheck {
             }
             return result;
         }
+
     }
 
     /**Represents information about final local variable candidate. */
     private static class FinalVariableCandidate {
+
         /** Identifier token. */
         private final DetailAST variableIdent;
         /** Whether the variable is assigned. */
@@ -744,5 +747,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
         FinalVariableCandidate(DetailAST variableIdent) {
             this.variableIdent = variableIdent;
         }
+
     }
+
 }

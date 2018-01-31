@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -34,7 +34,6 @@ public class VariableDeclarationUsageDistanceTest extends AbstractModuleTestSupp
 
     @Test
     public void testArrayTypeStyle() throws Exception {
-
         final String msgExt = "variable.declaration.usage.distance.extend";
         final Class<VariableDeclarationUsageDistanceCheck> clazz =
                 VariableDeclarationUsageDistanceCheck.class;
@@ -53,4 +52,5 @@ public class VariableDeclarationUsageDistanceTest extends AbstractModuleTestSupp
         final Integer[] warnList = getLinesWithWarn(filePath);
         verify(checkConfig, filePath, expected, warnList);
     }
+
 }

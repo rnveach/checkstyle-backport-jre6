@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -519,7 +519,6 @@ public class RequireThisCheck extends AbstractCheck {
                      && canBeReferencedFromStaticContext(ast)
                      && canAssignValueToClassField(ast)) {
                 frameWhereViolationIsFound = findFrame(ast, true);
-
             }
         }
         else if (variableDeclarationFrameType == FrameType.CTOR_FRAME
@@ -987,6 +986,7 @@ public class RequireThisCheck extends AbstractCheck {
 
     /** An AbstractFrame type. */
     private enum FrameType {
+
         /** Class frame type. */
         CLASS_FRAME,
         /** Constructor frame type. */
@@ -999,6 +999,7 @@ public class RequireThisCheck extends AbstractCheck {
         CATCH_FRAME,
         /** Lambda frame type. */
         FOR_FRAME,
+
     }
 
     /**
@@ -1007,6 +1008,7 @@ public class RequireThisCheck extends AbstractCheck {
      * @author Andrei Selkin
      */
     private abstract static class AbstractFrame {
+
         /** Set of name of variables declared in this frame. */
         private final Set<DetailAST> varIdents;
 
@@ -1127,6 +1129,7 @@ public class RequireThisCheck extends AbstractCheck {
             }
             return result;
         }
+
     }
 
     /**
@@ -1149,6 +1152,7 @@ public class RequireThisCheck extends AbstractCheck {
         protected FrameType getType() {
             return FrameType.METHOD_FRAME;
         }
+
     }
 
     /**
@@ -1170,6 +1174,7 @@ public class RequireThisCheck extends AbstractCheck {
         protected FrameType getType() {
             return FrameType.CTOR_FRAME;
         }
+
     }
 
     /**
@@ -1178,6 +1183,7 @@ public class RequireThisCheck extends AbstractCheck {
      * @author Andrei Selkin
      */
     private static class ClassFrame extends AbstractFrame {
+
         /** Set of idents of instance members declared in this frame. */
         private final Set<DetailAST> instanceMembers;
         /** Set of idents of instance methods declared in this frame. */
@@ -1358,6 +1364,7 @@ public class RequireThisCheck extends AbstractCheck {
             }
             return result;
         }
+
     }
 
     /**
@@ -1382,6 +1389,7 @@ public class RequireThisCheck extends AbstractCheck {
         protected String getFrameName() {
             return frameName;
         }
+
     }
 
     /**
@@ -1403,6 +1411,7 @@ public class RequireThisCheck extends AbstractCheck {
         protected FrameType getType() {
             return FrameType.BLOCK_FRAME;
         }
+
     }
 
     /**
@@ -1410,6 +1419,7 @@ public class RequireThisCheck extends AbstractCheck {
      * @author Richard Veach
      */
     public static class CatchFrame extends AbstractFrame {
+
         /**
          * Creates catch frame.
          * @param parent parent frame.
@@ -1423,6 +1433,7 @@ public class RequireThisCheck extends AbstractCheck {
         public FrameType getType() {
             return FrameType.CATCH_FRAME;
         }
+
     }
 
     /**
@@ -1430,6 +1441,7 @@ public class RequireThisCheck extends AbstractCheck {
      * @author Richard Veach
      */
     public static class ForFrame extends AbstractFrame {
+
         /**
          * Creates for frame.
          * @param parent parent frame.
@@ -1443,5 +1455,7 @@ public class RequireThisCheck extends AbstractCheck {
         public FrameType getType() {
             return FrameType.FOR_FRAME;
         }
+
     }
+
 }

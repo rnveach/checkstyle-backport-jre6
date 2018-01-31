@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -29,12 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
@@ -176,8 +176,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
         final LocalizedMessage message =
                 new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "", null, null, "id20",
                         getClass(), null);
-        final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(fileContents,
-                file.getName(), message, TestUtil.parseFile(file));
+        final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(fileContents, file.getName(),
+                message, JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));
         assertTrue("Event should be accepted", filter.accept(ev));
     }
 
@@ -189,8 +189,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
         final LocalizedMessage message =
                 new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "", null, null, "id19",
                         getClass(), null);
-        final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(fileContents,
-                file.getName(), message, TestUtil.parseFile(file));
+        final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(fileContents, file.getName(),
+                message, JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));
         assertFalse("Event should be rejected", filter.accept(ev));
     }
 
@@ -202,8 +202,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
         final LocalizedMessage message =
                 new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "", null, null, "id19",
                         getClass(), null);
-        final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(fileContents,
-                file.getName(), message, TestUtil.parseFile(file));
+        final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(fileContents, file.getName(),
+                message, JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));
         assertTrue("Event should be accepted", filter.accept(ev));
     }
 
@@ -232,7 +232,7 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
         final LocalizedMessage message = new LocalizedMessage(0, 0, TokenTypes.CLASS_DEF, "", "",
                 null, null, null, getClass(), "Test");
         final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(fileContents, file.getName(),
-                message, TestUtil.parseFile(file));
+                message, JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));
         final XpathFilter filter1 = new XpathFilter(null, null, "Test", null, null);
         final XpathFilter filter2 = new XpathFilter(null, null, "Bad", null, null);
         assertFalse("Message match", filter1.accept(ev));
@@ -275,6 +275,7 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
                 new LocalizedMessage(line, column, tokenType, "", "", null, null, null,
                         getClass(), null);
         return new TreeWalkerAuditEvent(fileContents, file.getName(), message,
-                TestUtil.parseFile(file));
+                JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));
     }
+
 }

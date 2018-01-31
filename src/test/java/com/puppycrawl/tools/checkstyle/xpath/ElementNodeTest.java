@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -30,9 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NodeInfo;
 
@@ -48,7 +48,7 @@ public class ElementNodeTest extends AbstractPathTestSupport {
     @Before
     public void init() throws Exception {
         final File file = new File(getPath("InputXpathMapperAst.java"));
-        final DetailAST rootAst = TestUtil.parseFile(file);
+        final DetailAST rootAst = JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS);
         rootNode = new RootNode(rootAst);
     }
 
@@ -71,4 +71,5 @@ public class ElementNodeTest extends AbstractPathTestSupport {
         assertTrue("Should return true, because selected node is RootNode",
                 root instanceof RootNode);
     }
+
 }

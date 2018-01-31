@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author Oliver Burn
  */
 public final class ScopeUtils {
+
     /** Prevent instantiation. */
     private ScopeUtils() {
     }
@@ -136,7 +137,6 @@ public final class ScopeUtils {
                 || type == TokenTypes.LITERAL_NEW) {
                 break;
             }
-
         }
 
         return returnValue;
@@ -283,4 +283,5 @@ public final class ScopeUtils {
         final Scope surroundingScopeOfAstToken = getSurroundingScope(ast);
         return surroundingScopeOfAstToken == scope;
     }
+
 }

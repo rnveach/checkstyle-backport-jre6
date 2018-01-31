@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -42,6 +42,7 @@ public class LineWrappingHandler {
      * Enum to be used for test if first line's indentation should be checked or not.
      */
     public enum LineWrappingOptions {
+
         /**
          * First line's indentation should NOT be checked.
          */
@@ -65,6 +66,7 @@ public class LineWrappingHandler {
             }
             return option;
         }
+
     }
 
     /**
@@ -199,7 +201,6 @@ public class LineWrappingHandler {
         DetailAST curNode = firstNode.getFirstChild();
 
         while (curNode != lastNode) {
-
             if (curNode.getType() == TokenTypes.OBJBLOCK
                     || curNode.getType() == TokenTypes.SLIST) {
                 curNode = curNode.getLastChild();
@@ -296,9 +297,7 @@ public class LineWrappingHandler {
                     break;
                 default:
                     endOfScope = false;
-
             }
-
         }
         return endOfScope;
     }
@@ -369,4 +368,5 @@ public class LineWrappingHandler {
             }
         }
     }
+
 }

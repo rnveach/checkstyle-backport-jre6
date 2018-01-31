@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
  * @author Oliver Burn
  */
 public final class DetectorOptions {
+
     /**
      * Flags to compile a regular expression with.
      * See {@link Pattern#flags()}.
@@ -229,5 +230,7 @@ public final class DetectorOptions {
             suppressor = Optional.ofNullable(suppressor).orElse(NeverSuppress.INSTANCE);
             return DetectorOptions.this;
         }
+
     }
+
 }

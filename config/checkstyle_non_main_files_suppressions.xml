@@ -5,6 +5,7 @@
     "http://checkstyle.sourceforge.net/dtds/suppressions_1_1.dtd">
 
 <suppressions>
+    <suppress checks="NewlineAtEndOfFile" files=".*" />
     
     <!-- Input files for NewlineAtEndOfFileCheckTest, intentional no new line at the end. -->
     <suppress checks="NewlineAtEndOfFile" files="[\\/]test[\\/].*[\\/]InputNewlineAtEndOfFile.*\.java"/>

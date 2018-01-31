@@ -100,7 +100,8 @@
         </li>
         <li>
           Module <code>TreeWalker</code> has submodules
-          <code>AvoidStarImport</code>, <code>ConstantName</code>, and <code>EmptyBlock</code>.  (Modules <a
+          <code>AvoidStarImport</code>, <code>ConstantName</code>,
+          and <code>EmptyBlock</code>.  (Modules <a
           href="config_imports.html"><code>AvoidStarImport</code></a>, <a
           href="config_naming.html"><code>ConstantName</code></a>, and <a
           href="config_blocks.html"><code>EmptyBlock</code></a> check that a Java source
@@ -118,8 +119,8 @@
 
       <ol>
         <li>
-          Load a class directly according to a package-qualified <code>name</code>, such as loading class <code>com.puppycrawl.tools.checkstyle.TreeWalker</code>
-          for element:
+          Load a class directly according to a package-qualified <code>name</code>, such as loading
+          class <code>com.puppycrawl.tools.checkstyle.TreeWalker</code> for element:
 
           <source>
 &lt;module name=&quot;com.puppycrawl.tools.checkstyle.TreeWalker&quot;/&gt;
@@ -138,7 +139,8 @@
 
           Checkstyle applies packages <code>
           com.puppycrawl.tools.checkstyle</code>, <code>
-          com.puppycrawl.tools.checkstyle.filters</code>, and <code> com.puppycrawl.tools.checkstyle.checks</code>
+          com.puppycrawl.tools.checkstyle.filters</code>, and
+          <code>com.puppycrawl.tools.checkstyle.checks</code>
           and its sub-packages (only those included in the Checkstyle
           distribution). You can specify other packages in a <a
           href="#Packages"><em>package names XML document</em></a>
@@ -165,7 +167,8 @@
         Each module property has a default value, and you are not
         required to define a property in the configuration document if
         the default value is satisfactory.  To assign a non-default
-        value to a module's property, define a child <code>property</code> element of the <code>module</code> element in the configuration XML
+        value to a module's property, define a child <code>property</code> element
+        of the <code>module</code> element in the configuration XML
         document. Also provide appropriate <code>name</code> and <code>value</code>
         attributes for the <code>property</code> element.
         For example, property <code>max</code> of module
@@ -190,7 +193,8 @@
         are inherited in the module hierarchy. These features make it
         easy to define one property value that applies to many
         modules. For example, the following configuration fragment
-        specifies that a <code>tabWidth</code> of <code>4</code> applies to <code>TreeWalker</code> and its submodules:
+        specifies that a <code>tabWidth</code> of <code>4</code>
+        applies to <code>TreeWalker</code> and its submodules:
       </p>
 
       <source>
@@ -298,7 +302,7 @@
           <tr>
             <td>basedir</td>
             <td>base directory name; stripped off in messages about files</td>
-            <td><a href="property_types.html#string">string</a></td>
+            <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
             <td>3.0</td>
           </tr>
@@ -306,23 +310,23 @@
             <td>cacheFile</td>
             <td>caches information about files that have checked OK; used
                 to avoid repeated checks of the same files</td>
-            <td><a href="property_types.html#string">string</a></td>
+            <td><a href="property_types.html#file">File</a></td>
             <td><code>null</code> (no cache file)</td>
             <td>6.16</td>
           </tr>
           <tr>
             <td>localeCountry</td>
             <td>locale country for messages</td>
-            <td><a href="property_types.html#string">string</a>: either
-            the empty string or an uppercase ISO 3166 2-letter code</td>
+            <td><a href="property_types.html#string">String</a> (either
+            the empty string or an uppercase ISO 3166 2-letter code)</td>
             <td>default locale country for the Java Virtual Machine</td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>localeLanguage</td>
             <td>locale language for messages</td>
-            <td><a href="property_types.html#string">string</a>: either
-            the empty string or a lowercase ISO 639 code</td>
+            <td><a href="property_types.html#string">String</a> (either
+            the empty string or a lowercase ISO 639 code)</td>
             <td>default locale language for the Java Virtual Machine</td>
             <td>3.0</td>
           </tr>
@@ -337,7 +341,7 @@
             <td>fileExtensions</td>
             <td>file extensions that are accepted</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td><code>null</code></td>
+            <td><code>all files</code></td>
             <td>6.3</td>
           </tr>
           <tr>
@@ -457,8 +461,8 @@
           </tr>
           <tr>
             <td>tabWidth</td>
-            <td>number of expanded spaces for a tab character (<code>'\t'</code>); used in messages and Checks that
-            require a tab width, such as <a
+            <td>number of expanded spaces for a tab character (<code>'\t'</code>); used in
+            messages and Checks that require a tab width, such as <a
             href="config_sizes.html#LineLength"><code>LineLength</code></a></td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>8</code></td>
@@ -471,7 +475,7 @@
             is preprocessed before compilation and the original files do
             not have the extension <code>.java</code></td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td><code>java</code></td>
+            <td><code>.java</code></td>
             <td>3.0</td>
           </tr>
         </table>
@@ -550,7 +554,8 @@
         <em>Checks</em>, during a walk, or traversal, of the nodes of
         the tree.  Every node of the syntax tree has a token. A visit to
         a node during the traversal triggers all Checks that are
-        configured for its token.  For example, if Check <code>MethodLength</code> has been configured as a
+        configured for its token.  For example, if Check
+        <code>MethodLength</code> has been configured as a
         submodule of <code>TreeWalker</code>, then a visit
         to a node with a method or a constructor definition token
         triggers <code>MethodLength</code> to check the
@@ -573,14 +578,15 @@
       <p>
         The default token set for <code>MethodLength</code>
         is <code>{METHOD_DEF, CTOR_DEF}</code>, method
-        definition and constructor definition tokens, so <code>TreeWalker</code> invokes <code>MethodLength</code> whenever it visits a node with
-        a <code>METHOD_DEF</code> or a <code>CTOR_DEF</code> token.
+        definition and constructor definition tokens, so <code>TreeWalker</code> invokes
+        <code>MethodLength</code> whenever it visits a node with a <code>METHOD_DEF</code>
+        or a <code>CTOR_DEF</code> token.
       </p>
 
       <p>
-        You specify the trigger tokens for a Check with property <code>tokens</code>.  The value of <code>tokens</code> is a list that denotes a subset of
-        the Check's tokens, as in the following element that configures
-        Check <code>MethodLength</code> to check the number
+        You specify the trigger tokens for a Check with property <code>tokens</code>.  The value
+        of <code>tokens</code> is a list that denotes a subset of the Check's tokens, as in the
+        following element that configures Check <code>MethodLength</code> to check the number
         of lines of methods only:
       </p>
 
@@ -627,7 +633,8 @@
         You can use the severity property to control the output of the
         plain formatter for the <a href="cmdline.html">command line
         tool</a> and the <a href="anttask.html">ANT task</a>. The plain
-        formatter does not report violations with severity level <code>ignore</code>, and notes violations with
+        formatter does not report violations with severity level
+        <code>ignore</code>, and notes violations with
         severity level <code>warning</code>. For
         example, according to the following configuration fragment, the
         plain formatter outputs warnings for translation violations:
@@ -667,8 +674,8 @@
       </source>
 
       <p>
-        Each check configuration element can have zero or more <code>message</code> elements. Every check uses one or
-        more distinct message keys to log violations. If you want to
+        Each check configuration element can have zero or more <code>message</code> elements.
+        Every check uses one or more distinct message keys to log violations. If you want to
         customize a certain message you need to specify the message key
         in the <code>key</code> attribute of the <code>message</code> element.
       </p>
@@ -729,7 +736,8 @@
         Checker can have <a href="writinglisteners.html">custom
         AuditListeners</a> that handle audit events. In order to use a
         custom listener, add a <code>Checker</code> submodule for the
-        listener and its properties.  For example, to configure a <code>Checker</code> so that it uses custom listener <a
+        listener and its properties.  For example, to configure a
+        <code>Checker</code> so that it uses custom listener <a
         href="writinglisteners.html#Writing_Listeners">VerboseListener</a> to
         print audit messages to a file named &quot;audit.txt&quot;,
         include the following module in the configuration file:
@@ -751,7 +759,8 @@
         for a loadable class.  By default, Checkstyle applies packages
         <code> com.puppycrawl.tools.checkstyle</code>,
         <code>
-        com.puppycrawl.tools.checkstyle.filters</code>, and <code> com.puppycrawl.tools.checkstyle.checks</code> as
+        com.puppycrawl.tools.checkstyle.filters</code>, and
+        <code>com.puppycrawl.tools.checkstyle.checks</code> as
         well as any sub-packages of <code>com.puppycrawl.tools.checkstyle.checks</code> that
         are distributed with Checkstyle. However standard checkstyle modules are loaded
         with the help of inner map of their names to fully qualified names.
@@ -812,9 +821,9 @@
       </source>
 
       <p>
-        Now you can configure a module of package <code>com.mycompany.checks</code>, say <code>com.mycompany.checks.MethodLimitCheck</code>, with
-        a shortened <code>module</code> element in the
-        configuration document:
+        Now you can configure a module of package <code>com.mycompany.checks</code>, say
+        <code>com.mycompany.checks.MethodLimitCheck</code>, with a shortened <code>module</code>
+        element in the configuration document:
       </p>
 
       <source>

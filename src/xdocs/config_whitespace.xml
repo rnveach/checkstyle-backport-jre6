@@ -49,7 +49,7 @@ for (
           <tr>
             <td>option</td>
             <td>policy on how to pad an empty for iterator</td>
-            <td><a href="property_types.html#parenPad">pad policy</a></td>
+            <td><a href="property_types.html#parenPad">Pad Policy</a></td>
             <td><code>nospace</code></td>
             <td>3.4</td>
           </tr>
@@ -144,7 +144,7 @@ for (Iterator foo = very.long.line.iterator();
           <tr>
             <td>option</td>
             <td>policy on how to pad an empty for iterator</td>
-            <td><a href="property_types.html#parenPad">pad policy</a></td>
+            <td><a href="property_types.html#parenPad">Pad Policy</a></td>
             <td><code>nospace</code></td>
             <td>3.0</td>
           </tr>
@@ -224,7 +224,8 @@ for (Iterator foo = very.long.line.iterator();
           static initializers and instance initializers.
         </p>
         <p>
-          ATTENTION: empty line separator is required between AST siblings, not after line where token is found.
+          ATTENTION: empty line separator is required between AST siblings,
+          not after line where token is found.
         </p>
       </subsection>
 
@@ -350,7 +351,8 @@ class Foo
 &lt;/module&gt;
       </source>
       <p>
-          An example how to disallow multiple empty lines inside constructor, initialization block and method:
+          An example how to disallow multiple empty lines inside constructor,
+          initialization block and method:
       </p>
       <source>
           &lt;module name="EmptyLineSeparator"&gt;
@@ -486,7 +488,7 @@ class Foo
             <td>fileExtensions</td>
             <td>file type extension of files to process</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td><code>{}</code></td>
+            <td><code>all files</code></td>
             <td>5.0</td>
           </tr>
         </table>
@@ -570,7 +572,8 @@ class Foo
         </p>
         <ul>
           <li> should be preceded with whitespace only in generic methods definitions.</li>
-          <li> should not be preceded with whitespace when it is precede method name or following type name.</li>
+          <li> should not be preceded with whitespace when it is precede method name
+               or following type name.</li>
           <li> should not be followed with whitespace in all cases.</li>
         </ul>
         <p>
@@ -578,7 +581,8 @@ class Foo
         </p>
         <ul>
           <li> should not be preceded with whitespace in all cases.</li>
-          <li> should be followed with whitespace in almost all cases, except diamond operators and when preceding method name.</li>
+          <li> should be followed with whitespace in almost all cases, except diamond operators
+               and when preceding method name.</li>
         </ul>
 
         <p>
@@ -698,7 +702,7 @@ sort(list, Comparable::&lt;String&gt;compareTo);             // Method reference
             <td>option</td>
             <td>policy on how to pad method parameter</td>
             <td>
-              <a href="property_types.html#parenPad">pad policy</a>
+              <a href="property_types.html#parenPad">Pad Policy</a>
             </td>
             <td><code>nospace</code></td>
             <td>3.4</td>
@@ -1127,9 +1131,9 @@ public void foo(final char @NotNull [] param) {} // No violation
           Checks that there is no whitespace before a token. More
           specifically, it checks that it is not preceded with whitespace, or
           (if linebreaks are allowed) all characters on the line before are
-          whitespace. To allow linebreaks before a token, set property <code>allowLineBreaks</code> to <code>
-          true</code>. No check occurs before semi-colons in empty for loop
-          initializers or conditions.
+          whitespace. To allow linebreaks before a token, set property
+          <code>allowLineBreaks</code> to <code>true</code>. No check occurs
+          before semi-colons in empty for loop initializers or conditions.
         </p>
       </subsection>
 
@@ -1262,7 +1266,7 @@ public void foo(final char @NotNull [] param) {} // No violation
             <td>option</td>
             <td>policy on how to wrap lines</td>
             <td>
-              <a href="property_types.html#wrapOp">wrap operator policy</a>
+              <a href="property_types.html#wrapOp">Wrap Operator Policy</a>
             </td>
             <td><code>nl</code></td>
             <td>3.0</td>
@@ -1442,7 +1446,7 @@ public void foo(final char @NotNull [] param) {} // No violation
           <tr>
             <td>option</td>
             <td>policy on how to pad parentheses</td>
-            <td><a href="property_types.html#parenPad">pad policy</a></td>
+            <td><a href="property_types.html#parenPad">Pad Policy</a></td>
             <td><code>nospace</code></td>
             <td>3.0</td>
           </tr>
@@ -1651,7 +1655,7 @@ try (Closeable resource = acquire(); ) // no check before right parenthesis
             <td>option</td>
             <td>policy on how to wrap lines</td>
             <td>
-              <a href="property_types.html#wrapOp">wrap operator policy</a>
+              <a href="property_types.html#wrapOp">Wrap Operator Policy</a>
             </td>
             <td><code>eol</code></td>
             <td>5.8</td>
@@ -1836,7 +1840,7 @@ public long toMicros(long d) { return d / (C1 / C0); }
           </tr>
           <tr>
             <td>validateComments</td>
-            <td>If set to true, whitespaces surrounding comments will be ignored.</td>
+            <td>If set to true, whitespaces surrounding comments will be validated.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>6.19</td>
@@ -1921,7 +1925,7 @@ public long toMicros(long d) { return d / (C1 / C0); }
           <tr>
             <td>option</td>
             <td>policy on how to pad parentheses</td>
-            <td><a href="property_types.html#parenPad">pad policy</a></td>
+            <td><a href="property_types.html#parenPad">Pad Policy</a></td>
             <td><code>nospace</code></td>
             <td>3.2</td>
           </tr>

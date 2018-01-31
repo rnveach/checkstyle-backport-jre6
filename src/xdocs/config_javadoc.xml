@@ -62,7 +62,7 @@
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">ENUM_DEF</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">METHOD_DEF</a>,
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">CTOR_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>
             </td>
             <td>6.0</td>
           </tr>
@@ -418,7 +418,8 @@ public boolean isSomething()
         </source>
 
         <p>
-          To configure the check for methods which are in <code>private</code> , but not in <code>protected</code> scope:
+          To configure the check for methods which are in <code>private</code>,
+          but not in <code>protected</code> scope:
         </p>
         <source>
 &lt;module name="JavadocMethod"&gt;
@@ -545,7 +546,7 @@ public boolean isSomething()
             <td>fileExtensions</td>
             <td>file type extension of files to process</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td><code>{}</code></td>
+            <td><code>.java</code></td>
             <td>5.0</td>
           </tr>
         </table>
@@ -611,10 +612,12 @@ public boolean isSomething()
         </p>
         <ul>
           <li>
-            There is one blank line between each of two paragraphs and one blank line before the at-clauses block if it is present.
+            There is one blank line between each of two paragraphs and one blank line before the
+            at-clauses block if it is present.
           </li>
           <li>
-            Each paragraph but the first has &lt;p&gt; immediately before the first word, with no space after.
+            Each paragraph but the first has &lt;p&gt; immediately before the first word, with
+            no space after.
           </li>
         </ul>
       </subsection>
@@ -913,7 +916,8 @@ public boolean isSomething()
         </source>
 
         <p>
-          To configure the check for javadoc which is in <code>private</code>, but not in <code>package</code> scope:
+          To configure the check for javadoc which is in <code>private</code>, but not in
+          <code>package</code> scope:
         </p>
 
         <source>
@@ -1369,7 +1373,8 @@ public boolean isSomething()
         </source>
 
         <p>
-          To configure the check for members which are in <code>private</code>, but not in <code>protected</code> scope:
+          To configure the check for members which are in <code>private</code>, but not in
+          <code>protected</code> scope:
         </p>
 
         <source>
@@ -1380,7 +1385,8 @@ public boolean isSomething()
         </source>
 
         <p>
-            To ignore absence of Javadoc comments for variables with names <code>log</code> or <code>logger</code>:
+            To ignore absence of Javadoc comments for variables with names <code>log</code> or
+            <code>logger</code>:
         </p>
 
         <source>
@@ -1572,7 +1578,7 @@ public boolean isSomething()
             <td>ignoredTags</td>
             <td>allows to specify at-clauses which are ignored by the check.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td><code>null</code></td>
+            <td><code>{}</code></td>
             <td>6.8</td>
           </tr>
           <tr>
@@ -1658,9 +1664,11 @@ public boolean isSomething()
       <subsection name="Description">
         <p>Since Checkstyle 6.0</p>
         <p>
-          Checks that <a href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#firstsentence">
-          Javadoc summary sentence</a> does not contain phrases that are not recommended to use. Summaries that contain
-          only the <code>{@inheritDoc}</code> tag are skipped. Check also violate javadoc that does not contain first sentence.
+          Checks that <a
+          href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#firstsentence">
+          Javadoc summary sentence</a> does not contain phrases that are not recommended to use.
+          Summaries that contain only the <code>{@inheritDoc}</code> tag are skipped. Check also
+          violate javadoc that does not contain first sentence.
         </p>
       </subsection>
 
@@ -1693,8 +1701,8 @@ public boolean isSomething()
           <tr>
             <td>period</td>
             <td>period symbol at the end of first javadoc sentence</td>
-            <td><a href="property_types.html#string">String literal</a></td>
-            <td><code>.</code></td>
+            <td><a href="property_types.html#string">String</a></td>
+            <td><code>"."</code></td>
             <td>6.2</td>
           </tr>
         </table>
@@ -1828,8 +1836,8 @@ public class TestClass {
       <subsection name="Description">
         <p>Since Checkstyle 4.2</p>
         <p>
-         Requires user defined JavaDoc tag to be present in javadoc comment with defined format. To define the
-         format for a tag, set property tagFormat to a regular
+         Requires user defined JavaDoc tag to be present in javadoc comment with
+         defined format. To define the format for a tag, set property tagFormat to a regular
          expression. Property tagSeverity is used for severity of events when the tag exists.
         </p>
       </subsection>

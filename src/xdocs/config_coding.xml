@@ -383,7 +383,8 @@ class Test {
         </ol>
 
         <p>
-          Purpose of <b>ignore*</b> option is to ignore related violations, however it still impacts on other class members.
+          Purpose of <b>ignore*</b> option is to ignore related violations,
+          however it still impacts on other class members.
         </p>
 
         <p>
@@ -797,9 +798,9 @@ String nullString = null;
         <p>
           Rationale: The contract of <code>equals()</code> and
           <code>hashCode()</code> requires that equal objects
-          have the same hashCode. Therefore, whenever you override <code>equals()</code> you must override <code>
-          hashCode()</code> to ensure that your class can be used in
-          hash-based collections.
+          have the same hashCode. Therefore, whenever you override
+          <code>equals()</code> you must override <code>hashCode()</code>
+          to ensure that your class can be used in hash-based collections.
         </p>
       </subsection>
 
@@ -1512,8 +1513,8 @@ class SomeClass
             <td>illegalClassNames</td>
             <td>exception class names to reject</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td><code>&quot;java.lang.Exception,
-            java.lang.Throwable, java.lang.RuntimeException&quot;</code></td>
+            <td><code>java.lang.Throwable, RuntimeException, Error, Throwable, java.lang.Error,
+                java.lang.RuntimeException, Exception, java.lang.Exception</code></td>
             <td>3.2</td>
           </tr>
         </table>
@@ -1707,8 +1708,8 @@ class SomeClass
             <td>throw class names to reject</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td>
-              <code>&quot;java.lang.Throwable,
-              java.lang.Error, java.lang.RuntimeException&quot;</code>
+              <code>java.lang.Throwable, RuntimeException, Error, Throwable, java.lang.Error,
+              java.lang.RuntimeException</code>
             </td>
             <td>4.0</td>
           </tr>
@@ -1920,7 +1921,7 @@ class SomeClass
             <td>Message which is used to notify about violations;
             if empty then the default message is used.</td>
             <td><a href="property_types.html#string">String</a></td>
-            <td><code>&quot;&quot;</code>(empty)</td>
+            <td><code>&quot;&quot;</code></td>
             <td>3.2</td>
           </tr>
           <tr>
@@ -2043,23 +2044,23 @@ class SomeClass
             <td>Classes that should not be used as types in variable
             declarations, return values or parameters</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>&quot;java.util.HashSet, java.util.HashMap, java.util.LinkedHashMap,
-            java.util.LinkedHashSet, java.util.TreeSet,
-            java.util.TreeMap&quot;</td>
+            <td>LinkedHashSet, java.util.HashSet, java.util.LinkedHashMap,
+            java.util.TreeMap, HashMap, TreeSet, java.util.HashMap, TreeMap,
+            java.util.LinkedHashSet, java.util.TreeSet, HashSet, LinkedHashMap</td>
             <td>3.2</td>
           </tr>
           <tr>
           <td>legalAbstractClassNames</td>
           <td>Abstract classes that may be used as types. </td>
           <td><a href="property_types.html#stringSet">String Set</a></td>
-          <td/>
+          <td>{}</td>
           <td>4.2</td>
         </tr>
         <tr>
             <td>ignoredMethodNames</td>
             <td>Methods that should not be checked.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>&quot;getInitialContext, getEnvironment&quot; </td>
+            <td>getInitialContext, getEnvironment</td>
             <td>3.2</td>
           </tr>
           <tr>
@@ -2072,8 +2073,9 @@ class SomeClass
           <tr>
             <td>memberModifiers</td>
             <td>Check methods and fields with only corresponding modifiers.</td>
-            <td><a href="property_types.html#stringSet">List of tokens</a></td>
-            <td><code>null</code></td>
+            <td>subset of tokens
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html">TokenTypes</a></td>
+            <td/>
             <td>6.3</td>
           </tr>
           <tr>
@@ -2155,7 +2157,8 @@ class SomeClass
       <subsection name="Description">
         <p>Since Checkstyle 3.0</p>
         <p>
-          Checks for assignments in subexpressions, such as in <code>String s = Integer.toString(i = 2);</code>.
+          Checks for assignments in subexpressions, such as in
+          <code>String s = Integer.toString(i = 2);</code>.
         </p>
 
         <p>
@@ -2297,24 +2300,25 @@ static final Integer ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE = new Integer(42);
           </tr>
           <tr>
               <td>constantWaiverParentToken</td>
-              <td>Token that are allowed in the AST path from the number literal to the enclosing constant definition.</td>
+              <td>Token that are allowed in the AST path from the number literal to the
+                  enclosing constant definition.</td>
               <td>subset of tokens
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html">TokenTypes</a>
               </td>
               <td>
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ASSIGN">ASSIGN</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ARRAY_INIT">ARRAY_INIT</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#EXPR">EXPR</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#UNARY_PLUS">UNARY_PLUS</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#UNARY_MINUS">UNARY_MINUS</a>,
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#TYPECAST">TYPECAST</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELIST">ELIST</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_NEW">LITERAL_NEW</a>,
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_CALL">METHOD_CALL</a>,
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#EXPR">EXPR</a>,
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ARRAY_INIT">ARRAY_INIT</a>,
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#UNARY_MINUS">UNARY_MINUS</a>,
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#UNARY_PLUS">UNARY_PLUS</a>,
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELIST">ELIST</a>,
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#STAR">STAR</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#DIV">DIV</a>,
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ASSIGN">ASSIGN</a>,
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PLUS">PLUS</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#MINUS">MINUS</a>.
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#MINUS">MINUS</a>,
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#DIV">DIV</a>,
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_NEW">LITERAL_NEW</a>
               </td>
               <td>6.11</td>
           </tr>
@@ -2581,7 +2585,8 @@ class MyClass {
       <subsection name="Description">
         <p>Since Checkstyle 3.5</p>
         <p>
-            Check for ensuring that for loop control variables are not modified inside the for block. An example is:
+            Check for ensuring that for loop control variables are not modified inside
+            the for block. An example is:
         </p>
         <source>
            for (int i = 0; i &lt; 1; i++) {
@@ -2755,7 +2760,6 @@ class MyClass {
             </td>
             <td>
               <code>ANNOTATION</code>
-              (ignore strings inside the context of an annotation)
             </td>
             <td>4.4</td>
           </tr>
@@ -3837,14 +3841,15 @@ class C {
         </p>
 
         <p>
-          <b>max</b> property will only check returns in methods and lambdas that return a specific value (Ex: 'return 1;').
+          <b>max</b> property will only check returns in methods and lambdas that return a specific
+          value (Ex: 'return 1;').
         </p>
 
         <p>
-          <b>maxForVoid</b> property will only check returns in methods, constructors, and lambdas that have no return type (IE
-          'return;').
-          It will only count visible return statements. Return statements not normally written, but implied, at
-          the end of the method/constructor definition will not be taken into account.
+          <b>maxForVoid</b> property will only check returns in methods, constructors, and lambdas
+          that have no return type (IE 'return;').
+          It will only count visible return statements. Return statements not normally written, but
+          implied, at the end of the method/constructor definition will not be taken into account.
           To disallow "return;" in void return type methods, use a value of 0.
         </p>
 
@@ -4494,7 +4499,8 @@ if (&quot;something&quot;.equals(x))
 
           <tr>
             <td>allowedDistance</td>
-            <td>A distance between declaration of variable and its first usage. Values should be greater than 0.</td>
+            <td>A distance between declaration of variable and its first usage.
+                Values should be greater than 0.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td>3</td>
             <td>5.8</td>
@@ -4510,7 +4516,8 @@ if (&quot;something&quot;.equals(x))
 
           <tr>
             <td>validateBetweenScopes</td>
-            <td>Allows to calculate the distance between declaration of variable and its first usage in the different scopes.</td>
+            <td>Allows to calculate the distance between declaration of variable and its
+                first usage in the different scopes.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.8</td>

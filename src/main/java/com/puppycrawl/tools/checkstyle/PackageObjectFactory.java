@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -55,6 +55,7 @@ public class PackageObjectFactory implements ModuleFactory {
      * Enum class to define loading options.
      */
     public enum ModuleLoadOption {
+
         /**
          * Searching from registered checkstyle modules and from packages given in constructor.
          **/
@@ -65,6 +66,7 @@ public class PackageObjectFactory implements ModuleFactory {
          * Required for eclipse-cs plugin.
          **/
         TRY_IN_ALL_REGISTERED_PACKAGES,
+
     }
 
     /** Base package of checkstyle modules checks. */

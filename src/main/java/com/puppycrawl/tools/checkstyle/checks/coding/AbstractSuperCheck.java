@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -122,13 +122,11 @@ public abstract class AbstractSuperCheck
 
         while (dotAst.getType() != TokenTypes.CTOR_DEF
                 && dotAst.getType() != TokenTypes.INSTANCE_INIT) {
-
             if (dotAst.getType() == TokenTypes.METHOD_DEF) {
                 inOverridingMethod = isOverridingMethod(dotAst);
                 break;
             }
             dotAst = dotAst.getParent();
-
         }
         return inOverridingMethod;
     }
@@ -149,7 +147,6 @@ public abstract class AbstractSuperCheck
      * @return true if method name is the same
      */
     private boolean isSameNameMethod(DetailAST ast) {
-
         AST sibling = ast.getNextSibling();
         // ignore type parameters
         if (sibling != null
@@ -204,6 +201,7 @@ public abstract class AbstractSuperCheck
      * @author Rick Giles
      */
     private static class MethodNode {
+
         /** Method definition. */
         private final DetailAST method;
 
@@ -242,5 +240,7 @@ public abstract class AbstractSuperCheck
         public DetailAST getMethod() {
             return method;
         }
+
     }
+
 }

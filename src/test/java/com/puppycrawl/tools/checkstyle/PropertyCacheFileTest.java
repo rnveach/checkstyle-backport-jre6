@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -330,7 +330,6 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     @Test
     @SuppressWarnings("unchecked")
     public void testExceptionNoSuchAlgorithmException() throws Exception {
-
         final Configuration config = new DefaultConfiguration("myName");
         final String filePath = temporaryFolder.newFile().getPath();
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
@@ -414,7 +413,6 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     @Test
     public void testPutNonExistentExternalResourceDifferentExceptionsBetweenRuns()
             throws Exception {
-
         final File cacheFile = temporaryFolder.newFile();
 
         // We invoke 'putExternalResources' twice to invalidate cache
@@ -501,4 +499,5 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
         detailsAfterChangeInConfig.load(Files7.newBufferedReader(new Path(cacheFile)));
         assertEquals("Invalid cache size", 1, detailsAfterChangeInConfig.size());
     }
+
 }

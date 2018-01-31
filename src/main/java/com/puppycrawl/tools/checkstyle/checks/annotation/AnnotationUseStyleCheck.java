@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -138,6 +138,7 @@ public final class AnnotationUseStyleCheck extends AbstractCheck {
          * Mixed styles.
          */
         IGNORE,
+
     }
 
     /**
@@ -166,6 +167,7 @@ public final class AnnotationUseStyleCheck extends AbstractCheck {
          * Mixed styles.
          */
         IGNORE,
+
     }
 
     /**
@@ -194,6 +196,7 @@ public final class AnnotationUseStyleCheck extends AbstractCheck {
          * Mixed styles.
          */
         IGNORE,
+
     }
 
     /**
@@ -336,7 +339,6 @@ public final class AnnotationUseStyleCheck extends AbstractCheck {
      * @param annotation the annotation token
      */
     private void checkStyleType(final DetailAST annotation) {
-
         switch (elementStyle) {
             case COMPACT_NO_ARRAY:
                 checkCompactNoArrayStyle(annotation);
@@ -502,4 +504,5 @@ public final class AnnotationUseStyleCheck extends AbstractCheck {
             }
         }
     }
+
 }

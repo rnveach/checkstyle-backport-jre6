@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -18,6 +18,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package com.google.checkstyle.test.chapter5naming.rule53camelcase;
+
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -37,7 +39,6 @@ public class AbbreviationAsWordInNameTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAbbreviationAsWordInName() throws Exception {
-
         final int maxCapitalCount = 2;
 
         final String[] expected = {
@@ -59,7 +60,9 @@ public class AbbreviationAsWordInNameTest extends AbstractModuleTestSupport {
         verify(checkConfig, filePath, expected, warnList);
     }
 
-    private String getWarningMessage(String typeName, int expectedCapitalCount) {
+    private String getWarningMessage(String typeName, int expectedCapitalCount)
+            throws IOException {
         return getCheckMessage(clazz, MSG_KEY, typeName, expectedCapitalCount);
     }
+
 }

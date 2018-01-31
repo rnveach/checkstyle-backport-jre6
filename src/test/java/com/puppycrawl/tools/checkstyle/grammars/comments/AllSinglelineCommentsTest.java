@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -33,6 +33,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class AllSinglelineCommentsTest extends AbstractModuleTestSupport {
+
     private static final Set<String> ALL_COMMENTS = new LinkedHashSet<String>();
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -52,6 +53,7 @@ public class AllSinglelineCommentsTest extends AbstractModuleTestSupport {
     }
 
     private static class SinglelineCommentListenerCheck extends AbstractCheck {
+
         @Override
         public boolean isCommentNodesRequired() {
             return true;
@@ -88,5 +90,7 @@ public class AllSinglelineCommentsTest extends AbstractModuleTestSupport {
                 Assert.fail("Unexpected comment: " + commentContent);
             }
         }
+
     }
+
 }

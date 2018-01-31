@@ -72,7 +72,7 @@ line 5: ////////////////////////////////////////////////////////////////////
           <tr>
             <td>charset</td>
             <td>character encoding to use when reading the headerFile</td>
-            <td><a href="property_types.html#string">string</a></td>
+            <td><a href="property_types.html#string">String</a></td>
             <td>the charset property of the parent
             <a href="config.html#Checker">Checker</a> module</td>
             <td>5.0</td>
@@ -84,7 +84,7 @@ line 5: ////////////////////////////////////////////////////////////////////
               must be separated by the string <code>&quot;\n&quot;</code> (even on platforms with a
               different line separator), see examples below.
             </td>
-            <td><a href="property_types.html#string">string</a></td>
+            <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
             <td>5.0</td>
           </tr>
@@ -99,7 +99,7 @@ line 5: ////////////////////////////////////////////////////////////////////
             <td>fileExtensions</td>
             <td>file type extension of files to process</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td><code>{}</code></td>
+            <td><code>all files</code></td>
             <td>6.9</td>
           </tr>
         </table>
@@ -107,7 +107,8 @@ line 5: ////////////////////////////////////////////////////////////////////
 
       <subsection name="Examples">
           <p>
-              In default configuration the check does not rise any violations. Default values of properties are used.
+              In default configuration the check does not rise any violations.
+              Default values of properties are used.
           </p>
 
           <source>
@@ -115,7 +116,9 @@ line 5: ////////////////////////////////////////////////////////////////////
           </source>
 
         <p>
-          To configure the check to use header file <code>&quot;config/java.header&quot;</code> and ignore lines <code>2</code>, <code>3</code>, and <code> 4</code> and only process Java files:
+          To configure the check to use header file <code>&quot;config/java.header&quot;</code> and
+          ignore lines <code>2</code>, <code>3</code>, and <code> 4</code> and only process Java
+          files:
         </p>
 
         <source>
@@ -278,7 +281,7 @@ line 6: ^\W*$
           <tr>
             <td>charset</td>
             <td>character encoding to use when reading the headerFile</td>
-            <td><a href="property_types.html#string">string</a></td>
+            <td><a href="property_types.html#string">String</a></td>
             <td>the charset property of the parent
             <a href="config.html#Checker">Checker</a> module</td>
             <td>5.0</td>
@@ -292,7 +295,7 @@ line 6: ^\W*$
               checkstyle will forcefully expect an empty line to exist. See examples
               below. Regular expressions must not span multiple lines.
             </td>
-            <td><a href="property_types.html#string">string</a></td>
+            <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
             <td>5.0</td>
           </tr>
@@ -307,7 +310,7 @@ line 6: ^\W*$
             <td>fileExtensions</td>
             <td>file type extension of files to process</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td><code>{}</code></td>
+            <td><code>all files</code></td>
             <td>6.9</td>
           </tr>
         </table>
@@ -315,14 +318,16 @@ line 6: ^\W*$
 
       <subsection name="Examples">
           <p>
-              In default configuration the check does not rise any violations. Default values of properties are used.
+              In default configuration the check does not rise any violations.
+              Default values of properties are used.
           </p>
           <source>
 &lt;module name=&quot;RegexpHeader&quot;/&gt;
           </source>
 
         <p>
-          To configure the check to use header file <code>&quot;config/java.header&quot;</code> and <code>10</code> and <code>13</code> multi-lines:
+          To configure the check to use header file <code>&quot;config/java.header&quot;</code> and
+          <code>10</code> and <code>13</code> multi-lines:
         </p>
         <source>
 &lt;module name=&quot;RegexpHeader&quot;&gt;

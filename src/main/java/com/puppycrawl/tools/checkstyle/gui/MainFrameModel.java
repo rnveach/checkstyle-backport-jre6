@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -25,12 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import antlr.ANTLRException;
 import com.google.common.collect.ImmutableList;
-import com.puppycrawl.tools.checkstyle.TreeWalker;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
@@ -75,6 +73,7 @@ public class MainFrameModel {
         public String toString() {
             return description;
         }
+
     }
 
     /** Parse tree model. */
@@ -199,11 +198,11 @@ public class MainFrameModel {
 
                 switch (parseMode) {
                     case PLAIN_JAVA:
-                        parseTree = parseFile(file);
+                        parseTree = JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS);
                         break;
                     case JAVA_WITH_COMMENTS:
                     case JAVA_WITH_JAVADOC_AND_COMMENTS:
-                        parseTree = parseFileWithComments(file);
+                        parseTree = JavaParser.parseFile(file, JavaParser.Options.WITH_COMMENTS);
                         break;
                     default:
                         throw new IllegalArgumentException("Unknown mode: " + parseMode);
@@ -232,39 +231,7 @@ public class MainFrameModel {
                     ex.getClass().getSimpleName(), file.getPath());
                 throw new CheckstyleException(exceptionMsg, ex);
             }
-            catch (ANTLRException ex) {
-                final String exceptionMsg = String.format(Locale.ROOT,
-                    "%s occurred while opening file %s.",
-                    ex.getClass().getSimpleName(), file.getPath());
-                throw new CheckstyleException(exceptionMsg, ex);
-            }
         }
-    }
-
-    /**
-     * Parse a file and return the parse tree.
-     * @param file the file to parse.
-     * @return the root node of the parse tree.
-     * @throws IOException if the file could not be read.
-     * @throws ANTLRException if the file is not a Java source.
-     */
-    private static DetailAST parseFile(File file) throws IOException, ANTLRException {
-        final FileText fileText = getFileText(file);
-        final FileContents contents = new FileContents(fileText);
-        return TreeWalker.parse(contents);
-    }
-
-    /**
-     * Parse a file and return the parse tree with comment nodes.
-     * @param file the file to parse.
-     * @return the root node of the parse tree.
-     * @throws IOException if the file could not be read.
-     * @throws ANTLRException if the file is not a Java source.
-     */
-    private static DetailAST parseFileWithComments(File file) throws IOException, ANTLRException {
-        final FileText fileText = getFileText(file);
-        final FileContents contents = new FileContents(fileText);
-        return TreeWalker.parseWithComments(contents);
     }
 
     /**
@@ -277,4 +244,5 @@ public class MainFrameModel {
         return new FileText(file.getAbsoluteFile(),
                 System.getProperty("file.encoding", StandardCharsets.UTF_8.name()));
     }
+
 }

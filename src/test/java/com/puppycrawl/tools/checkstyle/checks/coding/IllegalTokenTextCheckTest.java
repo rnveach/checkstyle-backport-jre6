@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -36,6 +36,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
 public class IllegalTokenTextCheckTest
     extends AbstractModuleTestSupport {
+
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/coding/illegaltokentext";
@@ -132,7 +133,7 @@ public class IllegalTokenTextCheckTest
         check.setFormat("test");
         check.setIgnoreCase(true);
         final Pattern actual = (Pattern) TestUtil.getClassDeclaredField(
-                IllegalTokenTextCheck.class, "regexp").get(check);
+                IllegalTokenTextCheck.class, "format").get(check);
         Assert.assertEquals("should match", Pattern.CASE_INSENSITIVE, actual.flags());
         Assert.assertEquals("should match", "test", actual.pattern());
     }
@@ -162,4 +163,5 @@ public class IllegalTokenTextCheckTest
                 + " such cases).", tokenTypesWithMutableText.contains(tokenType));
         }
     }
+
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -113,7 +113,6 @@ public class NoWhitespaceBeforeCheck
 
         if ((before == -1 || Character.isWhitespace(line.charAt(before)))
                 && !isInEmptyForInitializerOrCondition(ast)) {
-
             boolean flag = !allowLineBreaks;
             // verify all characters before '.' are whitespace
             for (int i = 0; !flag && i <= before - 1; i++) {
@@ -155,4 +154,5 @@ public class NoWhitespaceBeforeCheck
     public void setAllowLineBreaks(boolean allowLineBreaks) {
         this.allowLineBreaks = allowLineBreaks;
     }
+
 }

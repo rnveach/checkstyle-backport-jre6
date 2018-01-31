@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,7 @@ import org.junit.Test;
  * @noinspection ClassIndependentOfModule
  */
 public class GeneratedJavaTokenTypesTest {
+
     /**
      * <p>
      * New tokens must be added onto the end of the list with new numbers, and
@@ -256,4 +257,5 @@ public class GeneratedJavaTokenTypesTest {
                 + " that their old numbering didn't change", 196,
                 GeneratedJavaTokenTypes.class.getDeclaredFields().length);
     }
+
 }

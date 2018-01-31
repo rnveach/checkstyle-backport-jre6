@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,10 +23,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractTreeTestSupport;
-import com.puppycrawl.tools.checkstyle.AstTreeStringPrinter;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.Comment;
 
 public class CommentsTest extends AbstractTreeTestSupport {
+
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/grammars/comments";
@@ -35,13 +36,13 @@ public class CommentsTest extends AbstractTreeTestSupport {
     @Test
     public void testCompareExpectedTreeWithInput1() throws Exception {
         verifyAst(getPath("InputComments1Ast.txt"), getPath("InputComments1.java"),
-                AstTreeStringPrinter.PrintOptions.WITH_COMMENTS);
+                JavaParser.Options.WITH_COMMENTS);
     }
 
     @Test
     public void testCompareExpectedTreeWithInput2() throws Exception {
         verifyAst(getPath("InputComments2Ast.txt"), getPath("InputComments2.java"),
-                AstTreeStringPrinter.PrintOptions.WITH_COMMENTS);
+                JavaParser.Options.WITH_COMMENTS);
     }
 
     @Test
@@ -81,4 +82,5 @@ public class CommentsTest extends AbstractTreeTestSupport {
         Assert.assertFalse("Invalid intersection result", comment.intersects(90, 7, 91, 20));
         Assert.assertFalse("Invalid intersection result", comment.intersects(89, 56, 89, 80));
     }
+
 }

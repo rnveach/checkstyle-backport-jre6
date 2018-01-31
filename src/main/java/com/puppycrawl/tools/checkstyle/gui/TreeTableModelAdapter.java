@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -42,6 +42,7 @@ import javax.swing.tree.TreePath;
  * @author Scott Violet
  */
 public class TreeTableModelAdapter extends AbstractTableModel {
+
     private static final long serialVersionUID = 8269213416115369275L;
 
     /** JTree component. */
@@ -126,6 +127,7 @@ public class TreeTableModelAdapter extends AbstractTableModel {
      * TreeExpansionListener that can update the table when tree changes.
      */
     private class UpdatingTreeExpansionListener implements TreeExpansionListener {
+
         // Don't use fireTableRowsInserted() here; the selection model
         // would get updated twice.
         @Override
@@ -137,12 +139,14 @@ public class TreeTableModelAdapter extends AbstractTableModel {
         public void treeCollapsed(TreeExpansionEvent event) {
             fireTableDataChanged();
         }
+
     }
 
     /**
      * TreeModelListener that can update the table when tree changes.
      */
     private class UpdatingTreeModelListener implements TreeModelListener {
+
         @Override
         public void treeNodesChanged(TreeModelEvent event) {
             delayedFireTableDataChanged();
@@ -162,5 +166,7 @@ public class TreeTableModelAdapter extends AbstractTableModel {
         public void treeStructureChanged(TreeModelEvent event) {
             delayedFireTableDataChanged();
         }
+
     }
+
 }

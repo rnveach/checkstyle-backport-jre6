@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,7 @@ import javax.swing.tree.TreePath;
  * @author unknown
  */
 class ListToTreeSelectionModelWrapper extends DefaultTreeSelectionModel {
+
     private static final long serialVersionUID = 2267930983939339510L;
     /** TreeTable to perform updates on. */
     private final TreeTable treeTable;
@@ -128,4 +129,5 @@ class ListToTreeSelectionModelWrapper extends DefaultTreeSelectionModel {
             }
         }
     }
+
 }

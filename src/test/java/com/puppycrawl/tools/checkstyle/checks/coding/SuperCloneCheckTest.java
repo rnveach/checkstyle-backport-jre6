@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
@@ -39,6 +40,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 public class SuperCloneCheckTest
     extends AbstractModuleTestSupport {
+
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/coding/superclone";
@@ -86,13 +88,14 @@ public class SuperCloneCheckTest
     public void testClearState() throws Exception {
         final AbstractSuperCheck check = new SuperCloneCheck();
         final Optional<DetailAST> methodDef = TestUtil.findTokenInAstByPredicate(
-            TestUtil.parseFile(new File(getPath("InputSuperCloneWithoutWarnings.java"))),
-                new Predicate<DetailAST>() {
-                    @Override
-                    public boolean test(DetailAST ast) {
-                        return ast.getType() == TokenTypes.METHOD_DEF;
-                    }
-                });
+            JavaParser.parseFile(new File(getPath("InputSuperCloneWithoutWarnings.java")),
+                JavaParser.Options.WITHOUT_COMMENTS),
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.METHOD_DEF;
+                }
+            });
 
         assertTrue("Ast should contain METHOD_DEF", methodDef.isPresent());
         assertTrue("State is not cleared on beginTree",
@@ -105,4 +108,5 @@ public class SuperCloneCheckTest
                     }
                 }));
     }
+
 }

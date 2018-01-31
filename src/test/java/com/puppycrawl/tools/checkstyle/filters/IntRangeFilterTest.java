@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,7 @@ import org.junit.Test;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class IntRangeFilterTest {
+
     @Test
     public void testDecide() {
         final IntFilter filter = new IntRangeFilter(0, 10);
@@ -59,4 +60,5 @@ public class IntRangeFilterTest {
     public void testEqualsAndHashCode() {
         EqualsVerifier.forClass(IntRangeFilter.class).usingGetClass().verify();
     }
+
 }

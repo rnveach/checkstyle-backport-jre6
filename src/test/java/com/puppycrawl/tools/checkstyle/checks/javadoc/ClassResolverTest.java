@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -38,6 +38,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ClassResolver.class, ClassResolverTest.class })
 public class ClassResolverTest {
+
     @Test
     public void testMisc() throws ClassNotFoundException {
         final Set<String> imports = new HashSet<String>();
@@ -176,4 +177,5 @@ public class ClassResolverTest {
         final boolean result = classResolver.isLoadable("someClass");
         assertFalse("result should be false", result);
     }
+
 }

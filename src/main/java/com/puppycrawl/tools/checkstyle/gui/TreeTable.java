@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -55,7 +55,8 @@ import com.puppycrawl.tools.checkstyle.jre6.lang.Math7;
  * @author Lars Kühne
  * @noinspection ThisEscapedInObjectConstruction
  */
-public class TreeTable extends JTable {
+public final class TreeTable extends JTable {
+
     private static final long serialVersionUID = -8493693409423365387L;
     /** A subclass of JTree. */
     private final TreeTableCellRenderer tree;
@@ -69,7 +70,6 @@ public class TreeTable extends JTable {
      * @param treeTableModel Tree table model
      */
     public TreeTable(ParseTreeTableModel treeTableModel) {
-
         // Create the tree. It will be used as a renderer and editor.
         tree = new TreeTableCellRenderer(this, treeTableModel);
 
@@ -208,7 +208,7 @@ public class TreeTable extends JTable {
      * Overridden to pass the new rowHeight to the tree.
      */
     @Override
-    public final void setRowHeight(int newRowHeight) {
+    public void setRowHeight(int newRowHeight) {
         super.setRowHeight(newRowHeight);
         if (tree != null && tree.getRowHeight() != newRowHeight) {
             tree.setRowHeight(getRowHeight());
@@ -246,6 +246,7 @@ public class TreeTable extends JTable {
      */
     private class TreeTableCellEditor extends BaseCellEditor implements
             TableCellEditor {
+
         @Override
         public Component getTableCellEditorComponent(JTable table,
                 Object value,
@@ -296,5 +297,7 @@ public class TreeTable extends JTable {
 
             return false;
         }
+
     }
+
 }

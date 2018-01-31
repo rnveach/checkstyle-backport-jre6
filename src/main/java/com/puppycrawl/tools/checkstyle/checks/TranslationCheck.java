@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -527,6 +527,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
 
     /** Class which represents a resource bundle. */
     private static class ResourceBundle {
+
         /** Bundle base name. */
         private final String baseName;
         /** Common extension of files which are included in the resource bundle. */
@@ -588,5 +589,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
             }
             return containsFile;
         }
+
     }
+
 }

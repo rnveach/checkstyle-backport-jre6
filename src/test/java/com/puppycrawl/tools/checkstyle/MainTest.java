@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -76,6 +76,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Main.class, CommonUtils.class, Closeables.class})
 public class MainTest {
+
     private static final String USAGE = String.format(Locale.ROOT,
           "usage: java com.puppycrawl.tools.checkstyle.Main [options] -c <config.xml>"
         + " file...%n"
@@ -173,7 +174,6 @@ public class MainTest {
     @Test
     public void testVersionPrint()
             throws Exception {
-
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
@@ -287,7 +287,6 @@ public class MainTest {
 
     @Test
     public void testExistingTargetFile() throws Exception {
-
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
@@ -303,7 +302,6 @@ public class MainTest {
 
     @Test
     public void testExistingTargetFileXmlOutput() throws Exception {
-
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() throws IOException {
@@ -327,7 +325,6 @@ public class MainTest {
 
     @Test
     public void testExistingTargetFilePlainOutput() throws Exception {
-
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
@@ -407,7 +404,6 @@ public class MainTest {
     @Test
     public void testExistentTargetFilePlainOutputToNonExistentFile()
             throws Exception {
-
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {
@@ -647,7 +643,6 @@ public class MainTest {
 
     @Test
     public void testExistingDirectoryWithViolations() throws Exception {
-
         // we just reference there all violations
         final String[][] outputValues = {
                 {"InputMainComplexityOverflow", "1", "172"},
@@ -741,7 +736,6 @@ public class MainTest {
 
     @Test
     public void testPrintTreeOnMoreThanOneFile() throws Exception {
-
         exit.expectSystemExitWithStatus(-1);
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -875,7 +869,6 @@ public class MainTest {
 
     @Test
     public void testConflictingOptionsTvsC() throws Exception {
-
         exit.expectSystemExitWithStatus(-1);
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -891,7 +884,6 @@ public class MainTest {
 
     @Test
     public void testConflictingOptionsTvsP() throws Exception {
-
         exit.expectSystemExitWithStatus(-1);
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -907,7 +899,6 @@ public class MainTest {
 
     @Test
     public void testConflictingOptionsTvsF() throws Exception {
-
         exit.expectSystemExitWithStatus(-1);
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -1203,4 +1194,5 @@ public class MainTest {
                 ex.getMessage());
         }
     }
+
 }

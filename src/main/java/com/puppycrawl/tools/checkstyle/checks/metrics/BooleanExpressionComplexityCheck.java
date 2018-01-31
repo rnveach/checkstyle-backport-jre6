@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -211,6 +211,7 @@ public final class BooleanExpressionComplexityCheck extends AbstractCheck {
      * @author o_sukhodolsky
      */
     private class Context {
+
         /**
          * Should we perform check in current context or not.
          * Usually false if we are inside equals() method.
@@ -253,5 +254,7 @@ public final class BooleanExpressionComplexityCheck extends AbstractCheck {
                     MSG_KEY, count, max);
             }
         }
+
     }
+
 }

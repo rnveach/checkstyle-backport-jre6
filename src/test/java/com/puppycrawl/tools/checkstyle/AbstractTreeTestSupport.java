@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -48,7 +48,7 @@ public abstract class AbstractTreeTestSupport extends AbstractPathTestSupport {
      * @throws Exception if exception occurs during verification.
      */
     protected static void verifyAst(String expectedTextPrintFileName, String actualJavaFileName,
-                                    AstTreeStringPrinter.PrintOptions withComments)
+                                    JavaParser.Options withComments)
             throws Exception {
         final String expectedContents = readFile(expectedTextPrintFileName);
 
@@ -62,7 +62,7 @@ public abstract class AbstractTreeTestSupport extends AbstractPathTestSupport {
     /**
      * Performs verification of the given text ast tree representation.
      * This implementation uses
-     * {@link AbstractTreeTestSupport#verifyAst(String, String, AstTreeStringPrinter.PrintOptions)}
+     * {@link AbstractTreeTestSupport#verifyAst(String, String, JavaParser.Options)}
      * method inside.
      * @param expectedTextPrintFileName expected text ast tree representation.
      * @param actualJavaFileName actual text ast tree representation.
@@ -71,7 +71,7 @@ public abstract class AbstractTreeTestSupport extends AbstractPathTestSupport {
     protected static void verifyAst(String expectedTextPrintFileName, String actualJavaFileName)
             throws Exception {
         verifyAst(expectedTextPrintFileName, actualJavaFileName,
-                AstTreeStringPrinter.PrintOptions.WITHOUT_COMMENTS);
+                JavaParser.Options.WITHOUT_COMMENTS);
     }
 
     /**
@@ -83,7 +83,6 @@ public abstract class AbstractTreeTestSupport extends AbstractPathTestSupport {
      */
     protected static void verifyJavaAndJavadocAst(String expectedTextPrintFilename,
                                                   String actualJavaFilename) throws Exception {
-
         final String expectedContents = readFile(expectedTextPrintFilename);
 
         final String actualContents = AstTreeStringPrinter.printJavaAndJavadocTree(
@@ -102,7 +101,6 @@ public abstract class AbstractTreeTestSupport extends AbstractPathTestSupport {
      */
     protected static void verifyJavadocTree(String expectedTextPrintFilename,
                                             String actualJavadocFilename) throws Exception {
-
         final String expectedContents = readFile(expectedTextPrintFilename);
 
         final String actualContents = DetailNodeTreeStringPrinter.printFileAst(
@@ -111,4 +109,5 @@ public abstract class AbstractTreeTestSupport extends AbstractPathTestSupport {
         assertEquals("Generated tree from the javadoc file should match the pre-defined tree",
                 expectedContents, actualContents);
     }
+
 }

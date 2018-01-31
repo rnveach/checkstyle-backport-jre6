@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
@@ -111,9 +112,8 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
         );
 
         for (BlockCommentPositionTestMetadata metadata : metadataList) {
-            final DetailAST ast = TestUtil.parseFile(
-                    new File(getPath(metadata.getFileName()))
-            );
+            final DetailAST ast = JavaParser.parseFile(new File(getPath(metadata.getFileName())),
+                JavaParser.Options.WITH_COMMENTS);
             final int matches = getJavadocsCount(ast, metadata.getAssertion());
             assertEquals("Invalid javadoc count", metadata.getMatchesNum(), matches);
         }
@@ -166,5 +166,7 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
         public int getMatchesNum() {
             return matchesNum;
         }
+
     }
+
 }

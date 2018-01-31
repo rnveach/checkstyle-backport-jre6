@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -233,7 +233,6 @@ public class SuppressWarningsHolder
             identifier = identifier.substring(JAVA_LANG_PREFIX.length());
         }
         if ("SuppressWarnings".equals(identifier)) {
-
             final List<String> values = getAllAnnotationValues(ast);
             if (!isAnnotationEmpty(values)) {
                 final DetailAST targetAST = getAnnotationTarget(ast);
@@ -495,6 +494,7 @@ public class SuppressWarningsHolder
 
     /** Records a particular suppression for a region of a file. */
     private static class Entry {
+
         /** The source name of the suppressed check. */
         private final String checkName;
         /** The suppression region for the check - first line. */
@@ -562,5 +562,7 @@ public class SuppressWarningsHolder
         public int getLastColumn() {
             return lastColumn;
         }
+
     }
+
 }

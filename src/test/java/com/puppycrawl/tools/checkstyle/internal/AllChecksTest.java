@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
 
 public class AllChecksTest extends AbstractModuleTestSupport {
+
     private static final Locale[] ALL_LOCALES = {
         Locale.GERMAN,
         new Locale("es"),
@@ -548,4 +549,5 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         }
         return result;
     }
+
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -30,9 +30,18 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class RegexpSinglelineJavaCheckTest extends AbstractModuleTestSupport {
+
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/regexp/regexpsinglelinejava";
+    }
+
+    @Test
+    public void testGetAcceptableTokens() {
+        final RegexpSinglelineJavaCheck regexpSinglelineJavaCheck =
+            new RegexpSinglelineJavaCheck();
+        assertArrayEquals("Default acceptable tokens are invalid",
+            CommonUtils.EMPTY_INT_ARRAY, regexpSinglelineJavaCheck.getAcceptableTokens());
     }
 
     @Test
@@ -246,4 +255,5 @@ public class RegexpSinglelineJavaCheckTest extends AbstractModuleTestSupport {
         };
         verify(checkConfig, getPath("InputRegexpSinglelineJavaSemantic.java"), expected);
     }
+
 }

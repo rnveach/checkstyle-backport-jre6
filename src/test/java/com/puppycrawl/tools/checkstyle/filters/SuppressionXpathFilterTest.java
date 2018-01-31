@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -32,11 +32,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
@@ -149,7 +149,7 @@ public class SuppressionXpathFilterTest extends AbstractModuleTestSupport {
         final LocalizedMessage message = new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "",
                 null, null, "777", getClass(), null);
         final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(null, "file1.java",
-                message, TestUtil.parseFile(file));
+                message, JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));
 
         assertFalse("TreeWalker audit event should be rejected",
                 filter.accept(ev));
@@ -183,4 +183,5 @@ public class SuppressionXpathFilterTest extends AbstractModuleTestSupport {
         suppressionXpathFilter.finishLocalSetup();
         return suppressionXpathFilter;
     }
+
 }

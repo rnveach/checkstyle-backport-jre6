@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -139,7 +139,6 @@ public class TokenUtilsTest {
 
             assertEquals("Invalid exception message",
                     "given id " + id, expected.getMessage());
-
         }
     }
 
@@ -215,7 +214,6 @@ public class TokenUtilsTest {
         final String id = "EOF";
 
         assertEquals("Invalid token id", TokenTypes.EOF, TokenUtils.getTokenId(id));
-
     }
 
     @Test
@@ -250,4 +248,5 @@ public class TokenUtilsTest {
 
         assertEquals("Invalid second sibling", secondSibling, result.get());
     }
+
 }

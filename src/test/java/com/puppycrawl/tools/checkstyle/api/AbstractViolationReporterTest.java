@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -36,6 +36,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author lkuehne
  */
 public class AbstractViolationReporterTest {
+
     private final AbstractCheck emptyCheck = new EmptyCheck();
 
     private static Method getGetMessageBundleMethod() throws Exception {
@@ -123,6 +124,7 @@ public class AbstractViolationReporterTest {
     }
 
     private static class EmptyCheck extends AbstractCheck {
+
         @Override
         public int[] getDefaultTokens() {
             return CommonUtils.EMPTY_INT_ARRAY;
@@ -137,5 +139,7 @@ public class AbstractViolationReporterTest {
         public int[] getRequiredTokens() {
             return CommonUtils.EMPTY_INT_ARRAY;
         }
+
     }
+
 }

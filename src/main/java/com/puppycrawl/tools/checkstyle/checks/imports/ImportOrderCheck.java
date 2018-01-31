@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
+ * Checks the ordering/grouping of imports. Features are:
  * <ul>
  * <li>groups imports: ensures that groups of imports come in a specific order
  * (e.g., java. comes first, javax. comes second, then everything else)</li>
@@ -306,7 +307,7 @@ public class ImportOrderCheck
      * by at least one blank line.
      *
      * @param separated
-     *            whether groups should be separated by oen blank line.
+     *            whether groups should be separated by one blank line.
      */
     public void setSeparated(boolean separated) {
         this.separated = separated;
@@ -385,7 +386,6 @@ public class ImportOrderCheck
         // using set of IF instead of SWITCH to analyze Enum options to satisfy coverage.
         // https://github.com/checkstyle/checkstyle/issues/1387
         if (option == ImportOrderOption.TOP) {
-
             if (isLastImportAndNonStatic) {
                 lastGroup = Integer.MIN_VALUE;
                 lastImport = "";
@@ -395,10 +395,8 @@ public class ImportOrderCheck
             if (isStaticAndNotLastImport && !beforeFirstImport) {
                 log(ident.getLineNo(), MSG_ORDERING, ident.getText());
             }
-
         }
         else if (option == ImportOrderOption.BOTTOM) {
-
             if (isStaticAndNotLastImport) {
                 lastGroup = Integer.MIN_VALUE;
                 lastImport = "";
@@ -408,21 +406,17 @@ public class ImportOrderCheck
             if (isLastImportAndNonStatic) {
                 log(ident.getLineNo(), MSG_ORDERING, ident.getText());
             }
-
         }
         else if (option == ImportOrderOption.ABOVE) {
             // previous non-static but current is static
             doVisitToken(ident, isStatic, isStaticAndNotLastImport);
-
         }
         else if (option == ImportOrderOption.UNDER) {
             doVisitToken(ident, isStatic, isLastImportAndNonStatic);
-
         }
         else if (option == ImportOrderOption.INFLOW) {
             // "previous" argument is useless here
             doVisitToken(ident, isStatic, true);
-
         }
         else {
             throw new IllegalStateException(
@@ -696,4 +690,5 @@ public class ImportOrderCheck
 
         return result;
     }
+
 }

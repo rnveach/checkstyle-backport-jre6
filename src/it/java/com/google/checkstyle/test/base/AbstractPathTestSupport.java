@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class AbstractPathTestSupport {
+
     /**
      * Returns the exact location for the package where the file is present.
      * @return path for the package name for the file.
@@ -42,4 +43,5 @@ public abstract class AbstractPathTestSupport {
         return new File("src/it/resources/" + getPackageLocation() + "/" + filename)
                 .getCanonicalPath();
     }
+
 }

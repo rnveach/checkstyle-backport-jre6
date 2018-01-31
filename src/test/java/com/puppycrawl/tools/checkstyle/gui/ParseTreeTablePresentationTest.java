@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,15 +27,12 @@ import org.junit.Test;
 
 import antlr.collections.AST;
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
-import com.puppycrawl.tools.checkstyle.TreeWalker;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
-import com.puppycrawl.tools.checkstyle.api.FileContents;
-import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.gui.MainFrameModel.ParseMode;
-import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
 public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
@@ -47,18 +44,10 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
         return "com/puppycrawl/tools/checkstyle/gui/parsetreetablepresentation";
     }
 
-    private static DetailAST parseFile(File file) throws Exception {
-        final FileContents contents = new FileContents(
-                new FileText(file.getAbsoluteFile(),
-                        System.getProperty("file.encoding",
-                        StandardCharsets.UTF_8.name())));
-        return TreeWalker.parseWithComments(contents);
-    }
-
     @Before
     public void loadTree() throws Exception {
-        tree = parseFile(
-                new File(getPath("InputParseTreeTablePresentation.java")));
+        tree = JavaParser.parseFile(new File(getPath("InputParseTreeTablePresentation.java")),
+            JavaParser.Options.WITH_COMMENTS);
     }
 
     @Test
@@ -215,7 +204,6 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
      */
     @Test
     public void testGetValueAt() {
-
         final DetailAST node = tree.getFirstChild()
             .getNextSibling()
             .getNextSibling()
@@ -245,7 +233,6 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
         catch (IllegalStateException ex) {
             Assert.assertEquals("Invalid error message", "Unknown column", ex.getMessage());
         }
-
     }
 
     @Test
@@ -284,7 +271,6 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
         catch (IllegalStateException ex) {
             Assert.assertEquals("Invalid error message", "Unknown column", ex.getMessage());
         }
-
     }
 
     @Test
@@ -312,7 +298,6 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
         Assert.assertEquals("Invalid column name", "Line", parseTree.getColumnName(2));
         Assert.assertEquals("Invalid column name", "Column", parseTree.getColumnName(3));
         Assert.assertEquals("Invalid column name", "Text", parseTree.getColumnName(4));
-
     }
 
 }

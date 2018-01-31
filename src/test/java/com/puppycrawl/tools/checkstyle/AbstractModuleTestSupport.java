@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * Enum to specify options for checker creation.
      */
     public enum ModuleCreationOption {
+
         /**
          * Points that the module configurations
          * has to be added under {@link TreeWalker}.
@@ -63,6 +64,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
          * a root of default configuration.
          */
         IN_CHECKER
+
     }
 
     private static final String ROOT_MODULE_NAME = "root";
@@ -281,7 +283,6 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
         final LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         try {
-
             final List<String> actuals = new ArrayList<String>();
             String line;
             while (((line = lnr.readLine()) != null) && (actuals.size() < expected.length)) {
@@ -373,7 +374,6 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
         try {
-
             final Map<String, List<String>> actualViolations = new HashMap<String, List<String>>();
             for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= errorCount;
                  line = lnr.readLine()) {
@@ -464,4 +464,5 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
         }
         return messageBundle;
     }
+
 }

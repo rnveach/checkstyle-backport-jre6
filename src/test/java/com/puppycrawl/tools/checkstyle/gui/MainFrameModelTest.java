@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -197,7 +197,7 @@ public class MainFrameModelTest extends AbstractModuleTestSupport {
         }
         catch (CheckstyleException ex) {
             final String expectedMsg = String.format(Locale.ROOT,
-                    "NoViableAltException occurred while opening file %s.",
+                    "NoViableAltException occurred while parsing file %s.",
                     nonCompilableFile.getPath());
 
             assertEquals("Invalid exception message", expectedMsg, ex.getMessage());
@@ -225,4 +225,5 @@ public class MainFrameModelTest extends AbstractModuleTestSupport {
 
         assertNotNull("ParseTree table model should not be null", model.getParseTreeTableModel());
     }
+
 }

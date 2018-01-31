@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -72,6 +72,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  */
 public class LocalVariableNameCheck
     extends AbstractNameCheck {
+
     /** Regexp for one-char loop variables. */
     private static final Pattern SINGLE_CHAR = Pattern.compile("^[a-z]$");
 
@@ -96,19 +97,19 @@ public class LocalVariableNameCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {
-            TokenTypes.VARIABLE_DEF,
-        };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return new int[] {
+            TokenTypes.VARIABLE_DEF,
+        };
     }
 
     @Override
@@ -136,4 +137,5 @@ public class LocalVariableNameCheck
         return parentType == TokenTypes.FOR_INIT
                 || parentType == TokenTypes.FOR_EACH_CLAUSE;
     }
+
 }

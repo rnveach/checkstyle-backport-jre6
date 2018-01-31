@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -257,7 +257,6 @@ public class JavadocDetailNodeParser {
                     ParseTree tempParseTreeParent = parseTreeParent.getParent();
 
                     while (nextJavadocSibling == null && tempJavadocParent != null) {
-
                         nextJavadocSibling = (JavadocNodeImpl) JavadocUtils
                                 .getNextSibling(tempJavadocParent);
 
@@ -626,6 +625,7 @@ public class JavadocDetailNodeParser {
                         MSG_JAVADOC_PARSE_RULE_ERROR, charPositionInLine, msg, upperCaseRuleName);
             }
         }
+
     }
 
     /**
@@ -633,6 +633,7 @@ public class JavadocDetailNodeParser {
      * error message.
      */
     public static class ParseStatus {
+
         /**
          * DetailNode tree (is null if parsing fails).
          */
@@ -712,6 +713,7 @@ public class JavadocDetailNodeParser {
      * Contains information about parse error message.
      */
     public static class ParseErrorMessage {
+
         /**
          * Line number where parse error occurred.
          */
@@ -763,6 +765,7 @@ public class JavadocDetailNodeParser {
         public Object[] getMessageArguments() {
             return messageArguments.clone();
         }
+
     }
 
     /**
@@ -780,11 +783,13 @@ public class JavadocDetailNodeParser {
      *     ANTLRErrorStrategy</a>
      */
     private static class JavadocParserErrorStrategy extends BailErrorStrategy {
+
         @Override
         public Token recoverInline(Parser recognizer) {
             reportError(recognizer, new InputMismatchException(recognizer));
             return super.recoverInline(recognizer);
         }
+
     }
 
 }

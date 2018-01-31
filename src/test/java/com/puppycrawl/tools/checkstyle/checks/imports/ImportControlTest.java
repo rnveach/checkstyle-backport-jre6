@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ImportControlTest {
+
     private final ImportControl icRoot = new ImportControl("com.kazgroup.courtlink", false);
     private final ImportControl icCommon = new ImportControl(icRoot, "common", false);
 
@@ -223,4 +224,5 @@ public class ImportControlTest {
     public void testRegExpParentUnknownPkg() {
         assertNull("Package should not be null", icRootRegexpParent.locateFinest("net.another"));
     }
+
 }

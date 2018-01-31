@@ -52,7 +52,8 @@
          overridden in its subclass.
         </p>
          <p>
-          Problem is described at "Effective Java, 2nd Edition by Josh Bloch" book, chapter "Item 17: Design and document for inheritance or else prohibit it".
+          Problem is described at "Effective Java, 2nd Edition by Josh Bloch" book, chapter
+          "Item 17: Design and document for inheritance or else prohibit it".
         </p>
         <p>
           Some quotes from book:
@@ -157,7 +158,7 @@ public abstract class Plant {
                         Annotations which allow the check to skip the method from validation.
                     </td>
                     <td><a href="property_types.html#stringSet">String Set</a></td>
-                    <td><code>Test, Before, After, BeforeClass, AfterClass</code></td>
+                    <td><code>Before, BeforeClass, Test, After, AfterClass</code></td>
                     <td>7.2</td>
                 </tr>
             </table>
@@ -662,7 +663,8 @@ public class StringUtils // not final to allow subclassing
 &lt;module name="OneTopLevelClass"/&gt;
         </source>
         <p>
-          <b>ATTENTION:</b> This Check does not support customization of validated tokens, so do not use the "tokens" property.
+          <b>ATTENTION:</b> This Check does not support customization of validated tokens, so do
+          not use the "tokens" property.
         </p>
         <p>
           An example of code with violations:
@@ -864,9 +866,9 @@ public class Foo{
         </p>
         <p>Note that
           Checkstyle 2 used to include <code>"^f[A-Z][a-zA-Z0-9]*$"</code> in the default
-          pattern to allow names used in container-managed persistence for Enterprise JavaBeans (EJB) 1.1 with the default settings.
-          With EJB 2.0 it is no longer necessary to have public access
-          for persistent fields, so the default has been changed.
+          pattern to allow names used in container-managed persistence for Enterprise JavaBeans
+          (EJB) 1.1 with the default settings. With EJB 2.0 it is no longer necessary to have
+          public access for persistent fields, so the default has been changed.
         </p>
 
         <p>
@@ -970,7 +972,7 @@ public class Foo{
             java.lang.Short, java.lang.Boolean, java.lang.Long, java.lang.Double, java.lang.Float,
             java.lang.StackTraceElement, java.math.BigInteger, java.math.BigDecimal, java.io.File,
             java.util.Locale, java.util.UUID, java.net.URL, java.net.URI,
-            java.net.Inet4Address, java.net.Inet6Address, java.net.InetSocketAddress,</td>
+            java.net.Inet4Address, java.net.Inet6Address, java.net.InetSocketAddress</td>
             <td>6.4.1</td>
           </tr>
           <tr>
@@ -1080,8 +1082,8 @@ public class ImmutableClass
         <source>
 &lt;module name=&quot;VisibilityModifier&quot;&gt;
   &lt;property name=&quot;allowPublicImmutableFields&quot; value=&quot;true&quot;/&gt;
-  &lt;property name=&quot;immutableClassCanonicalNames&quot; value=&quot;
-  com.google.common.collect.ImmutableSet, com.google.common.collect.ImmutableMap,java.lang.String&quot;/&gt;
+  &lt;property name=&quot;immutableClassCanonicalNames&quot;
+    value=&quot;com.google.common.collect.ImmutableSet, com.google.common.collect.ImmutableMap,java.lang.String&quot;/&gt;
 &lt;/module&gt;
         </source>
         <p>

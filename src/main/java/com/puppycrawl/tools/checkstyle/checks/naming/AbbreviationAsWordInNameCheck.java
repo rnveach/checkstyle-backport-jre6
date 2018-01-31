@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -213,9 +213,7 @@ public class AbbreviationAsWordInNameCheck extends AbstractCheck {
 
     @Override
     public void visitToken(DetailAST ast) {
-
         if (!isIgnoreSituation(ast)) {
-
             final DetailAST nameAst = ast.findFirstToken(TokenTypes.IDENT);
             final String typeName = nameAst.getText();
 

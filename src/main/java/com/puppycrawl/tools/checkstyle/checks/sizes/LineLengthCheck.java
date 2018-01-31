@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -113,7 +113,6 @@ public class LineLengthCheck extends AbstractCheck {
     public void beginTree(DetailAST rootAST) {
         final String[] lines = getLines();
         for (int i = 0; i < lines.length; i++) {
-
             final String line = lines[i];
             final int realLength = CommonUtils.lengthExpandedTabs(
                 line, line.length(), getTabWidth());
@@ -140,4 +139,5 @@ public class LineLengthCheck extends AbstractCheck {
     public final void setIgnorePattern(Pattern pattern) {
         ignorePattern = pattern;
     }
+
 }

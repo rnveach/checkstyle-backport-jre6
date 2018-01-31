@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -19,25 +19,17 @@
 
 package com.puppycrawl.tools.checkstyle.internal.utils;
 
-import static com.puppycrawl.tools.checkstyle.TreeWalker.parseWithComments;
-
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import antlr.ANTLRException;
 import com.puppycrawl.tools.checkstyle.PackageNamesLoader;
 import com.puppycrawl.tools.checkstyle.PackageObjectFactory;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.FileContents;
-import com.puppycrawl.tools.checkstyle.api.FileText;
-import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
@@ -190,17 +182,4 @@ public final class TestUtil {
         return Optional.ofNullable(curNode);
     }
 
-    /**
-     * Parses Java source file. Results in AST which contains comment nodes.
-     * @param file file to parse
-     * @return DetailAST tree
-     * @throws NullPointerException if the text is null
-     * @throws IOException          if the file could not be read
-     * @throws ANTLRException       if parser or lexer failed
-     */
-    public static DetailAST parseFile(File file) throws IOException, ANTLRException {
-        final FileText text = new FileText(file.getAbsoluteFile(), StandardCharsets.UTF_8.name());
-        final FileContents contents = new FileContents(text);
-        return parseWithComments(contents);
-    }
 }

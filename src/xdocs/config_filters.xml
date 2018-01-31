@@ -294,7 +294,8 @@ private int array1 []; // CHECKSTYLE_ON: ALMOST_ALL
   &lt;property name=&quot;offCommentFormat&quot; value=&quot;stop&quot;/&gt;
   &lt;property name=&quot;onCommentFormat&quot; value=&quot;resume&quot;/&gt;
   &lt;property name=&quot;checkFormat&quot; value=&quot;IllegalTypeCheck&quot;/&gt;
-  &lt;property name=&quot;messageFormat&quot; value=&quot;^Declaring variables, return values or parameters of type 'GregorianCalendar' is not allowed.$&quot;/&gt;
+  &lt;property name=&quot;messageFormat&quot;
+      value=&quot;^Declaring variables, return values or parameters of type 'GregorianCalendar' is not allowed.$&quot;/&gt;
 &lt;/module&gt;
           </source>
           <p>
@@ -302,8 +303,12 @@ private int array1 []; // CHECKSTYLE_ON: ALMOST_ALL
           </p>
           <source>
 ...
-GregorianCalendar calendar; // Warning here: Declaring variables, return values or parameters of type 'GregorianCalendar' is not allowed.
-HashSet hashSet; // Warning here: Declaring variables, return values or parameters of type 'HashSet' is not allowed.
+// Warning below: Declaring variables, return values or parameters of type 'GregorianCalendar'
+// is not allowed.
+GregorianCalendar calendar;
+// Warning below here: Declaring variables, return values or parameters of type 'HashSet'
+// is not allowed.
+HashSet hashSet;
 ...
           </source>
           <p>
@@ -313,7 +318,10 @@ HashSet hashSet; // Warning here: Declaring variables, return values or paramete
 ...
 //stop
 GregorianCalendar calendar; // No warning here as it is suppressed by filter.
-HashSet hashSet; // Warning here: Declaring variables, return values or parameters of type 'HashSet' is not allowed.
+HashSet hashSet;
+// Warning above here: Declaring variables, return values or parameters of type 'HashSet'
+//is not allowed.
+
 //resume
 ...
           </source>
@@ -439,8 +447,8 @@ public class UserService {
                     </li>
                   </ol>
                </td>
-               <td><a href="property_types.html#string">string</a></td>
-               <td><code>none</code></td>
+               <td><a href="property_types.html#string">String</a></td>
+               <td><code>null</code></td>
                <td>3.2</td>
              </tr>
              <tr>
@@ -610,7 +618,8 @@ public class UserService {
             Suppress checks for non-java files:
           </p>
           <source>
-&lt;suppress files=&quot;.+\.(?:txt|xml|csv|sh|thrift|html|sql|eot|ttf|woff|css|png)$&quot; checks=&quot;.*&quot;/&gt;
+&lt;suppress files=&quot;.+\.(?:txt|xml|csv|sh|thrift|html|sql|eot|ttf|woff|css|png)$&quot;
+    checks=&quot;.*&quot;/&gt;
           </source>
           <p>
             Suppress all checks in generated sources:
@@ -676,7 +685,6 @@ public class UserService {
           <li>HiddenFieldCheck</li>
           <li>IllegalCatchCheck</li>
           <li>IllegalThrowsCheck</li>
-          <li>JavadocMethodCheck</li>
           <li>JavadocVariableCheck</li>
           <li>ImportControlCheck</li>
           <li>LeftCurlyCheck</li>
@@ -723,8 +731,8 @@ public class UserService {
                 </li>
               </ol>
             </td>
-            <td><a href="property_types.html#string">string</a></td>
-            <td><code>none</code></td>
+            <td><a href="property_types.html#string">String</a></td>
+            <td><code>null</code></td>
             <td>8.6</td>
           </tr>
           <tr>
@@ -1096,13 +1104,14 @@ catch (Throwable th) { ... }
 . . .
             </source>
             <p>
-                To configure a filter so that <code>CHECKSTYLE IGNORE <i>check</i> FOR NEXT <i>var</i> LINES</code>
-                avoids triggering any audits for the given check for the current line and the next <i>var</i> lines
-                (for a total of <i>var</i>+1 lines):
+                To configure a filter so that <code>CHECKSTYLE IGNORE <i>check</i> FOR NEXT
+                <i>var</i> LINES</code> avoids triggering any audits for the given check for
+                the current line and the next <i>var</i> lines (for a total of <i>var</i>+1 lines):
             </p>
             <source>
 &lt;module name=&quot;SuppressWithNearbyCommentFilter&quot;&gt;
-  &lt;property name=&quot;commentFormat&quot; value=&quot;CHECKSTYLE IGNORE (\w+) FOR NEXT (\d+) LINES&quot;/&gt;
+  &lt;property name=&quot;commentFormat&quot;
+      value=&quot;CHECKSTYLE IGNORE (\w+) FOR NEXT (\d+) LINES&quot;/&gt;
   &lt;property name=&quot;checkFormat&quot; value=&quot;$1&quot;/&gt;
   &lt;property name=&quot;influenceFormat&quot; value=&quot;$2&quot;/&gt;
 &lt;/module&gt;
@@ -1379,11 +1388,13 @@ my.property=value2 // No violation events will be reported
               </source>
               <source>
 // CSOFF: RegexpSinglelineCheck
-&lt;condition property=&quot;checkstyle.ant.skip&quot;&gt; // RegexpSingleline check won't warn here if the line matches regexp
-  &lt;isset property=&quot;checkstyle.ant.skip&quot;/&gt; // RegexpSingleline check won't warn here if the line matches regexp
-&lt;/condition&gt; // RegexpSingleline check won't warn here if the line matches regexp
+ // RegexpSingleline check won't warn any lines below here if the line matches regexp
+&lt;condition property=&quot;checkstyle.ant.skip&quot;&gt;
+  &lt;isset property=&quot;checkstyle.ant.skip&quot;/&gt;
+&lt;/condition&gt;
 // CSON: RegexpSinglelineCheck
-&lt;property name=&quot;checkstyle.pattern.todo&quot; value=&quot;NOTHingWillMatCH_-&quot;/&gt; // RegexpSingleline check will warn here if the line matches regexp
+// RegexpSingleline check will warn below here if the line matches regexp
+&lt;property name=&quot;checkstyle.pattern.todo&quot; value=&quot;NOTHingWillMatCH_-&quot;/&gt;
               </source>
               <p>
                   To configure a filter to suppress all audit events between a comment
@@ -1423,7 +1434,8 @@ private int array1 [];
     &lt;property name=&quot;offCommentFormat&quot; value=&quot;stop&quot;/&gt;
     &lt;property name=&quot;onCommentFormat&quot; value=&quot;resume&quot;/&gt;
     &lt;property name=&quot;checkFormat&quot; value=&quot;FileTabCharacterCheck&quot;/&gt;
-    &lt;property name=&quot;messageFormat&quot; value=&quot;^File contains tab characters (this is the first instance)\.$&quot;/&gt;
+    &lt;property name=&quot;messageFormat&quot;
+        value=&quot;^File contains tab characters (this is the first instance)\.$&quot;/&gt;
   &lt;/module&gt;
 &lt;/module>
               </source>
@@ -1451,9 +1463,10 @@ private int array1 [];
 &lt;/module&gt;
               </source>
               <p>
-                  Example of SuppressWithPlainTextCommentFilter configuration (checkFormat which is set to '$1'
-                  points that ID of the checks is in the first group of offCommentFormat and
-                  onCommentFormat regular expressions):
+                  Example of SuppressWithPlainTextCommentFilter configuration
+                  (checkFormat which is set to '$1' points that ID of the checks
+                  is in the first group of offCommentFormat and onCommentFormat
+                  regular expressions):
               </p>
               <source>
 &lt;module name=&quot;Checker&quot;&gt;

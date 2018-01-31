@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -238,6 +238,7 @@ public final class MethodCountCheck extends AbstractCheck {
      * methods for each class and layer.
      */
     private static class MethodCounter {
+
         /** Maintains the counts. */
         private final Map<Scope, Integer> counts = new EnumMap<Scope, Integer>(Scope.class);
         /** Indicated is an interface, in which case all methods are public. */
@@ -299,5 +300,7 @@ public final class MethodCountCheck extends AbstractCheck {
         private int getTotal() {
             return total;
         }
+
     }
+
 }

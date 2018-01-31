@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,7 @@ import java.util.SortedSet;
  * @author lkuehne
  */
 public interface MessageDispatcher {
+
     /**
      * Notify all listeners about the beginning of a file audit.
      * @param fileName the file to be audited
@@ -44,4 +45,5 @@ public interface MessageDispatcher {
      * @param errors the audit errors from the file
      */
     void fireErrors(String fileName, SortedSet<LocalizedMessage> errors);
+
 }

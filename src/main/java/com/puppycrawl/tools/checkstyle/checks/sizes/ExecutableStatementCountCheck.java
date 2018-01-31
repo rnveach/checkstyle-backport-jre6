@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -172,7 +172,6 @@ public final class ExecutableStatementCountCheck
                 && type != TokenTypes.METHOD_DEF
                 && type != TokenTypes.INSTANCE_INIT
                 && type != TokenTypes.STATIC_INIT) {
-
                 parent = parent.getParent();
                 type = parent.getType();
             }
@@ -187,6 +186,7 @@ public final class ExecutableStatementCountCheck
      * @author Simon Harris
      */
     private static class Context {
+
         /** Member AST node. */
         private final DetailAST ast;
 
@@ -225,5 +225,7 @@ public final class ExecutableStatementCountCheck
         public int getCount() {
             return count;
         }
+
     }
+
 }

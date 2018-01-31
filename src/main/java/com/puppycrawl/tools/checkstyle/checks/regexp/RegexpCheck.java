@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -87,7 +87,7 @@ public class RegexpCheck extends AbstractCheck {
         + "the check is aborting, there may be more unreported errors.";
 
     /** Custom message for report. */
-    private String message = "";
+    private String message;
 
     /** Ignore matches within comments?. **/
     private boolean ignoreComments;
@@ -174,17 +174,17 @@ public class RegexpCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return CommonUtils.EMPTY_INT_ARRAY;
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getAcceptableTokens();
+        return CommonUtils.EMPTY_INT_ARRAY;
     }
 
     @Override
@@ -197,7 +197,6 @@ public class RegexpCheck extends AbstractCheck {
 
     /** Recursive method that finds the matches. */
     private void findMatch() {
-
         final boolean foundMatch = matcher.find();
         if (foundMatch) {
             final FileText text = getFileContents().getText();
@@ -221,7 +220,6 @@ public class RegexpCheck extends AbstractCheck {
         else if (!illegalPattern && matchCount == 0) {
             logMessage(0);
         }
-
     }
 
     /**
@@ -268,7 +266,7 @@ public class RegexpCheck extends AbstractCheck {
     private void logMessage(int lineNumber) {
         String msg;
 
-        if (message.isEmpty()) {
+        if (message == null || message.isEmpty()) {
             msg = format.pattern();
         }
         else {
@@ -291,4 +289,5 @@ public class RegexpCheck extends AbstractCheck {
             }
         }
     }
+
 }

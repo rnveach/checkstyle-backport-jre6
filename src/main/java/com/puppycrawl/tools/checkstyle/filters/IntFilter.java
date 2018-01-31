@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -24,10 +24,12 @@ package com.puppycrawl.tools.checkstyle.filters;
  * @author o_sukhodolsky
  */
 interface IntFilter {
+
     /**
      * Determines whether or not a filtered Integer is accepted.
      * @param intValue the Integer to filter.
      * @return true if the intValue is accepted.
      */
     boolean accept(int intValue);
+
 }

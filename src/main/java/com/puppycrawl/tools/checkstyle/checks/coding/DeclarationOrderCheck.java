@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -230,7 +230,6 @@ public class DeclarationOrderCheck extends AbstractCheck {
      * @param ast constructor AST.
      */
     private void processConstructor(DetailAST ast) {
-
         final ScopeState state = scopeStates.peek();
         if (state.currentScopeState > STATE_CTOR_DEF) {
             if (!ignoreConstructors) {
@@ -383,10 +382,13 @@ public class DeclarationOrderCheck extends AbstractCheck {
      * Private class to encapsulate the state.
      */
     private static class ScopeState {
+
         /** The state the check is in. */
         private int currentScopeState = STATE_STATIC_VARIABLE_DEF;
 
         /** The sub-state the check is in. */
         private Scope declarationAccess = Scope.PUBLIC;
+
     }
+
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -54,6 +54,7 @@ public final class ConfigurationLoader {
      * Enum to specify behaviour regarding ignored modules.
      */
     public enum IgnoredModulesOptions {
+
         /**
          * Omit ignored modules.
          */
@@ -63,6 +64,7 @@ public final class ConfigurationLoader {
          * Execute ignored modules.
          */
         EXECUTE
+
     }
 
     /** Format of message for sax parse exception. */
@@ -538,7 +540,6 @@ public final class ConfigurationLoader {
         //search for the next instance of $ from the 'prev' position
         int pos = value.indexOf(DOLLAR_SIGN, prev);
         while (pos >= 0) {
-
             //if there was any text before this, add it as a fragment
             if (pos > 0) {
                 fragments.add(value.substring(prev, pos));
@@ -590,6 +591,7 @@ public final class ConfigurationLoader {
      */
     private final class InternalLoader
         extends XmlLoader {
+
         /** Module elements. */
         private static final String MODULE = "module";
         /** Name attribute. */
@@ -684,7 +686,6 @@ public final class ConfigurationLoader {
                                String localName,
                                String qName) throws SAXException {
             if (qName.equals(MODULE)) {
-
                 final Configuration recentModule =
                     configStack.pop();
 
@@ -734,5 +735,7 @@ public final class ConfigurationLoader {
             }
             return result;
         }
+
     }
+
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -37,6 +37,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
  * @noinspection ClassIndependentOfModule
  */
 public class AllTestsTest {
+
     @Test
     public void testAllInputsHaveTest() {
         final Map<String, List<String>> allTests = new HashMap<String, List<String>>();
@@ -292,4 +293,5 @@ public class AllTestsTest {
     private static String getSimplePath(String path) {
         return path.substring(path.lastIndexOf("com" + File.separator + "puppycrawl"));
     }
+
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author Daniel Grenner
  */
 public class WriteTagCheckTest extends AbstractModuleTestSupport {
+
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/javadoc/writetag";
@@ -221,7 +222,6 @@ public class WriteTagCheckTest extends AbstractModuleTestSupport {
         final LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(localStream, StandardCharsets.UTF_8));
         try {
-
             for (int i = 0; i < expected.length; i++) {
                 final String expectedResult = messageFileName + ":" + expected[i];
                 final String actual = lnr.readLine();
@@ -236,4 +236,5 @@ public class WriteTagCheckTest extends AbstractModuleTestSupport {
         }
         checker.destroy();
     }
+
 }

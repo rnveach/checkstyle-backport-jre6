@@ -78,18 +78,21 @@ java -D&lt;property&gt;=&lt;value&gt;  \
           cannot be used other options and requires exactly one file to run on to be specified.
         </li>
         <li>
-          <code>-T, --treeWithComments</code> - print Abstract Syntax Tree(AST) with comment nodes of the checked file. The option
-          cannot be used other options and requires exactly one file to run on to be specified.
+          <code>-T, --treeWithComments</code> - print Abstract Syntax Tree(AST) with comment nodes
+          of the checked file. The option cannot be used other options and requires exactly one
+          file to run on to be specified.
         </li>
         <li>
-          <code>-J, --treeWithJavadoc</code> - print Abstract Syntax Tree(AST) with Javadoc nodes and comment nodes
-          of the checked file. Attention that line number and columns will not be the same as it is a file due to the fact
-          that each javadoc comment is parsed separately from java file. The option cannot be used other options and requires
-          exactly one file to run on to be specified.
+          <code>-J, --treeWithJavadoc</code> - print Abstract Syntax Tree(AST) with Javadoc nodes
+          and comment nodes of the checked file. Attention that line number and columns will not be
+          the same as it is a file due to the fact that each javadoc comment is parsed separately
+          from java file. The option cannot be used other options and requires exactly one file to
+          run on to be specified.
         </li>
         <li>
           <code>-j, --javadocTree</code> - print Parse Tree of the Javadoc comment.
-          The file have to contain <b>only Javadoc comment content</b> without including '/**' and '*/' at the beginning and at the end respectively.
+          The file have to contain <b>only Javadoc comment content</b> without including '/**' and
+          '*/' at the beginning and at the end respectively.
           For example:
           MyTestFile.javadoc
           <source>
@@ -147,7 +150,8 @@ java -D&lt;property&gt;=&lt;value&gt;  \
 java -jar checkstyle-${projectVersion}-all.jar -c /sun_checks.xml MyClass.java
 java -jar checkstyle-${projectVersion}-all.jar -c /google_checks.xml MyClass.java
         </source>
-        It is recommended to use configuration files that are embedded in jar files, but latest configuration files are there:
+        It is recommended to use configuration files that are embedded in jar files, but latest
+        configuration files are there:
         <a href="https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/sun_checks.xml">sun_checks.xml</a>
         <a href="https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml">google_checks.xml</a>
       </p>
@@ -173,11 +177,13 @@ mvn clean compile
 
         Run validation with arguments:
         <source class="wrap-content">
-mvn exec:java -Dexec.mainClass="com.puppycrawl.tools.checkstyle.Main" -Dexec.args="-c /sun_checks.xml src/main/java "
+mvn exec:java -Dexec.mainClass="com.puppycrawl.tools.checkstyle.Main" \
+    -Dexec.args="-c /sun_checks.xml src/main/java "
         </source>
         Run UI application for file :
         <source class="wrap-content">
- mvn exec:java -Dexec.mainClass="com.puppycrawl.tools.checkstyle.gui.Main" -Dexec.args="src/main/java/com/puppycrawl/tools/checkstyle/Checker.java"
+mvn exec:java -Dexec.mainClass="com.puppycrawl.tools.checkstyle.gui.Main" \
+    -Dexec.args="src/main/java/com/puppycrawl/tools/checkstyle/Checker.java"
         </source>
         Build all jars, and launch CLI from new build:
         <source class="wrap-content">
@@ -226,7 +232,8 @@ java com.puppycrawl.tools.checkstyle.Main -c docs/sun_checks.xml src/
         </b>
       </p>
       <source class="wrap-content">
-java -Dcheckstyle.cache.file=target/cachefile com.puppycrawl.tools.checkstyle.Main -c docs/sun_checks.xml Check.java
+java -Dcheckstyle.cache.file=target/cachefile com.puppycrawl.tools.checkstyle.Main \
+    -c docs/sun_checks.xml Check.java
       </source>
 
       <p>
@@ -248,7 +255,8 @@ java com.puppycrawl.tools.checkstyle.Main -c docs/sun_checks.xml -p myCheckstyle
         </b>
       </p>
       <source class="wrap-content">
-java com.puppycrawl.tools.checkstyle.Main -c docs/sun_checks.xml -f xml -o build/checkstyle_errors.xml Check.java
+java com.puppycrawl.tools.checkstyle.Main -c docs/sun_checks.xml -f xml \
+    -o build/checkstyle_errors.xml Check.java
       </source>
 
       <p>
@@ -258,7 +266,8 @@ java com.puppycrawl.tools.checkstyle.Main -c docs/sun_checks.xml -f xml -o build
         </b>
       </p>
       <source class="wrap-content">
-java -classpath MyCustom.jar;checkstyle-${projectVersion}-all.jar com.puppycrawl.tools.checkstyle.Main -c config.xml Check.java
+java -classpath MyCustom.jar;checkstyle-${projectVersion}-all.jar \
+    com.puppycrawl.tools.checkstyle.Main -c config.xml Check.java
       </source>
       <p>
         <b>Note</b>: Custom modules should be specified with the class'

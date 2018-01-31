@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -35,6 +35,7 @@ import java.util.EventListener;
  */
 public interface AuditListener
     extends EventListener {
+
     /**
      * Notify that the audit is about to start.
      * @param event the event details
@@ -71,4 +72,5 @@ public interface AuditListener
      * @param throwable details of the exception
      */
     void addException(AuditEvent event, Throwable throwable);
+
 }

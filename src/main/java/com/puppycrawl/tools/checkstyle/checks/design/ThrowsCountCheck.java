@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -78,21 +78,19 @@ public final class ThrowsCountCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[] {
-            TokenTypes.LITERAL_THROWS,
-        };
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return new int[] {
+            TokenTypes.LITERAL_THROWS,
+        };
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {
-            TokenTypes.LITERAL_THROWS,
-        };
+        return getRequiredTokens();
     }
 
     /**
@@ -185,4 +183,5 @@ public final class ThrowsCountCheck extends AbstractCheck {
         final DetailAST methodModifiers = ast.getParent().findFirstToken(TokenTypes.MODIFIERS);
         return methodModifiers.findFirstToken(TokenTypes.LITERAL_PRIVATE) != null;
     }
+
 }

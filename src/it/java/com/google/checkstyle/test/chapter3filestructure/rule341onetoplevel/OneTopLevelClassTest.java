@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,6 @@ public class OneTopLevelClassTest extends AbstractModuleTestSupport {
 
     @Test
     public void testBad() throws Exception {
-
         final Class<OneTopLevelClassCheck> clazz = OneTopLevelClassCheck.class;
         final String messageKey = "one.top.level.class";
 
@@ -57,7 +56,6 @@ public class OneTopLevelClassTest extends AbstractModuleTestSupport {
 
     @Test
     public void testGood() throws Exception {
-
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
         final Configuration checkConfig = getModuleConfig("OneTopLevelClass");
@@ -69,7 +67,6 @@ public class OneTopLevelClassTest extends AbstractModuleTestSupport {
 
     @Test
     public void testBad1() throws Exception {
-
         final Class<OneTopLevelClassCheck> clazz = OneTopLevelClassCheck.class;
         final String messageKey = "one.top.level.class";
 
@@ -86,7 +83,6 @@ public class OneTopLevelClassTest extends AbstractModuleTestSupport {
 
     @Test
     public void testBad2() throws Exception {
-
         final Class<OneTopLevelClassCheck> clazz = OneTopLevelClassCheck.class;
         final String messageKey = "one.top.level.class";
 
@@ -101,4 +97,5 @@ public class OneTopLevelClassTest extends AbstractModuleTestSupport {
         final Integer[] warnList = getLinesWithWarn(filePath);
         verify(checkConfig, filePath, expected, warnList);
     }
+
 }

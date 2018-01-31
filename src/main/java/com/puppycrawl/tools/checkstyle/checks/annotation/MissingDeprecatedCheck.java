@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -99,6 +99,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  */
 @StatelessCheck
 public final class MissingDeprecatedCheck extends AbstractCheck {
+
     /**
      * A key is pointing to the warning message text in "messages.properties"
      * file.
@@ -155,11 +156,16 @@ public final class MissingDeprecatedCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return getAcceptableTokens();
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getAcceptableTokens() {
+        return getRequiredTokens();
+    }
+
+    @Override
+    public int[] getRequiredTokens() {
         return new int[] {
             TokenTypes.INTERFACE_DEF,
             TokenTypes.CLASS_DEF,
@@ -171,11 +177,6 @@ public final class MissingDeprecatedCheck extends AbstractCheck {
             TokenTypes.ENUM_CONSTANT_DEF,
             TokenTypes.ANNOTATION_FIELD_DEF,
         };
-    }
-
-    @Override
-    public int[] getRequiredTokens() {
-        return getAcceptableTokens();
     }
 
     @Override
@@ -241,7 +242,6 @@ public final class MissingDeprecatedCheck extends AbstractCheck {
      */
     private boolean checkTagAtTheRestOfComment(String[] lines, boolean foundBefore,
             int currentLine, int index) {
-
         boolean found = false;
         int reindex = index + 1;
         while (reindex <= lines.length - 1) {
@@ -270,4 +270,5 @@ public final class MissingDeprecatedCheck extends AbstractCheck {
         }
         return found;
     }
+
 }

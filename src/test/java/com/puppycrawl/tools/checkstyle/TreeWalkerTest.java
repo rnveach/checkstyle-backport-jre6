@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -21,7 +21,6 @@ package com.puppycrawl.tools.checkstyle;
 
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -30,7 +29,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,7 +47,6 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Context;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck;
@@ -61,12 +58,9 @@ import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.TypeNameCheck;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionCommentFilter;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionXpathFilter;
-import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
-import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
-import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class TreeWalkerTest extends AbstractModuleTestSupport {
@@ -238,7 +232,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         }
         catch (CheckstyleException ex) {
             assertEquals("Invalid exception message",
-                "MismatchedTokenException occurred during the analysis of file input.java.",
+                "MismatchedTokenException occurred while parsing file input.java.",
                 ex.getMessage());
         }
     }
@@ -287,7 +281,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         catch (CheckstyleException exception) {
             assertTrue("Error message is unexpected",
                     exception.getMessage().contains(
-                    "occurred during the analysis of file"));
+                    "occurred while parsing file"));
         }
     }
 
@@ -310,7 +304,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         catch (CheckstyleException exception) {
             assertTrue("Error message is unexpected",
                     exception.getMessage().contains(
-                    "TokenStreamRecognitionException occurred during the analysis of file"));
+                    "TokenStreamRecognitionException occurred while parsing file"));
         }
     }
 
@@ -378,7 +372,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         }
         catch (CheckstyleException exception) {
             final String message =
-                    "TokenStreamRecognitionException occurred during the analysis of file";
+                    "TokenStreamRecognitionException occurred while parsing file";
             assertTrue("Error message is unexpected",
                     exception.getMessage().contains(message));
         }
@@ -403,7 +397,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         }
         catch (CheckstyleException exception) {
             final String message =
-                    "TokenStreamRecognitionException occurred during the analysis of file";
+                    "TokenStreamRecognitionException occurred while parsing file";
             assertTrue("Error message is unexpected",
                     exception.getMessage().contains(message));
         }
@@ -430,7 +424,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         }
         catch (CheckstyleException exception) {
             final String message =
-                    "TokenStreamRecognitionException occurred during the analysis of file";
+                    "TokenStreamRecognitionException occurred while parsing file";
             assertTrue("Error message is unexpected",
                     exception.getMessage().contains(message));
         }
@@ -460,53 +454,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         verify(checkerConfig,
                 file.getPath(),
                 expected);
-    }
-
-    @Test
-    public void testAppendHiddenBlockCommentNodes() throws Exception {
-        final DetailAST root =
-            TestUtil.parseFile(new File(getPath("InputTreeWalkerHiddenComments.java")));
-
-        final Optional<DetailAST> blockComment = TestUtil.findTokenInAstByPredicate(root,
-            new Predicate<DetailAST>() {
-                @Override
-                public boolean test(DetailAST ast) {
-                    return ast.getType() == TokenTypes.BLOCK_COMMENT_BEGIN;
-                }
-            });
-
-        assertTrue("Block comment should be present", blockComment.isPresent());
-
-        final DetailAST commentContent = blockComment.get().getFirstChild();
-        final DetailAST commentEnd = blockComment.get().getLastChild();
-
-        assertEquals("Unexpected line number", 3, commentContent.getLineNo());
-        assertEquals("Unexpected column number", 2, commentContent.getColumnNo());
-        assertEquals("Unexpected line number", 9, commentEnd.getLineNo());
-        assertEquals("Unexpected column number", 1, commentEnd.getColumnNo());
-    }
-
-    @Test
-    public void testAppendHiddenSingleLineCommentNodes() throws Exception {
-        final DetailAST root =
-            TestUtil.parseFile(new File(getPath("InputTreeWalkerHiddenComments.java")));
-
-        final Optional<DetailAST> singleLineComment = TestUtil.findTokenInAstByPredicate(root,
-            new Predicate<DetailAST>() {
-                @Override
-                public boolean test(DetailAST ast) {
-                    return ast.getType() == TokenTypes.SINGLE_LINE_COMMENT;
-                }
-            });
-        assertTrue("Single line comment should be present", singleLineComment.isPresent());
-
-        final DetailAST commentContent = singleLineComment.get().getFirstChild();
-
-        assertEquals("Unexpected token type", TokenTypes.COMMENT_CONTENT, commentContent.getType());
-        assertEquals("Unexpected line number", 13, commentContent.getLineNo());
-        assertEquals("Unexpected column number", 2, commentContent.getColumnNo());
-        assertTrue("Unexpected comment content",
-            commentContent.getText().startsWith(" inline comment"));
     }
 
     @Test
@@ -583,38 +530,8 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
                                 "InputTreeWalkerSuppressionXpathFilter.xml"));
     }
 
-    /**
-     * Could not find proper test case to test pitest mutations functionally.
-     * Should be rewritten during grammar update.
-     *
-     * @throws Exception when code tested throws exception
-     */
-    @Test
-    public void testIsPositionGreater() throws Exception {
-        final DetailAST ast1 = createAst(1, 3);
-        final DetailAST ast2 = createAst(1, 2);
-        final DetailAST ast3 = createAst(2, 2);
-
-        final TreeWalker treeWalker = new TreeWalker();
-        final Method isPositionGreater = Whitebox.getMethod(TreeWalker.class,
-                "isPositionGreater", DetailAST.class, DetailAST.class);
-
-        assertTrue("Should return true when lines are equal and column is greater",
-                (Boolean) isPositionGreater.invoke(treeWalker, ast1, ast2));
-        assertFalse("Should return false when lines are equal columns are equal",
-                (Boolean) isPositionGreater.invoke(treeWalker, ast1, ast1));
-        assertTrue("Should return true when line is greater",
-                (Boolean) isPositionGreater.invoke(treeWalker, ast3, ast1));
-    }
-
-    private static DetailAST createAst(int line, int column) {
-        final DetailAST ast = new DetailAST();
-        ast.setLineNo(line);
-        ast.setColumnNo(column);
-        return ast;
-    }
-
     private static class BadJavaDocCheck extends AbstractCheck {
+
         @Override
         public int[] getDefaultTokens() {
             return getAcceptableTokens();
@@ -629,9 +546,11 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         public int[] getRequiredTokens() {
             return getAcceptableTokens();
         }
+
     }
 
     private static class VerifyInitCheck extends AbstractCheck {
+
         private static boolean initWasCalled;
 
         @Override
@@ -658,9 +577,11 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         public static boolean isInitWasCalled() {
             return initWasCalled;
         }
+
     }
 
     private static class VerifyDestroyCheck extends AbstractCheck {
+
         private static boolean destroyWasCalled;
 
         @Override
@@ -691,16 +612,20 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         public static boolean isDestroyWasCalled() {
             return destroyWasCalled;
         }
+
     }
 
     private static class VerifyDestroyCommentCheck extends VerifyDestroyCheck {
+
         @Override
         public boolean isCommentNodesRequired() {
             return true;
         }
+
     }
 
     private static class RequiredTokenIsNotInDefaultsCheck extends AbstractCheck {
+
         @Override
         public int[] getRequiredTokens() {
             return new int[] {TokenTypes.ASSIGN};
@@ -715,9 +640,11 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         public int[] getAcceptableTokens() {
             return CommonUtils.EMPTY_INT_ARRAY;
         }
+
     }
 
     private static class RequiredTokenIsEmptyIntArray extends AbstractCheck {
+
         @Override
         public int[] getRequiredTokens() {
             return CommonUtils.EMPTY_INT_ARRAY;
@@ -732,5 +659,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         public int[] getAcceptableTokens() {
             return CommonUtils.EMPTY_INT_ARRAY;
         }
+
     }
+
 }

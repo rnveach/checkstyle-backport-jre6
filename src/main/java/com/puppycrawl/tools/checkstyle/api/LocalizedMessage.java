@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  */
 public final class LocalizedMessage
     implements Comparable<LocalizedMessage>, Serializable {
+
     private static final long serialVersionUID = 5675176836184862150L;
 
     /**
@@ -506,6 +507,7 @@ public final class LocalizedMessage
      * @noinspection IOResourceOpenedButNotSafelyClosed
      */
     public static class Utf8Control extends Control {
+
         @Override
         public ResourceBundle newBundle(String aBaseName, Locale aLocale, String aFormat,
                  ClassLoader aLoader, boolean aReload) throws IOException {
@@ -540,5 +542,7 @@ public final class LocalizedMessage
             }
             return resourceBundle;
         }
+
     }
+
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -32,9 +32,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
+import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import net.sf.saxon.om.AxisInfo;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.trans.XPathException;
@@ -365,7 +365,6 @@ public class XpathMapperTest extends AbstractPathTestSupport {
         try {
             getXpathItems(xpath, rootNode);
             fail("Exception is excepted");
-
         }
         catch (XPathException ex) {
             assertEquals("Invalid number of nodes", "Operation is not supported", ex.getMessage());
@@ -421,7 +420,6 @@ public class XpathMapperTest extends AbstractPathTestSupport {
         try {
             classDefNode.getAttributeValue("", "noneExistingAttribute");
             fail("Exception is excepted");
-
         }
         catch (UnsupportedOperationException ex) {
             assertEquals("Invalid number of nodes", "Operation is not supported", ex.getMessage());
@@ -529,7 +527,7 @@ public class XpathMapperTest extends AbstractPathTestSupport {
 
     private RootNode getRootNode(String fileName) throws Exception {
         final File file = new File(getPath(fileName));
-        final DetailAST rootAst = TestUtil.parseFile(file);
+        final DetailAST rootAst = JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS);
         return new RootNode(rootAst);
     }
 
@@ -552,4 +550,5 @@ public class XpathMapperTest extends AbstractPathTestSupport {
         }
         return returnValue;
     }
+
 }

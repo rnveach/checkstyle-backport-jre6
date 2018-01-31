@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -65,6 +65,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author Andrei Selkin
  */
 public class Checker extends AutomaticBean implements MessageDispatcher, RootModule {
+
     /** Message to use when an exception occurs and should be printed as a violation. */
     public static final String EXCEPTION_MSG = "general.exception";
 
@@ -122,13 +123,13 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      * here. Consequently Checker does not extend AbstractViolationReporter,
      * leading to a bit of duplicated code for severity level setting.
      */
-    private SeverityLevel severityLevel = SeverityLevel.ERROR;
+    private SeverityLevel severity = SeverityLevel.ERROR;
 
     /** Name of a charset. */
     private String charset = System.getProperty("file.encoding", StandardCharsets.UTF_8.name());
 
     /** Cache file. **/
-    private PropertyCacheFile cache;
+    private PropertyCacheFile cacheFile;
 
     /** Controls whether exceptions should halt execution or not. */
     private boolean haltOnException = true;
@@ -149,8 +150,8 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      */
     public void setCacheFile(String fileName) throws IOException {
         final Configuration configuration = getConfiguration();
-        cache = new PropertyCacheFile(configuration, fileName);
-        cache.load();
+        cacheFile = new PropertyCacheFile(configuration, fileName);
+        cacheFile.load();
     }
 
     /**
@@ -175,9 +176,9 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
         fileSetChecks.clear();
         beforeExecutionFileFilters.clear();
         filters.clear();
-        if (cache != null) {
+        if (cacheFile != null) {
             try {
-                cache.persist();
+                cacheFile.persist();
             }
             catch (IOException ex) {
                 throw new IllegalStateException("Unable to persist cache file.", ex);
@@ -203,8 +204,8 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     @Override
     public int process(List<File> files) throws CheckstyleException {
-        if (cache != null) {
-            cache.putExternalResources(getExternalResourceLocations());
+        if (cacheFile != null) {
+            cacheFile.putExternalResources(getExternalResourceLocations());
         }
 
         // Prepare to start
@@ -283,13 +284,13 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
             try {
                 final String fileName = file.getAbsolutePath();
                 final long timestamp = file.lastModified();
-                if (cache != null && cache.isInCache(fileName, timestamp)
+                if (cacheFile != null && cacheFile.isInCache(fileName, timestamp)
                         || !CommonUtils.matchesFileExtension(file, fileExtensions)
                         || !acceptFileStarted(fileName)) {
                     continue;
                 }
-                if (cache != null) {
-                    cache.put(fileName, timestamp);
+                if (cacheFile != null) {
+                    cacheFile.put(fileName, timestamp);
                 }
                 fireFileStarted(fileName);
                 final SortedSet<LocalizedMessage> fileMessages = processFile(file);
@@ -398,8 +399,8 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
                 }
             }
         }
-        if (hasNonFilteredViolations && cache != null) {
-            cache.remove(fileName);
+        if (hasNonFilteredViolations && cacheFile != null) {
+            cacheFile.remove(fileName);
         }
     }
 
@@ -424,7 +425,6 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
         LocalizedMessage.setLocale(locale);
 
         if (moduleFactory == null) {
-
             if (moduleClassLoader == null) {
                 throw new CheckstyleException(
                         "if no custom moduleFactory is set, "
@@ -441,7 +441,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
         context.add("charset", charset);
         context.add("classLoader", classLoader);
         context.add("moduleFactory", moduleFactory);
-        context.add("severity", severityLevel.getName());
+        context.add("severity", severity.getName());
         context.add("basedir", basedir);
         childContext = context;
     }
@@ -580,7 +580,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      * @see SeverityLevel
      */
     public final void setSeverity(String severity) {
-        severityLevel = SeverityLevel.getInstance(severity);
+        this.severity = SeverityLevel.getInstance(severity);
     }
 
     /**
@@ -625,8 +625,9 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      * Clears the cache.
      */
     public void clearCache() {
-        if (cache != null) {
-            cache.reset();
+        if (cacheFile != null) {
+            cacheFile.reset();
         }
     }
+
 }

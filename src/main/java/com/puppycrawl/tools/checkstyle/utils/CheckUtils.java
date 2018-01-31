@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -39,6 +39,7 @@ import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
  * @author o_sukhodolsky
  */
 public final class CheckUtils {
+
     // constants for parseDouble()
     /** Octal radix. */
     private static final int BASE_8 = 8;
@@ -326,7 +327,6 @@ public final class CheckUtils {
         // exceptions.
         if (ast.getType() == TokenTypes.METHOD_DEF
                 && ast.getChildCount() == SETTER_GETTER_MAX_CHILDREN) {
-
             final DetailAST type = ast.findFirstToken(TokenTypes.TYPE);
             final String name = type.getNextSibling().getText();
             final boolean matchesSetterFormat = SETTER_PATTERN.matcher(name).matches();
@@ -364,7 +364,6 @@ public final class CheckUtils {
         // exceptions.
         if (ast.getType() == TokenTypes.METHOD_DEF
                 && ast.getChildCount() == SETTER_GETTER_MAX_CHILDREN) {
-
             final DetailAST type = ast.findFirstToken(TokenTypes.TYPE);
             final String name = type.getNextSibling().getText();
             final boolean matchesGetterFormat = GETTER_PATTERN.matcher(name).matches();
@@ -431,7 +430,6 @@ public final class CheckUtils {
         AccessModifier accessModifier = AccessModifier.PACKAGE;
         for (AST token = modifiersToken.getFirstChild(); token != null;
              token = token.getNextSibling()) {
-
             final int tokenType = token.getType();
             if (tokenType == TokenTypes.LITERAL_PUBLIC) {
                 accessModifier = AccessModifier.PUBLIC;
@@ -465,4 +463,5 @@ public final class CheckUtils {
         }
         return illegalClassNames;
     }
+
 }

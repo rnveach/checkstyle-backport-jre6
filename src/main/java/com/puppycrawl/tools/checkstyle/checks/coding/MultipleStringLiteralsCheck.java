@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -189,6 +189,7 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
      * This class contains information about where a string was found.
      */
     private static final class StringInfo {
+
         /**
          * Line of finding.
          */
@@ -223,6 +224,7 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
         private int getCol() {
             return col;
         }
+
     }
 
 }

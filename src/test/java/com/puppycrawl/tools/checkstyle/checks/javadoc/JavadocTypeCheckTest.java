@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -35,6 +35,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class JavadocTypeCheckTest extends AbstractModuleTestSupport {
+
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/javadoc/javadoctype";
@@ -44,7 +45,7 @@ public class JavadocTypeCheckTest extends AbstractModuleTestSupport {
     public void testGetRequiredTokens() {
         final JavadocTypeCheck javadocTypeCheck = new JavadocTypeCheck();
         assertArrayEquals(
-            "JavadocTypeCheck#getRequiredTockens should return empty array by default",
+            "JavadocTypeCheck#getRequiredTokens should return empty array by default",
             CommonUtils.EMPTY_INT_ARRAY, javadocTypeCheck.getRequiredTokens());
     }
 
@@ -394,4 +395,5 @@ public class JavadocTypeCheckTest extends AbstractModuleTestSupport {
                 getPath("InputJavadocTypeBadTag.java"),
                 expected);
     }
+
 }

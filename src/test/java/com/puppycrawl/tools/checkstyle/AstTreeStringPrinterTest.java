@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -51,8 +51,7 @@ public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
     public void testParseFileThrowable() throws Exception {
         final File input = new File(getNonCompilablePath("InputAstTreeStringPrinter.java"));
         try {
-            AstTreeStringPrinter.printFileAst(input,
-                    AstTreeStringPrinter.PrintOptions.WITHOUT_COMMENTS);
+            AstTreeStringPrinter.printFileAst(input, JavaParser.Options.WITHOUT_COMMENTS);
             Assert.fail("exception expected");
         }
         catch (CheckstyleException ex) {
@@ -68,7 +67,7 @@ public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
     public void testParseFile() throws Exception {
         verifyAst(getPath("ExpectedAstTreeStringPrinter.txt"),
                 getPath("InputAstTreeStringPrinterComments.java"),
-                AstTreeStringPrinter.PrintOptions.WITHOUT_COMMENTS);
+                JavaParser.Options.WITHOUT_COMMENTS);
     }
 
     @Test
@@ -77,7 +76,7 @@ public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
                 new File(getPath("InputAstTreeStringPrinterComments.java")).getAbsoluteFile(),
                 System.getProperty("file.encoding", StandardCharsets.UTF_8.name()));
         final String actual = AstTreeStringPrinter.printAst(text,
-                AstTreeStringPrinter.PrintOptions.WITHOUT_COMMENTS);
+                JavaParser.Options.WITHOUT_COMMENTS);
         final String expected = new String(Files7.readAllBytes(Paths.get(
                 getPath("ExpectedAstTreeStringPrinter.txt"))), StandardCharsets.UTF_8);
 
@@ -88,7 +87,7 @@ public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
     public void testParseFileWithComments() throws Exception {
         verifyAst(getPath("ExpectedAstTreeStringPrinterComments.txt"),
                 getPath("InputAstTreeStringPrinterComments.java"),
-                AstTreeStringPrinter.PrintOptions.WITH_COMMENTS);
+                JavaParser.Options.WITH_COMMENTS);
     }
 
     @Test
@@ -121,21 +120,21 @@ public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
     public void testAstTreeBlockComments() throws Exception {
         verifyAst(getPath("ExpectedAstTreeStringPrinterFullOfBlockComments.txt"),
                 getPath("InputAstTreeStringPrinterFullOfBlockComments.java"),
-                AstTreeStringPrinter.PrintOptions.WITH_COMMENTS);
+                JavaParser.Options.WITH_COMMENTS);
     }
 
     @Test
     public void testAstTreeBlockCommentsCarriageReturn() throws Exception {
         verifyAst(getPath("ExpectedAstTreeStringPrinterFullOfBlockCommentsCR.txt"),
                 getPath("InputAstTreeStringPrinterFullOfBlockCommentsCR.java"),
-                AstTreeStringPrinter.PrintOptions.WITH_COMMENTS);
+                JavaParser.Options.WITH_COMMENTS);
     }
 
     @Test
     public void testAstTreeSingleLineComments() throws Exception {
         verifyAst(getPath("ExpectedAstTreeStringPrinterFullOfSinglelineComments.txt"),
                 getPath("InputAstTreeStringPrinterFullOfSinglelineComments.java"),
-                AstTreeStringPrinter.PrintOptions.WITH_COMMENTS);
+                JavaParser.Options.WITH_COMMENTS);
     }
 
 }

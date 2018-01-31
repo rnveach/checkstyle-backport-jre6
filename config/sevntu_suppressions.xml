@@ -5,6 +5,7 @@
         "http://checkstyle.sourceforge.net/dtds/suppressions_1_2.dtd">
 
 <suppressions>
+    <suppress checks="NewlineAtEndOfFile" files=".*" />
 
     <!-- Fixing these cases will decrease code readability -->
     <suppress checks="MultipleStringLiteralsExtended"

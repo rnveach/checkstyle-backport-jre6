@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -56,6 +56,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * @author  jrichard
  */
 public class IndentationCheckTest extends AbstractModuleTestSupport {
+
     private static final Pattern LINE_WITH_COMMENT_REGEX =
                     Pattern.compile(".*?//indent:(\\d+)(?: ioffset:(\\d+))?"
                         + " exp:(>=)?(\\d+(?:,\\d+)*?)( warn)?$");
@@ -643,7 +644,6 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testInvalidSwitchWithChecker()
             throws Exception {
-
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
         checkConfig.addAttribute("arrayInitIndent", "4");
@@ -1327,7 +1327,6 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testValidCommaWithChecker()
             throws Exception {
-
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
         checkConfig.addAttribute("arrayInitIndent", "4");
@@ -1951,6 +1950,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     }
 
     private static final class IndentAudit implements AuditListener {
+
         private final IndentComment[] comments;
         private int position;
 
@@ -2015,9 +2015,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
         public void addException(AuditEvent event, Throwable throwable) {
             // No code needed
         }
+
     }
 
     private static final class IndentComment {
+
         /** Used to locate the index of argument zero of error messages. */
         private static final String FAKE_ARGUMENT_ZERO = "##0##";
         private final int lineNumber;
@@ -2090,5 +2092,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
         public boolean isWarning() {
             return warning;
         }
+
     }
+
 }

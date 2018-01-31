@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
 public class TokenTypesTest {
+
     @Test
     public void testGetShortDescription() {
         assertEquals("short description for EQUAL",
@@ -35,23 +36,23 @@ public class TokenTypesTest {
                 TokenUtils.getShortDescription("EQUAL"));
 
         assertEquals("short description for LAND",
-                "The <code>&amp;&amp;</code> (conditional AND) operator.",
+                "The <code>&&</code> (conditional AND) operator.",
                 TokenUtils.getShortDescription("LAND"));
 
         assertEquals("short description for LCURLY",
-                "A left (curly) brace (<code>&#123;</code>).",
+                "A left curly brace (<code>{</code>).",
                 TokenUtils.getShortDescription("LCURLY"));
 
         assertEquals("short description for SR_ASSIGN",
-                "The <code>&gt;&gt;=</code> (signed right shift assignment)",
+                "The <code>>>=</code> (signed right shift assignment)",
                 TokenUtils.getShortDescription("SR_ASSIGN"));
 
         assertEquals("short description for SL",
-                "The <code>&lt;&lt;</code> (shift left) operator.",
+                "The <code><<</code> (shift left) operator.",
                 TokenUtils.getShortDescription("SL"));
 
         assertEquals("short description for BSR",
-                "The <code>&gt;&gt;&gt;</code> (unsigned shift right) operator.",
+                "The <code>>>></code> (unsigned shift right) operator.",
                 TokenUtils.getShortDescription("BSR"));
     }
 
@@ -60,4 +61,5 @@ public class TokenTypesTest {
         assertTrue("Constructor is not private",
                 isUtilsClassHasPrivateConstructor(TokenTypes.class, true));
     }
+
 }

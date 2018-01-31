@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -146,7 +146,6 @@ public class DesignForExtensionCheck extends AbstractCheck {
                 && (isNativeMethod(ast)
                     || !hasEmptyImplementation(ast))
                 && !hasIgnoredAnnotation(ast, ignoredAnnotations)) {
-
             final DetailAST classDef = getNearestClassOrEnumDefinition(ast);
             if (canBeSubclassed(classDef)) {
                 final String className = classDef.findFirstToken(TokenTypes.IDENT).getText();
@@ -162,8 +161,20 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @return true if a method has a javadoc comment.
      */
     private static boolean hasJavadocComment(DetailAST methodDef) {
-        final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
-        return modifiers.branchContains(TokenTypes.BLOCK_COMMENT_BEGIN);
+        return hasJavadocCommentOnToken(methodDef, TokenTypes.MODIFIERS)
+                || hasJavadocCommentOnToken(methodDef, TokenTypes.TYPE);
+    }
+
+    /**
+     * Checks whether a token has a javadoc comment.
+     *
+     * @param methodDef method definition token.
+     * @param tokenType token type.
+     * @return true if a token has a javadoc comment.
+     */
+    private static boolean hasJavadocCommentOnToken(DetailAST methodDef, int tokenType) {
+        final DetailAST token = methodDef.findFirstToken(tokenType);
+        return token.branchContains(TokenTypes.BLOCK_COMMENT_BEGIN);
     }
 
     /**
@@ -317,4 +328,5 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
         return hasDefaultConstructor || hasExplicitNonPrivateCtor;
     }
+
 }

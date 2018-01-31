@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,7 @@ import java.util.Properties;
  */
 public final class PropertiesExpander
     implements PropertyResolver {
+
     /** The underlying values. */
     private final Map<String, String> values;
 
@@ -56,4 +57,5 @@ public final class PropertiesExpander
     public String resolve(String name) {
         return values.get(name);
     }
+
 }

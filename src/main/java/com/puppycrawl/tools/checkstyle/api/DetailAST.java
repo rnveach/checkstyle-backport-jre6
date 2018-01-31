@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -35,6 +35,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  * @noinspection FieldNotUsedInToString, SerializableHasSerializationMethods
  */
 public final class DetailAST extends CommonASTWithHiddenTokens {
+
     private static final long serialVersionUID = -2580884815577559874L;
 
     /** Constant to indicate if not calculated the child count. */
@@ -345,7 +346,6 @@ public final class DetailAST extends CommonASTWithHiddenTokens {
     private BitSet getBranchTokenTypes() {
         // lazy init
         if (branchTokenTypes == null) {
-
             branchTokenTypes = new BitSet();
             branchTokenTypes.set(getType());
 
@@ -432,4 +432,5 @@ public final class DetailAST extends CommonASTWithHiddenTokens {
             prevParent = prevParent.parent;
         }
     }
+
 }

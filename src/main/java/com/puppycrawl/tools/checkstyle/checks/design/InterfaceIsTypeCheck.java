@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -57,17 +57,17 @@ public final class InterfaceIsTypeCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[] {TokenTypes.INTERFACE_DEF};
+        return getRequiredTokens();
     }
 
     @Override
     public int[] getRequiredTokens() {
-        return getDefaultTokens();
+        return new int[] {TokenTypes.INTERFACE_DEF};
     }
 
     @Override
     public int[] getAcceptableTokens() {
-        return new int[] {TokenTypes.INTERFACE_DEF};
+        return getRequiredTokens();
     }
 
     @Override
@@ -84,7 +84,6 @@ public final class InterfaceIsTypeCheck
         if (methodDef == null && methodRequired) {
             log(ast.getLineNo(), MSG_KEY);
         }
-
     }
 
     /**
@@ -94,4 +93,5 @@ public final class InterfaceIsTypeCheck
     public void setAllowMarkerInterfaces(boolean flag) {
         allowMarkerInterfaces = flag;
     }
+
 }

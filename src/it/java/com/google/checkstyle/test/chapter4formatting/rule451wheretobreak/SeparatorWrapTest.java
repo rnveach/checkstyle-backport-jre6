@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -36,7 +36,6 @@ public class SeparatorWrapTest extends AbstractModuleTestSupport {
 
     @Test
     public void testSeparatorWrapDot() throws Exception {
-
         final String[] expected = {
             "28:30: " + getCheckMessage(SeparatorWrapCheck.class, "line.new", "."),
         };
@@ -50,7 +49,6 @@ public class SeparatorWrapTest extends AbstractModuleTestSupport {
 
     @Test
     public void testSeparatorWrapComma() throws Exception {
-
         final String[] expected = {
             "31:17: " + getCheckMessage(SeparatorWrapCheck.class, "line.previous", ","),
         };
@@ -64,7 +62,6 @@ public class SeparatorWrapTest extends AbstractModuleTestSupport {
 
     @Test
     public void testSeparatorWrapMethodRef() throws Exception {
-
         final String[] expected = {
             "17:49: " + getCheckMessage(SeparatorWrapCheck.class, MSG_LINE_NEW, "::"),
         };

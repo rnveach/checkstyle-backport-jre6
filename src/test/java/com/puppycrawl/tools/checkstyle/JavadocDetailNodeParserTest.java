@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,6 @@ import java.io.File;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
@@ -43,9 +42,10 @@ public class JavadocDetailNodeParserTest extends AbstractModuleTestSupport {
 
     @Test
     public void testParseJavadocAsDetailNode() throws Exception {
-        final DetailAST ast = TestUtil
-                .parseFile(new File(getPath("InputJavadocDetailNodeParser.java"))).getNextSibling()
-                .getFirstChild().getFirstChild();
+        final DetailAST ast = JavaParser.parseFile(
+            new File(getPath("InputJavadocDetailNodeParser.java")),
+            JavaParser.Options.WITH_COMMENTS)
+                .getNextSibling().getFirstChild().getFirstChild();
         final JavadocDetailNodeParser parser = new JavadocDetailNodeParser();
         final JavadocDetailNodeParser.ParseStatus status = parser.parseJavadocAsDetailNode(ast);
         final String actual = DetailNodeTreeStringPrinter.printTree(status.getTree(), "", "");

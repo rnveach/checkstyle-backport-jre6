@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -515,6 +515,7 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
      * Holds the names of fields of a type.
      */
     private static class FieldFrame {
+
         /** Parent frame. */
         private final FieldFrame parent;
 
@@ -645,5 +646,7 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
         private static String getFieldName(DetailAST field) {
             return field.findFirstToken(TokenTypes.IDENT).getText();
         }
+
     }
+
 }

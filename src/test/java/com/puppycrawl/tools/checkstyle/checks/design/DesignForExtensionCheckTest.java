@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 public class DesignForExtensionCheckTest
     extends AbstractModuleTestSupport {
+
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/design/designforextension";
@@ -53,7 +54,6 @@ public class DesignForExtensionCheckTest
             "100:9: " + getCheckMessage(MSG_KEY, "anotherNonFinalClass", "someMethod"),
         };
         verify(checkConfig, getPath("InputDesignForExtension.java"), expected);
-
     }
 
     @Test
@@ -80,6 +80,7 @@ public class DesignForExtensionCheckTest
             "96:9: " + getCheckMessage(MSG_KEY, "A", "foo23"),
             "110:9: " + getCheckMessage(MSG_KEY, "A", "foo26"),
             "117:9: " + getCheckMessage(MSG_KEY, "A", "foo27"),
+            "197:9: " + getCheckMessage(MSG_KEY, "A", "foo41"),
         };
         verify(checkConfig, getPath("InputDesignForExtensionOverridableMethods.java"), expected);
     }
@@ -119,4 +120,5 @@ public class DesignForExtensionCheckTest
         };
         verify(checkConfig, getPath("InputDesignForExtensionNativeMethods.java"), expected);
     }
+
 }

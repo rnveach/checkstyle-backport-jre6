@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2017 the original author or authors.
+// Copyright (C) 2001-2018 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -36,7 +36,6 @@ public class ArrayTypeStyleTest extends AbstractModuleTestSupport {
 
     @Test
     public void testArrayTypeStyle() throws Exception {
-
         final String[] expected = {
             "9:23: " + getCheckMessage(ArrayTypeStyleCheck.class, MSG_KEY),
             "15:44: " + getCheckMessage(ArrayTypeStyleCheck.class, MSG_KEY),
@@ -52,4 +51,5 @@ public class ArrayTypeStyleTest extends AbstractModuleTestSupport {
         final Integer[] warnList = getLinesWithWarn(filePath);
         verify(checkConfig, filePath, expected, warnList);
     }
+
 }
