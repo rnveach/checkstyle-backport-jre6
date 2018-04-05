@@ -61,6 +61,9 @@ public class MethodCallHandler extends AbstractExpressionHandler {
                 indentLevel = new IndentLevel(container.getIndent(), getBasicOffset());
             }
         }
+        else if (getMainAst().getFirstChild().getType() == TokenTypes.LITERAL_NEW) {
+            indentLevel = super.getIndentImpl();
+        }
         else {
             // if our expression isn't first on the line, just use the start
             // of the line
@@ -138,6 +141,23 @@ public class MethodCallHandler extends AbstractExpressionHandler {
         return astNode;
     }
 
+    /**
+     * Returns method or constructor name. For {@code foo(arg)} it is `foo`, for
+     *     {@code foo.bar(arg)} it is `bar` for {@code super(arg)} it is 'super'.
+     *
+     * @return TokenTypes.IDENT node for a method call, TokenTypes.SUPER_CTOR_CALL otherwise.
+     */
+    private DetailAST getMethodIdentAst() {
+        DetailAST ast = getMainAst();
+        if (ast.getType() != TokenTypes.SUPER_CTOR_CALL) {
+            ast = ast.getFirstChild();
+            if (ast.getType() == TokenTypes.DOT) {
+                ast = ast.getLastChild();
+            }
+        }
+        return ast;
+    }
+
     @Override
     public IndentLevel getSuggestedChildIndent(AbstractExpressionHandler child) {
         // for whatever reason a method that crosses lines, like asList
@@ -146,10 +166,9 @@ public class MethodCallHandler extends AbstractExpressionHandler {
         //                new String[] {"method"}).toString());
         // will not have the right line num, so just get the child name
 
-        final DetailAST first = getMainAst().getFirstChild();
-        IndentLevel suggestedLevel = new IndentLevel(getLineStart(first));
-        if (!areOnSameLine(child.getMainAst().getFirstChild(),
-                           getMainAst().getFirstChild())) {
+        final DetailAST ident = getMethodIdentAst();
+        IndentLevel suggestedLevel = new IndentLevel(getLineStart(ident));
+        if (!areOnSameLine(child.getMainAst().getFirstChild(), ident)) {
             suggestedLevel = new IndentLevel(suggestedLevel,
                     getBasicOffset(),
                     getIndentCheck().getLineWrappingIndentation());
@@ -170,12 +189,20 @@ public class MethodCallHandler extends AbstractExpressionHandler {
 
     @Override
     public void checkIndentation() {
-        final DetailAST exprNode = getMainAst().getParent();
-        if (exprNode.getParent().getType() == TokenTypes.SLIST) {
-            final DetailAST methodName = getMainAst().getFirstChild();
-            checkExpressionSubtree(methodName, getIndent(), false, false);
+        DetailAST lparen = null;
+        if (getMainAst().getType() == TokenTypes.METHOD_CALL) {
+            final DetailAST exprNode = getMainAst().getParent();
+            if (exprNode.getParent().getType() == TokenTypes.SLIST) {
+                checkExpressionSubtree(getMainAst().getFirstChild(), getIndent(), false, false);
+                lparen = getMainAst();
+            }
+        }
+        else {
+            // TokenTypes.CTOR_CALL|TokenTypes.SUPER_CTOR_CALL
+            lparen = getMainAst().getFirstChild();
+        }
 
-            final DetailAST lparen = getMainAst();
+        if (lparen != null) {
             final DetailAST rparen = getMainAst().findFirstToken(TokenTypes.RPAREN);
             checkLeftParen(lparen);
 
@@ -186,7 +213,7 @@ public class MethodCallHandler extends AbstractExpressionHandler {
                     false, true);
 
                 checkRightParen(lparen, rparen);
-                checkWrappingIndentation(getMainAst(), getMethodCallLastNode(getMainAst()));
+                checkWrappingIndentation(getMainAst(), getCallLastNode(getMainAst()));
             }
         }
     }
@@ -197,13 +224,13 @@ public class MethodCallHandler extends AbstractExpressionHandler {
     }
 
     /**
-     * Returns method call right paren.
+     * Returns method or constructor call right paren.
      * @param firstNode
-     *          method call ast(TokenTypes.METHOD_CALL)
-     * @return ast node containing right paren for specified method call. If
+     *          call ast(TokenTypes.METHOD_CALL|TokenTypes.CTOR_CALL|TokenTypes.SUPER_CTOR_CALL)
+     * @return ast node containing right paren for specified method or constructor call. If
      *     method calls are chained returns right paren for last call.
      */
-    private static DetailAST getMethodCallLastNode(DetailAST firstNode) {
+    private static DetailAST getCallLastNode(DetailAST firstNode) {
         return firstNode.getLastChild();
     }
 

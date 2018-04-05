@@ -20,10 +20,13 @@
 package com.puppycrawl.tools.checkstyle.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
-import com.google.common.collect.ImmutableMap;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
@@ -37,7 +40,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 public final class TokenUtils {
 
     /** Maps from a token name to value. */
-    private static final ImmutableMap<String, Integer> TOKEN_NAME_TO_VALUE;
+    private static final Map<String, Integer> TOKEN_NAME_TO_VALUE;
     /** Maps from a token value to name. */
     private static final String[] TOKEN_VALUE_TO_NAME;
 
@@ -52,35 +55,13 @@ public final class TokenUtils {
 
     // initialise the constants
     static {
-        final ImmutableMap.Builder<String, Integer> builder =
-                ImmutableMap.builder();
-        final Field[] fields = TokenTypes.class.getDeclaredFields();
-        String[] tempTokenValueToName = CommonUtils.EMPTY_STRING_ARRAY;
-        for (final Field field : fields) {
-            // Only process the int declarations.
-            if (field.getType() != Integer.TYPE) {
-                continue;
-            }
-
-            final String name = field.getName();
-            final int tokenValue = getIntFromField(field, name);
-            builder.put(name, tokenValue);
-            if (tokenValue > tempTokenValueToName.length - 1) {
-                final String[] temp = new String[tokenValue + 1];
-                System.arraycopy(tempTokenValueToName, 0,
-                        temp, 0, tempTokenValueToName.length);
-                tempTokenValueToName = temp;
-            }
-            tempTokenValueToName[tokenValue] = name;
-        }
-
-        TOKEN_NAME_TO_VALUE = builder.build();
-        TOKEN_VALUE_TO_NAME = tempTokenValueToName;
+        TOKEN_NAME_TO_VALUE = nameToValueMapFromPublicIntFields(TokenTypes.class);
+        TOKEN_VALUE_TO_NAME = valueToNameArrayFromNameToValueMap(TOKEN_NAME_TO_VALUE);
         TOKEN_IDS = new int[TOKEN_NAME_TO_VALUE.size()];
-        int position = 0;
-        for (int item : TOKEN_NAME_TO_VALUE.values()) {
-            TOKEN_IDS[position] = item;
-            position++;
+        int i = 0;
+        for (Integer value : TOKEN_NAME_TO_VALUE.values()) {
+            TOKEN_IDS[i] = value;
+            i++;
         }
     }
 
@@ -105,6 +86,49 @@ public final class TokenUtils {
         catch (final IllegalAccessException exception) {
             throw new IllegalStateException(exception);
         }
+    }
+
+    /**
+     * Creates a map of 'field name' to 'field value' from all {@code public} {@code int} fields
+     * of a class.
+     * @param cls source class
+     * @return unmodifiable name to value map
+     */
+    public static Map<String, Integer> nameToValueMapFromPublicIntFields(Class<?> cls) {
+        final Map<String, Integer> map = new HashMap<String, Integer>();
+        final Field[] fields = cls.getDeclaredFields();
+        for (Field fld : fields) {
+            if (Modifier.isPublic(fld.getModifiers()) && fld.getType() == Integer.TYPE) {
+                final String name = fld.getName();
+                final int tokenValue = getIntFromField(fld, name);
+
+                map.put(name, tokenValue);
+            }
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
+    /**
+     * Creates an array of map keys for quick value-to-name lookup for the map.
+     * @param map source map
+     * @return array of map keys
+     */
+    public static String[] valueToNameArrayFromNameToValueMap(Map<String, Integer> map) {
+        String[] valueToNameArray = CommonUtils.EMPTY_STRING_ARRAY;
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            final int value = entry.getValue();
+            // JavadocTokenTypes.EOF has value '-1' and is handled explicitly.
+            if (value >= 0) {
+                if (value >= valueToNameArray.length) {
+                    final String[] temp = new String[value + 1];
+                    System.arraycopy(valueToNameArray, 0, temp, 0, valueToNameArray.length);
+                    valueToNameArray = temp;
+                }
+                valueToNameArray[value] = entry.getKey();
+            }
+        }
+        return valueToNameArray;
     }
 
     /**

@@ -23,11 +23,42 @@ import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsCla
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Set;
+
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
 
 public class TokenTypesTest {
+
+    @Test
+    public void testAllTokenTypesHasDescription() {
+        final String tokenTypes = "com.puppycrawl.tools.checkstyle.api.tokentypes";
+        final ResourceBundle bundle = ResourceBundle.getBundle(tokenTypes, Locale.ROOT);
+
+        final Set<String> expected = new HashSet<String>();
+        for (int tokenId : TokenUtils.getAllTokenIds()) {
+            expected.add(TokenUtils.getTokenName(tokenId));
+        }
+        final Set<String> actual = bundle.keySet();
+        assertEquals("TokenTypes without description", expected, actual);
+    }
+
+    @Test
+    public void testAllDescriptionsEndsWithPeriod() {
+        final Set<String> badDescriptions = new HashSet<String>();
+        for (int tokenId : TokenUtils.getAllTokenIds()) {
+            final String desc = TokenUtils.getShortDescription(TokenUtils.getTokenName(tokenId));
+            if (desc.charAt(desc.length() - 1) != '.') {
+                badDescriptions.add(desc);
+            }
+        }
+        assertEquals("Malformed TokenType descriptions", Collections.emptySet(), badDescriptions);
+    }
 
     @Test
     public void testGetShortDescription() {
@@ -44,7 +75,7 @@ public class TokenTypesTest {
                 TokenUtils.getShortDescription("LCURLY"));
 
         assertEquals("short description for SR_ASSIGN",
-                "The <code>>>=</code> (signed right shift assignment)",
+                "The <code>>>=</code> (signed right shift assignment) operator.",
                 TokenUtils.getShortDescription("SR_ASSIGN"));
 
         assertEquals("short description for SL",

@@ -25,7 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -464,7 +464,7 @@ public class MainTest {
                 "-p", getPath("InputMainMycheckstyle.properties"),
                 getPath("InputMain.java"));
 
-        verifyStatic(times(1));
+        verifyStatic(Closeables.class, times(1));
         Closeables.closeQuietly(any(InputStream.class));
     }
 
@@ -631,7 +631,7 @@ public class MainTest {
                     ex.getCause() instanceof IllegalStateException);
         }
         finally {
-            verifyStatic(times(1));
+            verifyStatic(CommonUtils.class, times(1));
             final ArgumentCaptor<OutputStream> out =
                     ArgumentCaptor.forClass(OutputStream.class);
             CommonUtils.close(out.capture());
@@ -1193,6 +1193,24 @@ public class MainTest {
                     "Multi thread mode for Checker module is not implemented",
                 ex.getMessage());
         }
+    }
+
+    /**
+     * This test is a workaround for the Jacoco limitations. A call to {@link System#exit(int)}
+     * will never return, so Jacoco coverage probe will be missing. By mocking the {@code System}
+     * class we turn {@code System.exit()} to noop and the Jacoco coverage probe should succeed.
+     *
+     * @throws Exception if error occurs
+     * @see <a href="https://github.com/jacoco/jacoco/issues/117">Jacoco issue 117</a>
+     */
+    @Test
+    public void testJacocoWorkaround() throws Exception {
+        final String expected = "Files to process must be specified, found 0."
+            + System7.lineSeparator();
+        mockStatic(System.class);
+        Main.main();
+        assertEquals("Unexpected output log", expected, systemOut.getLog());
+        assertEquals("Unexpected system error log", "", systemErr.getLog());
     }
 
 }

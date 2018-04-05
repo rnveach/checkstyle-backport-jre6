@@ -124,12 +124,22 @@ public class AuditEventDefaultFormatterTest {
         assertEquals("Buffer length is not expected", 54, result);
     }
 
+    /**
+     * Non meaningful javadoc just to contain "noinspection" tag.
+     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
+     * @noinspection JUnitTestClassNamingConvention
+     */
     private static class TestModuleCheck {
 
         // no code
 
     }
 
+    /**
+     * Non meaningful javadoc just to contain "noinspection" tag.
+     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
+     * @noinspection JUnitTestClassNamingConvention
+     */
     private static class TestModule {
 
         // no code

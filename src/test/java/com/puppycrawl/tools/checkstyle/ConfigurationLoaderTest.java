@@ -27,7 +27,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -71,6 +70,13 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
         return ConfigurationLoader.loadConfiguration(fName, new PropertiesExpander(props));
     }
 
+    /**
+     * Non meaningful javadoc just to contain "noinspection" tag.
+     * Till https://youtrack.jetbrains.com/issue/IDEA-187209
+     * @return method class
+     * @throws Exception if smth wrong
+     * @noinspection JavaReflectionMemberAccess
+     */
     private static Method getReplacePropertiesMethod() throws Exception {
         final Class<?>[] params = new Class<?>[3];
         params[0] = String.class;
@@ -204,7 +210,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             assertTrue("Invalid exception message: " + ex.getMessage(),
                     ex.getMessage().contains("\"property\""));
             assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().endsWith(":8:41"));
+                    ex.getMessage().endsWith(":8:43"));
         }
     }
 
@@ -483,33 +489,6 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
     }
 
     @Test
-    public void testPrivateConstructorWithPropertyResolverAndOmitIgnoreModules() throws Exception {
-        final Class<?> configurationLoaderClass = ConfigurationLoader.class;
-        final Constructor<?> configurationLoaderCtor =
-                configurationLoaderClass.getDeclaredConstructor(
-                        PropertyResolver.class, boolean.class);
-        configurationLoaderCtor.setAccessible(true);
-
-        final Properties properties = new Properties();
-        final PropertyResolver propertyResolver = new PropertiesExpander(properties);
-        final ConfigurationLoader configurationLoader =
-                (ConfigurationLoader) configurationLoaderCtor.newInstance(
-                        propertyResolver, true);
-
-        final Field overridePropsResolverField =
-                configurationLoaderClass.getDeclaredField("overridePropsResolver");
-        overridePropsResolverField.setAccessible(true);
-        assertEquals("Invalid property resolver",
-            propertyResolver, overridePropsResolverField.get(configurationLoader));
-
-        final Field omitIgnoredModulesField =
-                configurationLoaderClass.getDeclaredField("omitIgnoredModules");
-        omitIgnoredModulesField.setAccessible(true);
-        assertEquals("omitIgnoredModules should be set to true",
-            true, omitIgnoredModulesField.get(configurationLoader));
-    }
-
-    @Test
     public void testNonExistentPropertyName() throws Exception {
         try {
             loadConfiguration("InputConfigurationLoaderNonexistentProperty.xml");
@@ -613,12 +592,6 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             0, children[0].getChildren().length);
     }
 
-    /**
-     * This SuppressWarning("unchecked") required to suppress
-     * "Unchecked generics array creation for varargs parameter" during mock.
-     * @throws Exception could happen from PowerMokito calls and getAttribute
-     */
-    @SuppressWarnings("unchecked")
     @Test
     public void testConfigWithIgnoreExceptionalAttributes() throws Exception {
         // emulate exception from unrelated code, but that is same try-catch

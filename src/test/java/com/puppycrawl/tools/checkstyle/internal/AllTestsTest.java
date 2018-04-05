@@ -53,7 +53,7 @@ public class AllTestsTest {
 
         Assert.assertTrue("found tests", !allTests.keySet().isEmpty());
 
-        walk(new File("src/test/resources"),
+        walk(new File("src/test/resources/com/puppycrawl"),
                 new Function<File, Object>() {
                     @Override
                     public Object apply(File file) {
@@ -61,7 +61,7 @@ public class AllTestsTest {
                         return null;
                     }
                 });
-        walk(new File("src/test/resources-noncompilable"),
+        walk(new File("src/test/resources-noncompilable/com/puppycrawl"),
                 new Function<File, Object>() {
                     @Override
                     public Object apply(File file) {

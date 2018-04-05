@@ -78,6 +78,7 @@ public class AbstractFileSetCheckTest {
         }
         catch (IllegalArgumentException ex) {
             // exception is expected
+            assertEquals("Invalid exception message", "Test", ex.getMessage());
         }
 
         final Field field = AbstractFileSetCheck.class.getDeclaredField("MESSAGE_COLLECTOR");
@@ -95,6 +96,7 @@ public class AbstractFileSetCheckTest {
         }
         catch (IllegalArgumentException ex) {
             // exception is expected
+            assertEquals("Invalid exception message", "Test", ex.getMessage());
         }
 
         @SuppressWarnings("unchecked")
@@ -114,7 +116,7 @@ public class AbstractFileSetCheckTest {
     }
 
     /**
-     * This javadoc exists only to suppress Intellij Idea inspection.
+     * This javadoc exists only to suppress IntelliJ IDEA inspection.
      */
     @Test
     public void testSetExtensionThrowsExceptionWhenTheyAreNull() {
@@ -143,7 +145,7 @@ public class AbstractFileSetCheckTest {
         private static final String MSG_KEY = "File should not be empty.";
 
         @Override
-        protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
+        protected void processFiltered(File file, FileText fileText) {
             if (fileText.size() == 0) {
                 log(1, MSG_KEY);
             }
@@ -157,7 +159,7 @@ public class AbstractFileSetCheckTest {
         private int count = 1;
 
         @Override
-        protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
+        protected void processFiltered(File file, FileText fileText) {
             log(count, MSG_KEY);
             count++;
             throw new IllegalArgumentException("Test");

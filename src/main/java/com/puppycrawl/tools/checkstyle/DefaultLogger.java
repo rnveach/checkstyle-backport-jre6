@@ -27,7 +27,6 @@ import java.io.Writer;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
-import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
@@ -195,7 +194,7 @@ public class DefaultLogger extends AutomaticBean implements AuditListener {
     }
 
     @Override
-    protected void finishLocalSetup() throws CheckstyleException {
+    protected void finishLocalSetup() {
         // No code by default
     }
 

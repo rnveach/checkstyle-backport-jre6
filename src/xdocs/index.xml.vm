@@ -85,20 +85,20 @@
       </p>
     </section>
 
-    <section name="Development Circle">
+    <section name="Development Cycle">
       <p>
         <b>Releases will happen at the end of each month</b>
-        if functional changes exists in <a href="https://github.com/checkstyle/checkstyle/commits/master">master branch of our repo</a>.
-        For exact day pelase follow our <a href="https://github.com/checkstyle/checkstyle/milestones">milestones</a>.
+        if functional changes exist in the <a href="https://github.com/checkstyle/checkstyle/commits/master">master branch of our repo</a>.
+        For the exact day, please follow our <a href="https://github.com/checkstyle/checkstyle/milestones">milestones</a>.
       </p>
       <p>
-        Explanation why we do not follow Semantic Versioning is in <a href="https://github.com/checkstyle/checkstyle/issues/3709">issue #3709</a>
+        Checkstyle is not using Semantic Versioning (<a href="https://github.com/checkstyle/checkstyle/issues/3709">reasons in issue #3709</a>)
       </p>
     </section>
 
     <section name="Related Tools">
       <p>
-        Checkstyle is most useful if you integrate it in your build process or
+        Checkstyle is most useful if you integrate it into your build process or
         your development environment. The distribution includes:
       </p>
 
@@ -151,7 +151,7 @@
                   <td><a href="https://eclipse.org">Eclipse/RAD/RDz</a></td>
                   <td>David Schneider</td>
                   <td>
-                      <a href="https://checkstyle.github.io/eclipse-cs/">Eclipse-CS Home Page</a>
+                      <a href="http://checkstyle.org/eclipse-cs/">Eclipse-CS Home Page</a>
                   </td>
                   <td>
                       In 2007 was awarded
@@ -303,7 +303,7 @@
                   <td>Imports XML result files from CheckStyle.</td>
               </tr>
               <tr>
-                  <td><a href="http://www.scala-sbt.org/">SBT</a></td>
+                  <td><a href="https://www.scala-sbt.org/">SBT</a></td>
                   <td>Andrew Johnson</td>
                   <td><a href="https://github.com/etsy/sbt-checkstyle-plugin">sbt-checkstyle-plugin Project Page</a></td>
                   <td>SBT plugin for running Checkstyle on Java source files in an SBT project</td>
@@ -339,33 +339,9 @@
                   <th>Remarks</th>
               </tr>
               <tr>
-                  <td><a href="http://www.jetbrains.com/idea/">IntelliJ IDEA</a></td>
-                  <td>Mark Lussier</td>
-                  <td>
-                      <a href="http://jetstyle.sourceforge.net/">JetStyle Project Page</a>
-                  </td>
-                  <td/>
-              </tr>
-              <tr>
-                  <td/>
-                  <td><a href="http://jcoderz.github.io/">jCoderZ</a></td>
-                  <td>
-                      <a href="https://github.com/jCoderZ/fawkez-code-report">fawkez-code-report</a>
-                  </td>
-                  <td>Combines multiple tools (CheckStyle, findbugs, PMD, Cobertura, etc.)</td>
-              </tr>
-              <tr>
                   <td><a href="https://www.bluej.org/">BlueJ</a></td>
                   <td>Rick Giles</td>
                   <td><a href="http://bluejcheckstyle.sourceforge.net/">bluejcheckstyle home page</a></td>
-                  <td/>
-              </tr>
-              <tr>
-                  <td><a href="https://eclipse.org">Eclipse/RAD/RDz</a></td>
-                  <td>Marco van Meegen</td>
-                  <td>
-                      <a href="http://www.mvmsoft.de/content/plugins/checkclipse/checkclipse.htm">Checklipse Home Page</a>
-                  </td>
                   <td/>
               </tr>
               <tr>
@@ -373,12 +349,6 @@
                   <td>Benoit Xhenseval</td>
                   <td><a href="http://qalab.sourceforge.net/">QALab Home Page</a></td>
                   <td>Supports tracking Checkstyle statistics over time.</td>
-              </tr>
-              <tr>
-                  <td><a href="https://netbeans.org/">NetBeans</a></td>
-                  <td>Paul Goulbourn</td>
-                  <td><a href="http://nbcheckstyle.sourceforge.net">nbCheckStyle</a></td>
-                  <td/>
               </tr>
               <tr>
                   <td><a href="https://vim.sourceforge.io/">Vim editor</a></td>

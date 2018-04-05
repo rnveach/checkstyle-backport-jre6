@@ -292,8 +292,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("tabWidth", "4");
         checkConfig.addAttribute("throwsIndent", "4");
         final String[] expected = {
-            "51: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 18, 20),
-            "52: " + getCheckMessage(MSG_ERROR, "method call rparen", 14, 16),
+            "53: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 18, 20),
+            "54: " + getCheckMessage(MSG_ERROR, "method call rparen", 14, 16),
+            "75: " + getCheckMessage(MSG_ERROR, "lambda arguments", 12, 16),
         };
         verifyWarns(checkConfig, getPath("InputIndentationMethodCallLineWrap.java"), expected);
     }
@@ -450,6 +451,38 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("throwsIndent", "4");
         final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationClassesMethods.java"), expected);
+    }
+
+    @Test
+    public void testCtorCall() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
+
+        checkConfig.addAttribute("basicOffset", "2");
+        checkConfig.addAttribute("braceAdjustment", "0");
+        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        checkConfig.addAttribute("tabWidth", "4");
+        final String[] expected = {
+            "28: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 4, 6),
+            "29: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 6),
+            "30: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 6),
+            "34: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 4, 6),
+            "35: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 6),
+            "39: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 4, 6),
+            "40: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 8),
+            "41: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 8),
+            "45: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 4, 6),
+            "46: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 8),
+            "50: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 4, 6),
+            "51: " + getCheckMessage(MSG_ERROR, "(", 4, 8),
+            "52: " + getCheckMessage(MSG_ERROR, "x", 4, 8),
+            "56: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 4, 6),
+            "57: " + getCheckMessage(MSG_ERROR, "method call lparen", 4, 6),
+            "62: " + getCheckMessage(MSG_ERROR, ".", 4, 10),
+            "63: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 8),
+            "68: " + getCheckMessage(MSG_ERROR, "super", 4, 10),
+            "69: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 8),
+        };
+        verifyWarns(checkConfig, getPath("InputIndentationCtorCall.java"), expected);
     }
 
     @Test

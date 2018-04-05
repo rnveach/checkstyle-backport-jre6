@@ -433,7 +433,6 @@ public class CommonUtilsTest {
 
     @Test
     @PrepareForTest({ CommonUtils.class, CommonUtilsTest.class })
-    @SuppressWarnings("unchecked")
     public void testLoadSuppressionsUriSyntaxException() throws Exception {
         final URL configUrl = mock(URL.class);
 
@@ -470,6 +469,11 @@ public class CommonUtilsTest {
             CommonUtils.isInt(null));
     }
 
+    /**
+     * Non meaningful javadoc just to contain "noinspection" tag.
+     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
+     * @noinspection JUnitTestClassNamingConvention
+     */
     private static class TestCloseable implements Closeable {
 
         private boolean closed;

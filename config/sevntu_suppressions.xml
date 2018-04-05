@@ -58,4 +58,6 @@
     <suppress checks="ChildBlockLength|SingleBreakOrContinue|LogicConditionNeedOptimization" files=".*"/>
     <!-- can relax more on this package -->
     <suppress checks="ConstructorWithoutParams|ForbidInstantiation" files="[\\/]jre6[\\/]"/>
+    <!-- until https://github.com/sevntu-checkstyle/sevntu.checkstyle/issues/650 -->
+    <suppress checks="RedundantReturn" files="[\\/]JavadocPropertiesGenerator\.java"/>
 </suppressions>

@@ -20,17 +20,21 @@
 package com.puppycrawl.tools.checkstyle.utils;
 
 import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
@@ -59,11 +63,46 @@ public class TokenUtilsTest {
             fail("IllegalStateException is expected");
         }
         catch (IllegalStateException expected) {
-            assertTrue("Invalid exception message: " + expected.getMessage(),
-                    expected.getMessage().startsWith("java.lang.IllegalAccessException: Class"
-                + " com.puppycrawl.tools.checkstyle.utils.TokenUtils"
-                + " can not access a member of class java.lang.Integer with modifiers "));
+            // The exception message may vary depending on the version of the JDK.
+            // It will definitely contain the TokenUtils class name and the Integer class name.
+            final String message = expected.getMessage();
+            assertTrue("Invalid exception message: " + message,
+                    message.startsWith("java.lang.IllegalAccessException: ")
+                        && message.contains("com.puppycrawl.tools.checkstyle.utils.TokenUtils")
+                        && message.contains("access a member of class java.lang.Integer"));
         }
+    }
+
+    @Test
+    public void testNameToValueMapFromPublicIntFields() {
+        final Map<String, Integer> actualMap =
+            TokenUtils.nameToValueMapFromPublicIntFields(Integer.class);
+        final Map<String, Integer> expectedMap = new TreeMap<String, Integer>();
+        // java 6 has no bytes, java 8 does
+        if (actualMap.size() == 4) {
+            expectedMap.put("BYTES", Integer7.BYTES);
+        }
+        expectedMap.put("SIZE", Integer.SIZE);
+        expectedMap.put("MAX_VALUE", Integer.MAX_VALUE);
+        expectedMap.put("MIN_VALUE", Integer.MIN_VALUE);
+
+        assertEquals("Unexpected name to value map", expectedMap, actualMap);
+    }
+
+    @Test
+    public void testValueToNameArrayFromNameToValueMap() {
+        final Map<String, Integer> map = new TreeMap<String, Integer>();
+        map.put("ZERO", 0);
+        map.put("ONE", 1);
+        map.put("TWO", 2);
+        map.put("NEGATIVE", -1);
+
+        final String[] actualArray =
+            TokenUtils.valueToNameArrayFromNameToValueMap(map);
+        final String[] expectedArray = {"ZERO", "ONE", "TWO"};
+
+        assertArrayEquals("Unexpected value to name array",
+            expectedArray, actualArray);
     }
 
     @Test
@@ -134,11 +173,12 @@ public class TokenUtilsTest {
             fail("IllegalArgumentException is expected");
         }
         catch (IllegalArgumentException expected) {
-            // restoring original value, to let other tests pass
-            fieldToken.set(null, originalValue);
-
             assertEquals("Invalid exception message",
                     "given id " + id, expected.getMessage());
+        }
+        finally {
+            // restoring original value, to let other tests pass
+            fieldToken.set(null, originalValue);
         }
     }
 

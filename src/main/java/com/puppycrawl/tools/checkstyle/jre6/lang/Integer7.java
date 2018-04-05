@@ -20,6 +20,8 @@
 package com.puppycrawl.tools.checkstyle.jre6.lang;
 
 public final class Integer7 {
+    public static final int BYTES = Integer.SIZE / Byte.SIZE;
+
     private Integer7() {
     }
 
