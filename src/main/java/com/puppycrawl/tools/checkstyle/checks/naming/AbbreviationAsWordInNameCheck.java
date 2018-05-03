@@ -91,7 +91,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * &lt;/module&gt;
  * </pre>
  *
- * @author Roman Ivanov, Daniil Yaroslavtsev, Baratali Izmailov
  */
 @StatelessCheck
 public class AbbreviationAsWordInNameCheck extends AbstractCheck {

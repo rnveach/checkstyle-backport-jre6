@@ -37,9 +37,9 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOError;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.UnsupportedEncodingException;
@@ -848,7 +848,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         verify(checkerConfig, fileViolationPath, expected);
 
-        final FileInputStream input = new FileInputStream(cacheFile);
+        final InputStream input = Files7.newInputStream(new Path(cacheFile));
         try {
             final Properties details = new Properties();
             details.load(input);
@@ -987,26 +987,32 @@ public class CheckerTest extends AbstractModuleTestSupport {
     public void testDefaultLoggerClosesItStreams() throws Exception {
         final Checker checker = new Checker();
         final CloseAndFlushTestByteArrayOutputStream testInfoOutputStream =
-            new CloseAndFlushTestByteArrayOutputStream();
+                new CloseAndFlushTestByteArrayOutputStream();
         final CloseAndFlushTestByteArrayOutputStream testErrorOutputStream =
-            new CloseAndFlushTestByteArrayOutputStream();
-        checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
-        checker.addListener(new DefaultLogger(testInfoOutputStream,
-            true, testErrorOutputStream, true));
+                new CloseAndFlushTestByteArrayOutputStream();
+        try {
+            checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
+            checker.addListener(new DefaultLogger(testInfoOutputStream,
+                true, testErrorOutputStream, true));
 
-        final File tmpFile = temporaryFolder.newFile("file.java");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+            final File tmpFile = temporaryFolder.newFile("file.java");
+            final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checker, tmpFile.getPath(), expected);
+            verify(checker, tmpFile.getPath(), expected);
 
-        assertEquals("Close count was not expected",
-                1, testInfoOutputStream.getCloseCount());
-        assertEquals("Flush count was not expected",
-                3, testInfoOutputStream.getFlushCount());
-        assertEquals("Close count was not expected",
-                1, testErrorOutputStream.getCloseCount());
-        assertEquals("Flush count was not expected",
-                1, testErrorOutputStream.getFlushCount());
+            assertEquals("Close count was not expected",
+                    1, testInfoOutputStream.getCloseCount());
+            assertEquals("Flush count was not expected",
+                    3, testInfoOutputStream.getFlushCount());
+            assertEquals("Close count was not expected",
+                    1, testErrorOutputStream.getCloseCount());
+            assertEquals("Flush count was not expected",
+                    1, testErrorOutputStream.getFlushCount());
+        }
+        finally {
+            testInfoOutputStream.close();
+            testErrorOutputStream.close();
+        }
     }
 
     // -@cs[CheckstyleTestMakeup] must use raw class to directly initialize DefaultLogger
@@ -1014,19 +1020,24 @@ public class CheckerTest extends AbstractModuleTestSupport {
     public void testXmlLoggerClosesItStreams() throws Exception {
         final Checker checker = new Checker();
         final CloseAndFlushTestByteArrayOutputStream testInfoOutputStream =
-            new CloseAndFlushTestByteArrayOutputStream();
-        checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
-        checker.addListener(new XMLLogger(testInfoOutputStream, true));
+                new CloseAndFlushTestByteArrayOutputStream();
+        try {
+            checker.setModuleClassLoader(Thread.currentThread().getContextClassLoader());
+            checker.addListener(new XMLLogger(testInfoOutputStream, true));
 
-        final File tmpFile = temporaryFolder.newFile("file.java");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+            final File tmpFile = temporaryFolder.newFile("file.java");
+            final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
 
-        verify(checker, tmpFile.getPath(), tmpFile.getPath(), expected);
+            verify(checker, tmpFile.getPath(), tmpFile.getPath(), expected);
 
-        assertEquals("Close count was not expected",
-                1, testInfoOutputStream.getCloseCount());
-        assertEquals("Flush count was not expected",
-                0, testInfoOutputStream.getFlushCount());
+            assertEquals("Close count was not expected",
+                    1, testInfoOutputStream.getCloseCount());
+            assertEquals("Flush count was not expected",
+                    0, testInfoOutputStream.getFlushCount());
+        }
+        finally {
+            testInfoOutputStream.close();
+        }
     }
 
     @Test
@@ -1066,6 +1077,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
         final LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         try {
+            // we need to ignore the unrelated lines
             final List<String> actual = new ArrayList<String>();
             String line;
             while (((line = lnr.readLine()) != null) && (actual.size() < expected.length)) {
@@ -1087,6 +1099,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
             assertEquals("unexpected output: " + lnr.readLine(), expected.length, errs);
         }
         finally {
+            inputStream.close();
             lnr.close();
         }
 

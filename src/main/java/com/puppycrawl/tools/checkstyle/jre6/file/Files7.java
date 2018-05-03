@@ -20,13 +20,19 @@
 package com.puppycrawl.tools.checkstyle.jre6.file;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
@@ -44,6 +50,18 @@ public final class Files7 {
         final CharsetDecoder decoder = cs.newDecoder();
         final Reader reader = new InputStreamReader(new FileInputStream(path.getFile()), decoder);
         return new BufferedReader(reader);
+    }
+
+    public static InputStream newInputStream(Path path) throws FileNotFoundException {
+        return new FileInputStream(path.toFile());
+    }
+
+    public static OutputStream newOutputStream(Path path) throws FileNotFoundException {
+        return new FileOutputStream(path.toFile());
+    }
+
+    public static Writer newBufferedWriter(Path path, Charset cs) throws FileNotFoundException {
+        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path.toFile()), cs));
     }
 
     public static void createDirectories(Path directory) {

@@ -34,7 +34,6 @@ import net.sf.saxon.type.Type;
 /**
  * Represents element node of Xpath-tree.
  *
- * @author Timur Tibeyev
  */
 public class ElementNode extends AbstractNode {
 
@@ -67,6 +66,7 @@ public class ElementNode extends AbstractNode {
      * @param detailAst reference to {@code DetailAST}
      */
     public ElementNode(AbstractNode root, AbstractNode parent, DetailAST detailAst) {
+        super(root.getTreeInfo());
         this.parent = parent;
         this.root = root;
         this.detailAst = detailAst;
@@ -82,10 +82,8 @@ public class ElementNode extends AbstractNode {
     private void createChildren() {
         DetailAST currentChild = detailAst.getFirstChild();
         while (currentChild != null) {
-            if (currentChild.getType() != TokenTypes.IDENT) {
-                final ElementNode child = new ElementNode(root, this, currentChild);
-                addChild(child);
-            }
+            final AbstractNode child = new ElementNode(root, this, currentChild);
+            addChild(child);
             currentChild = currentChild.getNextSibling();
         }
     }

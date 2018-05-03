@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,11 +43,11 @@ import org.xml.sax.InputSource;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 /**
  * Unit test for ConfigurationLoader.
- * @author Rick Giles
- * @author lkuehne
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DefaultConfiguration.class, ConfigurationLoader.class})
@@ -560,8 +559,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
     public void testLoadConfigurationDeprecated() throws Exception {
         final DefaultConfiguration config =
                 (DefaultConfiguration) ConfigurationLoader.loadConfiguration(
-                        new FileInputStream(
-                            getPath("InputConfigurationLoaderModuleIgnoreSeverity.xml")),
+                        Files7.newInputStream(Paths.get(
+                            getPath("InputConfigurationLoaderModuleIgnoreSeverity.xml"))),
                         new PropertiesExpander(new Properties()), true);
 
         final Configuration[] children = config.getChildren();
@@ -647,8 +646,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
 
         final DefaultConfiguration configuration1 =
                 (DefaultConfiguration) ConfigurationLoader.loadConfiguration(
-                        new InputSource(new FileInputStream(
-                            getPath("InputConfigurationLoaderModuleIgnoreSeverity.xml"))),
+                        new InputSource(Files7.newInputStream(Paths.get(
+                            getPath("InputConfigurationLoaderModuleIgnoreSeverity.xml")))),
                         new PropertiesExpander(new Properties()),
                         ConfigurationLoader.IgnoredModulesOptions.EXECUTE);
 

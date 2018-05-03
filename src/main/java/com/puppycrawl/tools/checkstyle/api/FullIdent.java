@@ -35,7 +35,6 @@ import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
  * whitespace), which is often easier to work with in Checks.
  * </p>
  *
- * @author Oliver Burn
  * @see TokenTypes#DOT
  * @see TokenTypes#IDENT
  **/

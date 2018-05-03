@@ -63,7 +63,6 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  * classes defined in a local code block (method, init block, etc.).
  * </p>
  *
- * @author Travis Schneeberger
  */
 public enum JavadocTagInfo {
 
@@ -532,7 +531,6 @@ public enum JavadocTagInfo {
      * <p>For example a {@code @param} tag is a block tag while a
      * {@code {@link}} tag is a inline tag.
      *
-     * @author Travis Schneeberger
      */
     public enum Type {
 

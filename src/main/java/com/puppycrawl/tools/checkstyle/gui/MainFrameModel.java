@@ -35,7 +35,6 @@ import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 /**
  * Model for checkstyle frame.
- * @author Vladislav Lisetskiy
  */
 public class MainFrameModel {
 

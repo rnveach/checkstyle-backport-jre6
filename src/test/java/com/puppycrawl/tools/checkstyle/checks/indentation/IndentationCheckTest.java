@@ -30,9 +30,7 @@ import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,11 +47,12 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * Unit test for IndentationCheck.
- * @author  jrichard
  */
 public class IndentationCheckTest extends AbstractModuleTestSupport {
 
@@ -65,8 +64,8 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             final int tabWidth)
                     throws IOException {
         final List<IndentComment> result = new ArrayList<IndentComment>();
-        final BufferedReader br = new BufferedReader(new InputStreamReader(
-                new FileInputStream(aFileName), StandardCharsets.UTF_8));
+        final BufferedReader br = Files7.newBufferedReader(Paths.get(aFileName),
+                StandardCharsets.UTF_8);
         try {
             int lineNumber = 1;
             for (String line = br.readLine(); line != null; line = br.readLine()) {

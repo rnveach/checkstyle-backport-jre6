@@ -43,7 +43,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * Unit test for WriteTagCheck.
- * @author Daniel Grenner
  */
 public class WriteTagCheckTest extends AbstractModuleTestSupport {
 
@@ -218,7 +217,7 @@ public class WriteTagCheckTest extends AbstractModuleTestSupport {
 
         // process each of the lines
         final ByteArrayInputStream localStream =
-            new ByteArrayInputStream(getStream().toByteArray());
+                new ByteArrayInputStream(getStream().toByteArray());
         final LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(localStream, StandardCharsets.UTF_8));
         try {
@@ -232,6 +231,7 @@ public class WriteTagCheckTest extends AbstractModuleTestSupport {
                     expected.length >= errs);
         }
         finally {
+            localStream.close();
             lnr.close();
         }
         checker.destroy();

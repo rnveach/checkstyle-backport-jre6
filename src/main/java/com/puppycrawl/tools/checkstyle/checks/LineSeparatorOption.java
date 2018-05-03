@@ -26,7 +26,6 @@ import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 /**
  * Represents the options for line separator settings.
  *
- * @author lkuehne
  * @see NewlineAtEndOfFileCheck
  */
 public enum LineSeparatorOption {

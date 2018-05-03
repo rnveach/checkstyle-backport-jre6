@@ -28,4 +28,40 @@ public final class Integer7 {
     public static int compare(int x, int y) {
         return (x < y) ? -1 : ((x == y) ? 0 : 1);
     }
+
+    public static int parseUnsignedInt(String s, int radix) throws NumberFormatException {
+        if (s == null) {
+            throw new NumberFormatException("null");
+        }
+
+        final int len = s.length();
+        if (len > 0) {
+            final char firstChar = s.charAt(0);
+            if (firstChar == '-') {
+                throw new NumberFormatException(String.format("Illegal leading minus sign "
+                        + "on unsigned string %s.", s));
+            }
+
+            final long result;
+
+            if (
+                // Integer.MAX_VALUE in Character.MAX_RADIX is 6 digits
+                len <= 5
+                    // Integer.MAX_VALUE in base 10 is 10 digits
+                    || (radix == 10 && len <= 9)) {
+                result = Integer.parseInt(s, radix);
+            }
+            else {
+                result = Long.parseLong(s, radix);
+                if ((result & 0xffffffff00000000L) != 0) {
+                    throw new NumberFormatException(String.format("String value %s exceeds "
+                            + "range of unsigned int.", s));
+                }
+            }
+
+            return (int) result;
+        }
+
+        throw new NumberFormatException("For input string: \"" + s + "\"");
+    }
 }

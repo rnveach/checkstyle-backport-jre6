@@ -36,13 +36,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * Loads a list of package names from a package name XML file.
- * @author Rick Giles
  */
 public final class PackageNamesLoader
     extends XmlLoader {
@@ -166,17 +164,18 @@ public final class PackageNamesLoader
      */
     private static void processFile(URL packageFile, PackageNamesLoader namesLoader)
             throws SAXException, CheckstyleException {
-        InputStream stream = null;
         try {
-            stream = new BufferedInputStream(packageFile.openStream());
-            final InputSource source = new InputSource(stream);
-            namesLoader.parseInputSource(source);
+            final InputStream stream = new BufferedInputStream(packageFile.openStream());
+            try {
+                final InputSource source = new InputSource(stream);
+                namesLoader.parseInputSource(source);
+            }
+            finally {
+                stream.close();
+            }
         }
         catch (IOException ex) {
             throw new CheckstyleException("unable to open " + packageFile, ex);
-        }
-        finally {
-            Closeables.closeQuietly(stream);
         }
     }
 

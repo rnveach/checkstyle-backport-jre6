@@ -20,9 +20,8 @@
 package com.puppycrawl.tools.checkstyle.ant;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,6 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
-import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
@@ -58,11 +56,11 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.RootModule;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevelCounter;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 
 /**
  * An implementation of a ANT task for calling checkstyle. See the documentation
  * of the task for usage.
- * @author Oliver Burn
  * @noinspection ClassLoaderInstantiation
  */
 public class CheckstyleAntTask extends Task {
@@ -322,18 +320,9 @@ public class CheckstyleAntTask extends Task {
             processFiles(rootModule, warningCounter, checkstyleVersion);
         }
         finally {
-            destroyRootModule(rootModule);
-        }
-    }
-
-    /**
-     * Destroy root module. This method exists only due to bug in cobertura library
-     * https://github.com/cobertura/cobertura/issues/170
-     * @param rootModule Root module that was used to process files
-     */
-    private static void destroyRootModule(RootModule rootModule) {
-        if (rootModule != null) {
-            rootModule.destroy();
+            if (rootModule != null) {
+                rootModule.destroy();
+            }
         }
     }
 
@@ -442,17 +431,20 @@ public class CheckstyleAntTask extends Task {
 
         // Load the properties file if specified
         if (properties != null) {
-            FileInputStream inStream = null;
             try {
-                inStream = new FileInputStream(properties);
-                returnValue.load(inStream);
+                final InputStream inStream = Files7
+                        .newInputStream(new com.puppycrawl.tools.checkstyle.jre6.file.Path(
+                                properties));
+                try {
+                    returnValue.load(inStream);
+                }
+                finally {
+                    inStream.close();
+                }
             }
             catch (final IOException ex) {
                 throw new BuildException("Error loading Properties file '"
                         + properties + "'", ex, getLocation());
-            }
-            finally {
-                Closeables.closeQuietly(inStream);
             }
         }
 
@@ -615,7 +607,6 @@ public class CheckstyleAntTask extends Task {
 
     /**
      * Poor mans enumeration for the formatter types.
-     * @author Oliver Burn
      */
     public static class FormatterType extends EnumeratedAttribute {
 
@@ -631,7 +622,6 @@ public class CheckstyleAntTask extends Task {
 
     /**
      * Details about a formatter to be used.
-     * @author Oliver Burn
      */
     public static class Formatter {
 
@@ -702,7 +692,8 @@ public class CheckstyleAntTask extends Task {
                 );
             }
             else {
-                final FileOutputStream infoStream = new FileOutputStream(toFile);
+                final OutputStream infoStream = Files7
+                        .newOutputStream(new com.puppycrawl.tools.checkstyle.jre6.file.Path(toFile));
                 defaultLogger =
                         new DefaultLogger(infoStream, AutomaticBean.OutputStreamOptions.CLOSE,
                                 infoStream, AutomaticBean.OutputStreamOptions.NONE);
@@ -723,8 +714,9 @@ public class CheckstyleAntTask extends Task {
                         AutomaticBean.OutputStreamOptions.CLOSE);
             }
             else {
-                xmlLogger = new XMLLogger(new FileOutputStream(toFile),
-                        AutomaticBean.OutputStreamOptions.CLOSE);
+                xmlLogger = new XMLLogger(
+                        Files7.newOutputStream(new com.puppycrawl.tools.checkstyle.jre6.file.Path(
+                                toFile)), AutomaticBean.OutputStreamOptions.CLOSE);
             }
             return xmlLogger;
         }

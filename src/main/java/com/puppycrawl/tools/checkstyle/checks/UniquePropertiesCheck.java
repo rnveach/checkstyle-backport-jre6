@@ -20,8 +20,8 @@
 package com.puppycrawl.tools.checkstyle.checks;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,16 +30,16 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multiset.Entry;
-import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 
 /**
  * Checks the uniqueness of property keys (left from equal sign) in the
  * properties file.
  *
- * @author Pavel Baranchikov
  */
 @StatelessCheck
 public class UniquePropertiesCheck extends AbstractFileSetCheck {
@@ -68,17 +68,18 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
     @Override
     protected void processFiltered(File file, FileText fileText) {
         final UniqueProperties properties = new UniqueProperties();
-        FileInputStream fileInputStream = null;
         try {
-            fileInputStream = new FileInputStream(file);
-            properties.load(fileInputStream);
+            final InputStream inputStream = Files7.newInputStream(new Path(file));
+            try {
+                properties.load(inputStream);
+            }
+            finally {
+                inputStream.close();
+            }
         }
         catch (IOException ex) {
             log(0, MSG_IO_EXCEPTION_KEY, file.getPath(),
                     ex.getLocalizedMessage());
-        }
-        finally {
-            Closeables.closeQuietly(fileInputStream);
         }
 
         for (Entry<String> duplication : properties
@@ -137,7 +138,6 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
     /**
      * Properties subclass to store duplicated property keys in a separate map.
      *
-     * @author Pavel Baranchikov
      * @noinspection ClassExtendsConcreteCollection, SerializableHasSerializationMethods
      */
     private static class UniqueProperties extends Properties {

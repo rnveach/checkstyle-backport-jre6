@@ -234,7 +234,6 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
  * </pre>
  *
  *
- * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
  */
 @FileStatefulCheck
 public class VisibilityModifierCheck

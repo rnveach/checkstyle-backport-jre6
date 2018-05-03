@@ -23,7 +23,6 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * This filter accepts an Integer in a range.
- * @author Rick Giles
  */
 class IntRangeFilter implements IntFilter {
 

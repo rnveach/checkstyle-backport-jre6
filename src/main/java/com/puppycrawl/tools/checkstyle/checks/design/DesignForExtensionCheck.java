@@ -89,8 +89,6 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
  * </li>
  * </ul>
  *
- * @author lkuehne
- * @author Andrei Selkin
  */
 @StatelessCheck
 public class DesignForExtensionCheck extends AbstractCheck {

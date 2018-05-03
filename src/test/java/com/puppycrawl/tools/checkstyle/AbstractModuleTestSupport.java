@@ -284,8 +284,8 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         try {
             final List<String> actuals = new ArrayList<String>();
-            String line;
-            while (((line = lnr.readLine()) != null) && (actuals.size() < expected.length)) {
+            for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= expected.length;
+                    line = lnr.readLine()) {
                 actuals.add(line);
             }
             Collections.sort(actuals);
@@ -300,6 +300,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                     expected.length, errs);
         }
         finally {
+            inputStream.close();
             lnr.close();
         }
 
@@ -372,7 +373,6 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                 new ByteArrayInputStream(stream.toByteArray());
         final LineNumberReader lnr = new LineNumberReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
         try {
             final Map<String, List<String>> actualViolations = new HashMap<String, List<String>>();
             for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= errorCount;
@@ -395,6 +395,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
             return actualViolations;
         }
         finally {
+            inputStream.close();
             lnr.close();
         }
     }

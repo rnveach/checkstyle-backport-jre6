@@ -36,10 +36,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -151,10 +150,6 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
 
     @Test
     public void testPopulateDetails() throws IOException {
-        mockStatic(Closeables.class);
-        doNothing().when(Closeables.class);
-        Closeables.closeQuietly(any(FileInputStream.class));
-
         final Configuration config = new DefaultConfiguration("myName");
         final PropertyCacheFile cache = new PropertyCacheFile(config,
                 getPath("InputPropertyCacheFile"));
@@ -170,9 +165,6 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
         assertEquals("Invalid cache value", "value", cache.get("key"));
         assertNotNull("Config hash key should not be null",
                 cache.get(PropertyCacheFile.CONFIG_HASH_KEY));
-
-        verifyStatic(Closeables.class, times(2));
-        Closeables.closeQuietly(any(FileInputStream.class));
     }
 
     @Test
@@ -283,10 +275,10 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     public void testFlushAndCloseCacheFileOutputStream() throws IOException {
         mockStatic(Closeables.class);
         doNothing().when(Closeables.class);
-        Closeables.close(any(FileOutputStream.class), ArgumentMatchers.eq(false));
+        Closeables.close(any(OutputStream.class), ArgumentMatchers.eq(false));
         mockStatic(Flushables.class);
         doNothing().when(Flushables.class);
-        Flushables.flush(any(FileOutputStream.class), ArgumentMatchers.eq(false));
+        Flushables.flush(any(OutputStream.class), ArgumentMatchers.eq(false));
 
         final Configuration config = new DefaultConfiguration("myName");
         final PropertyCacheFile cache = new PropertyCacheFile(config,
@@ -296,9 +288,9 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
         cache.persist();
 
         verifyStatic(Closeables.class, times(1));
-        Closeables.close(any(FileOutputStream.class), ArgumentMatchers.eq(false));
+        Closeables.close(any(OutputStream.class), ArgumentMatchers.eq(false));
         verifyStatic(Flushables.class, times(1));
-        Flushables.flush(any(FileOutputStream.class), ArgumentMatchers.eq(false));
+        Flushables.flush(any(OutputStream.class), ArgumentMatchers.eq(false));
     }
 
     @Test

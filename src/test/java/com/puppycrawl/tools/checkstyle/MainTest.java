@@ -35,7 +35,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -62,7 +61,6 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
@@ -74,7 +72,7 @@ import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Main.class, CommonUtils.class, Closeables.class})
+@PrepareForTest({Main.class, CommonUtils.class})
 public class MainTest {
 
     private static final String USAGE = String.format(Locale.ROOT,
@@ -93,10 +91,20 @@ public class MainTest {
         + " -J,--treeWithJavadoc                    Print full Abstract Syntax Tree of the file%n"
         + " -o <arg>                                Sets the output file. Defaults to stdout%n"
         + " -p <arg>                                Loads the properties file%n"
+        + " -s <arg>                                Print xpath suppressions at the file's line "
+        + "and column%n"
+        + "                                         position. Argument is the line and column "
+        + "number (separated%n"
+        + "                                         by a : ) in the file that the suppression "
+        + "should be%n"
+        + "                                         generated for%n"
         + " -t,--tree                               Print Abstract Syntax Tree(AST) of the file%n"
         + " -T,--treeWithComments                   Print Abstract Syntax Tree(AST) of the file"
         + " including%n"
         + "                                         comments%n"
+        + " -tabWidth <arg>                         Sets the length of the tab character. "
+        + "Used only with \"-s\"%n"
+        + "                                         option. Default value is 8%n"
         + " -v                                      Print product version and exit%n"
         + " -W,--tree-walker-threads-number <arg>   (experimental) The number of TreeWalker threads"
         + " (must be%n"
@@ -447,10 +455,6 @@ public class MainTest {
 
     @Test
     public void testExistingTargetFilePlainOutputProperties() throws Exception {
-        mockStatic(Closeables.class);
-        doNothing().when(Closeables.class);
-        Closeables.closeQuietly(any(InputStream.class));
-
         //exit.expectSystemExitWithStatus(0);
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -463,9 +467,6 @@ public class MainTest {
         Main.main("-c", getPath("InputMainConfig-classname-prop.xml"),
                 "-p", getPath("InputMainMycheckstyle.properties"),
                 getPath("InputMain.java"));
-
-        verifyStatic(Closeables.class, times(1));
-        Closeables.closeQuietly(any(InputStream.class));
     }
 
     @Test
@@ -548,18 +549,7 @@ public class MainTest {
         final Method method = Main.class.getDeclaredMethod("loadProperties", param);
         method.setAccessible(true);
         try {
-            if (System.getProperty("os.name").toLowerCase(Locale.ENGLISH).startsWith("windows")) {
-                // https://support.microsoft.com/en-us/kb/177506 but this only for NTFS
-                // WindowsServer 2012 use Resilient File System (ReFS), so any name is ok
-                final File file = new File(File.separator + ":invalid");
-                if (file.exists()) {
-                    file.delete();
-                }
-                method.invoke(null, new File(file.getAbsolutePath()));
-            }
-            else {
-                method.invoke(null, new File(File.separator + "\0:invalid"));
-            }
+            method.invoke(null, new File("."));
             fail("Exception was expected");
         }
         catch (InvocationTargetException ex) {
@@ -582,8 +572,7 @@ public class MainTest {
                             .substring(localizedMessage.lastIndexOf(' '),
                                     localizedMessage.length()));
             assertTrue("Invalid error message", samePrefix || sameSuffix);
-            assertTrue("Invalid error message",
-                    causeMessage.contains(":invalid"));
+            assertTrue("Invalid error message", causeMessage.contains(".'"));
         }
     }
 
@@ -851,6 +840,129 @@ public class MainTest {
     }
 
     @Test
+    public void testPrintSuppressionOption() throws Exception {
+        final String expected = "/CLASS_DEF[@text='InputMainSuppressionsStringPrinter']" + EOL
+                + "/CLASS_DEF[@text='InputMainSuppressionsStringPrinter']/MODIFIERS" + EOL
+                + "/CLASS_DEF[@text='InputMainSuppressionsStringPrinter']/LITERAL_CLASS" + EOL;
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log",
+                        expected, systemOut.getLog());
+                assertEquals("Unexpected system error log",
+                        "", systemErr.getLog());
+            }
+        });
+        Main.main(getPath("InputMainSuppressionsStringPrinter.java"),
+                "-s", "3:1");
+    }
+
+    @Test
+    public void testPrintSuppressionAndTabWidthOption() throws Exception {
+        final String expected = "/CLASS_DEF[@text='InputMainSuppressionsStringPrinter']/OBJBLOCK"
+                + "/METHOD_DEF[@text='getName']/SLIST/VARIABLE_DEF[@text='var']" + EOL
+                + "/CLASS_DEF[@text='InputMainSuppressionsStringPrinter']/OBJBLOCK"
+                + "/METHOD_DEF[@text='getName']/SLIST/VARIABLE_DEF[@text='var']/MODIFIERS" + EOL
+                + "/CLASS_DEF[@text='InputMainSuppressionsStringPrinter']/OBJBLOCK"
+                + "/METHOD_DEF[@text='getName']/SLIST/VARIABLE_DEF[@text='var']/TYPE" + EOL
+                + "/CLASS_DEF[@text='InputMainSuppressionsStringPrinter']/OBJBLOCK"
+                + "/METHOD_DEF[@text='getName']/SLIST/VARIABLE_DEF[@text='var']/TYPE/LITERAL_INT"
+                + EOL;
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log",
+                        expected, systemOut.getLog());
+                assertEquals("Unexpected system error log",
+                        "", systemErr.getLog());
+            }
+        });
+        Main.main(getPath("InputMainSuppressionsStringPrinter.java"),
+                "-s", "7:9", "-tabWidth", "2");
+    }
+
+    @Test
+    public void testPrintSuppressionConflictingOptionsTvsC() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log", "Option '-s' cannot be used with other options."
+                        + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("Unexpected system error log", "", systemErr.getLog());
+            }
+        });
+
+        Main.main("-c", "/google_checks.xml",
+                getPath(""), "-s", "2:4");
+    }
+
+    @Test
+    public void testPrintSuppressionConflictingOptionsTvsP() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log", "Option '-s' cannot be used with other options."
+                        + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("Unexpected system error log", "", systemErr.getLog());
+            }
+        });
+
+        Main.main("-p", getPath("InputMainMycheckstyle.properties"), "-s", "2:4", getPath(""));
+    }
+
+    @Test
+    public void testPrintSuppressionConflictingOptionsTvsF() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log", "Option '-s' cannot be used with other options."
+                        + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("Unexpected system error log", "", systemErr.getLog());
+            }
+        });
+
+        Main.main("-f", "plain", "-s", "2:4", getPath(""));
+    }
+
+    @Test
+    public void testPrintSuppressionConflictingOptionsTvsO() throws Exception {
+        final File file = temporaryFolder.newFile("file.output");
+
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log", "Option '-s' cannot be used with other options."
+                        + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("Unexpected system error log", "", systemErr.getLog());
+            }
+        });
+
+        Main.main("-o", file.getCanonicalPath(), "-s", "2:4", getPath(""));
+    }
+
+    @Test
+    public void testPrintSuppressionOnMoreThanOneFile() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log", "Printing xpath suppressions is allowed for "
+                        + "only one file."
+                        + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("Unexpected system error log", "", systemErr.getLog());
+            }
+        });
+
+        Main.main("-s", "2:4", getPath(""), getPath(""));
+    }
+
+    @Test
     public void testPrintFullTreeOption() throws Exception {
         final String expected = new String(Files7.readAllBytes(Paths.get(
             getPath("InputMainExpectedInputAstTreeStringPrinterJavadoc.txt"))),
@@ -910,6 +1022,23 @@ public class MainTest {
         });
 
         Main.main("-f", "plain", "-t", getPath(""));
+    }
+
+    @Test
+    public void testConflictingOptionsTvsS() throws Exception {
+        final File file = temporaryFolder.newFile("file.output");
+
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log", "Option '-t' cannot be used with other options."
+                        + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("Unexpected system error log", "", systemErr.getLog());
+            }
+        });
+
+        Main.main("-s", file.getCanonicalPath(), "-t", getPath(""));
     }
 
     @Test

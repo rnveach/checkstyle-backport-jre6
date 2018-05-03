@@ -26,7 +26,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -51,6 +50,8 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.internal.utils.BriefUtLogger;
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
 
@@ -272,6 +273,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
             assertEquals("unexpected warnings " + theWarnings, 0, theWarnings.size());
         }
         finally {
+            inputStream.close();
             lnr.close();
         }
 
@@ -403,8 +405,8 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      */
     protected Integer[] getLinesWithWarn(String fileName) throws IOException {
         final List<Integer> result = new ArrayList<Integer>();
-        final BufferedReader br = new BufferedReader(new InputStreamReader(
-                new FileInputStream(fileName), StandardCharsets.UTF_8));
+        final BufferedReader br = Files7.newBufferedReader(
+                Paths.get(fileName), StandardCharsets.UTF_8);
         try {
             int lineNumber = 1;
             while (true) {

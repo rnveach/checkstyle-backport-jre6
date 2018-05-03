@@ -24,7 +24,6 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 /**
  * Handler for finally blocks.
  *
- * @author jrichard
  */
 public class FinallyHandler extends BlockParentHandler {
 
@@ -39,11 +38,6 @@ public class FinallyHandler extends BlockParentHandler {
     public FinallyHandler(IndentationCheck indentCheck,
         DetailAST ast, AbstractExpressionHandler parent) {
         super(indentCheck, "finally", ast, parent);
-    }
-
-    @Override
-    protected boolean shouldTopLevelStartLine() {
-        return false;
     }
 
 }

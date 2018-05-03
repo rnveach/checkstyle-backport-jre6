@@ -42,12 +42,23 @@ import net.sf.saxon.type.SchemaType;
 /**
  * Represents general class for {@code ElementNode}, {@code RootNode} and {@code AttributeNode}.
  *
- * @author Timur Tibeyev
  */
 public abstract class AbstractNode implements NodeInfo {
 
     /** The children. */
     private final List<AbstractNode> children = new ArrayList<AbstractNode>();
+
+    /** The {@code TreeInfo} object. */
+    private final TreeInfo treeInfo;
+
+    /**
+     * Constructor of the abstract class {@code AbstractNode}.
+     *
+     * @param treeInfo {@code TreeInfo} object
+     */
+    protected AbstractNode(TreeInfo treeInfo) {
+        this.treeInfo = treeInfo;
+    }
 
     /**
      * Getter method for token type.
@@ -140,6 +151,15 @@ public abstract class AbstractNode implements NodeInfo {
     }
 
     /**
+     * Returns tree info.
+     * @return tree info
+     */
+    @Override
+    public final TreeInfo getTreeInfo() {
+        return treeInfo;
+    }
+
+    /**
      * Returns namespace array. Throws {@code UnsupportedOperationException}, because no child
      * class implements it and this method is not used for querying.
      * @param namespaceBindings namespace array
@@ -147,16 +167,6 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final NamespaceBinding[] getDeclaredNamespaces(NamespaceBinding[] namespaceBindings) {
-        throw throwUnsupportedOperationException();
-    }
-
-    /**
-     * Returns tree info. Throws {@code UnsupportedOperationException}, because no child
-     * class implements it and this method is not used for querying.
-     * @return tree info
-     */
-    @Override
-    public final TreeInfo getTreeInfo() {
         throw throwUnsupportedOperationException();
     }
 

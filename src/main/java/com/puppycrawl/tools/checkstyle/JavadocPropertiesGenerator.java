@@ -39,7 +39,6 @@ import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtils;
 
 /**
@@ -49,7 +48,6 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtils;
  * For IDE plugins (like the eclipse plugin) it would be useful to have
  * a programmatic access to the first sentence of the TokenType constants,
  * so they can use them in their configuration gui.
- * @author Pavel Bludov
  */
 public final class JavadocPropertiesGenerator {
 
@@ -103,30 +101,30 @@ public final class JavadocPropertiesGenerator {
      */
     private static void writePropertiesFile(File inputFile, File outputFile)
             throws CheckstyleException {
-        PrintWriter writer = null;
         try {
-            writer = new PrintWriter(outputFile, StandardCharsets.UTF_8.name());
+            final PrintWriter writer = new PrintWriter(outputFile, StandardCharsets.UTF_8.name());
+            try {
+                final DetailAST top = JavaParser.parseFile(inputFile, JavaParser.Options.WITH_COMMENTS);
+                final DetailAST objBlock = getClassBody(top);
+                if (objBlock != null) {
+                    final PrintWriter writerEx = writer;
 
-            final DetailAST top = JavaParser.parseFile(inputFile, JavaParser.Options.WITH_COMMENTS);
-            final DetailAST objBlock = getClassBody(top);
-            if (objBlock != null) {
-                final PrintWriter writerEx = writer;
-
-                iteratePublicStaticIntFields(objBlock, new Consumer<String>() {
-                    @Override
-                    public boolean accept(String s) {
-                        writerEx.println(s);
-                        return true;
-                    }
-                });
+                    iteratePublicStaticIntFields(objBlock, new Consumer<String>() {
+                        @Override
+                        public boolean accept(String s) {
+                            writerEx.println(s);
+                            return true;
+                        }
+                    });
+                }
+            }
+            finally {
+                writer.close();
             }
         }
         catch (IOException ex) {
             throw new CheckstyleException("Failed to write javadoc properties of '" + inputFile
                 + "' to '" + outputFile + "'", ex);
-        }
-        finally {
-            CommonUtils.close(writer);
         }
     }
 

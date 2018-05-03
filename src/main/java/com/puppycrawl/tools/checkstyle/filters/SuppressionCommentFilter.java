@@ -50,8 +50,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * This is sometimes superior to a separate suppressions file, which
  * must be kept up-to-date as the source file is edited.
  * </p>
- * @author Mike McMahon
- * @author Rick Giles
  */
 public class SuppressionCommentFilter
     extends AutomaticBean
@@ -297,7 +295,6 @@ public class SuppressionCommentFilter
     /**
      * A Tag holds a suppression comment and its location, and determines
      * whether the suppression turns checkstyle reporting on or off.
-     * @author Rick Giles
      */
     public static class Tag
         implements Comparable<Tag> {

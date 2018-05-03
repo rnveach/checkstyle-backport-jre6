@@ -44,8 +44,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 /**
  * Base class for coupling calculation.
  *
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
- * @author o_sukhodolsky
  */
 @FileStatefulCheck
 public abstract class AbstractClassCouplingCheck extends AbstractCheck {
@@ -344,8 +342,6 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     /**
      * Encapsulates information about class coupling.
      *
-     * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
-     * @author o_sukhodolsky
      */
     private class ClassContext {
 

@@ -23,7 +23,6 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 
 /**
  * Represents the formatter interface for log message.
- * @author Andrei Selkin
  */
 public interface AuditEventFormatter {
 

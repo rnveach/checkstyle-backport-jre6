@@ -15,6 +15,108 @@
 
   <body>
     <!-- placeholder for a new section -->
+    <section name="Release 8.10">
+      <p>New:</p>
+        <ul>
+          <li>
+            ImportControl: add ability to control imports in certain classes . Author: rnveach <a href="https://github.com/checkstyle/checkstyle/issues/3492">#3492</a>
+          </li>
+          <li>
+            Add the new option for Checkstyle CLI to generate the basic suppression xpath. Author: Timur Tibeyev <a href="https://github.com/checkstyle/checkstyle/issues/4530">#4530</a>
+          </li>
+        </ul>
+      <p>Bug fixes:</p>
+        <ul>
+          <li>
+            Store IDENT token type in the xpath tree. Author: Timur Tibeyev <a href="https://github.com/checkstyle/checkstyle/issues/5508">#5508</a>
+          </li>
+          <li>
+            Xpath Mapper : UnsupportedOperationException when several queries are combined. Author: Timur Tibeyev <a href="https://github.com/checkstyle/checkstyle/issues/5571">#5571</a>
+          </li>
+          <li>
+            HeaderCheck: fails with empty lines. Author: Paul Campbell <a href="https://github.com/checkstyle/checkstyle/issues/5511">#5511</a>
+          </li>
+          <li>
+            CheckUtils.parseDouble: wrong result for negative values. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5709">#5709</a>
+          </li>
+          <li>
+            FinalClassCheck: 'extractQualifiedName' omits 2nd ident of package name. Author: rnveach <a href="https://github.com/checkstyle/checkstyle/issues/5706">#5706</a>
+          </li>
+          <li>
+            Indentation: false positive for one-line lambda. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5675">#5675</a>
+          </li>
+        </ul>
+      <p>Notes:</p>
+        <ul>
+          <li>
+            format xdoc files to follow rule of LineLength (max ia 100) . Author: rnveach <a href="https://github.com/checkstyle/checkstyle/issues/5291">#5291</a>
+          </li>
+          <li>
+            Remove remnants of cobertura usage. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5616">#5616</a>
+          </li>
+          <li>
+            Create xdoc page to explain the new Xpath-based suppression model. Author: Timur Tibeyev <a href="https://github.com/checkstyle/checkstyle/issues/5513">#5513</a>
+          </li>
+          <li>
+            Migrate to CircleCI 2.0. Author: Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/5657">#5657</a>
+          </li>
+          <li>
+            consider introducing spelling regression checker. Author: Josh Soref, Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/5676">#5676</a>
+          </li>
+          <li>
+            remove all authors javadoc tags from sources. Author: Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/5738">#5738</a>
+          </li>
+          <li>
+            PMD 6: migrate configuration to pmd 6.X version. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5603">#5603</a>
+          </li>
+          <li>
+            jsoref spell checker: skipp all files/folders that are referenced in .gitignore. Author: Josh Soref <a href="https://github.com/checkstyle/checkstyle/issues/5719">#5719</a>
+          </li>
+          <li>
+            spellchecker: don't complain about case. Author: Josh Soref <a href="https://github.com/checkstyle/checkstyle/issues/5732">#5732</a>
+          </li>
+          <li>
+            Replace File{Input,Output}Stream with Files.new{Input,Output}Stream. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5638">#5638</a>
+          </li>
+          <li>
+            config: moved disallows to be first in import control. Author: rnveach
+          </li>
+          <li>
+            UpperEll rule description gives bogus reason: Capital(!) L looks like 1. Author: Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/5718">#5718</a>
+          </li>
+          <li>
+            refactor PackageObjectFactoryTest.testCreateModuleWithNonExistName. Author: surajumang <a href="https://github.com/checkstyle/checkstyle/issues/5677">#5677</a>
+          </li>
+          <li>
+            jsoref spellchecker: group word families togeth. Author: Josh Soref <a href="https://github.com/checkstyle/checkstyle/issues/5701">#5701</a>
+          </li>
+          <li>
+            jsoref spell checker: remove resource from validation. Author: Josh Soref <a href="https://github.com/checkstyle/checkstyle/issues/5693">#5693</a>
+          </li>
+          <li>
+            Update javadoc for MismatchStrategy. Author: Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/5695">#5695</a>
+          </li>
+          <li>
+            spelling: anon - API: sevntu-checkstyle/sevntu.checkstyle#657. Author: Josh Soref
+          </li>
+          <li>
+            migrate to circleci 2.0. Author: Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/5528">#5528</a>
+          </li>
+          <li>
+            spelling: commenting. Author: Josh Soref
+          </li>
+          <li>
+            spelling: unclear. Author: Josh Soref
+          </li>
+          <li>
+            spelling: performance. Author: Josh Soref
+          </li>
+          <li>
+            spelling: indentation. Author: Josh Soref
+          </li>
+        </ul>
+    </section>
+
     <section name="Release 8.9">
       <p>Breaking backward compatibility:</p>
         <ul>
@@ -28,7 +130,7 @@
             Indentation: wrapped method name. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5655">#5655</a>
           </li>
           <li>
-            Indentaton: super() is ignored. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/3808">#3808</a>
+            Indentation: super() is ignored. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/3808">#3808</a>
           </li>
           <li>
             IllegalType: support arrays as types. Author: kazachka <a href="https://github.com/checkstyle/checkstyle/issues/4429">#4429</a>
@@ -43,7 +145,7 @@
             PMD 6: migrate configuration to pmd 6.X version. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5603">#5603</a>
           </li>
           <li>
-            wercker is failing with uncler message after release on non-rebased branches. Author: Vladislav Lisetskii <a href="https://github.com/checkstyle/checkstyle/issues/5452">#5452</a>
+            wercker is failing with unclear message after release on non-rebased branches. Author: Vladislav Lisetskii <a href="https://github.com/checkstyle/checkstyle/issues/5452">#5452</a>
           </li>
           <li>
             Add openjdk8/9 to Travis/AppVeyor. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5663">#5663</a>
@@ -130,7 +232,8 @@
             upgrade to spotbugs 3.1.1 cause problems with execution on maven 3.3.9. Author: Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/5525">#5525</a>
           </li>
           <li>
-            doc: InterfaceIsType description, SwingConstants is an interface, not a class.. Author: Tobias Weimer
+            doc: InterfaceIsType description, SwingConstants is an interface, not a class..
+            Author: Tobias Weimer
           </li>
           <li>
             Explicitly throw an exception from ClassResolver. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5546">#5546</a>
@@ -160,7 +263,7 @@
             Jacoco coverage report. Author: Pavel Bludov <a href="https://github.com/checkstyle/checkstyle/issues/5516">#5516</a>
           </li>
           <li>
-            Use StringBuilder instead of StringBuffer as it offers high performanâ€¦. Author: reudismam <a href="https://github.com/checkstyle/checkstyle/issues/5505">#5505</a>
+            Use StringBuilder instead of StringBuffer as it offers high performance. Author: reudismam <a href="https://github.com/checkstyle/checkstyle/issues/5505">#5505</a>
           </li>
           <li>
             AvoidEscapedUnicodeCharactersCheck: re-organize regular expressions. Author: SunriseCoder <a href="https://github.com/checkstyle/checkstyle/issues/5427">#5427</a>
@@ -364,7 +467,8 @@
             change all sonarqube.com to sonarcloud.io. Author: Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/5290">#5290</a>
           </li>
           <li>
-            doc: add 'Checkstyle for Microsoft Visual Studio Code' in known tools. Author: Roman Ivanov
+            doc: add 'Checkstyle for Microsoft Visual Studio Code' in known tools.
+            Author: Roman Ivanov
           </li>
           <li>
             Revert "infra: fix for travis:osx problem with 'shell_session_update:
@@ -1342,7 +1446,8 @@
             bump version for sevntu-checkstyle. Author: Roman Ivanov
           </li>
           <li>
-            publish all dtd schemas to sourceforge site automatically. Author: Andrei Selkin, Roman Ivanov
+            publish all dtd schemas to sourceforge site automatically.
+            Author: Andrei Selkin, Roman Ivanov
                 <a href="https://github.com/checkstyle/checkstyle/issues/4341">#4341</a>
           </li>
           <li>
@@ -1488,7 +1593,8 @@
                 <a href="https://github.com/checkstyle/checkstyle/issues/3423">#3423</a>
           </li>
           <li>
-            Exception message not informative enough for users on incorrect parent. Author: Subbu Dantu
+            Exception message not informative enough for users on incorrect parent.
+            Author: Subbu Dantu
                 <a href="https://github.com/checkstyle/checkstyle/issues/2186">#2186</a>
           </li>
           <li>
@@ -1523,7 +1629,8 @@
                 <a href="https://github.com/checkstyle/checkstyle/issues/4137">#4137</a>
           </li>
           <li>
-            Split and Organize Checkstyle inputs by Test for CatchParameterName. Author: Dmytro Kytsmen
+            Split and Organize Checkstyle inputs by Test for CatchParameterName.
+            Author: Dmytro Kytsmen
                 <a href="https://github.com/checkstyle/checkstyle/issues/4136">#4136</a>
           </li>
           <li>
@@ -1563,7 +1670,8 @@
                 <a href="https://github.com/checkstyle/checkstyle/issues/4208">#4208</a>
           </li>
           <li>
-            Split and Organize Checkstyle inputs by Test for NoWhitespaceAfter. Author: Dmytro Kytsmen
+            Split and Organize Checkstyle inputs by Test for NoWhitespaceAfter.
+            Author: Dmytro Kytsmen
                 <a href="https://github.com/checkstyle/checkstyle/issues/3931">#3931</a>
           </li>
           <li>
@@ -1571,7 +1679,8 @@
                 <a href="https://github.com/checkstyle/checkstyle/issues/3650">#3650</a>
           </li>
           <li>
-            Adding IDEA project files to gitignore and excluding them from checkstyle list. Author: Tima
+            Adding IDEA project files to gitignore and excluding them from checkstyle list.
+            Author: Tima
                 <a href="https://github.com/checkstyle/checkstyle/issues/4209">#4209</a>
           </li>
           <li>
@@ -1588,7 +1697,8 @@
                 <a href="https://github.com/checkstyle/checkstyle/issues/4176">#4176</a>
           </li>
           <li>
-            Split and Organize Checkstyle inputs by Test for WhitespaceAround. Author: Dmytro Kytsmen
+            Split and Organize Checkstyle inputs by Test for WhitespaceAround.
+            Author: Dmytro Kytsmen
                 <a href="https://github.com/checkstyle/checkstyle/issues/3898">#3898</a>
           </li>
           <li>
@@ -1605,7 +1715,8 @@
                 <a href="https://github.com/checkstyle/checkstyle/issues/2899">#2899</a>
           </li>
           <li>
-            Split and Organize Checkstyle inputs by Test for FileTabCharacter. Author: Dmytro Kytsmen
+            Split and Organize Checkstyle inputs by Test for FileTabCharacter.
+            Author: Dmytro Kytsmen
                 <a href="https://github.com/checkstyle/checkstyle/issues/3959">#3959</a>
           </li>
           <li>
@@ -1613,7 +1724,8 @@
                 <a href="https://github.com/checkstyle/checkstyle/issues/3616">#3616</a>
           </li>
           <li>
-            Split and Organize Checkstyle inputs by Test for LocalVariableName. Author: Dmytro Kytsmen
+            Split and Organize Checkstyle inputs by Test for LocalVariableName.
+            Author: Dmytro Kytsmen
                 <a href="https://github.com/checkstyle/checkstyle/issues/4150">#4150</a>
           </li>
           <li>
@@ -1667,7 +1779,8 @@
                 <a href="https://github.com/checkstyle/checkstyle/issues/4106">#4106</a>
           </li>
           <li>
-            pitest: skip Uts execution as pitest do this for without mutation mode. Author: Roman Ivanov
+            pitest: skip Uts execution as pitest do this for without mutation mode.
+            Author: Roman Ivanov
                 <a href="https://github.com/checkstyle/checkstyle/issues/4104">#4104</a>
           </li>
           <li>
@@ -2062,7 +2175,8 @@
             create xdoc for FileContentsHolder. Author: rnveach <a href="https://github.com/checkstyle/checkstyle/issues/3664">#3664</a>
           </li>
           <li>
-            doc: Fix incorrect documentation for SuppressWithNearbyCommentFilter. Author: Charlie Pai
+            doc: Fix incorrect documentation for SuppressWithNearbyCommentFilter.
+            Author: Charlie Pai
           </li>
           <li>
             doc: how to generate sources after import project to IntelliJ IDEA. Author: Roman Ivanov
@@ -2593,10 +2707,13 @@
             Sevntu CS not running on all CS code. Author: rnveach, Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/3175">#3175</a>
           </li>
           <li>
-            Update version of commons-collections to 3.2.2(from 3.2.1) to fix security vulnerability CVE-2015-6420. Author: akhil <a href="https://github.com/checkstyle/checkstyle/issues/3162">#3162</a>
+            Update version of commons-collections to 3.2.2(from 3.2.1) to fix security
+            vulnerability CVE-2015-6420. Author: akhil
+            <a href="https://github.com/checkstyle/checkstyle/issues/3162">#3162</a>
           </li>
           <li>
-            doc: Indentation property description become worded in the same way. Author: Roman Ivanov
+            doc: Indentation property description become worded in the same way.
+            Author: Roman Ivanov
           </li>
         </ul>
     </section>
@@ -2786,7 +2903,8 @@
       <p>Notes:</p>
         <ul>
           <li>
-            Revert &quot;Issue #2973: removed unused FLOAT_SUFFIX from java.g&quot;. Author: Roman Ivanov
+            Revert &quot;Issue #2973: removed unused FLOAT_SUFFIX from java.g&quot;.
+            Author: Roman Ivanov
           </li>
           <li>
             all rows in coverage table google_style.html should have anchor. Author: rnveach <a href="https://github.com/checkstyle/checkstyle/issues/2975">#2975</a>
@@ -3129,7 +3247,8 @@
             conf: update guava version to 19.0. Author: Roman Ivanov
           </li>
           <li>
-            doc: Correct regexp in configuration example for ParameterNameCheck. Author: Andrei Selkin
+            doc: Correct regexp in configuration example for ParameterNameCheck.
+            Author: Andrei Selkin
           </li>
           <li>
             doc: Add example for ParameterName into xdoc. Author: Andrei Selkin
@@ -3206,7 +3325,8 @@
           minor: build-helper-maven-plugin version bump to 1.10. Author: Roman Ivanov
         </li>
         <li>
-          adjust AbbreviationAsWordInName in checkstyle_checks.xml to catch unexpected abbreviations.
+          adjust AbbreviationAsWordInName in checkstyle_checks.xml to catch unexpected
+          abbreviations.
           Author: Roman Ivanov <a href="https://github.com/checkstyle/checkstyle/issues/2639">#2639</a>
         </li>
         <li>
@@ -4181,7 +4301,8 @@
           commented code was removed from CheckerTest. Author: Roman Ivanov
         </li>
         <li>
-          fix eclipse package declaration error in InputPackageDeclaration. Author: Vladislav Lisetskii
+          fix eclipse package declaration error in InputPackageDeclaration.
+          Author: Vladislav Lisetskii
         </li>
         <li>
           Add Gradle to list of related tools Correct SonarQube name and links in same list.
@@ -4204,13 +4325,17 @@
           checkstyle execution. Author: Roman Ivanov
         </li>
         <li>
-          add IT to validate google_checks config. Author: Vladislav Lisetskii <a href="https://github.com/checkstyle/checkstyle/issues/1275">#1275</a>
+          add IT to validate google_checks config. Author: Vladislav Lisetskii
+          <a href="https://github.com/checkstyle/checkstyle/issues/1275">#1275</a>
         </li>
         <li>
-          rename fields in ConfigurationBuilder and BaseCheckTestSupport. Author: Vladislav Lisetskii
+          rename fields in ConfigurationBuilder and BaseCheckTestSupport.
+          Author: Vladislav Lisetskii
         </li>
         <li>
-          update build procedure to validate all XML files against their schemas. Author: Vladislav Lisetskii <a href="https://github.com/checkstyle/checkstyle/issues/1275">#1275</a>
+          update build procedure to validate all XML files against their schemas.
+          Author: Vladislav Lisetskii
+          <a href="https://github.com/checkstyle/checkstyle/issues/1275">#1275</a>
         </li>
         <li>
           Fix compilation error for Windows environment. Author: Michal Kordas <a href="https://github.com/checkstyle/checkstyle/issues/1342">#1342</a>
@@ -5533,7 +5658,8 @@
           more checkstyle issues. Author: James Gorman
         </li>
         <li>
-          Use a thread-safe map implementation to keep the compiled patterns. Author: Christoph Kutzinski
+          Use a thread-safe map implementation to keep the compiled patterns.
+          Author: Christoph Kutzinski
         </li>
         <li>
           WhitespaceAround with allowEmptyMethods complains on annotation's empty method

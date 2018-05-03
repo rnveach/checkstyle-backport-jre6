@@ -24,7 +24,6 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 /**
  * Handler for static initialization blocks.
  *
- * @author Jeff Weston
  */
 public class StaticInitHandler extends BlockParentHandler {
 
@@ -39,11 +38,6 @@ public class StaticInitHandler extends BlockParentHandler {
     public StaticInitHandler(IndentationCheck indentCheck,
         DetailAST ast, AbstractExpressionHandler parent) {
         super(indentCheck, "static initialization", ast, parent);
-    }
-
-    @Override
-    protected boolean shouldTopLevelStartLine() {
-        return false;
     }
 
 }

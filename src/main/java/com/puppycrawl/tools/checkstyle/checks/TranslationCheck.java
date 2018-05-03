@@ -20,7 +20,6 @@
 package com.puppycrawl.tools.checkstyle.checks;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,12 +38,13 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
@@ -95,9 +95,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * violation that the language code is incorrect.
  * <br>
  *
- * @author Alexandra Bunge
- * @author lkuehne
- * @author Andrei Selkin
  */
 public class TranslationCheck extends AbstractFileSetCheck {
 
@@ -483,18 +480,19 @@ public class TranslationCheck extends AbstractFileSetCheck {
      */
     private Set<String> getTranslationKeys(File file) {
         Set<String> keys = new HashSet<String>();
-        InputStream inStream = null;
         try {
-            inStream = new FileInputStream(file);
-            final Properties translations = new Properties();
-            translations.load(inStream);
-            keys = translations.stringPropertyNames();
+            final InputStream inStream = Files7.newInputStream(new Path(file));
+            try {
+                final Properties translations = new Properties();
+                translations.load(inStream);
+                keys = translations.stringPropertyNames();
+            }
+            finally {
+                inStream.close();
+            }
         }
         catch (final IOException ex) {
             logIoException(ex, file);
-        }
-        finally {
-            Closeables.closeQuietly(inStream);
         }
         return keys;
     }

@@ -21,9 +21,9 @@ package com.puppycrawl.tools.checkstyle.api;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -37,7 +37,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 
 /**
  * Represents the text contents of a file of arbitrary plain text type.
@@ -46,7 +47,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * Checker.
  * </p>
  *
- * @author Martin von Gagern
  */
 public final class FileText {
 
@@ -139,7 +139,7 @@ public final class FileText {
             lines = textLines.toArray(new String[textLines.size()]);
         }
         finally {
-            CommonUtils.close(reader);
+            reader.close();
         }
     }
 
@@ -196,7 +196,7 @@ public final class FileText {
             throw new FileNotFoundException(inputFile.getPath() + " (No such file or directory)");
         }
         final StringBuilder buf = new StringBuilder(1024);
-        final FileInputStream stream = new FileInputStream(inputFile);
+        final InputStream stream = Files7.newInputStream(new Path(inputFile));
         final Reader reader = new InputStreamReader(stream, decoder);
         try {
             final char[] chars = new char[READ_BUFFER_SIZE];
@@ -209,7 +209,7 @@ public final class FileText {
             }
         }
         finally {
-            CommonUtils.close(reader);
+            reader.close();
         }
         return buf.toString();
     }

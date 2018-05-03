@@ -36,3 +36,11 @@ replay_pid*
 
 # NonDex files
 .nondex
+
+# spell checker whitelist
+.ci-temp
+
+#side effect of jsoref-spellchecker tools usage
+.ci/jsoref-spellchecker/spelling-unknown-word-splitter.pl
+.ci/jsoref-spellchecker/unknown.words
+.ci/jsoref-spellchecker/english.words

@@ -25,11 +25,9 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -47,12 +45,13 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 /**
  * TestCase to check DetailAST.
- * @author Oliver Burn
  */
 public class DetailASTTest extends AbstractModuleTestSupport {
 
@@ -295,8 +294,7 @@ public class DetailASTTest extends AbstractModuleTestSupport {
     @Test
     public void testManyComments() throws Exception {
         final File file = temporaryFolder.newFile("InputDetailASTManyComments.java");
-        final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(file), StandardCharsets.UTF_8));
+        final Writer bw = Files7.newBufferedWriter(new Path(file), StandardCharsets.UTF_8);
 
         try {
             bw.write("class C {\n");

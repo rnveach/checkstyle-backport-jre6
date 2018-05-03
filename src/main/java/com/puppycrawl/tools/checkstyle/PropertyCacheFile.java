@@ -22,9 +22,8 @@ package com.puppycrawl.tools.checkstyle;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -57,8 +56,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * cache file to ensure the cache is invalidated when the
  * configuration has changed.
  *
- * @author Oliver Burn
- * @author Andrei Selkin
  */
 final class PropertyCacheFile {
 
@@ -115,10 +112,10 @@ final class PropertyCacheFile {
         // get the current config so if the file isn't found
         // the first time the hash will be added to output file
         configHash = getHashCodeBasedOnObjectContent(config);
-        if (new File(fileName).exists()) {
-            FileInputStream inStream = null;
+        final File file = new File(fileName);
+        if (file.exists()) {
+            final InputStream inStream = Files7.newInputStream(new Path(file));
             try {
-                inStream = new FileInputStream(fileName);
                 details.load(inStream);
                 final String cachedConfigHash = details.getProperty(CONFIG_HASH_KEY);
                 if (!configHash.equals(cachedConfigHash)) {
@@ -127,7 +124,7 @@ final class PropertyCacheFile {
                 }
             }
             finally {
-                Closeables.closeQuietly(inStream);
+                inStream.close();
             }
         }
         else {
@@ -141,13 +138,14 @@ final class PropertyCacheFile {
      * @throws IOException  when there is a problems with file save
      */
     public void persist() throws IOException {
-        final Path directory = Paths.get(fileName).getParent();
+        final Path path = Paths.get(fileName);
+        final Path directory = path.getParent();
         if (directory != null) {
             Files7.createDirectories(directory);
         }
-        FileOutputStream out = null;
+        OutputStream out = null;
         try {
-            out = new FileOutputStream(fileName);
+            out = Files7.newOutputStream(path);
             details.store(out, null);
         }
         finally {
@@ -368,7 +366,6 @@ final class PropertyCacheFile {
 
     /**
      * Class which represents external resource.
-     * @author Andrei Selkin
      */
     private static class ExternalResource {
 

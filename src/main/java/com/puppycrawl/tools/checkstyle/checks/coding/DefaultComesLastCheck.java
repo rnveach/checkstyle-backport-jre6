@@ -41,7 +41,6 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  * <pre>
  * &lt;module name="DefaultComesLast"/&gt;
  * </pre>
- * @author o_sukhodolsky
  */
 @StatelessCheck
 public class DefaultComesLastCheck extends AbstractCheck {

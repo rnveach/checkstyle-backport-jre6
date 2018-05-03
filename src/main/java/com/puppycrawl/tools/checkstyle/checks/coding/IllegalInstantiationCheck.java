@@ -59,7 +59,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
  * <pre>
  * &lt;module name="IllegalInstantiation"/&gt;
  * </pre>
- * @author lkuehne
  */
 @FileStatefulCheck
 public class IllegalInstantiationCheck

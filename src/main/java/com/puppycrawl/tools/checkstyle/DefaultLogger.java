@@ -38,7 +38,6 @@ import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
  * stdout anyway. If there is really a problem this is what XMLLogger is for.
  * It gives structure.
  *
- * @author <a href="mailto:stephane.bailliez@wanadoo.fr">Stephane Bailliez</a>
  * @see XMLLogger
  * @noinspection ClassWithTooManyConstructors
  */

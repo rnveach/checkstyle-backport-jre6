@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Locale;
 
-import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
@@ -54,8 +53,6 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
  * 'crlf' (windows), 'cr' (mac), 'lf' (unix) and 'lf_cr_crlf' (lf, cr or crlf).
  * </p>
  *
- * @author Christopher Lenz
- * @author lkuehne
  */
 @StatelessCheck
 public class NewlineAtEndOfFileCheck
@@ -113,15 +110,13 @@ public class NewlineAtEndOfFileCheck
     private void readAndCheckFile(File file) throws IOException {
         // Cannot use lines as the line separators have been removed!
         final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-        boolean threw = true;
         try {
             if (!endsWithNewline(randomAccessFile)) {
                 log(0, MSG_KEY_NO_NEWLINE_EOF, file.getPath());
             }
-            threw = false;
         }
         finally {
-            Closeables.close(randomAccessFile, threw);
+            randomAccessFile.close();
         }
     }
 

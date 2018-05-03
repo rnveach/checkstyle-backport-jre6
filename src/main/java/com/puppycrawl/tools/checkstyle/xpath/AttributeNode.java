@@ -27,7 +27,6 @@ import net.sf.saxon.type.Type;
 /**
  * Represents attribute of the element.
  *
- * @author Timur Tibeyev
  */
 public class AttributeNode extends AbstractNode {
 
@@ -44,6 +43,7 @@ public class AttributeNode extends AbstractNode {
      * @param value value of the attribute
      */
     public AttributeNode(String name, String value) {
+        super(null);
         this.name = name;
         this.value = value;
     }

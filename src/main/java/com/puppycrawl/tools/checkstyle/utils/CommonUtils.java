@@ -46,7 +46,6 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 /**
  * Contains utility methods.
  *
- * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
  */
 public final class CommonUtils {
 

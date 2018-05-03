@@ -35,7 +35,6 @@ import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 /**
  * Contains utility methods for tokens.
  *
- * @author <a href="mailto:nesterenko-aleksey@list.ru">Aleksey Nesterenko</a>
  */
 public final class TokenUtils {
 
@@ -58,10 +57,10 @@ public final class TokenUtils {
         TOKEN_NAME_TO_VALUE = nameToValueMapFromPublicIntFields(TokenTypes.class);
         TOKEN_VALUE_TO_NAME = valueToNameArrayFromNameToValueMap(TOKEN_NAME_TO_VALUE);
         TOKEN_IDS = new int[TOKEN_NAME_TO_VALUE.size()];
-        int i = 0;
+        int index = 0;
         for (Integer value : TOKEN_NAME_TO_VALUE.values()) {
-            TOKEN_IDS[i] = value;
-            i++;
+            TOKEN_IDS[index] = value;
+            index++;
         }
     }
 

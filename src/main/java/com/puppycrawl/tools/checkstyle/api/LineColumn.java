@@ -25,7 +25,6 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 /**
  * Immutable line and column numbers.
  *
- * @author Martin von Gagern
  */
 public class LineColumn implements Comparable<LineColumn> {
 

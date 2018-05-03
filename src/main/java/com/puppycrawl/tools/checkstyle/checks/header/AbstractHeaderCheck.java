@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
@@ -44,7 +43,6 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 /**
  * Abstract super class for header checks.
  * Provides support for header and headerFile properties.
- * @author o_sukhodolsky
  */
 public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
     implements ExternalResourceHolder {
@@ -110,18 +108,19 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
      */
     private void loadHeaderFile() throws CheckstyleException {
         checkHeaderNotInitialized();
-        Reader headerReader = null;
         try {
-            headerReader = new InputStreamReader(new BufferedInputStream(
+            final Reader headerReader = new InputStreamReader(new BufferedInputStream(
                     headerFile.toURL().openStream()), charset);
-            loadHeader(headerReader);
+            try {
+                loadHeader(headerReader);
+            }
+            finally {
+                headerReader.close();
+            }
         }
         catch (final IOException ex) {
             throw new CheckstyleException(
                     "unable to load header file " + headerFile, ex);
-        }
-        finally {
-            Closeables.closeQuietly(headerReader);
         }
     }
 
@@ -150,15 +149,17 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
             final String headerExpandedNewLines = ESCAPED_LINE_FEED_PATTERN
                     .matcher(header).replaceAll("\n");
 
-            final Reader headerReader = new StringReader(headerExpandedNewLines);
             try {
-                loadHeader(headerReader);
+                final Reader headerReader = new StringReader(headerExpandedNewLines);
+                try {
+                    loadHeader(headerReader);
+                }
+                finally {
+                    headerReader.close();
+                }
             }
             catch (final IOException ex) {
                 throw new IllegalArgumentException("unable to load header", ex);
-            }
-            finally {
-                Closeables.closeQuietly(headerReader);
             }
         }
     }
@@ -171,20 +172,17 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
     private void loadHeader(final Reader headerReader) throws IOException {
         final LineNumberReader lnr = new LineNumberReader(headerReader);
         try {
-            while (true) {
-                String line = lnr.readLine();
-                if (line == null) {
-                    break;
+            String line;
+            do {
+                line = lnr.readLine();
+                if (line != null) {
+                    readerLines.add(line);
                 }
-                if (line.isEmpty()) {
-                    line = "^$";
-                }
-                readerLines.add(line);
-            }
+            } while (line != null);
             postProcessHeaderLines();
         }
         finally {
-            Closeables.closeQuietly(lnr);
+            lnr.close();
         }
     }
 

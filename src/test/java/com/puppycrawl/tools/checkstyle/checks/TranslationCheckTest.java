@@ -30,14 +30,10 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -50,12 +46,10 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.w3c.dom.Node;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Closeables;
 import com.puppycrawl.tools.checkstyle.AbstractXmlTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -73,7 +67,6 @@ import com.puppycrawl.tools.checkstyle.jre6.util.function.BiPredicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(Closeables.class)
 public class TranslationCheckTest extends AbstractXmlTestSupport {
 
     @Captor
@@ -218,7 +211,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
         final Method loadKeys =
             check.getClass().getDeclaredMethod("getTranslationKeys", File.class);
         loadKeys.setAccessible(true);
-        final Set<String> keys = (Set<String>) loadKeys.invoke(check, new File(""));
+        final Set<String> keys = (Set<String>) loadKeys.invoke(check, new File(".no.such.file"));
         assertTrue("Translation keys should be empty when File is not found", keys.isEmpty());
         assertEquals("Invalid error count", 1, counter.getCount());
     }
@@ -386,36 +379,6 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
             propertyFiles,
             getPath(""),
             expected);
-    }
-
-    /**
-     * Pitest requires all closes of streams and readers to be verified. Using PowerMock
-     * is almost only possibility to check it without rewriting production code.
-     *
-     * @throws Exception when code tested throws some exception
-     */
-    @Test
-    public void testResourcesAreClosed() throws Exception {
-        mockStatic(Closeables.class);
-        doNothing().when(Closeables.class);
-        Closeables.closeQuietly(any(InputStream.class));
-
-        final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "es");
-
-        final File[] propertyFiles = {
-            new File(getPath("messages_home.properties")),
-            new File(getPath("messages_home_es_US.properties")),
-            };
-
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
-        verify(
-            createChecker(checkConfig),
-            propertyFiles,
-            getPath(""),
-            expected);
-        verifyStatic(Closeables.class, times(2));
-        Closeables.closeQuietly(any(InputStream.class));
     }
 
     @Test
