@@ -6,7 +6,8 @@
 
   <head>
     <title>Class Design</title>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
+    <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
     <script type="text/javascript" src="js/anchors.js"/>
     <script type="text/javascript" src="js/google-analytics.js"/>
     <link rel="icon" href="images/favicon.png" type="image/x-icon" />
@@ -52,7 +53,7 @@
          overridden in its subclass.
         </p>
          <p>
-          Problem is described at "Effective Java, 2nd Edition by Josh Bloch" book, chapter
+          Problem is described at "Effective Java, 2nd Edition by Joshua Bloch" book, chapter
           "Item 17: Design and document for inheritance or else prohibit it".
         </p>
         <p>
@@ -464,7 +465,8 @@ public class StringUtils // not final to allow subclassing
           According to Bloch, an interface should describe a <em>type</em>.
           It is therefore inappropriate to define an interface that does not
           contain any methods but only constants. The Standard interface <a
-          href="https://docs.oracle.com/javase/8/docs/api/javax/swing/SwingConstants.html">javax.swing.SwingConstants</a>
+          href="https://docs.oracle.com/javase/8/docs/api/javax/swing/SwingConstants.html">
+            javax.swing.SwingConstants</a>
           is an example of an interface that would be flagged by this check.
         </p>
 
@@ -649,7 +651,8 @@ public class StringUtils // not final to allow subclassing
           Checks that each top-level class, interface or
           enum resides in a source file of its own.
           Official description of a 'top-level' term:<a
-          href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-7.html#jls-7.6">7.6. Top Level Type Declarations</a>.
+          href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-7.html#jls-7.6">
+            7.6. Top Level Type Declarations</a>.
           If file doesn't contains public class, enum or interface,
           top-level type is the first type in file.
         </p>

@@ -25,6 +25,7 @@ import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
@@ -38,7 +39,6 @@ import javax.swing.LookAndFeel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.tree.TreePath;
 
-import com.google.common.collect.ImmutableList;
 import com.puppycrawl.tools.checkstyle.jre6.lang.Math7;
 
 /**
@@ -231,10 +231,9 @@ public final class TreeTable extends JTable {
     /**
      * Sets line position map.
      * @param linePositionMap Line position map.
-     * @noinspection AssignmentToCollectionOrArrayFieldFromParameter
      */
-    public void setLinePositionMap(ImmutableList<Integer> linePositionMap) {
-        this.linePositionMap = linePositionMap;
+    public void setLinePositionMap(List<Integer> linePositionMap) {
+        this.linePositionMap = new ArrayList<Integer>(linePositionMap);
     }
 
     /**

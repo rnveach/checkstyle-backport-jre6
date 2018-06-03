@@ -6,7 +6,8 @@
 
   <head>
     <title>Filters</title>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
+    <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
     <script type="text/javascript" src="js/anchors.js"/>
     <script type="text/javascript" src="js/google-analytics.js"/>
     <link rel="icon" href="images/favicon.png" type="image/x-icon" />
@@ -167,8 +168,9 @@
               </tr>
           </table>
           <p>
-              offCommentFormat and onCommentFormat must have equal <a
-                  href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Matcher.html#groupCount()">paren counts</a>.
+              offCommentFormat and onCommentFormat must have equal
+              <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Matcher.html#groupCount()">
+              paren counts</a>.
           </p>
       </subsection>
       <subsection name="Examples">
@@ -675,26 +677,82 @@ public class UserService {
           checks:
         </p>
         <ul>
+          <li>AbstractClassNameCheck</li>
+          <li>AnonInnerLengthCheck</li>
+          <li>ArrayTypeStyleCheck</li>
+          <li>AvoidInlineConditionalsCheck</li>
+          <li>AvoidNestedBlocksCheck</li>
+          <li>BooleanExpressionComplexityCheck</li>
+          <li>CatchParameterNameCheck</li>
+          <li>ClassTypeParameterNameCheck</li>
+          <li>ConstantNameCheck</li>
+          <li>CovariantEqualsCheck</li>
           <li>CyclomaticComplexityCheck</li>
           <li>DeclarationOrderCheck</li>
           <li>DefaultComesLastCheck</li>
+          <li>DescendantTokenCheck</li>
+          <li>DesignForExtensionCheck</li>
+          <li>EmptyBlockCheck</li>
+          <li>EmptyStatementCheck</li>
+          <li>EqualsAvoidNullCheck</li>
+          <li>EqualsHashCodeCheck</li>
+          <li>ExecutableStatementCountCheck</li>
           <li>ExplicitInitializationCheck</li>
           <li>FallThroughCheck</li>
+          <li>FinalLocalVariableCheck</li>
+          <li>FinalParametersCheck</li>
           <li>HiddenFieldCheck</li>
+          <li>HideUtilityClassConstructorCheck</li>
+          <li>IllegalInstantiationCheck</li>
+          <li>IllegalTokenCheck</li>
+          <li>IllegalTokenTextCheck</li>
+          <li>InnerAssignmentCheck</li>
+          <li>InnerTypeLastCheck</li>
+          <li>InterfaceTypeParameterNameCheck</li>
           <li>JavadocVariableCheck</li>
+          <li>JavaNCSSCheck</li>
+          <li>IllegalImportCheck</li>
           <li>IllegalThrowsCheck</li>
           <li>ImportControlCheck</li>
           <li>LeftCurlyCheck</li>
+          <li>LocalFinalVariableNameCheck</li>
+          <li>LocalVariableNameCheck</li>
+          <li>MagicNumberCheck</li>
+          <li>MemberNameCheck</li>
+          <li>MethodLengthCheck</li>
+          <li>MethodNameCheck</li>
           <li>MethodParamPadCheck</li>
+          <li>MethodTypeParameterNameCheck</li>
+          <li>ModifiedControlVariableCheck</li>
+          <li>ModifierOrderCheck</li>
           <li>MultipleVariableDeclarationsCheck</li>
+          <li>MutableExceptionCheck</li>
           <li>NestedForDepthCheck</li>
           <li>NestedIfDepthCheck</li>
           <li>NestedTryDepthCheck</li>
           <li>NPathComplexityCheck</li>
           <li>OneStatementPerLineCheck</li>
+          <li>OperatorWrapCheck</li>
           <li>OuterTypeNumberCheck</li>
+          <li>ParameterAssignmentCheck</li>
+          <li>ParameterNameCheck</li>
+          <li>ParameterNumberCheck</li>
+          <li>RedundantImportCheck</li>
+          <li>RedundantModifierCheck</li>
           <li>RequireThisCheck</li>
+          <li>ReturnCountCheck</li>
           <li>RightCurlyCheck</li>
+          <li>SeparatorWrapCheck</li>
+          <li>SimplifyBooleanExpressionCheck</li>
+          <li>SimplifyBooleanReturnCheck</li>
+          <li>StaticVariableNameCheck</li>
+          <li>StringLiteralEqualityCheck</li>
+          <li>SuperCloneCheck</li>
+          <li>SuperFinalizeCheck</li>
+          <li>SuppressWarningsCheck</li>
+          <li>ThrowsCountCheck</li>
+          <li>TypeNameCheck</li>
+          <li>VisibilityModifierCheck</li>
         </ul>
         <p>
           Note, that support for other Checks will be available after resolving
@@ -738,7 +796,7 @@ public class UserService {
               Tells what to do when the file is not existing. If
               optional is set to false the file must exist, or else
               it ends with error. On the other hand if optional is
-              true and file is not found, the filter accept all
+              true and file is not found, the filter accepts all
               audit events.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
@@ -950,7 +1008,8 @@ public class InputTest {
           </p>
           <p>
               Usage: This filter only works in conjunction with a
-              <a href="config_annotation.html#SuppressWarningsHolder">SuppressWarningsHolder</a>, since that check finds
+              <a href="config_annotation.html#SuppressWarningsHolder">SuppressWarningsHolder</a>,
+              since that check finds
               the annotations in the Java files and makes them available for
               the filter. Because of that, a configuration that includes
               this filter must also include
@@ -1360,8 +1419,9 @@ public class UserService {
                   </tr>
               </table>
               <p>
-                  offCommentFormat and onCommentFormat must have equal <a
-                      href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Matcher.html#groupCount()">paren counts</a>.
+                  offCommentFormat and onCommentFormat must have equal
+                  <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Matcher.html#groupCount()">
+                  paren counts</a>.
               </p>
           </subsection>
           <subsection name="Examples">

@@ -466,8 +466,7 @@ public class VisibilityModifierCheck
                 .getNextSibling();
             final String varName = varNameAST.getText();
             if (!hasProperAccessModifier(variableDef, varName)) {
-                log(varNameAST.getLineNo(), varNameAST.getColumnNo(),
-                        MSG_KEY, varName);
+                log(varNameAST, MSG_KEY, varName);
             }
         }
     }

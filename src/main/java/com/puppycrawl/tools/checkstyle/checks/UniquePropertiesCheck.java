@@ -22,14 +22,14 @@ package com.puppycrawl.tools.checkstyle.checks;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.ImmutableMultiset;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Multiset.Entry;
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
@@ -82,12 +82,12 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
                     ex.getLocalizedMessage());
         }
 
-        for (Entry<String> duplication : properties
+        for (Entry<String, AtomicInteger> duplication : properties
                 .getDuplicatedKeys().entrySet()) {
-            final String keyName = duplication.getElement();
+            final String keyName = duplication.getKey();
             final int lineNumber = getLineNumber(fileText, keyName);
             // Number of occurrences is number of duplications + 1
-            log(lineNumber, MSG_KEY, keyName, duplication.getCount() + 1);
+            log(lineNumber, MSG_KEY, keyName, duplication.getValue().get() + 1);
         }
     }
 
@@ -144,11 +144,10 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
 
         private static final long serialVersionUID = 1L;
         /**
-         * Multiset, holding duplicated keys. Keys are added here only if they
+         * Map, holding duplicated keys and their count. Keys are added here only if they
          * already exist in Properties' inner map.
          */
-        private final Multiset<String> duplicatedKeys = HashMultiset
-                .create();
+        private final Map<String, AtomicInteger> duplicatedKeys = new HashMap<String, AtomicInteger>();
 
         /**
          * Puts the value into properties by the key specified.
@@ -159,7 +158,14 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
             final Object oldValue = super.put(key, value);
             if (oldValue != null && key instanceof String) {
                 final String keyString = (String) key;
-                duplicatedKeys.add(keyString);
+                AtomicInteger duplicatedValue = duplicatedKeys.get(keyString);
+
+                if (duplicatedValue == null) {
+                    duplicatedValue = new AtomicInteger(0);
+                    duplicatedKeys.put(keyString, duplicatedValue);
+                }
+
+                duplicatedValue.incrementAndGet();
             }
             return oldValue;
         }
@@ -169,8 +175,8 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
          *
          * @return A collection of duplicated keys.
          */
-        public Multiset<String> getDuplicatedKeys() {
-            return ImmutableMultiset.copyOf(duplicatedKeys);
+        public Map<String, AtomicInteger> getDuplicatedKeys() {
+            return new HashMap<String, AtomicInteger>(duplicatedKeys);
         }
 
     }

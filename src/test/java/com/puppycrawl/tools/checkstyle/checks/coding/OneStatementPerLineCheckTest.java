@@ -70,8 +70,8 @@ public class OneStatementPerLineCheckTest extends AbstractModuleTestSupport {
             "81:10: " + getCheckMessage(MSG_KEY),
             "90:28: " + getCheckMessage(MSG_KEY),
             "135:39: " + getCheckMessage(MSG_KEY),
-            "168:110: " + getCheckMessage(MSG_KEY),
-            "179:107: " + getCheckMessage(MSG_KEY),
+            "168:100: " + getCheckMessage(MSG_KEY),
+            "179:91: " + getCheckMessage(MSG_KEY),
         };
 
         verify(checkConfig,
@@ -88,7 +88,7 @@ public class OneStatementPerLineCheckTest extends AbstractModuleTestSupport {
             "38:58: " + getCheckMessage(MSG_KEY),
             "38:74: " + getCheckMessage(MSG_KEY),
             "39:50: " + getCheckMessage(MSG_KEY),
-            "43:91: " + getCheckMessage(MSG_KEY),
+            "43:85: " + getCheckMessage(MSG_KEY),
         };
 
         verify(checkConfig, getNonCompilablePath("InputOneStatementPerLine.java"), expected);

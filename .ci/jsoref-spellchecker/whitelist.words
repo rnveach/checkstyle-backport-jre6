@@ -103,6 +103,7 @@ bbb
 BBBB
 bc
 BCA
+bcff
 BClass
 bdc
 bdo
@@ -152,6 +153,7 @@ camelcase
 casegroup
 catchparametername
 cba
+cbc
 cbeaff
 ccc
 CCCC
@@ -277,6 +279,7 @@ DDDD
 Ddry
 declarationorder
 DECOMPRESSOR
+ded
 defau
 defaultcasepresent
 defaultcomeslast
@@ -323,6 +326,7 @@ Dskip
 dsm
 Dsonar
 Dspotbugs
+Dstrict
 Dtest
 Dubinin
 Duser
@@ -462,8 +466,10 @@ genericwhitespace
 Getenv
 gg
 gh
+gitattributes
 github
 githubusercontent
+gitignore
 Gjs
 google
 googleapis
@@ -570,6 +576,7 @@ itemvalue
 ith
 itr
 ivanov
+ivanovjr
 iws
 Izmailov
 jacoco
@@ -627,6 +634,7 @@ Jlo
 jls
 JNDI
 JOption
+jp
 Jpa
 JPanel
 jpeg
@@ -931,6 +939,7 @@ pojo
 Popup
 Postgresql
 powermock
+Ppitest
 prameterless
 preformatted
 prefs
@@ -1045,6 +1054,7 @@ Slawinski
 slf
 slist
 smth
+snyk
 solr
 som
 someinner

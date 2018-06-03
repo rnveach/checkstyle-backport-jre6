@@ -87,7 +87,7 @@ public class XdocsPagesTest {
 
     private static final Path AVAILABLE_CHECKS_PATH = Paths.get("src/xdocs/checks.xml");
     private static final String LINK_TEMPLATE =
-            "(?s).*<a href=\"config_\\w+\\.html#%1$s\">%1$s</a>.*";
+            "(?s).*<a href=\"config_\\w+\\.html#%1$s\">(\\s)*%1$s</a>.*";
 
     private static final Pattern VERSION = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?");
 
@@ -357,6 +357,11 @@ public class XdocsPagesTest {
 
         int subSectionPos = 0;
         for (Node subSection : XmlUtil.getChildrenElements(section)) {
+            if (subSectionPos == 0 && "p".equals(subSection.getNodeName())) {
+                validateSinceDescriptionSection(fileName, sectionName, subSection);
+                continue;
+            }
+
             final String subSectionName = subSection.getAttributes().getNamedItem("name")
                     .getNodeValue();
 
@@ -382,7 +387,6 @@ public class XdocsPagesTest {
 
             switch (subSectionPos) {
                 case 0:
-                    validateSinceDescriptionSection(fileName, sectionName, subSection);
                     break;
                 case 1:
                     validatePropertySection(fileName, sectionName, subSection, instance);

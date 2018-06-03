@@ -110,7 +110,7 @@ public class MainFrame extends JFrame {
         modesCombobox.setSelectedIndex(0);
         modesCombobox.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent event) {
                 model.setParseMode((ParseMode) modesCombobox.getSelectedItem());
                 reloadAction.actionPerformed(null);
             }

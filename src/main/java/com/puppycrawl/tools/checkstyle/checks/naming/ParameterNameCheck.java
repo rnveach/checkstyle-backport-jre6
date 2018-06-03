@@ -165,8 +165,8 @@ public class ParameterNameCheck extends AbstractNameCheck {
     private boolean matchAccessModifiers(final AccessModifier accessModifier) {
         boolean result = false;
 
-        for (AccessModifier el : accessModifiers) {
-            if (el == accessModifier) {
+        for (AccessModifier modifier : accessModifiers) {
+            if (modifier == accessModifier) {
                 result = true;
                 break;
             }

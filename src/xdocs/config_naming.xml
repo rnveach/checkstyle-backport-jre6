@@ -6,7 +6,8 @@
 
   <head>
     <title>Naming Conventions</title>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
+    <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
     <script type="text/javascript" src="js/anchors.js"/>
     <script type="text/javascript" src="js/google-analytics.js"/>
     <link rel="icon" href="images/favicon.png" type="image/x-icon" />
@@ -32,8 +33,8 @@
     </section>
 
     <section name="AbbreviationAsWordInName">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
          The Check validate abbreviations(consecutive capital letters)
          length in identifier name, it also allows to enforce camel case naming. Please read more at
@@ -43,7 +44,7 @@
         </p>
 
         <p>
-         <i>allowedAbbreviationLength</i> specifies how many consecutive capital letters are
+         <code>allowedAbbreviationLength</code> specifies how many consecutive capital letters are
          allowed in the identifier.
          A value of <i>3</i> indicates that up to 4 consecutive capital letters are allowed,
          one after the other, before a violation is printed. The identifier 'MyTEST' would be
@@ -65,41 +66,41 @@
           </tr>
           <tr>
             <td>allowedAbbreviationLength</td>
-            <td>indicates on the number of consecutive capital letters allowed in targeted
+            <td>Indicate the number of consecutive capital letters allowed in targeted
              identifiers (abbreviations in the classes, interfaces, variables and methods
              names, ... ).</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>3</td>
+            <td><code>3</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>allowedAbbreviations</td>
-            <td>list of abbreviations that must be skipped for checking.
-            Abbreviations should be separated by comma, no spaces are allowed.</td>
+            <td>Specify list of abbreviations that must be skipped for checking.
+            Abbreviations should be separated by comma.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>{}</td>
+            <td><code>{}</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>ignoreFinal</td>
-            <td>allow to skip variables with final modifier.</td>
+            <td>Allow to skip variables with <code>final</code> modifier.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>true</td>
+            <td><code>true</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>ignoreStatic</td>
-            <td>allow to skip variables with static modifier.</td>
+            <td>Allow to skip variables with <code>static</code> modifier.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>true</td>
+            <td><code>true</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>ignoreOverriddenMethods</td>
-            <td>Allows to ignore methods tagged with @Override annotation
+            <td>Allow to ignore methods tagged with <code>@Override</code> annotation
             (that usually mean inherited name).</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>true</td>
+            <td><code>true</code></td>
             <td>5.8</td>
           </tr>
           <tr>
@@ -107,25 +108,42 @@
             <td>tokens to check</td>
             <td>
               subset of tokens
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">CLASS_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">INTERFACE_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">ENUM_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">ANNOTATION_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">ANNOTATION_FIELD_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">PARAMETER_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">METHOD_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_CONSTANT_DEF">ENUM_CONSTANT_DEF</a>.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
+                CLASS_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
+                INTERFACE_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                ENUM_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
+                ANNOTATION_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">
+                ANNOTATION_FIELD_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
+                PARAMETER_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
+                VARIABLE_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
+                METHOD_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_CONSTANT_DEF">
+                ENUM_CONSTANT_DEF</a>.
             </td>
             <td>
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">CLASS_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">INTERFACE_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">ENUM_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">ANNOTATION_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">ANNOTATION_FIELD_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">PARAMETER_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">METHOD_DEF</a>.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
+                CLASS_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
+                INTERFACE_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                ENUM_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
+                ANNOTATION_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">
+                ANNOTATION_FIELD_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
+                PARAMETER_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
+                VARIABLE_DEF</a>,
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
+                METHOD_DEF</a>.
             </td>
             <td>5.8</td>
           </tr>
@@ -135,10 +153,10 @@
       <subsection name="Examples">
        <p>
          Default configuration
-         <source>
-&lt;module name="AbbreviationAsWordInName"/&gt;
-         </source>
        </p>
+       <source>
+&lt;module name="AbbreviationAsWordInName"/&gt;
+       </source>
        <p>
           To configure to check variables and classes identifiers,
           do not ignore variables with static modifier and allow
@@ -191,9 +209,18 @@
     </section>
 
     <section name="AbstractClassName">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description">
-        <p>Since Checkstyle 3.2</p>
-        <p>Validates identifiers for <code>abstract</code> classes.</p>
+        <p>
+          Ensures that the names of abstract classes conforming to some regular expression and
+          check that <code>abstract</code> modifier exists.
+        </p>
+        <p>
+          Rationale: Abstract classes are convenience base class implementations of
+          interfaces, not types as such. As such they should be named to indicate this.
+          Also if names of classes starts with 'Abstract' it's very convenient that
+          they will have abstract modifier.
+        </p>
       </subsection>
 
       <subsection name="Properties">
@@ -207,7 +234,7 @@
           </tr>
           <tr>
             <td>format</td>
-            <td>Specifies valid identifiers.</td>
+            <td>Specify valid identifiers.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^Abstract.+$"</code></td>
             <td>3.2</td>
@@ -215,7 +242,7 @@
           <tr>
             <td>ignoreModifier</td>
             <td>
-              Controls whether to ignore checking for the
+              Control whether to ignore checking for the
               <code>abstract</code> modifier on classes that match the
               name.
             </td>
@@ -226,9 +253,9 @@
           <tr>
             <td>ignoreName</td>
             <td>
-              Controls whether to ignore checking the name. Realistically
+              Control whether to ignore checking the name. Realistically
               only useful if using the check to identify that match name
-              and do not have the <code>abstract</code> modifier.  name.
+              and do not have the <code>abstract</code> modifier.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -286,10 +313,13 @@
     </section>
 
     <section name="CatchParameterName">
+      <p>Since Checkstyle 6.14</p>
       <subsection name="Description">
-        <p>Since Checkstyle 6.14</p>
         <p>
-          Checks that catch parameter names conform to a format specified by the format property.
+          Checks that <code>catch</code> parameter names conform to a format specified by the
+          format property.
+        </p>
+        <p>
           Default pattern has the following characteristic:
         </p>
         <ul>
@@ -330,14 +360,14 @@
 
       <subsection name="Examples">
         <p>
-          To configure the check:
+          An example of how to configure the check is:
         </p>
         <source>
 &lt;module name=&quot;CatchParameterName&quot;/&gt;
         </source>
         <p>
           An example of how to configure the check for names that begin with
-          a lower case letter, followed by letters and digits is:
+          a lower case letter, followed by any letters or digits is:
         </p>
         <source>
 &lt;module name="CatchParameterName"&gt;
@@ -386,9 +416,10 @@
     </section>
 
     <section name="ClassTypeParameterName">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description">
-        <p>Since Checkstyle 5.0</p>
-        <p>Validates identifiers for class type parameters.</p>
+        <p>Checks that class type parameter names conform to a format specified by the format
+           property.</p>
       </subsection>
 
       <subsection name="Properties">
@@ -412,10 +443,18 @@
 
       <subsection name="Examples">
         <p>
-          To configure the check:
+          An example of how to configure the check is:
         </p>
         <source>
 &lt;module name=&quot;ClassTypeParameterName&quot;/&gt;
+        </source>
+        <p>
+          An example of how to configure the check for names that are only a single letter is:
+        </p>
+        <source>
+&lt;module name=&quot;ClassTypeParameterName&quot;&gt;
+  &lt;property name="format" value="^[a-zA-Z]$"/&gt;
+&lt;/module&gt;
         </source>
       </subsection>
 
@@ -455,11 +494,13 @@
     </section>
 
     <section name="ConstantName">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Validates identifiers for constants (<code>static</code>, <code>
-          final</code> fields).
+          Checks that constant names conform to a format specified by the format property.
+          A <em>constant</em> is a <strong>static</strong> and <strong>final</strong> field or an
+          interface/annotation field, except <strong>serialVersionUID</strong> and
+          <strong>serialPersistentFields</strong>.
         </p>
       </subsection>
 
@@ -514,10 +555,15 @@
 
       <subsection name="Examples">
         <p>
-          Property <code>format</code> in module <code>ConstantName</code>
-          is used to specify names to be allowed. The following configuration
-          apart from names allowed by default allows <code>log</code> or
-          <code>logger</code>:
+          An example of how to configure the check is:
+        </p>
+
+        <source>
+&lt;module name="ConstantName"/&gt;
+        </source>
+        <p>
+          The following configuration apart from names allowed by default allows <code>log</code>
+          or <code>logger</code>:
         </p>
 
         <source>
@@ -564,10 +610,11 @@
     </section>
 
     <section name="InterfaceTypeParameterName">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
-          Validates identifiers for interface type parameters.
+          Checks that interface type parameter names conform to a format specified by the format
+          property.
         </p>
       </subsection>
 
@@ -592,10 +639,19 @@
 
       <subsection name="Examples">
         <p>
-          To configure the check:
+          An example of how to configure the check is:
         </p>
         <source>
 &lt;module name=&quot;InterfaceTypeParameterName&quot;/&gt;
+        </source>
+        <p>
+          An example of how to configure the check for names that are only a single
+          letter is:
+        </p>
+        <source>
+&lt;module name="InterfaceTypeParameterName"&gt;
+   &lt;property name="format" value="^[a-zA-Z]$"/&gt;
+&lt;/module&gt;
         </source>
       </subsection>
 
@@ -635,11 +691,12 @@
     </section>
 
     <section name="LocalFinalVariableName">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Validates identifiers for local, <code>final</code> variables, including
-          <code>catch</code> parameters and resources in <code>try</code> statements.
+          Checks that local final variable names conform to a format specified
+          by the format property. A catch parameter and resources in try statements
+          are considered to be a local, final variables.
         </p>
       </subsection>
 
@@ -664,14 +721,20 @@
           <td>tokens to check</td>
           <td>
             subset of tokens
-            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>,
-            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">PARAMETER_DEF</a>,
-            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">RESOURCE</a>.
+            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
+                VARIABLE_DEF</a>,
+            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
+                PARAMETER_DEF</a>,
+            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">
+                RESOURCE</a>.
           </td>
           <td>
-            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">VARIABLE_DEF</a>,
-            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">PARAMETER_DEF</a>,
-            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">RESOURCE</a>.
+            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
+                VARIABLE_DEF</a>,
+            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
+                PARAMETER_DEF</a>,
+            <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">
+                RESOURCE</a>.
           </td>
           <td>3.0</td>
         </tr>
@@ -680,10 +743,19 @@
 
       <subsection name="Examples">
         <p>
-          To configure the check:
+          An example of how to configure the check is:
         </p>
         <source>
 &lt;module name=&quot;LocalFinalVariableName&quot;/&gt;
+        </source>
+        <p>
+          An example of how to configure the check for names that are only upper case letters and
+          digits is:
+        </p>
+        <source>
+&lt;module name=&quot;LocalFinalVariableName&quot;&gt;
+  &lt;property name="format" value="^[A-Z][A-Z0-9]*$"/&gt;
+&lt;/module&gt;
         </source>
       </subsection>
 
@@ -723,11 +795,11 @@
     </section>
 
     <section name="LocalVariableName">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
             Checks that local, non-<code>final</code> variable names conform to a format specified
-            by the format property.
+            by the format property. A catch parameter is considered to be a local variable.
         </p>
       </subsection>
 
@@ -750,7 +822,9 @@
           <tr>
             <td>allowOneCharVarInForLoop</td>
             <td>
-            Allow one character variable name in <a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/for.html"> initialization expressions</a> in FOR loop. For example:
+            Allow one character variable name in
+              <a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/for.html">
+                initialization expressions</a> in FOR loop. For example:
               <pre>
 for (int i = 1; i &lt; 10; i++) {}
               </pre>
@@ -764,13 +838,30 @@ for (int i = 1; i &lt; 10; i++) {}
 
       <subsection name="Examples">
         <p>
-          To configure the check to use the default configuration:
+          An example of how to configure the check is:
         </p>
 
         <source>
 &lt;module name=&quot;LocalVariableName&quot;/&gt;
         </source>
 
+        <p>
+          An example of how to configure the check for names that begin with a lower
+          case letter, followed by letters, digits, and underscores is:
+        </p>
+        <source>
+&lt;module name="LocalVariableName"&gt;
+  &lt;property name="format" value="^[a-z](_?[a-zA-Z0-9]+)*$"/&gt;
+&lt;/module&gt;
+        </source>
+
+        <p>
+          An example of one character variable name in initialization expression(like "i")
+          in FOR loop:
+        </p>
+        <source>
+          for(int i = 1; i &lt; 10; i++) {}
+        </source>
         <p>
           An example of how to configure the check to allow one character variable name in
           <a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/for.html">
@@ -823,10 +914,10 @@ for (int i = 1; i &lt; 10; i++) {}
     </section>
 
     <section name="MemberName">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Validates identifiers for non-<code>static</code> fields.
+          Checks that instance variable names conform to a format specified by the format property.
         </p>
       </subsection>
 
@@ -881,11 +972,15 @@ for (int i = 1; i &lt; 10; i++) {}
 
       <subsection name="Examples">
         <p>
-          This is an example of a
-          configuration of the <code>MemberName</code> module to
-          ensure that member identifiers begin with
-          <code>&#39;m&#39;</code>, followed
-          by an upper case letter, and then letters and digits:
+         An example of how to configure the check is:
+        </p>
+        <source>
+&lt;module name="MemberName"/&gt;
+        </source>
+        <p>
+          An example of how to configure the check for names that begin with
+          <code>&quot;m&quot;</code>, followed by an upper case letter, and then letters and
+          digits is:
         </p>
 
         <source>
@@ -935,10 +1030,18 @@ for (int i = 1; i &lt; 10; i++) {}
     </section>
 
     <section name="MethodName">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Validates identifiers for methods.
+          Checks that method names conform to a format specified by the format property.
+        </p>
+        <p>
+          Also, checks if a method name has the same name as the residing class.
+          The default is false (it is not allowed). It is legal in Java to have
+          method with the same name as a class. As long as a return type is specified
+          it is a method and not a constructor which it could be easily confused as.
+          Does not check-style the name of an overridden methods because the developer
+          does not have a choice in renaming such methods.
         </p>
       </subsection>
 
@@ -962,8 +1065,8 @@ for (int i = 1; i &lt; 10; i++) {}
             <td>allowClassName</td>
             <td>
               Controls whether to allow a method name to have the same
-              name as the residing class name.  This is not to be confused
-              with a constructor.  An easy mistake is to place a return
+              name as the residing class name. This is not to be confused
+              with a constructor. An easy mistake is to place a return
               type on a constructor declaration which turns it into a
               method. For example:
               <pre>
@@ -1012,10 +1115,28 @@ class MyClass {
 
       <subsection name="Examples">
         <p>
-          To configure the check:
+          An example of how to configure the check is:
         </p>
         <source>
 &lt;module name=&quot;MethodName&quot;/&gt;
+        </source>
+        <p>
+          An example of how to configure the check for names that begin with a lower case letter,
+          followed by letters, digits, and underscores is:
+        </p>
+        <source>
+&lt;module name="MethodName"&gt;
+   &lt;property name="format" value="^[a-z](_?[a-zA-Z0-9]+)*$"/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          An example of how to configure the check to allow method names to be equal to the
+          residing class name is:
+        </p>
+        <source>
+&lt;module name="MethodName"&gt;
+   &lt;property name="allowClassName" value="true"/&gt;
+&lt;/module&gt;
         </source>
       </subsection>
 

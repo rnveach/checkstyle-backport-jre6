@@ -145,9 +145,9 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      */
     public final void setExcludedPackages(String... excludedPackages) {
         final List<String> invalidIdentifiers = new ArrayList<String>();
-        for (String x : excludedPackages) {
-            if (!CommonUtils.isName(x)) {
-                invalidIdentifiers.add(x);
+        for (String packageName : excludedPackages) {
+            if (!CommonUtils.isName(packageName)) {
+                invalidIdentifiers.add(packageName);
             }
         }
         if (!invalidIdentifiers.isEmpty()) {

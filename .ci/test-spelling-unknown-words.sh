@@ -13,17 +13,21 @@ run_output=$spellchecker/unknown.words
 if [ ! -e $dict ]; then
   echo "Retrieve ./usr/share/dict/linux.words"
   words_rpm=$spellchecker/words.rpm
-  curl https://rpmfind.net/linux/fedora/linux/development/rawhide/Everything/aarch64/os/Packages/w/words-3.0-28.fc28.noarch.rpm > $words_rpm
+  URL_PART1="https://rpmfind.net/linux/fedora/linux/development/rawhide/"
+  URL_PART2="Everything/aarch64/os/Packages/w/words-3.0-28.fc28.noarch.rpm"
+  curl $URL_PART1$URL_PART2 > $words_rpm
   $spellchecker/rpm2cpio.sh $words_rpm |\
     cpio -i --to-stdout ./usr/share/dict/linux.words > $dict
   rm $words_rpm
 fi
 
-echo "Retrieve w"
-if [ ! -e $word_splitter ]; then 
+if [ ! -e $word_splitter ]; then
+  echo "Retrieve w"
   curl -s https://raw.githubusercontent.com/jsoref/spelling/master/w |\
     perl -p -n -e "s</usr/share/dict/words><$dict>" > $word_splitter
-  chmod +x $word_splitter
+  chmod u+x $word_splitter
+  echo "Retrieved."
+  ls -la $word_splitter
 fi
 
 echo "Clean up from previous run"
@@ -43,7 +47,7 @@ printDetails() {
 
 echo "Review results"
 if [ ! -e $whitelist_path ]; then
-  echo No preexisting $whitelist_path file.
+  echo "No preexisting $whitelist_path file."
   printDetails
   echo "cat > $whitelist_path <<EOF=EOF"
   cat $run_output
@@ -64,11 +68,13 @@ if [ -z "$new_output" ]; then
   echo "There are now fewer misspellings than before."
   echo "$whitelist_path could be updated:"
   echo ''
+  echo "patch $whitelist_path <<EOF"
   echo "$diff_output"
+  echo "EOF"
   sleep 5
   exit 1
 fi
-echo New misspellings found, please review:
+echo "New misspellings found, please review:"
 echo "$new_output"
 printDetails
 echo "patch $whitelist_path <<EOF"

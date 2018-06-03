@@ -52,7 +52,6 @@ public final class XdocUtil {
     /**
      * Gets xdocs file paths.
      * @return a list of xdocs file paths.
-     * @throws IOException if an I/O error occurs.
      */
     public static Set<Path> getXdocsFilePaths() {
         final Path directory = Paths.get(DIRECTORY_PATH);

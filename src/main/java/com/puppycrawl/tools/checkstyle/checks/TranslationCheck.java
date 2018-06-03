@@ -24,8 +24,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
@@ -36,8 +39,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
 import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
@@ -434,11 +435,11 @@ public class TranslationCheck extends AbstractFileSetCheck {
         if (filesInBundle.size() >= 2) {
             // build a map from files to the keys they contain
             final Set<String> allTranslationKeys = new HashSet<String>();
-            final SetMultimap<File, String> filesAssociatedWithKeys = HashMultimap.create();
+            final Map<File, Set<String>> filesAssociatedWithKeys = new HashMap<File, Set<String>>();
             for (File currentFile : filesInBundle) {
                 final Set<String> keysInCurrentFile = getTranslationKeys(currentFile);
                 allTranslationKeys.addAll(keysInCurrentFile);
-                filesAssociatedWithKeys.putAll(currentFile, keysInCurrentFile);
+                filesAssociatedWithKeys.put(currentFile, keysInCurrentFile);
             }
             checkFilesForConsistencyRegardingTheirKeys(filesAssociatedWithKeys, allTranslationKeys);
         }
@@ -450,13 +451,13 @@ public class TranslationCheck extends AbstractFileSetCheck {
      * @param fileKeys a Map from translation files to their key sets.
      * @param keysThatMustExist the set of keys to compare with.
      */
-    private void checkFilesForConsistencyRegardingTheirKeys(SetMultimap<File, String> fileKeys,
+    private void checkFilesForConsistencyRegardingTheirKeys(Map<File, Set<String>> fileKeys,
                                                             Set<String> keysThatMustExist) {
-        for (File currentFile : fileKeys.keySet()) {
+        for (Entry<File, Set<String>> fileKey : fileKeys.entrySet()) {
             final MessageDispatcher dispatcher = getMessageDispatcher();
-            final String path = currentFile.getPath();
+            final String path = fileKey.getKey().getPath();
             dispatcher.fireFileStarted(path);
-            final Set<String> currentFileKeys = fileKeys.get(currentFile);
+            final Set<String> currentFileKeys = fileKey.getValue();
             final Set<String> missingKeys = new HashSet<String>();
             for (String e : keysThatMustExist) {
                 if (!currentFileKeys.contains(e)) {

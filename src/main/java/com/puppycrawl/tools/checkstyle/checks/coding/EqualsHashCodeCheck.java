@@ -163,11 +163,11 @@ public class EqualsHashCodeCheck
                 .entrySet()) {
             if (objBlockWithHashCode.remove(detailASTDetailASTEntry.getKey()) == null) {
                 final DetailAST equalsAST = detailASTDetailASTEntry.getValue();
-                log(equalsAST.getLineNo(), equalsAST.getColumnNo(), MSG_KEY_HASHCODE);
+                log(equalsAST, MSG_KEY_HASHCODE);
             }
         }
         for (DetailAST equalsAST : objBlockWithHashCode.values()) {
-            log(equalsAST.getLineNo(), equalsAST.getColumnNo(), MSG_KEY_EQUALS);
+            log(equalsAST, MSG_KEY_EQUALS);
         }
     }
 

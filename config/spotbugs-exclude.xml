@@ -21,7 +21,8 @@
       <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
     </Match>
     <Match>
-      <!-- it is ok here, as business meaning of that cases is not the same, it is occasional similarity -->
+      <!-- it is ok here, as business meaning of that cases is not the same,
+           it is occasional similarity -->
       <Class name="com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck" />
       <Method name="visitToken" />
       <Bug pattern="DB_DUPLICATE_SWITCH_CLAUSES" />
@@ -45,7 +46,8 @@
       <Bug pattern="DM_EXIT" />
     </Match>
     <Match>
-      <!-- have never been a case for years, Eclipse does not show any other classes inherited from CommonASTWithHiddenTokens -->
+      <!-- have never been a case for years, Eclipse does not show any other classes
+           inherited from CommonASTWithHiddenTokens -->
       <Class name="com.puppycrawl.tools.checkstyle.api.DetailAST" />
       <Bug pattern="BC_UNCONFIRMED_CAST" />
     </Match>
@@ -83,15 +85,18 @@
         <!--
          False-positive. ExternalResource cannot be null there.
          FindBugs rise violation due to @Nullable annotation on 'apply' method.
-         See https://stevewall123.wordpress.com/2014/12/18/findbugs-warning-with-guavas-predicate-interface/
-         See http://stackoverflow.com/questions/12422473/nullable-input-in-google-guava-function-interface-triggers-findbugs-warning
+         See
+         https://stevewall123.wordpress.com/2014/12/18/findbugs-warning-with-guavas-predicate-interface/
+         See
+         http://stackoverflow.com/questions/12422473/nullable-input-in-google-guava-function-interface-triggers-findbugs-warning
          -->
         <Class name="com.puppycrawl.tools.checkstyle.PropertyCacheFile$1" />
         <Method name="apply" />
         <Bug pattern="NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE" />
     </Match>
     <Match>
-        <!-- false-positive. Bugs reported even though casting is done only after verification using instanceof -->
+        <!-- false-positive. Bugs reported even though casting is done only
+             after verification using instanceof -->
         <Class name="com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser"/>
         <Method name="parseJavadocAsDetailNode"/>
         <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>

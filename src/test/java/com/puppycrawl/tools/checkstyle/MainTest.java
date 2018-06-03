@@ -25,17 +25,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -47,7 +42,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,7 +51,6 @@ import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -593,40 +586,6 @@ public class MainTest {
                     loadPropertiesMessage.getMessage(), ex.getCause().getLocalizedMessage());
             assertTrue("Invalid error cause",
                     ex.getCause() instanceof IllegalStateException);
-        }
-    }
-
-    @Test
-    public void testCreateListenerWithLocationIllegalStateException() throws Exception {
-        mockStatic(CommonUtils.class);
-        doNothing().when(CommonUtils.class);
-        CommonUtils.close(any(OutputStream.class));
-
-        final Method method = Main.class.getDeclaredMethod("createListener", String.class,
-            String.class);
-        method.setAccessible(true);
-        final String outDir = "myfolder123";
-        try {
-            method.invoke(null, "myformat", outDir);
-            fail("InvocationTargetException  is expected");
-        }
-        catch (InvocationTargetException ex) {
-            final LocalizedMessage createListenerMessage = new LocalizedMessage(0,
-                    Definitions.CHECKSTYLE_BUNDLE, Main.CREATE_LISTENER_EXCEPTION,
-                    new String[] {"myformat", "plain", "xml"}, null, getClass(), null);
-            assertEquals("Invalid error message",
-                    createListenerMessage.getMessage(), ex.getCause().getLocalizedMessage());
-            assertTrue("Invalid error cause",
-                    ex.getCause() instanceof IllegalStateException);
-        }
-        finally {
-            verifyStatic(CommonUtils.class, times(1));
-            final ArgumentCaptor<OutputStream> out =
-                    ArgumentCaptor.forClass(OutputStream.class);
-            CommonUtils.close(out.capture());
-            out.getValue().close();
-            // method creates output folder
-            FileUtils.deleteQuietly(new File(outDir));
         }
     }
 
