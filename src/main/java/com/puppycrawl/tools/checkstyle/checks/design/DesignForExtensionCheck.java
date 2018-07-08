@@ -31,8 +31,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
-import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * The check finds classes that are designed for extension (subclass creation).
@@ -199,11 +199,11 @@ public class DesignForExtensionCheck extends AbstractCheck {
             @Override
             public boolean test(DetailAST currentNode) {
                 return currentNode != methodImplCloseBrace
-                        && !TokenUtils.isCommentType(currentNode.getType());
+                        && !TokenUtil.isCommentType(currentNode.getType());
             }
         };
         final Optional<DetailAST> methodBody =
-            TokenUtils.findFirstTokenByPredicate(methodImplOpenBrace, predicate);
+            TokenUtil.findFirstTokenByPredicate(methodImplOpenBrace, predicate);
         if (methodBody.isPresent()) {
             hasEmptyBody = false;
         }
@@ -219,8 +219,8 @@ public class DesignForExtensionCheck extends AbstractCheck {
      */
     private static boolean canBeOverridden(DetailAST methodDef) {
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
-        return ScopeUtils.getSurroundingScope(methodDef).isIn(Scope.PROTECTED)
-            && !ScopeUtils.isInInterfaceOrAnnotationBlock(methodDef)
+        return ScopeUtil.getSurroundingScope(methodDef).isIn(Scope.PROTECTED)
+            && !ScopeUtil.isInInterfaceOrAnnotationBlock(methodDef)
             && modifiers.findFirstToken(TokenTypes.LITERAL_PRIVATE) == null
             && modifiers.findFirstToken(TokenTypes.ABSTRACT) == null
             && modifiers.findFirstToken(TokenTypes.FINAL) == null
@@ -237,7 +237,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
         boolean hasIgnoredAnnotation = false;
         if (modifiers.findFirstToken(TokenTypes.ANNOTATION) != null) {
-            final Optional<DetailAST> annotation = TokenUtils.findFirstTokenByPredicate(modifiers,
+            final Optional<DetailAST> annotation = TokenUtil.findFirstTokenByPredicate(modifiers,
                 new Predicate<DetailAST>() {
                     @Override
                     public boolean test(DetailAST currentToken) {

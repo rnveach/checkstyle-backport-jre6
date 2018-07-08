@@ -75,7 +75,7 @@ public class JavadocTokenTypesTest {
         assertEquals(msg, 22, JavadocTokenTypes.LITERAL_INCLUDE);
         assertEquals(msg, 39, JavadocTokenTypes.FIELD_NAME);
         assertEquals(msg, 41, JavadocTokenTypes.FIELD_TYPE);
-        assertEquals(msg, 95, JavadocTokenTypes.HTML_TAG_NAME);
+        assertEquals(msg, 100, JavadocTokenTypes.HTML_TAG_NAME);
         assertEquals(msg, 5, JavadocTokenTypes.START);
         assertEquals(msg, 57, JavadocTokenTypes.SLASH);
         assertEquals(msg, 55, JavadocTokenTypes.END);
@@ -201,6 +201,26 @@ public class JavadocTokenTypesTest {
         assertEquals(msg, 10079, JavadocTokenTypes.WBR_TAG);
         assertEquals(msg, 10073, JavadocTokenTypes.HTML_COMMENT);
         assertEquals(msg, 10074, JavadocTokenTypes.TEXT);
+        assertEquals(msg, 95, JavadocTokenTypes.OPTGROUP_HTML_TAG_NAME);
+        assertEquals(msg, 10080, JavadocTokenTypes.OPTGROUP_TAG_START);
+        assertEquals(msg, 10081, JavadocTokenTypes.OPTGROUP_TAG_END);
+        assertEquals(msg, 10082, JavadocTokenTypes.OPTGROUP);
+        assertEquals(msg, 96, JavadocTokenTypes.RB_HTML_TAG_NAME);
+        assertEquals(msg, 10083, JavadocTokenTypes.RB_TAG_START);
+        assertEquals(msg, 10084, JavadocTokenTypes.RB_TAG_END);
+        assertEquals(msg, 10085, JavadocTokenTypes.RB);
+        assertEquals(msg, 97, JavadocTokenTypes.RT_HTML_TAG_NAME);
+        assertEquals(msg, 10086, JavadocTokenTypes.RT_TAG_START);
+        assertEquals(msg, 10087, JavadocTokenTypes.RT_TAG_END);
+        assertEquals(msg, 10088, JavadocTokenTypes.RT);
+        assertEquals(msg, 98, JavadocTokenTypes.RTC_HTML_TAG_NAME);
+        assertEquals(msg, 10089, JavadocTokenTypes.RTC_TAG_START);
+        assertEquals(msg, 10090, JavadocTokenTypes.RTC_TAG_END);
+        assertEquals(msg, 10091, JavadocTokenTypes.RTC);
+        assertEquals(msg, 99, JavadocTokenTypes.RP_HTML_TAG_NAME);
+        assertEquals(msg, 10092, JavadocTokenTypes.RP_TAG_START);
+        assertEquals(msg, 10093, JavadocTokenTypes.RP_TAG_END);
+        assertEquals(msg, 10094, JavadocTokenTypes.RP);
     }
 
     @Test

@@ -46,7 +46,7 @@ import org.apache.commons.beanutils.converters.LongConverter;
 import org.apache.commons.beanutils.converters.ShortConverter;
 
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * A Java Bean that implements the component lifecycle interfaces by
@@ -309,7 +309,7 @@ public abstract class AutomaticBean
         @SuppressWarnings({"unchecked", "rawtypes"})
         @Override
         public Object convert(Class type, Object value) {
-            return CommonUtils.createPattern(value.toString());
+            return CommonUtil.createPattern(value.toString());
         }
 
     }
@@ -345,9 +345,9 @@ public abstract class AutomaticBean
             final String url = value.toString();
             URI result = null;
 
-            if (!CommonUtils.isBlank(url)) {
+            if (!CommonUtil.isBlank(url)) {
                 try {
-                    result = CommonUtils.getUriByFilename(url);
+                    result = CommonUtil.getUriByFilename(url);
                 }
                 catch (CheckstyleException ex) {
                     throw new IllegalArgumentException(ex);
@@ -379,7 +379,7 @@ public abstract class AutomaticBean
                 result.add(token.trim());
             }
 
-            return result.toArray(new String[result.size()]);
+            return result.toArray(CommonUtil.EMPTY_STRING_ARRAY);
         }
 
     }
@@ -390,6 +390,9 @@ public abstract class AutomaticBean
      * The normal {@link ArrayConverter} class has problems with this character.
      */
     private static class RelaxedAccessModifierArrayConverter implements Converter {
+
+        /** Constant for optimization. */
+        private static final AccessModifier[] EMPTY_MODIFIER_ARRAY = new AccessModifier[0];
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         @Override
@@ -404,7 +407,7 @@ public abstract class AutomaticBean
                 result.add(AccessModifier.getInstance(token.trim()));
             }
 
-            return result.toArray(new AccessModifier[result.size()]);
+            return result.toArray(EMPTY_MODIFIER_ARRAY);
         }
 
     }

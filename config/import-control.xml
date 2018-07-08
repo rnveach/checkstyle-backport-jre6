@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE import-control PUBLIC
-    "-//Puppy Crawl//DTD Import Control 1.4//EN"
-    "http://checkstyle.sourceforge.net/dtds/import_control_1_4.dtd">
+    "-//Checkstyle//DTD ImportControl Configuration 1.4//EN"
+    "https://checkstyle.org/dtds/import_control_1_4.dtd">
 
 <import-control pkg="com.puppycrawl.tools.checkstyle">
 
@@ -54,6 +54,11 @@
   <allow class="com.google.common.base.CaseFormat" local-only="true"/>
   <allow class="com.google.common.io.BaseEncoding" local-only="true"/>
   <allow class="com.google.common.io.ByteStreams" local-only="true"/>
+
+  <allow class="com.puppycrawl.tools.checkstyle.XpathFileGeneratorAstFilter"
+         local-only="true"/>
+  <allow class="com.puppycrawl.tools.checkstyle.XpathFileGeneratorAuditListener"
+         local-only="true"/>
 
   <file name="PropertyCacheFile">
     <!-- allowed till https://github.com/checkstyle/checkstyle/issues/3455 -->
@@ -178,6 +183,7 @@
     <allow class="java.lang.reflect.Field"/>
     <allow class="java.nio.charset.StandardCharsets" local-only="true"/>
     <allow pkg="com.puppycrawl.tools.checkstyle.utils" local-only="true"/>
+    <allow class="com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent" local-only="true"/>
   </subpackage>
 
   <!-- ========================================================= -->

@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class PackageDeclarationCheckTest extends AbstractModuleTestSupport {
 
@@ -41,7 +41,7 @@ public class PackageDeclarationCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig = createModuleConfig(PackageDeclarationCheck.class);
 
         final String[] expected = {
-            "4: " + getCheckMessage(MSG_KEY_MISSING),
+            "2: " + getCheckMessage(MSG_KEY_MISSING),
         };
 
         verify(checkConfig,
@@ -52,7 +52,7 @@ public class PackageDeclarationCheckTest extends AbstractModuleTestSupport {
     public void testDefaultWithPackage() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(PackageDeclarationCheck.class);
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputPackageDeclarationPlain.java"), expected);
     }
@@ -76,7 +76,8 @@ public class PackageDeclarationCheckTest extends AbstractModuleTestSupport {
             "1: " + getCheckMessage(MSG_KEY_MISMATCH),
         };
 
-        verify(checkConfig, getPath("InputPackageDeclarationDiffDirectory.java"), expected);
+        verify(checkConfig,
+                getNonCompilablePath("InputPackageDeclarationDiffDirectory.java"), expected);
     }
 
     @Test
@@ -87,7 +88,9 @@ public class PackageDeclarationCheckTest extends AbstractModuleTestSupport {
             "1: " + getCheckMessage(MSG_KEY_MISMATCH),
         };
 
-        verify(checkConfig, getPath("InputPackageDeclarationDiffDirectoryAtParent.java"), expected);
+        verify(checkConfig,
+                getNonCompilablePath("InputPackageDeclarationDiffDirectoryAtParent.java"),
+                expected);
     }
 
     @Test
@@ -99,35 +102,40 @@ public class PackageDeclarationCheckTest extends AbstractModuleTestSupport {
         };
 
         verify(checkConfig,
-                getPath("InputPackageDeclarationDiffDirectoryAtSubpackage.java"), expected);
+                getNonCompilablePath("InputPackageDeclarationDiffDirectoryAtSubpackage.java"),
+                expected);
     }
 
     @Test
     public void testFileIgnoreDiffDirectoryMismatch() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(PackageDeclarationCheck.class);
         checkConfig.addAttribute("matchDirectoryStructure", "false");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputPackageDeclarationDiffDirectory.java"), expected);
+        verify(checkConfig, getNonCompilablePath("InputPackageDeclarationDiffDirectory.java"),
+                expected);
     }
 
     @Test
     public void testFileIgnoreDirectoryMismatchAtParent() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(PackageDeclarationCheck.class);
         checkConfig.addAttribute("matchDirectoryStructure", "false");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
-        verify(checkConfig, getPath("InputPackageDeclarationDiffDirectoryAtParent.java"), expected);
+        verify(checkConfig,
+                getNonCompilablePath("InputPackageDeclarationDiffDirectoryAtParent.java"),
+                expected);
     }
 
     @Test
     public void testFileIgnoreDirectoryMismatchAtSubpackage() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(PackageDeclarationCheck.class);
         checkConfig.addAttribute("matchDirectoryStructure", "false");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig,
-                getPath("InputPackageDeclarationDiffDirectoryAtSubpackage.java"), expected);
+                getNonCompilablePath("InputPackageDeclarationDiffDirectoryAtSubpackage.java"),
+                expected);
     }
 
     @Test

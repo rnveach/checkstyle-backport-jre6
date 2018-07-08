@@ -47,7 +47,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ SuppressWarningsHolder.class, SuppressWarningsHolderTest.class })
@@ -70,16 +70,26 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
     public void testOnComplexAnnotations() throws Exception {
         final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputSuppressWarningsHolder.java"), expected);
+    }
+
+    @Test
+    public void testOnComplexAnnotationsNonConstant() throws Exception {
+        final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
+
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig,
+                getNonCompilablePath("InputSuppressWarningsHolderNonConstant.java"), expected);
     }
 
     @Test
     public void testCustomAnnotation() throws Exception {
         final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputSuppressWarningsHolder5.java"), expected);
     }
@@ -205,7 +215,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
     public void testEmptyAnnotation() throws Exception {
         final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputSuppressWarningsHolder3.java"), expected);
     }
@@ -318,7 +328,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
     public void testAnnotationWithFullName() throws Exception {
         final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputSuppressWarningsHolder4.java"), expected);
     }

@@ -26,12 +26,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
-import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
+import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtil;
 
 /**
  * A factory for creating objects from package names and names.
@@ -300,10 +301,10 @@ public class PackageObjectFactory implements ModuleFactory {
         Map<String, Set<String>> returnValue;
         try {
             returnValue = new HashMap<String, Set<String>>();
-            for (Class<?> clzz : ModuleReflectionUtils.getCheckstyleModules(packages, loader)) {
-                if (!NAME_TO_FULL_MODULE_NAME.keySet().contains(clzz.getSimpleName())) {
-                    final String key = clzz.getSimpleName();
+            for (Class<?> clzz : ModuleReflectionUtil.getCheckstyleModules(packages, loader)) {
+                final String key = clzz.getSimpleName();
 
+                if (!NAME_TO_FULL_MODULE_NAME.keySet().contains(key)) {
                     if (returnValue.containsKey(key)) {
                         final Set<String> mergedNames = new LinkedHashSet<String>(returnValue.get(key));
                         mergedNames.add(clzz.getCanonicalName());
@@ -319,6 +320,25 @@ public class PackageObjectFactory implements ModuleFactory {
             returnValue = new HashMap<String, Set<String>>();
         }
         return returnValue;
+    }
+
+    /**
+     * Returns simple check name from full modules names map.
+     * @param fullName name of the class for joining.
+     * @return simple check name.
+     */
+    public static String getShortFromFullModuleNames(String fullName) {
+        String result = fullName;
+        if (NAME_TO_FULL_MODULE_NAME.containsValue(fullName)) {
+            for (Entry<String, String> entry : NAME_TO_FULL_MODULE_NAME.entrySet()) {
+                if (entry.getValue().equals(fullName)) {
+                    result = entry.getKey();
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -697,6 +717,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.naming.ConstantNameCheck");
         NAME_TO_FULL_MODULE_NAME.put("InterfaceTypeParameterNameCheck",
                 BASE_PACKAGE + ".checks.naming.InterfaceTypeParameterNameCheck");
+        NAME_TO_FULL_MODULE_NAME.put("LambdaParameterNameCheck",
+                BASE_PACKAGE + ".checks.naming.LambdaParameterNameCheck");
         NAME_TO_FULL_MODULE_NAME.put("LocalFinalVariableNameCheck",
                 BASE_PACKAGE + ".checks.naming.LocalFinalVariableNameCheck");
         NAME_TO_FULL_MODULE_NAME.put("LocalVariableNameCheck",

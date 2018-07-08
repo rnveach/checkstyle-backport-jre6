@@ -329,7 +329,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         <p>Example #4: Comment has distributed previous statement.</p>
         <source>
 1   public void foo11() {
-2     CheckUtils
+2     CheckUtil
 3       .getFirstNode(new DetailAST())
 4       .getFirstChild()
 5       .getNextSibling();
@@ -337,7 +337,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 7   }
 8
 9   public void foo12() {
-10    CheckUtils
+10    CheckUtil
 11      .getFirstNode(new DetailAST())
 12      .getFirstChild()
 13      .getNextSibling();
@@ -1809,7 +1809,7 @@ messages_home_fr_CA_UNIX.properties
             <td>Pattern for qualified names of classes which are allowed
             to have a main method.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
-            <td><code>"^$"</code></td>
+            <td><code>"^$" (empty)</code></td>
             <td>3.2</td>
           </tr>
         </table>

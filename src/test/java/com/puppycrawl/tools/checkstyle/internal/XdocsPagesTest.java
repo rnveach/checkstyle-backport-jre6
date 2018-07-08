@@ -81,7 +81,7 @@ import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 public class XdocsPagesTest {
 
@@ -214,8 +214,8 @@ public class XdocsPagesTest {
                     .getCanonicalPath();
 
             code = "<?xml version=\"1.0\"?>\n<!DOCTYPE module PUBLIC "
-                    + "\"-//Puppy Crawl//DTD Check Configuration 1.3//EN\" \"" + dtdPath + "\">\n"
-                    + code;
+                    + "\"-//Checkstyle//DTD Checkstyle Configuration 1.3//EN\" \"" + dtdPath
+                    + "\">\n" + code;
         }
         return code;
     }
@@ -367,7 +367,8 @@ public class XdocsPagesTest {
 
             // can be in different orders, and completely optional
             if ("Notes".equals(subSectionName)
-                    || "Rule Description".equals(subSectionName)) {
+                    || "Rule Description".equals(subSectionName)
+                    || "Metadata".equals(subSectionName)) {
                 continue;
             }
 
@@ -410,6 +411,15 @@ public class XdocsPagesTest {
             }
 
             subSectionPos++;
+        }
+
+        if ("Checker".equals(sectionName)) {
+            Assert.assertTrue(fileName + " section '" + sectionName
+                    + "' should contain up to 'Package' sub-section", subSectionPos >= 6);
+        }
+        else {
+            Assert.assertTrue(fileName + " section '" + sectionName
+                    + "' should contain up to 'Parent' sub-section", subSectionPos >= 7);
         }
     }
 
@@ -884,7 +894,7 @@ public class XdocsPagesTest {
                                     sb.append(", ");
                                 }
 
-                                sb.append(TokenUtils.getTokenName(i));
+                                sb.append(TokenUtil.getTokenName(i));
                             }
                         }
 
@@ -901,7 +911,7 @@ public class XdocsPagesTest {
                                 sb.append(", ");
                             }
 
-                            sb.append(TokenUtils.getTokenName((Integer) Array.get(value, i)));
+                            sb.append(TokenUtil.getTokenName((Integer) Array.get(value, i)));
                         }
 
                         result = sb.toString();
@@ -943,7 +953,7 @@ public class XdocsPagesTest {
                         final String[] newArray = new String[Array.getLength(value)];
 
                         for (int i = 0; i < newArray.length; i++) {
-                            newArray[i] = TokenUtils.getTokenName(((Number) Array.get(value, i))
+                            newArray[i] = TokenUtil.getTokenName(((Number) Array.get(value, i))
                                     .intValue());
                         }
 
@@ -976,7 +986,7 @@ public class XdocsPagesTest {
                     result = '"' + value.toString().replace("\n", "\\n").replace("\t", "\\t")
                             .replace("\r", "\\r").replace("\f", "\\f") + '"';
 
-                    if ("\"$^\"".equals(result)) {
+                    if ("\"^$\"".equals(result)) {
                         result += " (empty)";
                     }
                 }
@@ -1238,7 +1248,7 @@ public class XdocsPagesTest {
             Node subSection) {
         final String expected;
 
-        if (hasParentModule(sectionName)) {
+        if (!"TreeWalker".equals(sectionName) && hasParentModule(sectionName)) {
             expected = "TreeWalker";
         }
         else {

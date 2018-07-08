@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class AbbreviationAsWordInNameCheckTest extends AbstractModuleTestSupport {
 
@@ -254,7 +254,6 @@ public class AbbreviationAsWordInNameCheckTest extends AbstractModuleTestSupport
             + "PARAMETER_DEF,VARIABLE_DEF,METHOD_DEF");
         final int expectedCapitalCount = 1;
         final String[] expected = {
-            "3: " + getWarningMessage("IIIInputAbstractClassName", expectedCapitalCount),
             "6: " + getWarningMessage("NonAAAAbstractClassName", expectedCapitalCount),
             "9: " + getWarningMessage("FactoryWithBADNAme", expectedCapitalCount),
             "12: " + getWarningMessage("AbstractCLASSName", expectedCapitalCount),
@@ -296,7 +295,7 @@ public class AbbreviationAsWordInNameCheckTest extends AbstractModuleTestSupport
         checkConfig.addAttribute("ignoreFinal", "false");
         checkConfig.addAttribute("allowedAbbreviations", null);
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig,
                 getPath("InputAbbreviationAsWordInNameAbstractMultisetSetCount.java"),
@@ -311,7 +310,7 @@ public class AbbreviationAsWordInNameCheckTest extends AbstractModuleTestSupport
     public void testReceiver() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(AbbreviationAsWordInNameCheck.class);
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputAbbreviationAsWordInNameReceiver.java"),
                 expected);

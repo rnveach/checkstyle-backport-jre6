@@ -69,6 +69,12 @@ public class AstRegressionTest extends AbstractTreeTestSupport {
     }
 
     @Test
+    public void testInputSemicolonBetweenImports() throws Exception {
+        verifyAst(getPath("InputSemicolonBetweenImportsAst.txt"),
+                getNonCompilablePath("InputSemicolonBetweenImports.java"));
+    }
+
+    @Test
     public void testInterfaceAstTree1() throws Exception {
         verifyAst(getPath("InputRegressionJavaInterface1Ast.txt"),
                 getPath("InputRegressionJavaInterface1.java"));
@@ -110,7 +116,7 @@ public class AstRegressionTest extends AbstractTreeTestSupport {
         final Constructor<?> constructor = clss.getDeclaredConstructor(InputStream.class);
 
         assertNotNull("InputStream should not be null",
-                constructor.newInstance((InputStream) null));
+                constructor.newInstance(new Object[] {null}));
     }
 
     @Test
@@ -120,7 +126,7 @@ public class AstRegressionTest extends AbstractTreeTestSupport {
                 .getDeclaredConstructor(ParserSharedInputState.class);
 
         assertNotNull("ParserSharedInputState should not be null",
-                constructor.newInstance((ParserSharedInputState) null));
+                constructor.newInstance(new Object[] {null}));
     }
 
     @Test
@@ -129,7 +135,7 @@ public class AstRegressionTest extends AbstractTreeTestSupport {
         final Constructor<?> constructor = clss.getDeclaredConstructor(TokenBuffer.class);
 
         assertNotNull("TokenBuffer should not be null",
-                constructor.newInstance((TokenBuffer) null));
+                constructor.newInstance(new Object[] {null}));
     }
 
     @Test

@@ -36,7 +36,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class ExecutableStatementCountCheckTest
     extends AbstractModuleTestSupport {
@@ -189,7 +189,7 @@ public class ExecutableStatementCountCheckTest
             createModuleConfig(ExecutableStatementCountCheck.class);
 
         createChecker(checkConfig);
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputExecutableStatementCount.java"), expected);
     }
 

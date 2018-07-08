@@ -64,7 +64,20 @@ site)
   ;;
 
 javac9)
-  javac $(grep -Rl --include='*.java' '//Compilable with Java9' src/test/resources-noncompilable)
+  javac $(grep -Rl --include='*.java' ': Compilable with Java9' src/test/resources-noncompilable)
+  ;;
+
+javac8)
+  # InputCustomImportOrderNoPackage2 - nothing is required in front of first import
+  files=($(grep -REL --include='*.java' \
+        --exclude='InputCustomImportOrderNoPackage2.java' \
+        '//non-compiled (syntax|with javac)?\:' \
+        src/test/resources-noncompilable))
+  mkdir -p target
+  for file in "${files[@]}"
+  do
+    javac -d target "${file}"
+  done
   ;;
 
 nondex)

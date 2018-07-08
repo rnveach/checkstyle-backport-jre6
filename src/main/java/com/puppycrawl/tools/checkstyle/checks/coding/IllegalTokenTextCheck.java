@@ -25,7 +25,7 @@ import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * <p>
@@ -68,7 +68,7 @@ public class IllegalTokenTextCheck
     private String message = "";
 
     /** The format string of the regexp. */
-    private String formatString = "$^";
+    private String formatString = "^$";
 
     /** The regexp to match against. */
     private Pattern format = Pattern.compile(formatString);
@@ -78,7 +78,7 @@ public class IllegalTokenTextCheck
 
     @Override
     public int[] getDefaultTokens() {
-        return CommonUtils.EMPTY_INT_ARRAY;
+        return CommonUtil.EMPTY_INT_ARRAY;
     }
 
     @Override
@@ -97,7 +97,7 @@ public class IllegalTokenTextCheck
 
     @Override
     public int[] getRequiredTokens() {
-        return CommonUtils.EMPTY_INT_ARRAY;
+        return CommonUtil.EMPTY_INT_ARRAY;
     }
 
     @Override
@@ -147,7 +147,6 @@ public class IllegalTokenTextCheck
     /**
      * Set whether or not the match is case sensitive.
      * @param caseInsensitive true if the match is case insensitive.
-     * @noinspection BooleanParameter
      */
     public void setIgnoreCase(boolean caseInsensitive) {
         ignoreCase = caseInsensitive;
@@ -166,7 +165,7 @@ public class IllegalTokenTextCheck
         else {
             compileFlags = 0;
         }
-        format = CommonUtils.createPattern(formatString, compileFlags);
+        format = CommonUtil.createPattern(formatString, compileFlags);
     }
 
 }

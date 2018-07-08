@@ -33,8 +33,8 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.AnnotationUtility;
-import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
+import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
+import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 
 /**
  * Checks visibility of class members. Only static final, immutable or annotated
@@ -459,7 +459,7 @@ public class VisibilityModifierCheck
      */
     private void visitVariableDef(DetailAST variableDef) {
         final boolean inInterfaceOrAnnotationBlock =
-                ScopeUtils.isInInterfaceOrAnnotationBlock(variableDef);
+                ScopeUtil.isInInterfaceOrAnnotationBlock(variableDef);
 
         if (!inInterfaceOrAnnotationBlock && !hasIgnoreAnnotation(variableDef)) {
             final DetailAST varNameAST = variableDef.findFirstToken(TokenTypes.TYPE)
@@ -497,12 +497,10 @@ public class VisibilityModifierCheck
             // If imported canonical class name is not specified as allowed immutable class,
             // but its short name collides with one of specified class - removes the short name
             // from list to avoid names collision
-            if (!immutableClassCanonicalNames.contains(canonicalName)
-                     && immutableClassShortNames.contains(shortName)) {
+            if (!immutableClassCanonicalNames.contains(canonicalName)) {
                 immutableClassShortNames.remove(shortName);
             }
-            if (!ignoreAnnotationCanonicalNames.contains(canonicalName)
-                     && ignoreAnnotationShortNames.contains(shortName)) {
+            if (!ignoreAnnotationCanonicalNames.contains(canonicalName)) {
                 ignoreAnnotationShortNames.remove(shortName);
             }
         }
@@ -877,7 +875,7 @@ public class VisibilityModifierCheck
     private DetailAST findMatchingAnnotation(DetailAST variableDef) {
         DetailAST matchingAnnotation = null;
 
-        final DetailAST holder = AnnotationUtility.getAnnotationHolder(variableDef);
+        final DetailAST holder = AnnotationUtil.getAnnotationHolder(variableDef);
 
         for (DetailAST child = holder.getFirstChild();
             child != null; child = child.getNextSibling()) {

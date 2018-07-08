@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE suppressions PUBLIC
-        "-//Puppy Crawl//DTD Suppressions 1.2//EN"
-        "http://checkstyle.sourceforge.net/dtds/suppressions_1_2.dtd">
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
     <suppress checks="NewlineAtEndOfFile" files=".*" />
@@ -24,9 +24,9 @@
     <!--JavadocTagInfo.java, JavadocTags.java, InvalidJavadocTag.java, JavadocTag.java will be
     deprecated as we completely switch to ANTLR parser for javadoc. All of the mentioned classes
     are required only for old javadoc parsers and their usage will be excluded from
-    JavadocUtils.java and JavadocUtilsTest.java. -->
+    JavadocUtil.java and JavadocUtilTest.java. -->
     <suppress checks="ForbidCertainImports"
-              files="JavadocUtils\.java|JavadocUtilsTest\.java"/>
+              files="JavadocUtil\.java|JavadocUtilTest\.java"/>
 
     <!-- Tone down the checking for test code -->
     <suppress checks="ForbidCertainImports"

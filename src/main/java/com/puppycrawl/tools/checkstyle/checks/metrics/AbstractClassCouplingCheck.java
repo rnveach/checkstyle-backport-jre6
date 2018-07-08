@@ -38,8 +38,8 @@ import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
-import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * Base class for coupling calculation.
@@ -97,7 +97,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      */
     protected AbstractClassCouplingCheck(int defaultMax) {
         max = defaultMax;
-        excludeClassesRegexps.add(CommonUtils.createPattern("^$"));
+        excludeClassesRegexps.add(CommonUtil.createPattern("^$"));
     }
 
     /**
@@ -134,7 +134,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      */
     public void setExcludeClassesRegexps(String... from) {
         for (String s : from) {
-            excludeClassesRegexps.add(CommonUtils.createPattern(s));
+            excludeClassesRegexps.add(CommonUtil.createPattern(s));
         }
     }
 
@@ -146,7 +146,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     public final void setExcludedPackages(String... excludedPackages) {
         final List<String> invalidIdentifiers = new ArrayList<String>();
         for (String packageName : excludedPackages) {
-            if (!CommonUtils.isName(packageName)) {
+            if (!CommonUtil.isName(packageName)) {
                 invalidIdentifiers.add(packageName);
             }
         }
@@ -393,7 +393,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
          * @param ast type to process.
          */
         public void visitType(DetailAST ast) {
-            final String fullTypeName = CheckUtils.createFullType(ast).getText();
+            final String fullTypeName = CheckUtil.createFullType(ast).getText();
             addReferencedClassName(fullTypeName);
         }
 

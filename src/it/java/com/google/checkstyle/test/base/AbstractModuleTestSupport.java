@@ -52,8 +52,8 @@ import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
-import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
+import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtil;
 
 public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport {
 
@@ -75,7 +75,9 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
 
     }
 
-    private static final Pattern WARN_PATTERN = CommonUtils
+    private static final String ROOT_MODULE_NAME = "root";
+
+    private static final Pattern WARN_PATTERN = CommonUtil
             .createPattern(".*[ ]*//[ ]*warn[ ]*|/[*]\\s?warn\\s?[*]/");
 
     private static final String XML_NAME = "/google_checks.xml";
@@ -115,7 +117,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * @param clazz module class.
      * @return {@link DefaultConfiguration} instance.
      */
-    private static DefaultConfiguration createModuleConfig(Class<?> clazz) {
+    protected static DefaultConfiguration createModuleConfig(Class<?> clazz) {
         return new DefaultConfiguration(clazz.getName());
     }
 
@@ -133,8 +135,8 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
         for (Class<?> moduleClass : CHECKSTYLE_MODULES) {
             if (moduleClass.getSimpleName().equals(name)
                     || moduleClass.getSimpleName().equals(name + "Check")) {
-                if (ModuleReflectionUtils.isCheckstyleTreeWalkerCheck(moduleClass)
-                        || ModuleReflectionUtils.isTreeWalkerFilterModule(moduleClass)) {
+                if (ModuleReflectionUtil.isCheckstyleTreeWalkerCheck(moduleClass)
+                        || ModuleReflectionUtil.isTreeWalkerFilterModule(moduleClass)) {
                     moduleCreationOption = ModuleCreationOption.IN_TREEWALKER;
                 }
                 break;
@@ -155,10 +157,13 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
     protected final Checker createChecker(Configuration moduleConfig,
                                     ModuleCreationOption moduleCreationOption)
             throws Exception {
-        final DefaultConfiguration dc;
+        final Configuration dc;
 
         if (moduleCreationOption == ModuleCreationOption.IN_TREEWALKER) {
             dc = createTreeWalkerConfig(moduleConfig);
+        }
+        else if (ROOT_MODULE_NAME.equals(moduleConfig.getName())) {
+            dc = moduleConfig;
         }
         else {
             dc = createRootConfig(moduleConfig);
@@ -199,7 +204,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * @return {@link DefaultConfiguration} for the given {@link Configuration} instance.
      */
     protected static DefaultConfiguration createRootConfig(Configuration config) {
-        final DefaultConfiguration dc = new DefaultConfiguration("root");
+        final DefaultConfiguration dc = new DefaultConfiguration(ROOT_MODULE_NAME);
         dc.addChild(config);
         return dc;
     }

@@ -310,6 +310,66 @@ public class JavadocParseTreeTest extends AbstractTreeTestSupport {
     }
 
     @Test
+    public void testOptgroupHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedOptgroupHtmlTagAst.txt"),
+                getHtmlPath("InputOptgroupHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testNonTightOptgroupHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedNonTightOptgroupHtmlTagAst.txt"),
+                getHtmlPath("InputNonTightOptgroupHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testRbHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedRbHtmlTagAst.txt"),
+                getHtmlPath("InputRbHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testNonTightRbHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedNonTightRbHtmlTagAst.txt"),
+                getHtmlPath("InputNonTightRbHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testRtHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedRtHtmlTagAst.txt"),
+                getHtmlPath("InputRtHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testNonTightRtHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedNonTightRtHtmlTagAst.txt"),
+                getHtmlPath("InputNonTightRtHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testRtcHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedRtcHtmlTagAst.txt"),
+                getHtmlPath("InputRtcHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testNonTightRtcHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedNonTightRtcHtmlTagAst.txt"),
+                getHtmlPath("InputNonTightRtcHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testRpHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedRpHtmlTagAst.txt"),
+                getHtmlPath("InputRpHtmlTag.javadoc"));
+    }
+
+    @Test
+    public void testNonTightRpHtmlTag() throws Exception {
+        verifyJavadocTree(getHtmlPath("expectedNonTightRpHtmlTagAst.txt"),
+                getHtmlPath("InputNonTightRpHtmlTag.javadoc"));
+    }
+
+    @Test
     public void testLeadingAsteriskAfterSeeTag() throws Exception {
         verifyJavadocTree(getDocPath("expectedLeadingAsteriskAfterSeeTagAst.txt"),
                 getDocPath("InputLeadingAsteriskAfterSeeTag.javadoc"));

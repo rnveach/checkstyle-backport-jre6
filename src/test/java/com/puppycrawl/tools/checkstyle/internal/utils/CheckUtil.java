@@ -42,9 +42,9 @@ import com.google.common.reflect.ClassPath.ClassInfo;
 import com.puppycrawl.tools.checkstyle.checks.regexp.RegexpMultilineCheck;
 import com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck;
 import com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck;
-import com.puppycrawl.tools.checkstyle.utils.JavadocUtils;
-import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtils;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
+import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 public final class CheckUtil {
 
@@ -143,10 +143,9 @@ public final class CheckUtil {
         final ClassLoader loader = Thread.currentThread()
                 .getContextClassLoader();
         final String packageName = "com.puppycrawl.tools.checkstyle";
-
         final Set<Class<?>> checkstyleChecks = new HashSet<Class<?>>();
         for (Class<?> clzz : getCheckstyleModulesRecursive(packageName, loader)) {
-            if (ModuleReflectionUtils.isCheckstyleTreeWalkerCheck(clzz)) {
+            if (ModuleReflectionUtil.isCheckstyleTreeWalkerCheck(clzz)) {
                 checkstyleChecks.add(clzz);
             }
         }
@@ -171,7 +170,7 @@ public final class CheckUtil {
      * @param loader the class loader used to load Checkstyle package name
      * @return the set of checkstyle's module classes
      * @throws IOException if the attempt to read class path resources failed
-     * @see ModuleReflectionUtils#isCheckstyleModule(Class)
+     * @see ModuleReflectionUtil#isCheckstyleModule(Class)
      */
     private static Set<Class<?>> getCheckstyleModulesRecursive(
             String packageName, ClassLoader loader) throws IOException {
@@ -180,7 +179,8 @@ public final class CheckUtil {
         for (ClassInfo clsInfo : classPath.getTopLevelClassesRecursive(packageName)) {
             final Class<?> cls = clsInfo.load();
 
-            if (ModuleReflectionUtils.isCheckstyleModule(cls)
+            if (ModuleReflectionUtil.isCheckstyleModule(cls)
+                    // added by backport
                     && !cls.getName().endsWith("Stub")
                     && !cls.getCanonicalName()
                     .startsWith("com.puppycrawl.tools.checkstyle.internal.testmodules")
@@ -264,7 +264,7 @@ public final class CheckUtil {
 
     public static String getTokenText(int[] tokens, int... subtractions) {
         final String tokenText;
-        if (subtractions.length == 0 && Arrays.equals(tokens, TokenUtils.getAllTokenIds())) {
+        if (subtractions.length == 0 && Arrays.equals(tokens, TokenUtil.getAllTokenIds())) {
             tokenText = "TokenTypes.";
         }
         else {
@@ -292,7 +292,7 @@ public final class CheckUtil {
                     result.append(", ");
                 }
 
-                result.append(TokenUtils.getTokenName(token));
+                result.append(TokenUtil.getTokenName(token));
             }
 
             if (result.length() == 0) {
@@ -311,7 +311,7 @@ public final class CheckUtil {
         final Set<String> result = new HashSet<String>();
 
         for (int token : tokens) {
-            result.add(TokenUtils.getTokenName(token));
+            result.add(TokenUtil.getTokenName(token));
         }
 
         return result;
@@ -342,7 +342,7 @@ public final class CheckUtil {
                 result.append(", ");
             }
 
-            result.append(JavadocUtils.getTokenName(token));
+            result.append(JavadocUtil.getTokenName(token));
         }
 
         if (result.length() == 0) {

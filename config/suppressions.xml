@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE suppressions PUBLIC
-    "-//Puppy Crawl//DTD Suppressions 1.2//EN"
-    "http://checkstyle.sourceforge.net/dtds/suppressions_1_2.dtd">
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
     <!-- can't split long messages between lines -->
@@ -81,6 +81,8 @@
     <suppress checks="ClassDataAbstractionCoupling"
               files="(CheckerTest|AbstractModuleTestSupport|CheckstyleAntTaskTest)\.java"/>
     <suppress checks="ClassDataAbstractionCoupling" files="PropertyCacheFileTest\.java"/>
+    <suppress checks="ClassDataAbstractionCoupling"
+              files="XpathFileGeneratorAuditListenerTest\.java"/>
     <suppress checks="ClassFanOutComplexity" files="[\\/]Main\.java"/>
     <suppress checks="ClassFanOutComplexity" files="CheckstyleAntTask\.java"/>
     <suppress checks="ClassFanOutComplexity" files="CheckerTest\.java"/>

@@ -36,7 +36,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,10 +61,10 @@ import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Main.class, CommonUtils.class})
+@PrepareForTest({Main.class, CommonUtil.class})
 public class MainTest {
 
     private static final String USAGE = String.format(Locale.ROOT,
@@ -80,6 +79,9 @@ public class MainTest {
         + " -executeIgnoredModules                  Allows ignored modules to be run.%n"
         + " -f <arg>                                Sets the output format. (plain|xml). Defaults"
         + " to plain%n"
+        + " -gxs,--generate-xpath-suppression       Generates to output a suppression.xml to use to"
+        + " suppress%n"
+        + "                                         all violations from user's config%n"
         + " -j,--javadocTree                        Print Parse tree of the Javadoc comment%n"
         + " -J,--treeWithJavadoc                    Print full Abstract Syntax Tree of the file%n"
         + " -o <arg>                                Sets the output file. Defaults to stdout%n"
@@ -303,14 +305,11 @@ public class MainTest {
 
     @Test
     public void testExistingTargetFileXmlOutput() throws Exception {
+        final String expectedPath = getFilePath("InputMain.java");
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
-            public void checkAssertion() throws IOException {
-                final String expectedPath = getFilePath("InputMain.java");
-                final ResourceBundle compilationProperties =
-                        ResourceBundle.getBundle("checkstylecompilation", Locale.ROOT);
-                final String version = compilationProperties
-                    .getString("checkstyle.compile.version");
+            public void checkAssertion() {
+                final String version = Main.class.getPackage().getImplementationVersion();
                 assertEquals("Unexpected output log", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + EOL
                         + "<checkstyle version=\"" + version + "\">" + EOL
                         + "<file name=\"" + expectedPath + "\">" + EOL
@@ -919,6 +918,216 @@ public class MainTest {
         });
 
         Main.main("-s", "2:4", getPath(""), getPath(""));
+    }
+
+    @Test
+    public void testGenerateXpathSuppressionOptionOne() throws Exception {
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + EOL
+                + "<!DOCTYPE suppressions PUBLIC" + EOL
+                + "    \"-//Checkstyle//DTD SuppressionXpathFilter Experimental Configuration 1.2"
+                + "//EN\"" + EOL
+                + "    \"https://checkstyle.org/dtds/suppressions_1_2_xpath_experimental.dtd\">"
+                + EOL
+                + "<suppressions>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"JavadocMethodCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"LeftCurlyCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF"
+                + "/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF"
+                + "/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF"
+                + "/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF"
+                + "/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF"
+                + "/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF"
+                + "/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF"
+                + "/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainComplexityOverflow.java\"" + EOL
+                + "       checks=\"EmptyBlockCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainComplexityOverflow']/OBJBLOCK"
+                + "/METHOD_DEF[@text='provokeNpathIntegerOverflow']/SLIST/LITERAL_IF/SLIST"
+                + "/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST/LITERAL_IF"
+                + "/SLIST/LITERAL_IF/SLIST/LITERAL_IF/SLIST\"/>" + EOL
+                + "</suppressions>" + EOL;
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log",
+                        expected, systemOut.getLog());
+                assertEquals("Unexpected system error log",
+                        "", systemErr.getLog());
+            }
+        });
+        Main.main("-c", "/google_checks.xml", "--generate-xpath-suppression",
+                getPath("InputMainComplexityOverflow.java"));
+    }
+
+    @Test
+    public void testGenerateXpathSuppressionOptionTwo() throws Exception {
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + EOL
+            + "<!DOCTYPE suppressions PUBLIC" + EOL
+            + "    \"-//Checkstyle//DTD SuppressionXpathFilter Experimental Configuration 1.2"
+            + "//EN\"" + EOL
+            + "    \"https://checkstyle.org/dtds/suppressions_1_2_xpath_experimental.dtd\">" + EOL
+            + "<suppressions>" + EOL
+            + "<suppress-xpath" + EOL
+            + "       files=\"InputMainGenerateXpathSuppressions.java\"" + EOL
+            + "       checks=\"ExplicitInitializationCheck\"" + EOL
+            + "       query=\"/CLASS_DEF[@text='InputMainGenerateXpathSuppressions']/OBJBLOCK"
+            + "/VARIABLE_DEF[@text='low']/IDENT\"/>" + EOL
+            + "<suppress-xpath" + EOL
+            + "       files=\"InputMainGenerateXpathSuppressions.java\"" + EOL
+            + "       checks=\"IllegalThrowsCheck\"" + EOL
+            + "       query=\"/CLASS_DEF[@text='InputMainGenerateXpathSuppressions']/OBJBLOCK"
+            + "/METHOD_DEF[@text='test']/LITERAL_THROWS[@text='RuntimeException']/IDENT\"/>" + EOL
+            + "<suppress-xpath" + EOL
+            + "       files=\"InputMainGenerateXpathSuppressions.java\"" + EOL
+            + "       checks=\"NestedForDepthCheck\"" + EOL
+            + "       query=\"/CLASS_DEF[@text='InputMainGenerateXpathSuppressions']/OBJBLOCK"
+            + "/METHOD_DEF[@text='test']/SLIST/LITERAL_FOR/SLIST/LITERAL_FOR/SLIST"
+            + "/LITERAL_FOR\"/>" + EOL
+            + "</suppressions>" + EOL;
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log",
+                        expected, systemOut.getLog());
+                assertEquals("Unexpected system error log",
+                        "", systemErr.getLog());
+            }
+        });
+        Main.main("-c", getPath("InputMainConfig-xpath-suppressions.xml"),
+                "--generate-xpath-suppression",
+                getPath("InputMainGenerateXpathSuppressions.java"));
+    }
+
+    @Test
+    public void testGenerateXpathSuppressionOptionEmptyConfig() throws Exception {
+        final String expected = "";
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log",
+                        expected, systemOut.getLog());
+                assertEquals("Unexpected system error log",
+                        "", systemErr.getLog());
+            }
+        });
+        Main.main("-c", getPath("InputMainConfig-empty.xml"), "--generate-xpath-suppression",
+                getPath("InputMainComplexityOverflow.java"));
+    }
+
+    @Test
+    public void testGenerateXpathSuppressionOptionDefaultTabWidth() throws Exception {
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + EOL
+                + "<!DOCTYPE suppressions PUBLIC" + EOL
+                + "    \"-//Checkstyle//DTD SuppressionXpathFilter Experimental Configuration 1.2"
+                + "//EN\"" + EOL
+                + "    \"https://checkstyle.org/dtds/suppressions_1_2_xpath_experimental.dtd\">"
+                + EOL
+                + "<suppressions>" + EOL
+                + "<suppress-xpath" + EOL
+                + "       files=\"InputMainGenerateXpathSuppressionsTabWidth.java\"" + EOL
+                + "       checks=\"ExplicitInitializationCheck\"" + EOL
+                + "       query=\"/CLASS_DEF[@text='InputMainGenerateXpathSuppressionsTabWidth']"
+                + "/OBJBLOCK/VARIABLE_DEF[@text='low']/IDENT\"/>" + EOL
+                + "</suppressions>" + EOL;
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log",
+                        expected, systemOut.getLog());
+                assertEquals("Unexpected system error log",
+                        "", systemErr.getLog());
+            }
+        });
+        Main.main("-c", getPath("InputMainConfig-xpath-suppressions.xml"),
+                "--generate-xpath-suppression",
+                getPath("InputMainGenerateXpathSuppressionsTabWidth.java"));
+    }
+
+    @Test
+    public void testGenerateXpathSuppressionOptionCustomTabWidth() throws Exception {
+        final String expected = "";
+
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log",
+                        expected, systemOut.getLog());
+                assertEquals("Unexpected system error log",
+                        "", systemErr.getLog());
+            }
+        });
+        Main.main("-c", getPath("InputMainConfig-xpath-suppressions.xml"),
+                "--generate-xpath-suppression",
+                "-tabWidth", "20",
+                getPath("InputMainGenerateXpathSuppressionsTabWidth.java"));
     }
 
     @Test

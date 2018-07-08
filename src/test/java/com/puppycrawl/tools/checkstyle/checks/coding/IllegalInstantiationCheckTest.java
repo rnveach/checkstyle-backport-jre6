@@ -35,7 +35,7 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class IllegalInstantiationCheckTest
     extends AbstractModuleTestSupport {
@@ -73,7 +73,7 @@ public class IllegalInstantiationCheckTest
     public void testJava8() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(IllegalInstantiationCheck.class);
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig,
                 getPath("InputIllegalInstantiation.java"),
                 expected);
@@ -102,8 +102,8 @@ public class IllegalInstantiationCheckTest
                 "classes",
                 "java.lang.Boolean,java.lang.String");
         final String[] expected = {
-            "4:19: " + getCheckMessage(MSG_KEY, "java.lang.Boolean"),
-            "12:20: " + getCheckMessage(MSG_KEY, "java.lang.String"),
+            "5:19: " + getCheckMessage(MSG_KEY, "java.lang.Boolean"),
+            "13:20: " + getCheckMessage(MSG_KEY, "java.lang.String"),
         };
         verify(checkConfig,
                 getNonCompilablePath("InputIllegalInstantiationLang.java"),
@@ -117,7 +117,7 @@ public class IllegalInstantiationCheckTest
         checkConfig.addAttribute(
                 "classes",
                 "jjva.lang.Boolean,java.lang*Boolean");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig,
                 getNonCompilablePath("InputIllegalInstantiationLang.java"),
                 expected);

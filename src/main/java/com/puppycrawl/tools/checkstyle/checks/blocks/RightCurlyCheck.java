@@ -26,9 +26,9 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CheckUtils;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
-import com.puppycrawl.tools.checkstyle.utils.ScopeUtils;
+import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
+import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 
 /**
  * <p>
@@ -164,7 +164,7 @@ public class RightCurlyCheck extends AbstractCheck {
 
     @Override
     public int[] getRequiredTokens() {
-        return CommonUtils.EMPTY_INT_ARRAY;
+        return CommonUtil.EMPTY_INT_ARRAY;
     }
 
     @Override
@@ -276,7 +276,7 @@ public class RightCurlyCheck extends AbstractCheck {
      * @return true if right curly brace starts target source line.
      */
     private static boolean isOnStartOfLine(Details details, String targetSourceLine) {
-        return CommonUtils.hasWhitespaceBefore(details.rcurly.getColumnNo(), targetSourceLine)
+        return CommonUtil.hasWhitespaceBefore(details.rcurly.getColumnNo(), targetSourceLine)
                 || details.lcurly.getLineNo() == details.rcurly.getLineNo();
     }
 
@@ -312,7 +312,7 @@ public class RightCurlyCheck extends AbstractCheck {
      * @return true if lcurly begins anonymous inner class initialization.
      */
     private static boolean isAnonInnerClassInit(DetailAST lcurly) {
-        final Scope surroundingScope = ScopeUtils.getSurroundingScope(lcurly);
+        final Scope surroundingScope = ScopeUtil.getSurroundingScope(lcurly);
         return surroundingScope.ordinal() == Scope.ANONINNER.ordinal();
     }
 
@@ -457,7 +457,6 @@ public class RightCurlyCheck extends AbstractCheck {
          */
         private static Details getDetailsForIfElse(DetailAST ast) {
             boolean shouldCheckLastRcurly = false;
-            DetailAST rcurly = null;
             final DetailAST lcurly;
             DetailAST nextToken;
             final int tokenType = ast.getType();
@@ -471,17 +470,15 @@ public class RightCurlyCheck extends AbstractCheck {
                 else {
                     lcurly = nextToken.getPreviousSibling();
                 }
-                if (lcurly.getType() == TokenTypes.SLIST) {
-                    rcurly = lcurly.getLastChild();
-                }
             }
             else {
                 shouldCheckLastRcurly = true;
                 nextToken = getNextToken(ast);
                 lcurly = ast.getFirstChild();
-                if (lcurly.getType() == TokenTypes.SLIST) {
-                    rcurly = lcurly.getLastChild();
-                }
+            }
+            DetailAST rcurly = null;
+            if (lcurly.getType() == TokenTypes.SLIST) {
+                rcurly = lcurly.getLastChild();
             }
             return new Details(lcurly, rcurly, nextToken, shouldCheckLastRcurly);
         }
@@ -580,7 +577,7 @@ public class RightCurlyCheck extends AbstractCheck {
                 next = parent.getNextSibling();
                 parent = parent.getParent();
             }
-            return CheckUtils.getFirstNode(next);
+            return CheckUtil.getFirstNode(next);
         }
 
     }

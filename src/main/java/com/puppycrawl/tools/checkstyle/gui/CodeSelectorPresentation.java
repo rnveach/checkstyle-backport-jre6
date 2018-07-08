@@ -23,7 +23,7 @@ import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * Presentation model for CodeSelector.
@@ -43,7 +43,7 @@ public class CodeSelectorPresentation {
      * Constructor.
      * @param ast ast node.
      * @param lines2position list to map lines.
-     * @noinspection AssignmentToCollectionOrArrayFieldFromParameter
+     * @noinspection AssignmentOrReturnOfFieldWithMutableType
      */
     public CodeSelectorPresentation(DetailAST ast, List<Integer> lines2position) {
         node = ast;
@@ -54,7 +54,7 @@ public class CodeSelectorPresentation {
      * Constructor.
      * @param node DetailNode node.
      * @param lines2position list to map lines.
-     * @noinspection AssignmentToCollectionOrArrayFieldFromParameter
+     * @noinspection AssignmentOrReturnOfFieldWithMutableType
      */
     public CodeSelectorPresentation(DetailNode node, List<Integer> lines2position) {
         this.node = node;
@@ -97,7 +97,7 @@ public class CodeSelectorPresentation {
         selectionStart = lines2position.get(ast.getLineNo()) + ast.getColumnNo();
 
         if (ast.getChildCount() == 0
-                && TokenUtils.getTokenName(ast.getType()).equals(ast.getText())) {
+                && TokenUtil.getTokenName(ast.getType()).equals(ast.getText())) {
             selectionEnd = selectionStart;
         }
         else {

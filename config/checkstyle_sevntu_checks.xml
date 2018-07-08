@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 
 <!DOCTYPE module PUBLIC
-        "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-        "http://checkstyle.sourceforge.net/dtds/configuration_1_2.dtd">
+        "-//Checkstyle//DTD Checkstyle Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/configuration_1_2.dtd">
 
 <module name="Checker">
     <!-- All checks are from https://github.com/sevntu-checkstyle/sevntu.checkstyle project -->

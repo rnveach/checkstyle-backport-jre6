@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public abstract class AbstractIndentationTestSupport extends AbstractModuleTestSupport {
 
@@ -209,7 +209,7 @@ public abstract class AbstractIndentationTestSupport extends AbstractModuleTestS
         int lineStart = 0;
         for (int index = 0; index < line.length(); ++index) {
             if (!Character.isWhitespace(line.charAt(index))) {
-                lineStart = CommonUtils.lengthExpandedTabs(line, index, tabWidth);
+                lineStart = CommonUtil.lengthExpandedTabs(line, index, tabWidth);
                 break;
             }
         }

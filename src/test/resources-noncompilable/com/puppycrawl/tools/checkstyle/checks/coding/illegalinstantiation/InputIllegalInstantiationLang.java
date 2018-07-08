@@ -1,6 +1,7 @@
+// non-compiled jdk8: different package is intentional for test
 package java.lang;
 
-class Input {
+class InputIllegalInstantiationLang {
     Boolean obj = new Boolean();
     Integer obj2 = new Integer();
 }

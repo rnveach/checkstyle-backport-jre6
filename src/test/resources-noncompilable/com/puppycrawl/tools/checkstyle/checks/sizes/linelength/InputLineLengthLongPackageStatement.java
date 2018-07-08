@@ -1,3 +1,4 @@
+//non-compiled with javac: contains different package by demand of test
 package com.nameofcompany.nameofdivision.nameofproject.systemtests.parallel.areaoftest.featuretested.flowtested;
 
 public class InputLineLengthLongPackageStatement {

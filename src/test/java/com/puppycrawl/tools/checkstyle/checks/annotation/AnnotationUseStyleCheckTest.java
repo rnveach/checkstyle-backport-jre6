@@ -33,7 +33,7 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
 
@@ -176,17 +176,32 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
             "10:40: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
             "13:44: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
             "16:54: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
-            "24:37: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
-            "24:65: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
+            "24:22: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
+            "24:36: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
             "26:21: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
             "26:30: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
             "29:39: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
             "29:49: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
             "32:21: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
-            "32:56: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
+            "32:41: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
         };
 
         verify(checkConfig, getPath("InputAnnotationUseStyleNoTrailingComma.java"), expected);
+    }
+
+    @Test
+    public void testCommaAlwaysViolationsNonCompilable() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(AnnotationUseStyleCheck.class);
+        checkConfig.addAttribute("closingParens", "ignore");
+        checkConfig.addAttribute("elementStyle", "ignore");
+        checkConfig.addAttribute("trailingArrayComma", "ALWAYS");
+        final String[] expected = {
+            "6:37: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
+            "6:65: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_MISSING),
+        };
+
+        verify(checkConfig,
+                getNonCompilablePath("InputAnnotationUseStyleNoTrailingComma.java"), expected);
     }
 
     @Test
@@ -195,9 +210,21 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("closingParens", "ignore");
         checkConfig.addAttribute("elementStyle", "ignore");
         checkConfig.addAttribute("trailingArrayComma", "ALWAYS");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputAnnotationUseStyleWithTrailingComma.java"), expected);
+    }
+
+    @Test
+    public void testCommaAlwaysNoViolationsNonCompilable() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(AnnotationUseStyleCheck.class);
+        checkConfig.addAttribute("closingParens", "ignore");
+        checkConfig.addAttribute("elementStyle", "ignore");
+        checkConfig.addAttribute("trailingArrayComma", "ALWAYS");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig,
+                getNonCompilablePath("InputAnnotationUseStyleWithTrailingComma.java"), expected);
     }
 
     @Test
@@ -211,8 +238,8 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
             "13:42: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_PRESENT),
             "16:46: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_PRESENT),
             "19:56: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_PRESENT),
+            "27:23: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_PRESENT),
             "27:38: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_PRESENT),
-            "27:67: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_PRESENT),
             "33:39: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_PRESENT),
             "33:50: " + getCheckMessage(MSG_KEY_ANNOTATION_TRAILING_COMMA_PRESENT),
         };
@@ -226,7 +253,7 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("closingParens", "ignore");
         checkConfig.addAttribute("elementStyle", "ignore");
         checkConfig.addAttribute("trailingArrayComma", "NEVER");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputAnnotationUseStyleNoTrailingComma.java"), expected);
     }
@@ -237,7 +264,7 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("closingParens", "ignore");
         checkConfig.addAttribute("elementStyle", "ignore");
         checkConfig.addAttribute("trailingArrayComma", "ignore");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputAnnotationUseStyleDifferentStyles.java"), expected);
     }
@@ -246,7 +273,7 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
     public void testAnnotationsWithoutDefaultValues() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(AnnotationUseStyleCheck.class);
         checkConfig.addAttribute("closingParens", "NEVER");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputAnnotationUseStyleParams.java"), expected);
     }
@@ -280,7 +307,7 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("closingParens", "ignore");
         checkConfig.addAttribute("elementStyle", "COMPACT_NO_ARRAY");
         checkConfig.addAttribute("trailingArrayComma", "ignore");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputAnnotationUseStyle.java"), expected);
     }

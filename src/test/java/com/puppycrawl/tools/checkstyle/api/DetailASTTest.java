@@ -48,7 +48,7 @@ import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * TestCase to check DetailAST.
@@ -309,7 +309,7 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
         final DefaultConfiguration checkConfig = createModuleConfig(TodoCommentCheck.class);
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getAbsolutePath(), expected);
     }
 

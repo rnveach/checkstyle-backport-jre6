@@ -39,7 +39,7 @@ import com.puppycrawl.tools.checkstyle.TreeWalkerFilter;
 import com.puppycrawl.tools.checkstyle.XmlLoader;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.FilterSet;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * Loads a filter chain of suppressions.
@@ -50,33 +50,48 @@ public final class SuppressionsLoader
     /** The public ID for the configuration dtd. */
     private static final String DTD_PUBLIC_ID_1_0 =
         "-//Puppy Crawl//DTD Suppressions 1.0//EN";
+    /** The new public ID for version 1_0 configuration dtd. */
+    private static final String DTD_PUBLIC_CS_ID_1_0 =
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN";
     /** The resource for the configuration dtd. */
     private static final String DTD_SUPPRESSIONS_NAME_1_0 =
         "com/puppycrawl/tools/checkstyle/suppressions_1_0.dtd";
     /** The public ID for the configuration dtd. */
     private static final String DTD_PUBLIC_ID_1_1 =
         "-//Puppy Crawl//DTD Suppressions 1.1//EN";
+    /** The new public ID for version 1_1 configuration dtd. */
+    private static final String DTD_PUBLIC_CS_ID_1_1 =
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.1//EN";
     /** The resource for the configuration dtd. */
     private static final String DTD_SUPPRESSIONS_NAME_1_1 =
         "com/puppycrawl/tools/checkstyle/suppressions_1_1.dtd";
     /** The public ID for the configuration dtd. */
     private static final String DTD_PUBLIC_ID_1_2 =
         "-//Puppy Crawl//DTD Suppressions 1.2//EN";
+    /** The new public ID for version 1_2 configuration dtd. */
+    private static final String DTD_PUBLIC_CS_ID_1_2 =
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN";
     /** The resource for the configuration dtd. */
     private static final String DTD_SUPPRESSIONS_NAME_1_2 =
         "com/puppycrawl/tools/checkstyle/suppressions_1_2.dtd";
     /** The public ID for the configuration dtd. */
     private static final String DTD_PUBLIC_ID_1_1_XPATH =
-            "-//Puppy Crawl//DTD Suppressions Xpath Experimental 1.1//EN";
+        "-//Puppy Crawl//DTD Suppressions Xpath Experimental 1.1//EN";
+    /** The new public ID for version 1_1 configuration dtd. */
+    private static final String DTD_PUBLIC_CS_ID_1_1_XPATH =
+        "-//Checkstyle//DTD SuppressionXpathFilter Experimental Configuration 1.1//EN";
     /** The resource for the configuration dtd. */
     private static final String DTD_SUPPRESSIONS_NAME_1_1_XPATH =
-            "com/puppycrawl/tools/checkstyle/suppressions_1_1_xpath_experimental.dtd";
+        "com/puppycrawl/tools/checkstyle/suppressions_1_1_xpath_experimental.dtd";
     /** The public ID for the configuration dtd. */
     private static final String DTD_PUBLIC_ID_1_2_XPATH =
-            "-//Puppy Crawl//DTD Suppressions Xpath Experimental 1.2//EN";
+        "-//Puppy Crawl//DTD Suppressions Xpath Experimental 1.2//EN";
+    /** The new public ID for version 1_2 configuration dtd. */
+    private static final String DTD_PUBLIC_CS_ID_1_2_XPATH =
+        "-//Checkstyle//DTD SuppressionXpathFilter Experimental Configuration 1.2//EN";
     /** The resource for the configuration dtd. */
     private static final String DTD_SUPPRESSIONS_NAME_1_2_XPATH =
-            "com/puppycrawl/tools/checkstyle/suppressions_1_2_xpath_experimental.dtd";
+        "com/puppycrawl/tools/checkstyle/suppressions_1_2_xpath_experimental.dtd";
     /** File search error message. **/
     private static final String UNABLE_TO_FIND_ERROR_MESSAGE = "Unable to find: ";
     /** String literal for attribute name. **/
@@ -199,7 +214,7 @@ public final class SuppressionsLoader
     public static FilterSet loadSuppressions(String filename)
             throws CheckstyleException {
         // figure out if this is a File or a URL
-        final URI uri = CommonUtils.getUriByFilename(filename);
+        final URI uri = CommonUtil.getUriByFilename(filename);
         final InputSource source = new InputSource(uri.toString());
         return loadSuppressions(source, filename);
     }
@@ -226,7 +241,7 @@ public final class SuppressionsLoader
     public static Set<TreeWalkerFilter> loadXpathSuppressions(String filename)
             throws CheckstyleException {
         // figure out if this is a File or a URL
-        final URI uri = CommonUtils.getUriByFilename(filename);
+        final URI uri = CommonUtil.getUriByFilename(filename);
         final InputSource source = new InputSource(uri.toString());
         return loadXpathSuppressions(source, filename);
     }
@@ -293,6 +308,11 @@ public final class SuppressionsLoader
         map.put(DTD_PUBLIC_ID_1_2, DTD_SUPPRESSIONS_NAME_1_2);
         map.put(DTD_PUBLIC_ID_1_1_XPATH, DTD_SUPPRESSIONS_NAME_1_1_XPATH);
         map.put(DTD_PUBLIC_ID_1_2_XPATH, DTD_SUPPRESSIONS_NAME_1_2_XPATH);
+        map.put(DTD_PUBLIC_CS_ID_1_0, DTD_SUPPRESSIONS_NAME_1_0);
+        map.put(DTD_PUBLIC_CS_ID_1_1, DTD_SUPPRESSIONS_NAME_1_1);
+        map.put(DTD_PUBLIC_CS_ID_1_2, DTD_SUPPRESSIONS_NAME_1_2);
+        map.put(DTD_PUBLIC_CS_ID_1_1_XPATH, DTD_SUPPRESSIONS_NAME_1_1_XPATH);
+        map.put(DTD_PUBLIC_CS_ID_1_2_XPATH, DTD_SUPPRESSIONS_NAME_1_2_XPATH);
         return map;
     }
 

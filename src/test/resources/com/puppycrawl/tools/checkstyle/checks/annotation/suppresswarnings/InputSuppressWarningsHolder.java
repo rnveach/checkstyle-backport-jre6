@@ -27,8 +27,6 @@ com.puppycrawl.tools.checkstyle.checks.annotation.suppresswarnings.InputSuppress
     int j;
     @SuppressWarnings({UN_U})
     int k;
-    @SuppressWarnings({"UN_U", true ? "UN_U" : ""})
-    int l;
 }
 
 class CustomSuppressWarnings {

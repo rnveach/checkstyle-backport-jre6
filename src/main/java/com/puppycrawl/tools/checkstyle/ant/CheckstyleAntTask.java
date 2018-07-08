@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -268,15 +267,9 @@ public class CheckstyleAntTask extends Task {
         final long startTime = System.currentTimeMillis();
 
         try {
-            // output version info in debug mode
-            final ResourceBundle compilationProperties = ResourceBundle
-                    .getBundle("checkstylecompilation", Locale.ROOT);
-            final String version = compilationProperties
-                    .getString("checkstyle.compile.version");
-            final String compileTimestamp = compilationProperties
-                    .getString("checkstyle.compile.timestamp");
+            final String version = CheckstyleAntTask.class.getPackage().getImplementationVersion();
+
             log("checkstyle version " + version, Project.MSG_VERBOSE);
-            log("compiled on " + compileTimestamp, Project.MSG_VERBOSE);
 
             // Check for no arguments
             if (fileName == null

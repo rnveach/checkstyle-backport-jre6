@@ -28,7 +28,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LineColumn;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * <p>
@@ -110,7 +110,7 @@ public class RegexpCheck extends AbstractCheck {
     private int errorCount;
 
     /** The regexp to match against. */
-    private Pattern format = Pattern.compile("$^", Pattern.MULTILINE);
+    private Pattern format = Pattern.compile("^$", Pattern.MULTILINE);
 
     /** The matcher. */
     private Matcher matcher;
@@ -168,7 +168,7 @@ public class RegexpCheck extends AbstractCheck {
      * @throws org.apache.commons.beanutils.ConversionException unable to parse format
      */
     public final void setFormat(Pattern pattern) {
-        format = CommonUtils.createPattern(pattern.pattern(), Pattern.MULTILINE);
+        format = CommonUtil.createPattern(pattern.pattern(), Pattern.MULTILINE);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class RegexpCheck extends AbstractCheck {
 
     @Override
     public int[] getRequiredTokens() {
-        return CommonUtils.EMPTY_INT_ARRAY;
+        return CommonUtil.EMPTY_INT_ARRAY;
     }
 
     @Override

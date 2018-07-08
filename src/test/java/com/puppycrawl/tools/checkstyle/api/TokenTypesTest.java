@@ -31,7 +31,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 public class TokenTypesTest {
 
@@ -41,8 +41,8 @@ public class TokenTypesTest {
         final ResourceBundle bundle = ResourceBundle.getBundle(tokenTypes, Locale.ROOT);
 
         final Set<String> expected = new HashSet<String>();
-        for (int tokenId : TokenUtils.getAllTokenIds()) {
-            expected.add(TokenUtils.getTokenName(tokenId));
+        for (int tokenId : TokenUtil.getAllTokenIds()) {
+            expected.add(TokenUtil.getTokenName(tokenId));
         }
         final Set<String> actual = bundle.keySet();
         assertEquals("TokenTypes without description", expected, actual);
@@ -51,8 +51,8 @@ public class TokenTypesTest {
     @Test
     public void testAllDescriptionsEndsWithPeriod() {
         final Set<String> badDescriptions = new HashSet<String>();
-        for (int tokenId : TokenUtils.getAllTokenIds()) {
-            final String desc = TokenUtils.getShortDescription(TokenUtils.getTokenName(tokenId));
+        for (int tokenId : TokenUtil.getAllTokenIds()) {
+            final String desc = TokenUtil.getShortDescription(TokenUtil.getTokenName(tokenId));
             if (desc.charAt(desc.length() - 1) != '.') {
                 badDescriptions.add(desc);
             }
@@ -64,27 +64,27 @@ public class TokenTypesTest {
     public void testGetShortDescription() {
         assertEquals("short description for EQUAL",
                 "The <code>==</code> (equal) operator.",
-                TokenUtils.getShortDescription("EQUAL"));
+                TokenUtil.getShortDescription("EQUAL"));
 
         assertEquals("short description for LAND",
                 "The <code>&&</code> (conditional AND) operator.",
-                TokenUtils.getShortDescription("LAND"));
+                TokenUtil.getShortDescription("LAND"));
 
         assertEquals("short description for LCURLY",
                 "A left curly brace (<code>{</code>).",
-                TokenUtils.getShortDescription("LCURLY"));
+                TokenUtil.getShortDescription("LCURLY"));
 
         assertEquals("short description for SR_ASSIGN",
                 "The <code>>>=</code> (signed right shift assignment) operator.",
-                TokenUtils.getShortDescription("SR_ASSIGN"));
+                TokenUtil.getShortDescription("SR_ASSIGN"));
 
         assertEquals("short description for SL",
                 "The <code><<</code> (shift left) operator.",
-                TokenUtils.getShortDescription("SL"));
+                TokenUtil.getShortDescription("SL"));
 
         assertEquals("short description for BSR",
                 "The <code>>>></code> (unsigned shift right) operator.",
-                TokenUtils.getShortDescription("BSR"));
+                TokenUtil.getShortDescription("BSR"));
     }
 
     @Test

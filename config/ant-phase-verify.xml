@@ -14,6 +14,10 @@
 
     <property name="checkstyle.pattern.todo" value="NOTHingWillMatCH_-"/>
     <property name="check.config" location="config/checkstyle_checks.xml"/>
+    <property name="check.config_non_main"
+              location="config/checkstyle_non_main_files_checks.xml"/>
+    <property name="check.config_resources"
+              location="config/checkstyle_resources_checks.xml"/>
 
     <tstamp>
       <format property="STARTED" pattern="dd/MM/yyyy hh:mm:ss aa" />
@@ -52,7 +56,7 @@
     </tstamp>
     <echo>Checkstyle started (checkstyle_non_main_files_checks.xml): ${STARTED}</echo>
 
-    <checkstyle config="config/checkstyle_non_main_files_checks.xml"
+    <checkstyle config="${check.config_non_main}"
                 failOnViolation="true"
                 failureProperty="checkstyle.failure.property"
                 executeIgnoredModules="true"
@@ -114,6 +118,37 @@
       <format property="FINISHED" pattern="dd/MM/yyyy hh:mm:ss aa"/>
     </tstamp>
     <echo>Checkstyle finished (checkstyle_non_main_files_checks.xml): ${FINISHED}</echo>
+
+    <tstamp>
+      <format property="STARTED" pattern="dd/MM/yyyy hh:mm:ss aa"/>
+    </tstamp>
+    <echo>Checkstyle started (checkstyle_resources_checks.xml): ${STARTED}</echo>
+
+    <checkstyle config="${check.config_resources}"
+                failOnViolation="true"
+                failureProperty="checkstyle.failure.property"
+                executeIgnoredModules="true"
+                >
+      <path>
+        <fileset dir="src" includes="test/resources/**/*,test/resources-noncompilable/**/*">
+         <!-- bad syntax, permanent exclude -->
+         <exclude name="**/InputAstTreeStringPrinter.java" />
+         <exclude name="**/InputSuppressionsStringPrinter.java"/>
+         <exclude name="**/InputMainIncorrectClass.java"/>
+         <exclude name="**/InputJavadocPropertiesGeneratorParseError.java"/>
+         <exclude name="**/InputMainFrameModelIncorrectClass.java"/>
+         <exclude name="**/InputBeforeExecutionExclusionFileFilterIncorrectClass.java"/>
+        </fileset>
+      </path>
+      <formatter type="plain"/>
+      <formatter type="xml" toFile="${mvn.project.build.directory}/cs_resources_errors.xml"/>
+      <classpath path="${mvn.runtime_classpath}"/>
+    </checkstyle>
+
+    <tstamp>
+      <format property="FINISHED" pattern="dd/MM/yyyy hh:mm:ss aa"/>
+    </tstamp>
+    <echo>Checkstyle finished (checkstyle_resources_checks.xml): ${FINISHED}</echo>
 
     <fail if="checkstyle.failure.property"
           message="Checkstyle failed: ${checkstyle.failure.property}"

@@ -45,7 +45,7 @@ import com.puppycrawl.tools.checkstyle.checks.coding.IllegalCatchCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class SuppressWithNearbyCommentFilterTest
@@ -137,7 +137,7 @@ public class SuppressWithNearbyCommentFilterTest
     @Test
     public void testNone() throws Exception {
         final DefaultConfiguration filterConfig = null;
-        final String[] suppressed = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] suppressed = CommonUtil.EMPTY_STRING_ARRAY;
         verifySuppressed(filterConfig, suppressed);
     }
 
@@ -327,7 +327,7 @@ public class SuppressWithNearbyCommentFilterTest
         final Collection<String> coll = new ArrayList<String>();
         Collections.addAll(coll, from);
         coll.removeAll(Arrays.asList(remove));
-        return coll.toArray(new String[coll.size()]);
+        return coll.toArray(CommonUtil.EMPTY_STRING_ARRAY);
     }
 
     @Test
@@ -337,7 +337,7 @@ public class SuppressWithNearbyCommentFilterTest
         filterConfig.addAttribute("influenceFormat", "a");
 
         try {
-            final String[] suppressed = CommonUtils.EMPTY_STRING_ARRAY;
+            final String[] suppressed = CommonUtil.EMPTY_STRING_ARRAY;
             verifySuppressed(filterConfig, suppressed);
             fail("Exception is expected");
         }
@@ -390,7 +390,7 @@ public class SuppressWithNearbyCommentFilterTest
         filterConfig.addAttribute("checkFormat", "a[l");
 
         try {
-            final String[] suppressed = CommonUtils.EMPTY_STRING_ARRAY;
+            final String[] suppressed = CommonUtil.EMPTY_STRING_ARRAY;
             verifySuppressed(filterConfig, suppressed);
             fail("Exception is expected");
         }
@@ -425,7 +425,7 @@ public class SuppressWithNearbyCommentFilterTest
         filterConfig.addAttribute("commentFormat", "SUPPRESS CHECKSTYLE (\\w+)");
         filterConfig.addAttribute("checkFormat", "IllegalCatchCheck");
         filterConfig.addAttribute("messageFormat", "^$1 ololo*$");
-        final String[] suppressed = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] suppressed = CommonUtil.EMPTY_STRING_ARRAY;
         verifySuppressed(filterConfig, suppressed);
     }
 

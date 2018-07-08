@@ -21,7 +21,7 @@ package com.puppycrawl.tools.checkstyle.xpath;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtils;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 import net.sf.saxon.om.AxisInfo;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.tree.iter.ArrayIterator;
@@ -39,6 +39,9 @@ public class ElementNode extends AbstractNode {
 
     /** String literal for text attribute. */
     private static final String TEXT_ATTRIBUTE_NAME = "text";
+
+    /** Constant for optimization. */
+    private static final AbstractNode[] EMPTY_ABSTRACT_NODE_ARRAY = new AbstractNode[0];
 
     /** The root node. */
     private final AbstractNode root;
@@ -72,7 +75,7 @@ public class ElementNode extends AbstractNode {
         this.detailAst = detailAst;
         setIdent();
         createChildren();
-        text = TokenUtils.getTokenName(detailAst.getType());
+        text = TokenUtil.getTokenName(detailAst.getType());
     }
 
     /**
@@ -182,7 +185,7 @@ public class ElementNode extends AbstractNode {
             case AxisInfo.CHILD:
                 if (hasChildNodes()) {
                     result = new ArrayIterator.OfNodes(
-                            getChildren().toArray(new AbstractNode[getChildren().size()]));
+                            getChildren().toArray(EMPTY_ABSTRACT_NODE_ARRAY));
                 }
                 else {
                     result = EmptyIterator.OfNodes.THE_INSTANCE;

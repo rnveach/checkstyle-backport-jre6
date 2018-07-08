@@ -1,5 +1,5 @@
-//Compilable with Java9
-package com.puppycrawl.tools.checkstyle.grammars;
+//non-compiled with javac: Compilable with Java9
+package com.puppycrawl.tools.checkstyle.grammars.java9;
 
 /**
  * Input for Java 9 try-with-resources.

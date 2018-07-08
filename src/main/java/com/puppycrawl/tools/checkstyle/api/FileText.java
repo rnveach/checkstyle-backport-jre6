@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * Represents the text contents of a file of arbitrary plain text type.
@@ -136,7 +137,7 @@ public final class FileText {
                 }
                 textLines.add(line);
             }
-            lines = textLines.toArray(new String[textLines.size()]);
+            lines = textLines.toArray(CommonUtil.EMPTY_STRING_ARRAY);
         }
         finally {
             reader.close();
@@ -180,7 +181,7 @@ public final class FileText {
         this.file = file;
         charset = null;
         fullText = buf.toString();
-        this.lines = lines.toArray(new String[lines.size()]);
+        this.lines = lines.toArray(CommonUtil.EMPTY_STRING_ARRAY);
     }
 
     /**

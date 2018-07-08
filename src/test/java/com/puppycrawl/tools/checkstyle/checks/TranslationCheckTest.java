@@ -64,7 +64,7 @@ import com.puppycrawl.tools.checkstyle.api.SeverityLevelCounter;
 import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.BiPredicate;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 @RunWith(PowerMockRunner.class)
 public class TranslationCheckTest extends AbstractXmlTestSupport {
@@ -124,7 +124,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     public void testFileExtension() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
         checkConfig.addAttribute("baseName", "^InputTranslation.*$");
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         final File[] propertyFiles = {
             new File(getPath("InputTranslation_de.txt")),
         };
@@ -183,7 +183,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testOnePropertyFileSet() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         final File[] propertyFiles = {
             new File(getPath("app-dev.properties")),
         };
@@ -332,7 +332,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
             new File(getPath("app-stage.properties")),
         };
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(
             createChecker(checkConfig),
             propertyFiles,
@@ -373,7 +373,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
             new File(getPath("messages_home_fr_CA_UNIX.properties")),
             };
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(
             createChecker(checkConfig),
             propertyFiles,
@@ -509,7 +509,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
             new File(getNonCompilablePath("MyLabelsI18_de.properties")),
         };
 
-        final String[] expected = CommonUtils.EMPTY_STRING_ARRAY;
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(
             createChecker(checkConfig),

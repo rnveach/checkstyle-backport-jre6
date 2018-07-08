@@ -1,3 +1,5 @@
+package com.puppycrawl.tools.checkstyle.checks.javadoc.abstractjavadoc;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -8,7 +10,7 @@ import java.lang.annotation.Target;
 /////////////
 
 /**Javadoc*/
-class/**nope*/ A/**nope*/{
+class/**nope*/ InputAbstractJavadocPosition/**nope*/{
 	/**Javadoc*/
 	protected/**nope*/ class/**nope*/ B/**nope*/{/**nope*/}
 	

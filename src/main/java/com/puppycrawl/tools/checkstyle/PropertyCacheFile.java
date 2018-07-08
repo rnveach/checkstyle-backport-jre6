@@ -44,7 +44,7 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtils;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * This class maintains a persistent(on file-system) store of the files
@@ -305,7 +305,7 @@ final class PropertyCacheFile {
      */
     private static byte[] loadExternalResource(String location) throws CheckstyleException {
         final byte[] content;
-        final URI uri = CommonUtils.getUriByFilename(location);
+        final URI uri = CommonUtil.getUriByFilename(location);
 
         try {
             content = ByteStreams.toByteArray(new BufferedInputStream(uri.toURL().openStream()));
