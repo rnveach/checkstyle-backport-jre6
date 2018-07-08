@@ -116,7 +116,4 @@
     <!-- can relax more on this package -->
     <suppress message="Missing a Javadoc" files="[\\/]jre6[\\/]"/>
     <suppress checks="JavadocPackage|WriteTag|DesignForExtension|ReturnCount|ParameterName|AvoidInlineConditionals|MagicNumber" files="[\\/]jre6[\\/]"/>
-
-    <!-- until https://github.com/checkstyle/checkstyle/issues/5412 -->
-    <suppress checks="LocalVariableName" files="ParameterNameCheck\.java"/>
 </suppressions>
