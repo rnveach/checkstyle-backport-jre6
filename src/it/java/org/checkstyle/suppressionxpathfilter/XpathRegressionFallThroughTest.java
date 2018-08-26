@@ -28,14 +28,19 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.coding.FallThroughCheck;
 
-public class XpathRegressionFallThroughTest extends AbstractXpathRegressionTest {
+public class XpathRegressionFallThroughTest extends AbstractXpathTestSupport {
+
+    private final String checkName = FallThroughCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = FallThroughCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionExplicitOne.java"));
+                new File(getPath("SuppressionXpathRegressionExplicitOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(FallThroughCheck.class);
@@ -52,16 +57,14 @@ public class XpathRegressionFallThroughTest extends AbstractXpathRegressionTest 
                 + "/METHOD_DEF[@text='test']/SLIST/LITERAL_SWITCH/CASE_GROUP/LITERAL_CASE"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = FallThroughCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionExplicitTwo.java"));
+                new File(getPath("SuppressionXpathRegressionExplicitTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(FallThroughCheck.class);
@@ -81,7 +84,7 @@ public class XpathRegressionFallThroughTest extends AbstractXpathRegressionTest 
                 + "/LITERAL_SWITCH/CASE_GROUP/LITERAL_DEFAULT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

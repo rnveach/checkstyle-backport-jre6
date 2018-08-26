@@ -28,14 +28,19 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.coding.RequireThisCheck;
 
-public class XpathRegressionRequireThisTest extends AbstractXpathRegressionTest {
+public class XpathRegressionRequireThisTest extends AbstractXpathTestSupport {
+
+    private final String checkName = RequireThisCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = RequireThisCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionRequireThisOne.java"));
+                new File(getPath("SuppressionXpathRegressionRequireThisOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(RequireThisCheck.class);
@@ -47,20 +52,18 @@ public class XpathRegressionRequireThisTest extends AbstractXpathRegressionTest 
         };
 
         final List<String> expectedXpathQueries = Collections.singletonList(
-            "CLASS_DEF[@text='SuppressionXpathRegressionRequireThisOne']/OBJBLOCK"
+            "/CLASS_DEF[@text='SuppressionXpathRegressionRequireThisOne']/OBJBLOCK"
                 + "/METHOD_DEF[@text='changeAge']/SLIST/EXPR/ASSIGN[@text='age']/IDENT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = RequireThisCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionRequireThisTwo.java"));
+                new File(getPath("SuppressionXpathRegressionRequireThisTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(RequireThisCheck.class);
@@ -76,7 +79,7 @@ public class XpathRegressionRequireThisTest extends AbstractXpathRegressionTest 
                 + "/METHOD_DEF[@text='method2']/SLIST/EXPR/METHOD_CALL[@text='method1']/IDENT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

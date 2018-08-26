@@ -30,14 +30,19 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.metrics.NPathComplexityCheck;
 
 // -@cs[AbbreviationAsWordInName] Test should be named as its main class.
-public class XpathRegressionNPathComplexityTest extends AbstractXpathRegressionTest {
+public class XpathRegressionNPathComplexityTest extends AbstractXpathTestSupport {
+
+    private final String checkName = NPathComplexityCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = NPathComplexityCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionNPathComplexityOne.java"));
+                new File(getPath("SuppressionXpathRegressionNPathComplexityOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(NPathComplexityCheck.class);
@@ -57,16 +62,14 @@ public class XpathRegressionNPathComplexityTest extends AbstractXpathRegressionT
                 + "/METHOD_DEF[@text='test']/MODIFIERS/LITERAL_PUBLIC"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = NPathComplexityCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionNPathComplexityTwo.java"));
+                new File(getPath("SuppressionXpathRegressionNPathComplexityTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(NPathComplexityCheck.class);
@@ -81,7 +84,7 @@ public class XpathRegressionNPathComplexityTest extends AbstractXpathRegressionT
             "/CLASS_DEF[@text='SuppressionXpathRegressionNPathComplexityTwo']/OBJBLOCK/STATIC_INIT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

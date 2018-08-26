@@ -28,14 +28,19 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.coding.MultipleVariableDeclarationsCheck;
 
-public class XpathRegressionMultipleVariableDeclarationsTest extends AbstractXpathRegressionTest {
+public class XpathRegressionMultipleVariableDeclarationsTest extends AbstractXpathTestSupport {
+
+    private final String checkName = MultipleVariableDeclarationsCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = MultipleVariableDeclarationsCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionMultipleVariableDeclarationOne.java"));
+                new File(getPath("SuppressionXpathRegressionMultipleVariableDeclarationOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(MultipleVariableDeclarationsCheck.class);
@@ -64,16 +69,14 @@ public class XpathRegressionMultipleVariableDeclarationsTest extends AbstractXpa
                     + "/VARIABLE_DEF[@text='j']/TYPE/LITERAL_INT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = MultipleVariableDeclarationsCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionMultipleVariableDeclarationTwo.java"));
+                new File(getPath("SuppressionXpathRegressionMultipleVariableDeclarationTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(MultipleVariableDeclarationsCheck.class);
@@ -94,7 +97,7 @@ public class XpathRegressionMultipleVariableDeclarationsTest extends AbstractXpa
                     + "/VARIABLE_DEF[@text='i1']/TYPE/LITERAL_INT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

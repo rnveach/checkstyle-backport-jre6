@@ -48,4 +48,12 @@ public final class Objects {
     public static boolean nonNull(Object obj) {
         return obj != null;
     }
+
+    public static String toString(Object o, String nullDefault) {
+        if (o == null) {
+            return nullDefault;
+        }
+
+        return o.toString();
+    }
 }

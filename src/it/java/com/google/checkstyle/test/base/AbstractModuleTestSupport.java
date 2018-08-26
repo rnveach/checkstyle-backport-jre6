@@ -108,8 +108,22 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * Returns test logger.
      * @return logger test logger
      */
-    public final BriefUtLogger getBriefUtLogger() {
+    protected final BriefUtLogger getBriefUtLogger() {
         return new BriefUtLogger(stream);
+    }
+
+    /**
+     * Returns canonical path for the file with the given file name.
+     * The path is formed base on the non-compilable resources location.
+     * This implementation uses 'src/test/resources-noncompilable/'
+     * as a non-compilable resource location.
+     * @param filename file name.
+     * @return canonical path for the file with the given file name.
+     * @throws IOException if I/O exception occurs while forming the path.
+     */
+    protected final String getNonCompilablePath(String filename) throws IOException {
+        return new File("src/it/resources-noncompilable/" + getPackageLocation() + "/"
+                + filename).getCanonicalPath();
     }
 
     /**
@@ -118,7 +132,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * @return {@link DefaultConfiguration} instance.
      */
     protected static DefaultConfiguration createModuleConfig(Class<?> clazz) {
-        return new DefaultConfiguration(clazz.getName());
+        return new DefaultConfiguration(clazz.getSimpleName());
     }
 
     /**
@@ -127,7 +141,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * @return {@link Checker} instance based on the given {@link Configuration} instance.
      * @throws Exception if an exception occurs during checker configuration.
      */
-    public final Checker createChecker(Configuration moduleConfig)
+    protected final Checker createChecker(Configuration moduleConfig)
             throws Exception {
         final String name = moduleConfig.getName();
         ModuleCreationOption moduleCreationOption = ModuleCreationOption.IN_CHECKER;
@@ -326,7 +340,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
 
     /**
      * Returns {@link Configuration} instance for the given module name.
-     * This implementation uses {@link AbstractModuleTestSupport#getConfiguration()} method inside.
+     * This implementation uses {@link #getModuleConfig(String, String)} method inside.
      * @param moduleName module name.
      * @return {@link Configuration} instance for the given module name.
      */
@@ -336,7 +350,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
 
     /**
      * Returns {@link Configuration} instance for the given module name.
-     * This implementation uses {@link AbstractModuleTestSupport#getConfiguration()} method inside.
+     * This implementation uses {@link #getModuleConfig(String)} method inside.
      * @param moduleName module name.
      * @param moduleId module id.
      * @return {@link Configuration} instance for the given module name.
@@ -370,7 +384,6 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
 
     /**
      * Returns a list of all {@link Configuration} instances for the given module name.
-     * This implementation uses {@link AbstractModuleTestSupport#getConfiguration()} method inside.
      * @param moduleName module name.
      * @return {@link Configuration} instance for the given module name.
      */
@@ -427,7 +440,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
         finally {
             br.close();
         }
-        return result.toArray(new Integer[result.size()]);
+        return result.toArray(new Integer[0]);
     }
 
 }

@@ -17,7 +17,7 @@
 
    <body>
       <section name="Sun's Java Style Checkstyle Coverage">
-         <subsection name="Description">
+         <subsection name="Description" id="Sun_Description">
                 <p>
                     This coverage report will be created for
                     <a
@@ -27,7 +27,7 @@
                 </p>
 
                 <p>
-                    <a href="reports/javadoc/openjdk8/">
+                    <a href="http://checkstyle.sourceforge.net/reports/javadoc/openjdk8/">
                         Checkstyle's html report for Open JDK library (javadoc validation)</a>
                 </p>
                 <p>
@@ -36,7 +36,7 @@
                     incomplete Checkstyle configuration for 'Sun's Java Style'</a>
                 </p>
          </subsection>
-         <subsection name="Coverage table">
+         <subsection name="Coverage table" id="Sun_Coverage_table">
             <table>
                <thead>
                   <tr>

@@ -42,12 +42,13 @@ h4 {
   float: right;
 }
 
-h2:hover .anchor {
-  display: inline-block;
+h2:hover .anchor, h3:hover .anchor {
+  visibility: visible;
 }
 
 .anchor {
-  display: none;
+  visibility: hidden;
+  display: inline-block;
 }
 
 .source {
@@ -61,4 +62,8 @@ h2:hover .anchor {
   white-space: -moz-pre-wrap !important;
   white-space: -o-pre-wrap !important;
   word-wrap: break-word !important;
+}
+
+.releaseDate {
+  float: right;
 }

@@ -28,14 +28,19 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck;
 
-public class XpathRegressionHiddenFieldTest extends AbstractXpathRegressionTest {
+public class XpathRegressionHiddenFieldTest extends AbstractXpathTestSupport {
+
+    private final String checkName = HiddenFieldCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = HiddenFieldCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionExplicitOne.java"));
+                new File(getPath("SuppressionXpathRegressionExplicitOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(HiddenFieldCheck.class);
@@ -51,16 +56,14 @@ public class XpathRegressionHiddenFieldTest extends AbstractXpathRegressionTest 
                 + "/PARAMETER_DEF[@text='value']/IDENT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = HiddenFieldCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionExplicitTwo.java"));
+                new File(getPath("SuppressionXpathRegressionExplicitTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(HiddenFieldCheck.class);
@@ -75,7 +78,7 @@ public class XpathRegressionHiddenFieldTest extends AbstractXpathRegressionTest 
                 + "/METHOD_DEF[@text='method']/PARAMETERS/PARAMETER_DEF[@text='other']/IDENT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

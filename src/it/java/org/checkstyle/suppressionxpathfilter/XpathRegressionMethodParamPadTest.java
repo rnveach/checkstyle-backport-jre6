@@ -28,14 +28,19 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck;
 
-public class XpathRegressionMethodParamPadTest extends AbstractXpathRegressionTest {
+public class XpathRegressionMethodParamPadTest extends AbstractXpathTestSupport {
+
+    private final String checkName = MethodParamPadCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = MethodParamPadCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionMethodParamPadOne.java"));
+                new File(getPath("SuppressionXpathRegressionMethodParamPadOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(MethodParamPadCheck.class);
@@ -50,16 +55,14 @@ public class XpathRegressionMethodParamPadTest extends AbstractXpathRegressionTe
                 + "/METHOD_DEF[@text='InputMethodParamPad']/LPAREN"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = MethodParamPadCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionMethodParamPadTwo.java"));
+                new File(getPath("SuppressionXpathRegressionMethodParamPadTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(MethodParamPadCheck.class);
@@ -74,16 +77,14 @@ public class XpathRegressionMethodParamPadTest extends AbstractXpathRegressionTe
                 + "/METHOD_DEF[@text='sayHello']/LPAREN"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testThree() throws Exception {
-        final String checkName = MethodParamPadCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionMethodParamPadThree.java"));
+                new File(getPath("SuppressionXpathRegressionMethodParamPadThree.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(MethodParamPadCheck.class);
@@ -99,7 +100,7 @@ public class XpathRegressionMethodParamPadTest extends AbstractXpathRegressionTe
                 + "/METHOD_DEF[@text='sayHello']/LPAREN"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

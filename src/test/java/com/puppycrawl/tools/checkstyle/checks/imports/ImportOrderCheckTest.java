@@ -807,4 +807,127 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
                 expected);
     }
 
+    @Test
+    public void testStaticGroupsAbove() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("groups", "");
+        checkConfig.addAttribute("staticGroups", "");
+        checkConfig.addAttribute("option", "above");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsAbove.java"),
+                expected);
+    }
+
+    @Test
+    public void testStaticGroupsBottom() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("groups", "org, java");
+        checkConfig.addAttribute("staticGroups", "java, org");
+        checkConfig.addAttribute("option", "bottom");
+        checkConfig.addAttribute("ordered", "true");
+        checkConfig.addAttribute("separated", "true");
+        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsBottom.java"),
+                expected);
+    }
+
+    @Test
+    public void testStaticGroupsBottomSeparated() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("groups", "android,com,net,junit,org,java,javax");
+        checkConfig.addAttribute("staticGroups", "android,com,net,junit,org,java,javax");
+        checkConfig.addAttribute("option", "bottom");
+        checkConfig.addAttribute("ordered", "true");
+        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addAttribute("separated", "true");
+        checkConfig.addAttribute("separatedStaticGroups", "true");
+        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig,
+            getNonCompilablePath("InputImportOrderStaticGroupsBottomSeparated.java"), expected);
+    }
+
+    @Test
+    public void testStaticGroupsInflow() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("groups", "");
+        checkConfig.addAttribute("staticGroups", "");
+        checkConfig.addAttribute("option", "inflow");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsInflow.java"),
+                expected);
+    }
+
+    @Test
+    public void testStaticGroupsNegative() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("staticGroups", "org, java");
+        checkConfig.addAttribute("option", "top");
+        checkConfig.addAttribute("ordered", "true");
+        checkConfig.addAttribute("separated", "true");
+        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        final String[] expected = {
+            "16: " + getCheckMessage(MSG_ORDERING, "org.junit.Assert.fail"),
+            "18: " + getCheckMessage(MSG_ORDERING, "org.infinispan.test.TestingUtil.extract"),
+        };
+
+        verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsNegative.java"),
+                expected);
+    }
+
+    @Test
+    public void testStaticGroupsTop() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("groups", "org, com, java, javax");
+        checkConfig.addAttribute("staticGroups", "org, com, java, javax");
+        checkConfig.addAttribute("option", "top");
+        checkConfig.addAttribute("ordered", "true");
+        checkConfig.addAttribute("separated", "true");
+        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsTop.java"),
+                expected);
+    }
+
+    @Test
+    public void testStaticGroupsTopSeparated() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("groups", "android, androidx, java");
+        checkConfig.addAttribute("staticGroups", "android, androidx, java");
+        checkConfig.addAttribute("option", "top");
+        checkConfig.addAttribute("ordered", "true");
+        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addAttribute("separated", "false");
+        checkConfig.addAttribute("separatedStaticGroups", "true");
+        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsTopSeparated.java"),
+                expected);
+    }
+
+    @Test
+    public void testStaticGroupsUnordered() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("groups", "org, com, java");
+        checkConfig.addAttribute("staticGroups", "");
+        checkConfig.addAttribute("option", "top");
+        checkConfig.addAttribute("ordered", "true");
+        checkConfig.addAttribute("separated", "false");
+        checkConfig.addAttribute("sortStaticImportsAlphabetically", "false");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsUnordered.java"),
+                expected);
+    }
+
 }

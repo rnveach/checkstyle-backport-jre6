@@ -28,14 +28,19 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck;
 
-public class XpathRegressionOneStatementPerLineTest extends AbstractXpathRegressionTest {
+public class XpathRegressionOneStatementPerLineTest extends AbstractXpathTestSupport {
+
+    private final String checkName = OneStatementPerLineCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = OneStatementPerLineCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionOneStatementPerLineOne.java"));
+                new File(getPath("SuppressionXpathRegressionOneStatementPerLineOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(OneStatementPerLineCheck.class);
@@ -50,16 +55,14 @@ public class XpathRegressionOneStatementPerLineTest extends AbstractXpathRegress
                 + "/VARIABLE_DEF[@text='j']/SEMI"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = OneStatementPerLineCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionOneStatementPerLineTwo.java"));
+                new File(getPath("SuppressionXpathRegressionOneStatementPerLineTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(OneStatementPerLineCheck.class);
@@ -74,7 +77,7 @@ public class XpathRegressionOneStatementPerLineTest extends AbstractXpathRegress
                 + "/METHOD_DEF[@text='foo5']/SLIST/LITERAL_FOR/SLIST/SEMI"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

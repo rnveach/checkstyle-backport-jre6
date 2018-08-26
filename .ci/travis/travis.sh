@@ -11,7 +11,10 @@ checkstyle-and-sevntu)
 
 jacoco)
   export MAVEN_OPTS='-Xmx2000m'
-  mvn -e clean test jacoco:restore-instrumented-classes jacoco:report@default-report
+  mvn -e clean test \
+    jacoco:restore-instrumented-classes \
+    jacoco:report@default-report \
+    jacoco:check@default-check
   ;;
 
 test-de)
@@ -175,9 +178,11 @@ no-error-test-sbe)
                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
   echo version:$CS_POM_VERSION
   mvn -e clean install -Pno-validations
+  mkdir -p .ci-temp/
+  cd .ci-temp/
   git clone https://github.com/real-logic/simple-binary-encoding.git
   cd simple-binary-encoding
-  git checkout 963814f8ca1456de9daaf67e78663e7d877871a9
+  git checkout 1.8.1
   sed -i'' \
     "s/'com.puppycrawl.tools:checkstyle:.*'/'com.puppycrawl.tools:checkstyle:$CS_POM_VERSION'/" \
     build.gradle

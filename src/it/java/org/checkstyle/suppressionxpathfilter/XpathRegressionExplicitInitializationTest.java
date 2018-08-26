@@ -28,14 +28,19 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.coding.ExplicitInitializationCheck;
 
-public class XpathRegressionExplicitInitializationTest extends AbstractXpathRegressionTest {
+public class XpathRegressionExplicitInitializationTest extends AbstractXpathTestSupport {
+
+    private final String checkName = ExplicitInitializationCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = ExplicitInitializationCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionExplicitOne.java"));
+                new File(getPath("SuppressionXpathRegressionExplicitOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(ExplicitInitializationCheck.class);
@@ -50,16 +55,14 @@ public class XpathRegressionExplicitInitializationTest extends AbstractXpathRegr
                         + "/OBJBLOCK/VARIABLE_DEF[@text='a']/IDENT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = ExplicitInitializationCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionExplicitTwo.java"));
+                new File(getPath("SuppressionXpathRegressionExplicitTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(ExplicitInitializationCheck.class);
@@ -74,7 +77,7 @@ public class XpathRegressionExplicitInitializationTest extends AbstractXpathRegr
                         + "/VARIABLE_DEF[@text='bar']/IDENT"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

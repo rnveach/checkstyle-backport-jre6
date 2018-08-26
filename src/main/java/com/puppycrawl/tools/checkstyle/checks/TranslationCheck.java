@@ -33,6 +33,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.puppycrawl.tools.checkstyle.Definitions;
+import com.puppycrawl.tools.checkstyle.GlobalStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
@@ -97,6 +99,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * <br>
  *
  */
+@GlobalStatefulCheck
 public class TranslationCheck extends AbstractFileSetCheck {
 
     /**
@@ -162,7 +165,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
     private final Log log;
 
     /** The files to process. */
-    private final Set<File> filesToProcess = new HashSet<File>();
+    private final Set<File> filesToProcess = Collections.newSetFromMap(new ConcurrentHashMap<File, Boolean>());
 
     /** The base name regexp pattern. */
     private Pattern baseName;

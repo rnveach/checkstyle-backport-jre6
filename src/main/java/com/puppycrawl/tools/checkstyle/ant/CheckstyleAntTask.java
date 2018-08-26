@@ -56,6 +56,7 @@ import com.puppycrawl.tools.checkstyle.api.RootModule;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevelCounter;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * An implementation of a ANT task for calling checkstyle. See the documentation
@@ -333,7 +334,9 @@ public class CheckstyleAntTask extends Task {
         log("To locate the files took " + (endTime - startTime) + TIME_SUFFIX,
             Project.MSG_VERBOSE);
 
-        log("Running Checkstyle " + checkstyleVersion + " on " + files.size()
+        log("Running Checkstyle "
+                + Objects.toString(checkstyleVersion, "")
+                + " on " + files.size()
                 + " files", Project.MSG_INFO);
         log("Using configuration " + config, Project.MSG_VERBOSE);
 

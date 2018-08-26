@@ -29,6 +29,7 @@ allclasses
 alot
 ambig
 Amessages
+androidx
 ANNOS
 annotationlocation
 annotationonsameline
@@ -65,6 +66,7 @@ ASF
 ASingle
 Aspectj
 Asrc
+assertj
 ASTNo
 asttreestringprinter
 Asun
@@ -204,6 +206,7 @@ checkutil
 chmod
 chr
 ci
+cidfile
 circleci
 Claira
 classdataabstractioncoupling
@@ -277,10 +280,12 @@ cyclomatic
 cyclomaticcomplexity
 cz
 daaf
+dalvik
 Daniil
 daniilyar
 Darguments
 Datasource
+davidwalsh
 Dcheckstyle
 dcm
 DDDD
@@ -373,6 +378,7 @@ endline
 ent
 enum
 enumer
+envvar
 eol
 eot
 equalsavoidnull
@@ -478,6 +484,7 @@ genericwhitespace
 Getenv
 gg
 gh
+ghprb
 gitattributes
 github
 githubusercontent
@@ -488,6 +495,7 @@ googleapis
 googleblog
 googleecommon
 googlegroups
+googlesource
 govstrangefolder
 gplus
 gradle
@@ -582,6 +590,7 @@ Intelli
 intellij
 intercell
 interfaceistype
+interfacememberimpliedmodifier
 interfacetypeparametername
 invalidformat
 invalidinherit
@@ -713,6 +722,7 @@ lexer
 lgpl
 lharris
 LHSOf
+libcore
 liberapay
 libexec
 lifecycle
@@ -758,6 +768,7 @@ mct
 membername
 MENFORCER
 metadata
+Metaspace
 methodcount
 methodlength
 methodname
@@ -844,6 +855,7 @@ nlow
 NMTOKEN
 noarch
 noarg
+noauto
 nobr
 noclone
 nocstylearray
@@ -943,6 +955,7 @@ parameterassignment
 parametername
 parameternumber
 paramnum
+Parcelable
 parenpad
 parrt
 parsetreetablepresentation
@@ -950,6 +963,7 @@ Passembly
 pathcomplexity
 pathelement
 Paulicke
+paypal
 pdf
 Peclipse
 perl
@@ -978,6 +992,7 @@ Postgresql
 powermock
 Ppitest
 prameterless
+prebuilts
 preformatted
 printf
 println
@@ -1120,6 +1135,7 @@ spellchecker
 spliterator
 spotbugs
 spotbugsreports
+spotify
 springframework
 sqale
 sqe
@@ -1152,6 +1168,7 @@ subelements
 subext
 subscope
 sudo
+suitebuilder
 sukhodolsky
 summaryjavadoc
 superclasses
@@ -1287,7 +1304,7 @@ Weakento
 Webflow
 Weblogic
 Webp
-Website
+website
 webtoolkit
 Wellformedness
 wercker
@@ -1318,6 +1335,7 @@ Wsdl
 www
 Xandy
 xargs
+xcode
 xcommons
 xdoc
 xdocspagetitle
@@ -1349,11 +1367,13 @@ xpathfilter
 xpathmapper
 xpathquerygenerator
 xsd
+Xshow
 xsi
 xsl
 Xslt
 xsltproc
 XSO
+Xss
 xterm
 xtr
 xwiki

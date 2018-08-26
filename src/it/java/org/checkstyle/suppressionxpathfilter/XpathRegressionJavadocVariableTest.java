@@ -28,14 +28,19 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck;
 
-public class XpathRegressionJavadocVariableTest extends AbstractXpathRegressionTest {
+public class XpathRegressionJavadocVariableTest extends AbstractXpathTestSupport {
+
+    private final String checkName = JavadocVariableCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = JavadocVariableCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionJavadocVariableOne.java"));
+                new File(getPath("SuppressionXpathRegressionJavadocVariableOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(JavadocVariableCheck.class);
@@ -54,16 +59,14 @@ public class XpathRegressionJavadocVariableTest extends AbstractXpathRegressionT
                 + "/VARIABLE_DEF[@text='age']/MODIFIERS/LITERAL_PRIVATE"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = JavadocVariableCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionJavadocVariableTwo.java"));
+                new File(getPath("SuppressionXpathRegressionJavadocVariableTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(JavadocVariableCheck.class);
@@ -83,7 +86,7 @@ public class XpathRegressionJavadocVariableTest extends AbstractXpathRegressionT
                 + "/LITERAL_PUBLIC"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }

@@ -308,30 +308,68 @@ public class LeftCurlyCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testEolSwitch() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(LeftCurlyCheck.class);
+        checkConfig.addAttribute("option", LeftCurlyOption.EOL.toString());
+        final String[] expected = {
+            "14:13: " + getCheckMessage(MSG_KEY_LINE_PREVIOUS, "{", 13),
+            "18:13: " + getCheckMessage(MSG_KEY_LINE_PREVIOUS, "{", 13),
+            "25:13: " + getCheckMessage(MSG_KEY_LINE_PREVIOUS, "{", 13),
+            "39:13: " + getCheckMessage(MSG_KEY_LINE_PREVIOUS, "{", 13),
+            "44:13: " + getCheckMessage(MSG_KEY_LINE_PREVIOUS, "{", 13),
+        };
+        verify(checkConfig, getPath("InputLeftCurlyEolSwitch.java"), expected);
+    }
+
+    @Test
+    public void testNlSwitch() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(LeftCurlyCheck.class);
+        checkConfig.addAttribute("option", LeftCurlyOption.NL.toString());
+        final String[] expected = {
+            "16:21: " + getCheckMessage(MSG_KEY_LINE_NEW, "{", 21),
+            "48:14: " + getCheckMessage(MSG_KEY_LINE_NEW, "{", 14),
+        };
+        verify(checkConfig, getPath("InputLeftCurlyNlSwitch.java"), expected);
+    }
+
+    @Test
+    public void testNlowSwitch() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(LeftCurlyCheck.class);
+        checkConfig.addAttribute("option", LeftCurlyOption.NLOW.toString());
+        final String[] expected = {
+            "14:13: " + getCheckMessage(MSG_KEY_LINE_PREVIOUS, "{", 13),
+        };
+        verify(checkConfig, getPath("InputLeftCurlyNlowSwitch.java"), expected);
+    }
+
+    @Test
     public void testGetAcceptableTokens() {
         final LeftCurlyCheck check = new LeftCurlyCheck();
         final int[] actual = check.getAcceptableTokens();
         final int[] expected = {
-            TokenTypes.INTERFACE_DEF,
-            TokenTypes.CLASS_DEF,
             TokenTypes.ANNOTATION_DEF,
-            TokenTypes.ENUM_DEF,
+            TokenTypes.CLASS_DEF,
             TokenTypes.CTOR_DEF,
-            TokenTypes.METHOD_DEF,
             TokenTypes.ENUM_CONSTANT_DEF,
-            TokenTypes.LITERAL_WHILE,
-            TokenTypes.LITERAL_TRY,
+            TokenTypes.ENUM_DEF,
+            TokenTypes.INTERFACE_DEF,
+            TokenTypes.LAMBDA,
+            TokenTypes.LITERAL_CASE,
             TokenTypes.LITERAL_CATCH,
-            TokenTypes.LITERAL_FINALLY,
-            TokenTypes.LITERAL_SYNCHRONIZED,
-            TokenTypes.LITERAL_SWITCH,
+            TokenTypes.LITERAL_DEFAULT,
             TokenTypes.LITERAL_DO,
-            TokenTypes.LITERAL_IF,
             TokenTypes.LITERAL_ELSE,
+            TokenTypes.LITERAL_FINALLY,
             TokenTypes.LITERAL_FOR,
-            TokenTypes.STATIC_INIT,
+            TokenTypes.LITERAL_IF,
+            TokenTypes.LITERAL_SWITCH,
+            TokenTypes.LITERAL_SYNCHRONIZED,
+            TokenTypes.LITERAL_TRY,
+            TokenTypes.LITERAL_WHILE,
+            TokenTypes.METHOD_DEF,
             TokenTypes.OBJBLOCK,
-            TokenTypes.LAMBDA, };
+            TokenTypes.STATIC_INIT,
+        };
         assertArrayEquals("Default acceptable tokens are invalid", expected, actual);
     }
 

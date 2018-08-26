@@ -268,7 +268,7 @@
     </section>
 
     <section name="Checker">
-      <subsection name="Description">
+      <subsection name="Description" id="Checker_Description">
         <p>Since Checkstyle 3.0</p>
         <p>
           All configurations have root module <code>Checker</code>.  <code>Checker</code>
@@ -292,7 +292,7 @@
         </p>
       </subsection>
 
-      <subsection name="Properties">
+      <subsection name="Properties" id="Checker_Properties">
         <table>
           <tr>
             <th>name</th>
@@ -364,7 +364,7 @@
         </table>
       </subsection>
 
-      <subsection name="Metadata">
+      <subsection name="Metadata" id="Checker_Metadata">
         <p>
           Used to keep metadata in the Checkstyle configuration file. This
           information is ignored by Checkstyle. This may be useful if you want to
@@ -393,7 +393,7 @@
         </source>
       </subsection>
 
-      <subsection name="Examples">
+      <subsection name="Examples" id="Checker_Examples">
         <p>
           For example, the following configuration fragment specifies base
           directory <code>src/checkstyle</code>, cache file <code>target/cachefile</code> and German
@@ -470,7 +470,7 @@
 
       </subsection>
 
-      <subsection name="Example of Usage">
+      <subsection name="Example of Usage" id="Checker_Example_of_Usage">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+Checker">
@@ -487,13 +487,13 @@
         </ul>
       </subsection>
 
-      <subsection name="Package">
+      <subsection name="Package" id="Checker_Package">
         <p> com.puppycrawl.tools.checkstyle </p>
       </subsection>
     </section>
 
     <section name="TreeWalker">
-      <subsection name="Description">
+      <subsection name="Description" id="TreeWalker_Description">
         <p>Since Checkstyle 3.0</p>
         <p>
           FileSetCheck <code>TreeWalker</code> checks
@@ -502,7 +502,7 @@
         </p>
       </subsection>
 
-      <subsection name="Properties">
+      <subsection name="Properties" id="TreeWalker_Properties">
         <table>
           <tr>
             <th>name</th>
@@ -533,7 +533,7 @@
         </table>
       </subsection>
 
-      <subsection name="Examples">
+      <subsection name="Examples" id="TreeWalker_Examples">
         <p>
           For example, the following configuration fragment specifies
           <code>TreeWalker</code> a <code>tabWidth</code> of <code>4</code>:
@@ -597,7 +597,7 @@
         </source>
       </subsection>
 
-      <subsection name="Example of Usage">
+      <subsection name="Example of Usage" id="TreeWalker_Example_of_Usage">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+TreeWalker">
@@ -614,11 +614,11 @@
         </ul>
       </subsection>
 
-      <subsection name="Package">
+      <subsection name="Package" id="TreeWalker_Package">
         <p> com.puppycrawl.tools.checkstyle </p>
       </subsection>
 
-      <subsection name="Parent Module">
+      <subsection name="Parent Module" id="TreeWalker_Parent_Module">
         <p> <a href="config.html#Checker">Checker</a> </p>
       </subsection>
     </section>
@@ -727,6 +727,38 @@
         The XML formatter reports the severity level of every violation
         as an attribute of the violation's <code>error</code> element.
       </p>
+    </section>
+
+    <section name="Id">
+      <p>
+        Each module has a <code>id</code> property that can rename the module name
+        to be a name defined by the user. This is used to differentiate
+        two instances of the same Check. This custom module name should be unique
+        for the entire configuration to prevent accidental overlapping.
+        This custom name is required to be able
+        to suppress violations of 1 of the checks in specific scenarios,
+        while leaving the other unaffected. Without the custom module name,
+        it is harder to differentiate one module's violations from the other.
+      </p>
+
+      <source>
+&lt;module name=&quot;DescendantToken&quot;&gt;
+  &lt;property name=&quot;id&quot; value=&quot;stringEqual&quot;/&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;EQUAL,NOT_EQUAL&quot;/&gt;
+  &lt;property name=&quot;limitedTokens&quot; value=&quot;STRING_LITERAL&quot;/&gt;
+  &lt;property name=&quot;maximumNumber&quot; value=&quot;0&quot;/&gt;
+  &lt;property name=&quot;maximumDepth&quot; value=&quot;1&quot;/&gt;
+&lt;/module&gt;
+
+&lt;module name=&quot;DescendantToken&quot;&gt;
+  &lt;property name=&quot;id&quot; value=&quot;switchNoDefault&quot;/&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_SWITCH&quot;/&gt;
+  &lt;property name=&quot;maximumDepth&quot; value=&quot;2&quot;/&gt;
+  &lt;property name=&quot;limitedTokens&quot; value=&quot;LITERAL_DEFAULT&quot;/&gt;
+  &lt;property name=&quot;minimumNumber&quot; value=&quot;1&quot;/&gt;
+&lt;/module&gt;
+      </source>
+
     </section>
 
     <section name="Custom messages">
@@ -881,6 +913,11 @@
       </p>
 
       <p>
+        Checkstyle also validates the package names XML document structure when it
+        loads the document. DTD is available at <a href="dtds/packages_1_0.dtd">packages_1_0.dtd</a>
+      </p>
+
+      <p>
         For example, to incorporate modules from package <code>com.mycompany.checks</code>
         with Checkstyle modules, create the XML file below and put this file into the
         <b>root of the jar</b> file which contains your custom check modules.
@@ -920,30 +957,18 @@
 
     </section>
 
-    <section name="XML Structure">
+    <section name="Configuration XML Structure">
 
-      <b>Configuration XML Document</b>
       <p>
-        The following DTD for a configuration XML document specifies the
-        hierarchy of modules and their properties:
+        DTD is used to validate the
+        configuration XML document which specifies the
+        hierarchy of modules and their properties.
       </p>
 
-      <source>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-
-&lt;!ELEMENT module (module|property)*&gt;
-&lt;!ATTLIST module name NMTOKEN #REQUIRED&gt;
-
-&lt;!ELEMENT property EMPTY&gt;
-&lt;!ATTLIST property
-        name NMTOKEN #REQUIRED
-        value CDATA #REQUIRED
-&gt;
-      </source>
-
       <p>
-        Checkstyle validates a configuration XML document when it loads
-        the document.  To validate against the above configuration DTD,
+        Checkstyle validates the configuration XML document structure when it loads
+        the document. To validate against the
+        <a href="dtds/configuration_1_3.dtd">latest DTD</a>,
         include the following document type declaration in your
         configuration XML document:
       </p>
@@ -956,62 +981,30 @@
 
       <p>
         Checkstyle also strictly enforces the encoding attribute of an
-        XML declaration.  If Checkstyle rejects your configuration
+        XML declaration. If Checkstyle rejects your configuration
         document's encoding, correct the value of the encoding
         attribute, or remove the encoding attribute entirely.
       </p>
 
       <p>
         For a complete example of a configuration XML document, examine
-        file <code>docs/sun_checks.xml</code> that checks the Sun coding
-        conventions.
+        files
+        <a href=
+          "https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/sun_checks.xml">
+          sun_checks.xml
+        </a>
+        and
+        <a href=
+          "https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml">
+          google_checks.xml
+        </a>
+        that checks the coding conventions.
+        Example of all Checks/Modules usage could be found at checkstyle's code convention at file
+        <a
+          href="https://github.com/checkstyle/checkstyle/blob/master/config/checkstyle_checks.xml">
+          checkstyle_checks.xml
+        </a>
       </p>
-
-      <b>Package Names XML Document</b>
-      <p>
-        This is a DTD for a package names XML document:
-      </p>
-
-      <source>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-
-&lt;!ELEMENT checkstyle-packages (package)*&gt;
-
-&lt;!ELEMENT package (package)*&gt;
-&lt;!ATTLIST package name NMTOKEN #REQUIRED&gt;
-      </source>
-
-      <p>
-        Checkstyle also validates a package names XML document when it
-        loads the document.  To validate against the above package names
-        DTD, include the following document type declaration in your
-        package names XML document:
-      </p>
-
-      <source>
-&lt;!DOCTYPE checkstyle-packages PUBLIC
-  &quot;-//Checkstyle//DTD Package Names Configuration 1.1//EN&quot;
-  &quot;https://checkstyle.org/dtds/packages_1_1.dtd&quot;&gt;
-      </source>
-
-      <b>Suppressions XML Document</b>
-      <p>
-        This is a DTD for a suppressions XML document:
-      </p>
-
-      <source>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-
-&lt;!ELEMENT suppressions (suppress*)&gt;
-
-&lt;!ELEMENT suppress EMPTY&gt;
-&lt;!ATTLIST suppress files CDATA #IMPLIED
-                   checks CDATA #IMPLIED
-                   message CDATA #IMPLIED
-                   id CDATA #IMPLIED
-                   lines CDATA #IMPLIED
-                   columns CDATA #IMPLIED&gt;
-      </source>
 
     </section>
   </body>

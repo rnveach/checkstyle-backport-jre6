@@ -28,14 +28,20 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.metrics.CyclomaticComplexityCheck;
 
-public class XpathRegressionCyclomaticComplexityTest extends AbstractXpathRegressionTest {
+public class XpathRegressionCyclomaticComplexityTest extends AbstractXpathTestSupport {
+
+    private final String checkName = CyclomaticComplexityCheck.class.getSimpleName();
+
+    @Override
+    protected String getCheckName() {
+        return checkName;
+    }
 
     @Test
     public void testOne() throws Exception {
-        final String checkName = CyclomaticComplexityCheck.class.getSimpleName();
+
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionCyclomaticOne.java"));
+                new File(getPath("SuppressionXpathRegressionCyclomaticOne.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(CyclomaticComplexityCheck.class);
@@ -55,16 +61,14 @@ public class XpathRegressionCyclomaticComplexityTest extends AbstractXpathRegres
                 + "/METHOD_DEF[@text='test']/MODIFIERS/LITERAL_PUBLIC"
                 );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 
     @Test
     public void testTwo() throws Exception {
-        final String checkName = CyclomaticComplexityCheck.class.getSimpleName();
         final File fileToProcess =
-                new File(getPath(checkName,
-                        "SuppressionXpathRegressionCyclomaticTwo.java"));
+                new File(getPath("SuppressionXpathRegressionCyclomaticTwo.java"));
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(CyclomaticComplexityCheck.class);
@@ -84,7 +88,7 @@ public class XpathRegressionCyclomaticComplexityTest extends AbstractXpathRegres
                     + "/METHOD_DEF[@text='foo2']/MODIFIERS/LITERAL_PUBLIC"
         );
 
-        runVerifications(moduleConfig, checkName, fileToProcess, expectedViolation,
+        runVerifications(moduleConfig, fileToProcess, expectedViolation,
                 expectedXpathQueries);
     }
 }
