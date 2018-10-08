@@ -270,11 +270,18 @@
           <code>AbstractClassName</code> to checks names, but ignore
           missing <code>abstract</code> modifiers:
         </p>
+        <p>Configuration:</p>
         <source>
 &lt;module name=&quot;AbstractClassName&quot;&gt;
   &lt;property name=&quot;ignoreModifier&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <pre>
+abstract class AbstractFirstClass {} // OK
+abstract class SecondClass {} // violation, it should match the pattern "^Abstract.+$"
+class AbstractThirdClass {} // OK, no "abstract" modifier
+        </pre>
       </subsection>
 
       <subsection name="Example of Usage" id="AbstractClassName_Example_of_Usage">
@@ -369,11 +376,31 @@
           An example of how to configure the check for names that begin with
           a lower case letter, followed by any letters or digits is:
         </p>
+        <p>Configuration:</p>
         <source>
 &lt;module name="CatchParameterName"&gt;
   &lt;property name="format" value="^[a-z][a-zA-Z0-9]+$"/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <pre>
+public class MyTest {
+  public void myTest() {
+    try {
+      // ...
+    } catch (ArithmeticException ex) { //OK
+      // ...
+    } catch (ArrayIndexOutOfBoundsException ex2) { //OK
+      // ...
+    } catch (IOException thirdException) { //OK
+      // ...
+    } catch (Exception FourthException) { // violation, the initial letter
+                                          // should be lowercase
+      // ...
+    }
+  }
+}
+        </pre>
       </subsection>
 
       <subsection name="Example of Usage" id="CatchParameterName_Example_of_Usage">
@@ -451,11 +478,19 @@
         <p>
           An example of how to configure the check for names that are only a single letter is:
         </p>
+        <p>Configuration:</p>
         <source>
 &lt;module name=&quot;ClassTypeParameterName&quot;&gt;
   &lt;property name="format" value="^[a-zA-Z]$"/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <pre>
+class MyClass1&lt;T&gt; {} // OK
+class MyClass2&lt;t&gt; {} // OK
+class MyClass3&lt;abc&gt; {} // violation, the class type parameter
+                             // name should match the regular expression "^[a-zA-Z]$"
+        </pre>
       </subsection>
 
       <subsection name="Example of Usage" id="ClassTypeParameterName_Example_of_Usage">

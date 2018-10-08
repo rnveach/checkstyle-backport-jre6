@@ -13,7 +13,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.12</version>
+  <version>8.13</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -167,20 +167,20 @@
     <projectVersion>${project.version}</projectVersion>
     <antlr4.version>4.5.3</antlr4.version>
     <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
-    <maven.spotbugs.plugin.version>3.1.5</maven.spotbugs.plugin.version>
-    <maven.pmd.plugin.version>3.9.0</maven.pmd.plugin.version>
-    <pmd.version>6.1.0</pmd.version>
-    <maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
+    <maven.spotbugs.plugin.version>3.1.6</maven.spotbugs.plugin.version>
+    <maven.pmd.plugin.version>3.10.0</maven.pmd.plugin.version>
+    <pmd.version>6.6.0</pmd.version>
+    <maven.jacoco.plugin.version>0.8.2</maven.jacoco.plugin.version>
     <powermock.version>2.0.0-beta.5</powermock.version>
-    <saxon.version>9.8.0-12</saxon.version>
+    <saxon.version>9.8.0-14</saxon.version>
     <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
-    <maven.sevntu.checkstyle.plugin.version>1.30.0</maven.sevntu.checkstyle.plugin.version>
+    <maven.sevntu.checkstyle.plugin.version>1.32.0</maven.sevntu.checkstyle.plugin.version>
     <maven.sevntu-checkstyle-check.checkstyle.version>
-      8.10.1
+      8.12
     </maven.sevntu-checkstyle-check.checkstyle.version>
     <maven.versions.plugin.version>2.5</maven.versions.plugin.version>
     <java.version>1.6</java.version>
-    <pitest.plugin.version>1.4.0</pitest.plugin.version>
+    <pitest.plugin.version>1.4.1</pitest.plugin.version>
     <pitest.plugin.timeout.factor>10</pitest.plugin.timeout.factor>
     <pitest.plugin.timeout.constant>50000</pitest.plugin.timeout.constant>
     <pitest.plugin.threads>4</pitest.plugin.threads>
@@ -420,6 +420,14 @@
             <excludeFilterFile>config/spotbugs-exclude.xml</excludeFilterFile>
             <spotbugsXmlOutputDirectory>target/spotbugsreports</spotbugsXmlOutputDirectory>
           </configuration>
+          <dependencies>
+            <!-- till https://github.com/spotbugs/spotbugs/issues/746 -->
+            <dependency>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs</artifactId>
+              <version>3.1.5</version>
+            </dependency>
+          </dependencies>
         </plugin>
 
         <!-- This plugin's configuration is used to store Eclipse
@@ -631,7 +639,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>3.8.0</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -1232,7 +1240,7 @@
               <includes>
                 <include>site.xml</include>
               </includes>
-              <systemId>http://maven.apache.org/xsd/decoration-1.0.0.xsd</systemId>
+              <systemId>.ci/travis/decoration-1.0.0.xsd</systemId>
             </validationSet>
             <validationSet>
               <validating>true</validating>

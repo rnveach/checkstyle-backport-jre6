@@ -547,7 +547,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
         /**
          * AST contains comment nodes.
          */
-        WITH_COMMENTS
+        WITH_COMMENTS,
 
     }
 

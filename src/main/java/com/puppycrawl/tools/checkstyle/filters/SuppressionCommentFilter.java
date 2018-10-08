@@ -67,7 +67,7 @@ public class SuppressionCommentFilter
         /**
          * Switch reporting off.
          */
-        OFF
+        OFF,
 
     }
 

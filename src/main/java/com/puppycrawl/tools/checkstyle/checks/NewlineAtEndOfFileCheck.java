@@ -79,7 +79,7 @@ public class NewlineAtEndOfFileCheck
             readAndCheckFile(file);
         }
         catch (final IOException ignored) {
-            log(0, MSG_KEY_UNABLE_OPEN, file.getPath());
+            log(1, MSG_KEY_UNABLE_OPEN, file.getPath());
         }
     }
 
@@ -112,7 +112,7 @@ public class NewlineAtEndOfFileCheck
         final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
         try {
             if (!endsWithNewline(randomAccessFile)) {
-                log(0, MSG_KEY_NO_NEWLINE_EOF, file.getPath());
+                log(1, MSG_KEY_NO_NEWLINE_EOF, file.getPath());
             }
         }
         finally {

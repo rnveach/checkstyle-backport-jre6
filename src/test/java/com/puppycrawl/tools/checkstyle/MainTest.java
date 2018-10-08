@@ -122,15 +122,15 @@ public class MainTest {
     @Rule
     public final SystemOutRule systemOut = new SystemOutRule().enableLog().mute();
 
-    private final LocalizedMessage auditStartMessage = new LocalizedMessage(0,
+    private final LocalizedMessage auditStartMessage = new LocalizedMessage(1,
             Definitions.CHECKSTYLE_BUNDLE, "DefaultLogger.auditStarted", null, null,
             getClass(), null);
 
-    private final LocalizedMessage auditFinishMessage = new LocalizedMessage(0,
+    private final LocalizedMessage auditFinishMessage = new LocalizedMessage(1,
             Definitions.CHECKSTYLE_BUNDLE, "DefaultLogger.auditFinished", null, null,
             getClass(), null);
 
-    private final LocalizedMessage errorCounterOneMessage = new LocalizedMessage(0,
+    private final LocalizedMessage errorCounterOneMessage = new LocalizedMessage(1,
             Definitions.CHECKSTYLE_BUNDLE, Main.ERROR_COUNTER,
             new String[] {String.valueOf(1)}, null, getClass(), null);
 
@@ -343,11 +343,11 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() throws IOException {
-                final LocalizedMessage invalidPatternMessageMain = new LocalizedMessage(0,
+                final LocalizedMessage invalidPatternMessageMain = new LocalizedMessage(1,
                         "com.puppycrawl.tools.checkstyle.checks.naming.messages",
                         "name.invalidPattern", new String[] {"InputMain", "^[a-z0-9]*$"},
                         null, getClass(), null);
-                final LocalizedMessage invalidPatternMessageMainInner = new LocalizedMessage(0,
+                final LocalizedMessage invalidPatternMessageMainInner = new LocalizedMessage(1,
                         "com.puppycrawl.tools.checkstyle.checks.naming.messages",
                         "name.invalidPattern", new String[] {"InputMainInner", "^[a-z0-9]*$"},
                         null, getClass(), null);
@@ -374,14 +374,14 @@ public class MainTest {
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() throws IOException {
-                final LocalizedMessage errorCounterTwoMessage = new LocalizedMessage(0,
+                final LocalizedMessage errorCounterTwoMessage = new LocalizedMessage(1,
                         Definitions.CHECKSTYLE_BUNDLE, Main.ERROR_COUNTER,
                         new String[] {String.valueOf(2)}, null, getClass(), null);
-                final LocalizedMessage invalidPatternMessageMain = new LocalizedMessage(0,
+                final LocalizedMessage invalidPatternMessageMain = new LocalizedMessage(1,
                         "com.puppycrawl.tools.checkstyle.checks.naming.messages",
                         "name.invalidPattern", new String[] {"InputMain", "^[a-z0-9]*$"},
                         null, getClass(), null);
-                final LocalizedMessage invalidPatternMessageMainInner = new LocalizedMessage(0,
+                final LocalizedMessage invalidPatternMessageMainInner = new LocalizedMessage(1,
                         "com.puppycrawl.tools.checkstyle.checks.naming.messages",
                         "name.invalidPattern", new String[] {"InputMainInner", "^[a-z0-9]*$"},
                         null, getClass(), null);
@@ -550,7 +550,7 @@ public class MainTest {
             // We do separate validation for message as in Windows
             // disk drive letter appear in message,
             // so we skip that drive letter for compatibility issues
-            final LocalizedMessage loadPropertiesMessage = new LocalizedMessage(0,
+            final LocalizedMessage loadPropertiesMessage = new LocalizedMessage(1,
                     Definitions.CHECKSTYLE_BUNDLE, Main.LOAD_PROPERTIES_EXCEPTION,
                     new String[] {""}, null, getClass(), null);
             final String causeMessage = ex.getCause().getLocalizedMessage();
@@ -578,7 +578,7 @@ public class MainTest {
             fail("InvocationTargetException is expected");
         }
         catch (InvocationTargetException ex) {
-            final LocalizedMessage loadPropertiesMessage = new LocalizedMessage(0,
+            final LocalizedMessage loadPropertiesMessage = new LocalizedMessage(1,
                     Definitions.CHECKSTYLE_BUNDLE, Main.CREATE_LISTENER_EXCEPTION,
                     new String[] {"myformat", "plain", "xml"}, null, getClass(), null);
             assertEquals("Invalid error message",
@@ -609,16 +609,12 @@ public class MainTest {
                 final String format = "[WARN] " + expectedPath + outputValues[0][0] + ".java:"
                         + outputValues[0][1] + ": ";
                 for (String[] outputValue : outputValues) {
-                    final String localizedMessage = new LocalizedMessage(0, bundle,
+                    final String localizedMessage = new LocalizedMessage(1, bundle,
                             msgKey, new Integer[] {Integer.valueOf(outputValue[2]), allowedLength},
                             null, getClass(), null).getMessage();
                     final String line = format + localizedMessage + " [FileLength]";
                     sb.append(line).append(EOL);
                 }
-                sb.append(auditFinishMessage.getMessage())
-                        .append(EOL);
-                assertEquals("Unexpected output log", sb.toString(), systemOut.getLog());
-                assertEquals("Unexpected system error log", "", systemErr.getLog());
             }
         });
 
@@ -1304,7 +1300,7 @@ public class MainTest {
             @Override
             public void checkAssertion() {
                 final String checkstylePackage = "com.puppycrawl.tools.checkstyle.";
-                final LocalizedMessage unableToInstantiateExceptionMessage = new LocalizedMessage(0,
+                final LocalizedMessage unableToInstantiateExceptionMessage = new LocalizedMessage(1,
                         Definitions.CHECKSTYLE_BUNDLE,
                         "PackageObjectFactory.unableToInstantiateExceptionMessage",
                         new String[] {"TestRootModuleChecker", checkstylePackage

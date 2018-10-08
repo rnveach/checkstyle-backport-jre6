@@ -78,7 +78,7 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
             }
         }
         catch (IOException ex) {
-            log(0, MSG_IO_EXCEPTION_KEY, file.getPath(),
+            log(1, MSG_IO_EXCEPTION_KEY, file.getPath(),
                     ex.getLocalizedMessage());
         }
 
@@ -100,7 +100,7 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
      * @param keyName
      *            key name to look for
      * @return line number of first occurrence. If no key found in properties
-     *         file, 0 is returned
+     *         file, 1 is returned
      */
     private static int getLineNumber(FileText fileText, String keyName) {
         final Pattern keyPattern = getKeyPattern(keyName);
@@ -117,7 +117,7 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
         // -1 as check seeks for the first duplicate occurrence in file,
         // so it cannot be the last line.
         if (lineNumber > fileText.size() - 1) {
-            lineNumber = 0;
+            lineNumber = 1;
         }
         return lineNumber;
     }

@@ -324,7 +324,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
         }
         catch (final IOException ioe) {
             log.debug("IOException occurred.", ioe);
-            fileMessages.add(new LocalizedMessage(0,
+            fileMessages.add(new LocalizedMessage(1,
                     Definitions.CHECKSTYLE_BUNDLE, EXCEPTION_MSG,
                     new String[] {ioe.getMessage()}, null, getClass(), null));
         }
@@ -341,7 +341,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
             ex.printStackTrace(pw);
 
-            fileMessages.add(new LocalizedMessage(0,
+            fileMessages.add(new LocalizedMessage(1,
                     Definitions.CHECKSTYLE_BUNDLE, EXCEPTION_MSG,
                     new String[] {sw.getBuffer().toString()},
                     null, getClass(), null));

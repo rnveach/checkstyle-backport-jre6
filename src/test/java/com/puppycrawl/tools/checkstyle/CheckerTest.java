@@ -132,7 +132,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         checker.process(Collections.singletonList(temporaryFolder.newFile()));
         final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
-        messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
+        messages.add(new LocalizedMessage(1, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
 
@@ -166,7 +166,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         auditAdapter.resetListener();
         final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
-        messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
+        messages.add(new LocalizedMessage(1, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
         assertTrue("Checker.fireErrors() doesn't call listener", auditAdapter.wasCalled());
@@ -207,7 +207,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         aa2.resetListener();
         final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
-        messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
+        messages.add(new LocalizedMessage(1, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
         assertTrue("Checker.fireErrors() doesn't call listener", aa2.wasCalled());
@@ -250,7 +250,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         filter.resetFilter();
         final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
-        messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
+        messages.add(new LocalizedMessage(1, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
         assertTrue("Checker.fireErrors() doesn't call filter", filter.wasCalled());
@@ -267,7 +267,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         f2.resetFilter();
         final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
-        messages.add(new LocalizedMessage(0, 0, "a Bundle", "message.key",
+        messages.add(new LocalizedMessage(1, 0, "a Bundle", "message.key",
                 new Object[] {"arg"}, null, getClass(), null));
         checker.fireErrors("Some File Name", messages);
         assertTrue("Checker.fireErrors() doesn't call filter", f2.wasCalled());
@@ -888,7 +888,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         final String filePath = getPath("InputChecker.java");
         final String[] expected = {
-            "0: " + getCheckMessage(EXCEPTION_MSG, "java.lang.IndexOutOfBoundsException: test"),
+            "1: " + getCheckMessage(EXCEPTION_MSG, "java.lang.IndexOutOfBoundsException: test"),
         };
 
         verify(checkerConfig, filePath, expected);
@@ -1062,8 +1062,8 @@ public class CheckerTest extends AbstractModuleTestSupport {
         final String errorMessage =
                 getCheckMessage(NewlineAtEndOfFileCheck.class, MSG_KEY_NO_NEWLINE_EOF);
         final String[] expected = {
-            "0: " + errorMessage + " [NewlineAtEndOfFile]",
-            "0: " + errorMessage + " [ModuleId]",
+            "1: " + errorMessage + " [NewlineAtEndOfFile]",
+            "1: " + errorMessage + " [ModuleId]",
         };
 
         // super.verify does not work here, for we change the logger
@@ -1117,7 +1117,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
         @Override
         protected void processFiltered(File file, FileText fileText) {
-            log(0, "test");
+            log(1, "test");
         }
 
         @Override

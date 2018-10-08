@@ -62,7 +62,7 @@ public final class ConfigurationLoader {
         /**
          * Execute ignored modules.
          */
-        EXECUTE
+        EXECUTE,
 
     }
 

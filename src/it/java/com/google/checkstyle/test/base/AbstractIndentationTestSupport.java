@@ -218,7 +218,10 @@ public abstract class AbstractIndentationTestSupport extends AbstractModuleTestS
 
     private enum CommentType {
 
-        MULTILEVEL, SINGLE_LEVEL, NON_STRICT_LEVEL, UNKNOWN
+        MULTILEVEL,
+        SINGLE_LEVEL,
+        NON_STRICT_LEVEL,
+        UNKNOWN,
 
     }
 

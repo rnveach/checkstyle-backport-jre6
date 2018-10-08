@@ -122,6 +122,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                                 && !"ParameterName".equals(sectionName)
                                 && !"StaticVariableName".equals(sectionName)
                                 && !"TypeName".equals(sectionName)
+                                && !"AtclauseOrder".equals(sectionName)
                 ) {
                     continue;
                 }
@@ -524,7 +525,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         private static String getJavaDocText(DetailAST node) {
             final String text = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<document>\n"
                     + node.getFirstChild().getText().replaceAll("(^|\\r?\\n)\\s*\\* ?", "\n")
-                            .trim().replaceAll("@author.*", "") + "\n</document>";
+                            .trim() + "\n</document>";
             String result = null;
 
             try {

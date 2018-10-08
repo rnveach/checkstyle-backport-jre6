@@ -52,28 +52,29 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     private static final String DOT = ".";
 
     /** Class names to ignore. */
-    private static final Set<String> DEFAULT_EXCLUDED_CLASSES =
-            Collections.unmodifiableSet(Collections7.newHashSet(
-                // primitives
-                "boolean", "byte", "char", "double", "float", "int",
-                "long", "short", "void",
-                // wrappers
-                "Boolean", "Byte", "Character", "Double", "Float",
-                "Integer", "Long", "Short", "Void",
-                // java.lang.*
-                "Object", "Class",
-                "String", "StringBuffer", "StringBuilder",
-                // Exceptions
-                "ArrayIndexOutOfBoundsException", "Exception",
-                "RuntimeException", "IllegalArgumentException",
-                "IllegalStateException", "IndexOutOfBoundsException",
-                "NullPointerException", "Throwable", "SecurityException",
-                "UnsupportedOperationException",
-                // java.util.*
-                "List", "ArrayList", "Deque", "Queue", "LinkedList",
-                "Set", "HashSet", "SortedSet", "TreeSet",
-                "Map", "HashMap", "SortedMap", "TreeMap"
-            ));
+    private static final Set<String> DEFAULT_EXCLUDED_CLASSES = Collections.unmodifiableSet(
+        Collections7.newHashSet(
+            // primitives
+            "boolean", "byte", "char", "double", "float", "int",
+            "long", "short", "void",
+            // wrappers
+            "Boolean", "Byte", "Character", "Double", "Float",
+            "Integer", "Long", "Short", "Void",
+            // java.lang.*
+            "Object", "Class",
+            "String", "StringBuffer", "StringBuilder",
+            // Exceptions
+            "ArrayIndexOutOfBoundsException", "Exception",
+            "RuntimeException", "IllegalArgumentException",
+            "IllegalStateException", "IndexOutOfBoundsException",
+            "NullPointerException", "Throwable", "SecurityException",
+            "UnsupportedOperationException",
+            // java.util.*
+            "List", "ArrayList", "Deque", "Queue", "LinkedList",
+            "Set", "HashSet", "SortedSet", "TreeSet",
+            "Map", "HashMap", "SortedMap", "TreeMap",
+            "Override", "Deprecated", "SafeVarargs", "SuppressWarnings", "FunctionalInterface"
+        ));
 
     /** Package names to ignore. */
     private static final Set<String> DEFAULT_EXCLUDED_PACKAGES = Collections.emptySet();
@@ -187,6 +188,8 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
             case TokenTypes.ENUM_DEF:
                 visitClassDef(ast);
                 break;
+            case TokenTypes.EXTENDS_CLAUSE:
+            case TokenTypes.IMPLEMENTS_CLAUSE:
             case TokenTypes.TYPE:
                 fileContext.visitType(ast);
                 break;
@@ -195,6 +198,9 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
                 break;
             case TokenTypes.LITERAL_THROWS:
                 fileContext.visitLiteralThrows(ast);
+                break;
+            case TokenTypes.ANNOTATION:
+                fileContext.visitAnnotationType(ast);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown type: " + ast);
@@ -335,6 +341,16 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
          */
         public void visitLiteralThrows(DetailAST ast) {
             classContext.visitLiteralThrows(ast);
+        }
+
+        /**
+         * Visit ANNOTATION literal and get its type to referenced classes of context.
+         * @param annotationAST Annotation ast.
+         */
+        private void visitAnnotationType(DetailAST annotationAST) {
+            final DetailAST children = annotationAST.getFirstChild();
+            final DetailAST type = children.getNextSibling();
+            classContext.addReferencedClassName(type.getText());
         }
 
     }
