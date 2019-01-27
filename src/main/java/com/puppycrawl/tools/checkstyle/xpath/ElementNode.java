@@ -193,14 +193,16 @@ public class ElementNode extends AbstractNode {
                 break;
             case AxisInfo.DESCENDANT:
                 if (hasChildNodes()) {
-                    result = new Navigator.DescendantEnumeration(this, false, true);
+                    result =
+                            new Navigator.DescendantEnumeration(this, false, true);
                 }
                 else {
                     result = EmptyIterator.OfNodes.THE_INSTANCE;
                 }
                 break;
             case AxisInfo.DESCENDANT_OR_SELF:
-                result = new Navigator.DescendantEnumeration(this, true, true);
+                result =
+                        new Navigator.DescendantEnumeration(this, true, true);
                 break;
             case AxisInfo.PARENT:
                 result = SingleNodeIterator.makeIterator(parent);

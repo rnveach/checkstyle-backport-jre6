@@ -262,7 +262,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testEqualsAndHashCode() throws Exception {
         final XPathEvaluator xpathEvaluator = new XPathEvaluator();
-        EqualsVerifier.forClass(XpathFilter.class).withPrefabValues(XPathExpression.class,
+        EqualsVerifier.forClass(XpathFilter.class)
+            .withPrefabValues(XPathExpression.class,
                 xpathEvaluator.createExpression("//METHOD_DEF"),
                 xpathEvaluator.createExpression("//VARIABLE_DEF"))
                 .usingGetClass()

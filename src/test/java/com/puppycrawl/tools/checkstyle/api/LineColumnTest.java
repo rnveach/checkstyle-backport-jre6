@@ -55,7 +55,8 @@ public class LineColumnTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        EqualsVerifier.forClass(LineColumn.class).usingGetClass().verify();
+        EqualsVerifier.forClass(LineColumn.class).usingGetClass()
+                .verify();
     }
 
     @Test

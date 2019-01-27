@@ -301,7 +301,8 @@ public class SuppressionCommentFilterTest
 
     @Test
     public void testEqualsAndHashCodeOfTagClass() {
-        EqualsVerifier.forClass(SuppressionCommentFilter.Tag.class).usingGetClass().verify();
+        EqualsVerifier.forClass(SuppressionCommentFilter.Tag.class)
+                .usingGetClass().verify();
     }
 
     @Test

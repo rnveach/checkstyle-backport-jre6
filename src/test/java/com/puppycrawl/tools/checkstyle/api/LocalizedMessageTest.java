@@ -51,7 +51,8 @@ public class LocalizedMessageTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        EqualsVerifier.forClass(LocalizedMessage.class).usingGetClass().verify();
+        EqualsVerifier.forClass(LocalizedMessage.class)
+                .usingGetClass().verify();
     }
 
     @Test

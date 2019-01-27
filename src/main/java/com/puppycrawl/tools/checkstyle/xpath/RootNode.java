@@ -152,12 +152,24 @@ public class RootNode extends AbstractNode {
                 break;
             case AxisInfo.ANCESTOR_OR_SELF:
             case AxisInfo.SELF:
-                result = SingleNodeIterator.makeIterator(this);
+                final AxisIterator iterator = SingleNodeIterator.makeIterator(this);
+                try {
+                    result = iterator;
+                }
+                finally {
+                    iterator.close();
+                }
                 break;
             case AxisInfo.CHILD:
                 if (hasChildNodes()) {
-                    result = new ArrayIterator.OfNodes(
+                    final AxisIterator iterator2 = new ArrayIterator.OfNodes(
                             getChildren().toArray(EMPTY_ABSTRACT_NODE_ARRAY));
+                    try {
+                        result = iterator2;
+                    }
+                    finally {
+                        iterator2.close();
+                    }
                 }
                 else {
                     result = EmptyIterator.OfNodes.THE_INSTANCE;
@@ -165,14 +177,28 @@ public class RootNode extends AbstractNode {
                 break;
             case AxisInfo.DESCENDANT:
                 if (hasChildNodes()) {
-                    result = new Navigator.DescendantEnumeration(this, false, true);
+                    final AxisIterator iterator3 =
+                            new Navigator.DescendantEnumeration(this, false, true);
+                    try {
+                        result = iterator3;
+                    }
+                    finally {
+                        iterator3.close();
+                    }
                 }
                 else {
                     result = EmptyIterator.OfNodes.THE_INSTANCE;
                 }
                 break;
             case AxisInfo.DESCENDANT_OR_SELF:
-                result = new Navigator.DescendantEnumeration(this, true, true);
+                final AxisIterator iterator4 =
+                        new Navigator.DescendantEnumeration(this, true, true);
+                try {
+                    result = iterator4;
+                }
+                finally {
+                    iterator4.close();
+                }
                 break;
             default:
                 throw throwUnsupportedOperationException();

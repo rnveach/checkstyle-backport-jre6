@@ -111,7 +111,8 @@ public class CsvFilterTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        EqualsVerifier.forClass(CsvFilter.class).usingGetClass().verify();
+        EqualsVerifier.forClass(CsvFilter.class).usingGetClass()
+                .verify();
     }
 
 }

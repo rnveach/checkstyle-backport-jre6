@@ -157,11 +157,9 @@ public class SuppressionXpathFilterTest extends AbstractModuleTestSupport {
 
     @Test
     public void testEqualsAndHashCode() {
-        EqualsVerifier
-                .forClass(SuppressionXpathFilter.class)
+        EqualsVerifier.forClass(SuppressionXpathFilter.class)
                 .usingGetClass()
-                .suppress(Warning.NONFINAL_FIELDS)
-                .verify();
+                .suppress(Warning.NONFINAL_FIELDS).verify();
     }
 
     @Test

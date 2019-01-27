@@ -287,7 +287,8 @@ public class SuppressWithNearbyCommentFilterTest
 
     @Test
     public void testEqualsAndHashCodeOfTagClass() {
-        EqualsVerifier.forClass(SuppressWithNearbyCommentFilter.Tag.class).usingGetClass().verify();
+        EqualsVerifier
+                .forClass(SuppressWithNearbyCommentFilter.Tag.class).usingGetClass().verify();
     }
 
     private void verifySuppressed(Configuration moduleConfig,

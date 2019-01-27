@@ -55,7 +55,7 @@ APRV
 areaoftest
 arget
 argn
-Arity
+arity
 Arquillian
 arraycopy
 arraylist
@@ -80,6 +80,7 @@ atlassian
 attlist
 attr
 autoboxing
+autocomplete
 autocrlf
 Autoproxy
 Autowire
@@ -315,8 +316,10 @@ Dexec
 dfn
 Dfoo
 Dforbiddenapis
+dghj
 Dgpg
 Dgui
+dhj
 Diachenko
 dirname
 distelli
@@ -607,6 +610,7 @@ ith
 itr
 ivanov
 ivanovjr
+IVersion
 iws
 Izmailov
 jacoco
@@ -787,7 +791,7 @@ missingdeprecated
 missingoverride
 missingswitchdefault
 missingtag
-Mixin
+mixin
 mkdir
 mkordas
 MLINKCHECK
@@ -974,6 +978,7 @@ pgjdbc
 Pgpg
 pguyot
 php
+picocli
 pid
 pitest
 pitesttyle
@@ -1046,6 +1051,7 @@ regexpsingleline
 regexpsinglelinejava
 relativized
 releasenotes
+remkop
 requirethis
 Rethrown
 returncount
@@ -1079,6 +1085,7 @@ Ruslan
 rw
 sabaka
 Sameline
+saxonica
 sbe
 sbt
 scache
@@ -1397,3 +1404,4 @@ yyyy
 Yzz
 zf
 zh
+ZSH

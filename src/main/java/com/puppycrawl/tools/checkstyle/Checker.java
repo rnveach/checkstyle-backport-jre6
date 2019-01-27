@@ -210,7 +210,13 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
             fsc.beginProcessing(charset);
         }
 
-        processFiles(files);
+        final List<File> targetFiles = new ArrayList<File>();
+        for (File file : files) {
+            if (CommonUtil.matchesFileExtension(file, fileExtensions)) {
+                targetFiles.add(file);
+            }
+        }
+        processFiles(targetFiles);
 
         // Finish up
         for (final FileSetCheck fsc : fileSetChecks) {
@@ -281,7 +287,6 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
                 final String fileName = file.getAbsolutePath();
                 final long timestamp = file.lastModified();
                 if (cacheFile != null && cacheFile.isInCache(fileName, timestamp)
-                        || !CommonUtil.matchesFileExtension(file, fileExtensions)
                         || !acceptFileStarted(fileName)) {
                     continue;
                 }

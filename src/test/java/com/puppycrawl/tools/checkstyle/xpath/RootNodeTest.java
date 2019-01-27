@@ -36,8 +36,8 @@ import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import net.sf.saxon.om.AxisInfo;
-import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamespaceBinding;
+import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.tree.iter.EmptyIterator;
 
 public class RootNodeTest extends AbstractPathTestSupport {
@@ -59,7 +59,7 @@ public class RootNodeTest extends AbstractPathTestSupport {
     @Test
     public void testXpath() throws Exception {
         final String xpath = "/";
-        final List<Item> nodes = getXpathItems(xpath, rootNode);
+        final List<NodeInfo> nodes = getXpathItems(xpath, rootNode);
         assertEquals("Invalid number of nodes", 1, nodes.size());
         assertTrue("Should return true, because selected node is RootNode",
                 nodes.get(0) instanceof RootNode);

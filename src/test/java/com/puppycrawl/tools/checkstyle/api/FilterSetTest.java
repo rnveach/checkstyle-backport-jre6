@@ -31,7 +31,8 @@ public class FilterSetTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        EqualsVerifier.forClass(FilterSet.class).usingGetClass().verify();
+        EqualsVerifier.forClass(FilterSet.class).usingGetClass()
+                .verify();
     }
 
     @Test

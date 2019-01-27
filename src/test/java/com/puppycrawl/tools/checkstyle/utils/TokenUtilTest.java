@@ -27,6 +27,8 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -36,6 +38,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 public class TokenUtilTest {
@@ -284,6 +287,32 @@ public class TokenUtilTest {
             });
 
         assertEquals("Invalid second sibling", secondSibling, result.get());
+    }
+
+    @Test
+    public void testForEachChild() {
+        final DetailAST astForTest = new DetailAST();
+        final DetailAST child = new DetailAST();
+        final DetailAST firstSibling = new DetailAST();
+        final DetailAST secondSibling = new DetailAST();
+        final DetailAST thirdSibling = new DetailAST();
+        firstSibling.setType(TokenTypes.DOT);
+        secondSibling.setType(TokenTypes.CLASS_DEF);
+        thirdSibling.setType(TokenTypes.IDENT);
+        secondSibling.setNextSibling(thirdSibling);
+        firstSibling.setNextSibling(secondSibling);
+        child.setNextSibling(firstSibling);
+        astForTest.setFirstChild(child);
+        final List<DetailAST> children = new ArrayList<DetailAST>();
+        TokenUtil.forEachChild(astForTest, TokenTypes.CLASS_DEF, new Consumer<DetailAST>() {
+            @Override
+            public boolean accept(DetailAST t) {
+                return children.add(t);
+            }
+        });
+
+        assertEquals("Must be one match", 1, children.size());
+        assertEquals("Mismatched child node", secondSibling, children.get(0));
     }
 
 }

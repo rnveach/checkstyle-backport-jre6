@@ -298,8 +298,9 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
 
     @Test
     public void testEqualsAndHashCodeOfTagClass() {
-        EqualsVerifier.forClass(SuppressWithPlainTextCommentFilter.Suppression.class)
-            .usingGetClass().verify();
+        EqualsVerifier
+                .forClass(SuppressWithPlainTextCommentFilter.Suppression.class).usingGetClass()
+                .verify();
     }
 
     @Test

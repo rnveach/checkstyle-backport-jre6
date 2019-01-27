@@ -164,9 +164,6 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 "ELLIPSIS",
                 // these are covered by GenericWhitespaceCheck
                 "WILDCARD_TYPE", "GENERIC_END", "GENERIC_START"));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("RightCurly", ImmutableSet.of(
-                // Until https://github.com/checkstyle/checkstyle/issues/4177
-                "LAMBDA"));
 
         // google
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AnnotationLocation", ImmutableSet.of(
@@ -228,9 +225,6 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 // state of the configuration when test was made until
                 // https://github.com/checkstyle/checkstyle/issues/4122
                 "COLON", "TYPE_EXTENSION_AND"));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("RightCurly", ImmutableSet.of(
-                // Until https://github.com/checkstyle/checkstyle/issues/4178
-                "LAMBDA"));
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceBefore", ImmutableSet.of(
                 // google uses GenericWhitespace for this behavior
                 "GENERIC_START", "GENERIC_END"));

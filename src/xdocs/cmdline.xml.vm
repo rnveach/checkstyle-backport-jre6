@@ -26,7 +26,7 @@
       <p>
         This document describes how to run Checkstyle using the command line
         tool. The latest version of Checkstyle can be found at <a
-        href="http://checkstyle.sourceforge.net">http://checkstyle.sourceforge.net</a>.
+        href="https://checkstyle.org">https://checkstyle.org</a>.
         This command line tool is included in the Checkstyle distribution.
       </p>
     </section>
@@ -39,9 +39,9 @@ java -D&lt;property&gt;=&lt;value&gt;  \
      com.puppycrawl.tools.checkstyle.Main \
      -c &lt;configurationFile&gt; \
      [-f &lt;format&gt;] [-p &lt;propertiesFile&gt;] [-o &lt;file&gt;] \
-     [-s &lt;line:column&gt;] [-gxs | --generate-xpath-suppression] [-tabWidth &lt;length&gt;] \
-     [-t | --tree] [-T | --treeWithComments] [-J | treeWithJavadoc] [-j | --javadocTree] [-v] \
-     file...
+     [-s &lt;line:column&gt;] [-g | --generate-xpath-suppression] [--tabWidth &lt;length&gt;] \
+     [-t | --tree] [-T | --treeWithComments] [-J | treeWithJavadoc] [-j | --javadocTree] \
+     [-V | --version] [-h | --help] file...
       </source>
       </p>
 
@@ -90,13 +90,13 @@ java -D&lt;property&gt;=&lt;value&gt;  \
           also ok, but might result in undesirable matching and suppress other issues.
         </li>
         <li>
-          <code>-gxs,--generate-xpath-suppression</code> - generate to output a suppression.xml to
+          <code>-g,--generate-xpath-suppression</code> - generate to output a suppression.xml to
           use to suppress all violations from user's config. Instead of printing every violation,
           all errors will be catched and single suppressions.xml file will be printed out. Used only
           with <code>-c</code> option.
         </li>
         <li>
-          <code>-tabWidth length</code> - set the length of the tab character. Used only with
+          <code>--tabWidth length</code> - set the length of the tab character. Used only with
           <code>-s</code> and <code>-gxs</code> options. Default value is 8.
         </li>
         <li>
@@ -143,10 +143,13 @@ java -D&lt;property&gt;=&lt;value&gt;  \
           exclude from CheckStyle. Multiple excludes are allowed.
         </li>
         <li>
-          <code>-v</code> - print product version and exit. Any other option is ignored.
+          <code>-V, --version</code> - print product version and exit. Any other option is ignored.
         </li>
         <li>
-          <code>-executeIgnoredModules</code> - Allows ignored modules to be run.
+          <code>-h, --help</code> - print usage help message and exit. Any other option is ignored.
+        </li>
+        <li>
+          <code>--executeIgnoredModules</code> - Allows ignored modules to be run.
         </li>
       </ul>
 
@@ -163,6 +166,13 @@ java -D&lt;property&gt;=&lt;value&gt;  \
         <code>-D&lt;property&gt;=&lt;value&gt;</code> arguments to java or
         specifying a property file using the <code>-p</code> option.  If a
         property file is specified, the system properties are ignored.
+      </p>
+      <p>
+        CLI is implemented by means of <a href="https://picocli.info">picocli</a>
+        library. Our CLI supports definition of arguments in file
+        by means of <a href="https://picocli.info/#AtFiles">AtFiles</a> feature
+        and also command line completion in Bash or ZSH Unix shells, see how to make it
+        <a href="https://picocli.info/autocomplete.html">here</a>.
       </p>
     </section>
 

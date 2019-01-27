@@ -58,7 +58,8 @@ public class IntRangeFilterTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        EqualsVerifier.forClass(IntRangeFilter.class).usingGetClass().verify();
+        EqualsVerifier.forClass(IntRangeFilter.class)
+                .usingGetClass().verify();
     }
 
 }
