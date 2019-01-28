@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -107,11 +107,9 @@ public class IllegalInstantiationCheckTest
                 "classes",
                 "java.lang.Boolean");
         final String[] expected = {
-            "3:20: " + getCheckMessage(MSG_KEY, "java.lang.Boolean"),
+            "2:20: " + getCheckMessage(MSG_KEY, "java.lang.Boolean"),
         };
-        verify(checkConfig,
-                getNonCompilablePath("InputIllegalInstantiationNoPackage.java"),
-                expected);
+        verify(checkConfig, getPath("InputIllegalInstantiationNoPackage.java"), expected);
     }
 
     @Test

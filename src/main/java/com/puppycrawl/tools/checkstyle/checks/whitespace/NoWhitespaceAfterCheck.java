@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -407,26 +407,21 @@ public class NoWhitespaceAfterCheck extends AbstractCheck {
      * @return leftmost token of identifier.
      */
     private static DetailAST getIdentLastToken(DetailAST ast) {
-        // single identifier token as a name is the most common case
-        DetailAST result = ast.findFirstToken(TokenTypes.IDENT);
-        if (result == null) {
-            final DetailAST dot = ast.findFirstToken(TokenTypes.DOT);
-            // method call case
-            if (dot == null) {
-                final DetailAST methodCall = ast.findFirstToken(TokenTypes.METHOD_CALL);
-                if (methodCall != null) {
-                    result = methodCall.findFirstToken(TokenTypes.RPAREN);
-                }
+        final DetailAST result;
+        final DetailAST dot = ast.findFirstToken(TokenTypes.DOT);
+        // method call case
+        if (dot == null) {
+            final DetailAST methodCall = ast.findFirstToken(TokenTypes.METHOD_CALL);
+            if (methodCall == null) {
+                result = ast.findFirstToken(TokenTypes.IDENT);
             }
-            // qualified name case
             else {
-                if (dot.findFirstToken(TokenTypes.DOT) == null) {
-                    result = dot.getFirstChild().getNextSibling();
-                }
-                else {
-                    result = dot.findFirstToken(TokenTypes.IDENT);
-                }
+                result = methodCall.findFirstToken(TokenTypes.RPAREN);
             }
+        }
+        // qualified name case
+        else {
+            result = dot.getFirstChild().getNextSibling();
         }
         return result;
     }

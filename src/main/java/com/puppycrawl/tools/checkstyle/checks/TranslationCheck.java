@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -21,7 +21,6 @@ package com.puppycrawl.tools.checkstyle.checks;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
@@ -435,17 +434,15 @@ public class TranslationCheck extends AbstractFileSetCheck {
      */
     private void checkTranslationKeys(ResourceBundle bundle) {
         final Set<File> filesInBundle = bundle.getFiles();
-        if (filesInBundle.size() >= 2) {
-            // build a map from files to the keys they contain
-            final Set<String> allTranslationKeys = new HashSet<String>();
-            final Map<File, Set<String>> filesAssociatedWithKeys = new HashMap<File, Set<String>>();
-            for (File currentFile : filesInBundle) {
-                final Set<String> keysInCurrentFile = getTranslationKeys(currentFile);
-                allTranslationKeys.addAll(keysInCurrentFile);
-                filesAssociatedWithKeys.put(currentFile, keysInCurrentFile);
-            }
-            checkFilesForConsistencyRegardingTheirKeys(filesAssociatedWithKeys, allTranslationKeys);
+        // build a map from files to the keys they contain
+        final Set<String> allTranslationKeys = new HashSet<String>();
+        final Map<File, Set<String>> filesAssociatedWithKeys = new HashMap<File, Set<String>>();
+        for (File currentFile : filesInBundle) {
+            final Set<String> keysInCurrentFile = getTranslationKeys(currentFile);
+            allTranslationKeys.addAll(keysInCurrentFile);
+            filesAssociatedWithKeys.put(currentFile, keysInCurrentFile);
         }
+        checkFilesForConsistencyRegardingTheirKeys(filesAssociatedWithKeys, allTranslationKeys);
     }
 
     /**
@@ -467,10 +464,8 @@ public class TranslationCheck extends AbstractFileSetCheck {
                     missingKeys.add(e);
                 }
             }
-            if (!missingKeys.isEmpty()) {
-                for (Object key : missingKeys) {
-                    log(1, MSG_KEY, key);
-                }
+            for (Object key : missingKeys) {
+                log(1, MSG_KEY, key);
             }
             fireErrors(path);
             dispatcher.fireFileFinished(path);
@@ -495,21 +490,27 @@ public class TranslationCheck extends AbstractFileSetCheck {
                 inStream.close();
             }
         }
-        catch (final IOException ex) {
-            logIoException(ex, file);
+        // -@cs[IllegalCatch] It is better to catch all exceptions since it can throw
+        // a runtime exception.
+        catch (final Exception ex) {
+            logException(ex, file);
         }
         return keys;
     }
 
     /**
-     * Helper method to log an io exception.
+     * Helper method to log an exception.
      * @param exception the exception that occurred
      * @param file the file that could not be processed
      */
-    private void logIoException(IOException exception, File file) {
-        String[] args = null;
-        String key = "general.fileNotFound";
-        if (!(exception instanceof FileNotFoundException)) {
+    private void logException(Exception exception, File file) {
+        final String[] args;
+        final String key;
+        if (exception instanceof FileNotFoundException) {
+            args = null;
+            key = "general.fileNotFound";
+        }
+        else {
             args = new String[] {exception.getMessage()};
             key = "general.exception";
         }
@@ -524,7 +525,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
         final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
         messages.add(message);
         getMessageDispatcher().fireErrors(file.getPath(), messages);
-        log.debug("IOException occurred.", exception);
+        log.debug("Exception occurred.", exception);
     }
 
     /** Class which represents a resource bundle. */

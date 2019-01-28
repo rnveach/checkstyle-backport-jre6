@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,6 @@ import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
@@ -175,8 +174,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     @Override
     protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
         // check if already checked and passed the file
-        if (CommonUtil.matchesFileExtension(file, getFileExtensions())
-                && (!ordinaryChecks.isEmpty() || !commentChecks.isEmpty())) {
+        if (!ordinaryChecks.isEmpty() || !commentChecks.isEmpty()) {
             final FileContents contents = new FileContents(fileText);
             final DetailAST rootAST = JavaParser.parse(contents);
             if (!ordinaryChecks.isEmpty()) {
@@ -316,16 +314,14 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * @throws CheckstyleException when validation of default tokens fails
      */
     private static void validateDefaultTokens(AbstractCheck check) throws CheckstyleException {
-        if (check.getRequiredTokens().length != 0) {
-            final int[] defaultTokens = check.getDefaultTokens();
-            Arrays.sort(defaultTokens);
-            for (final int token : check.getRequiredTokens()) {
-                if (Arrays.binarySearch(defaultTokens, token) < 0) {
-                    final String message = String.format(Locale.ROOT, "Token \"%s\" from required "
-                            + "tokens was not found in default tokens list in check %s",
-                            token, check.getClass().getName());
-                    throw new CheckstyleException(message);
-                }
+        final int[] defaultTokens = check.getDefaultTokens();
+        Arrays.sort(defaultTokens);
+        for (final int token : check.getRequiredTokens()) {
+            if (Arrays.binarySearch(defaultTokens, token) < 0) {
+                final String message = String.format(Locale.ROOT, "Token \"%s\" from required "
+                        + "tokens was not found in default tokens list in check %s",
+                        token, check.getClass().getName());
+                throw new CheckstyleException(message);
             }
         }
     }
@@ -339,11 +335,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     private void walk(DetailAST ast, FileContents contents,
             AstState astState) {
         notifyBegin(ast, contents, astState);
-
-        // empty files are not flagged by javac, will yield ast == null
-        if (ast != null) {
-            processIter(ast, astState);
-        }
+        processIter(ast, astState);
         notifyEnd(ast, astState);
     }
 
@@ -433,18 +425,14 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * @return list of visitors
      */
     private Collection<AbstractCheck> getListOfChecks(DetailAST ast, AstState astState) {
-        Collection<AbstractCheck> visitors = null;
+        final Collection<AbstractCheck> visitors;
         final String tokenType = TokenUtil.getTokenName(ast.getType());
 
         if (astState == AstState.WITH_COMMENTS) {
-            if (tokenToCommentChecks.containsKey(tokenType)) {
-                visitors = tokenToCommentChecks.get(tokenType);
-            }
+            visitors = tokenToCommentChecks.get(tokenType);
         }
         else {
-            if (tokenToOrdinaryChecks.containsKey(tokenType)) {
-                visitors = tokenToOrdinaryChecks.get(tokenType);
-            }
+            visitors = tokenToOrdinaryChecks.get(tokenType);
         }
         return visitors;
     }
@@ -525,9 +513,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
             while (curNode != null && toVisit == null) {
                 notifyLeave(curNode, astState);
                 toVisit = curNode.getNextSibling();
-                if (toVisit == null) {
-                    curNode = curNode.getParent();
-                }
+                curNode = curNode.getParent();
             }
             curNode = toVisit;
         }

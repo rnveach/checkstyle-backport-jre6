@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -282,6 +282,9 @@ public class ParenPadCheckTest
             "212:48: " + getCheckMessage(MSG_WS_FOLLOWED, "("),
             "212:52: " + getCheckMessage(MSG_WS_PRECEDED, ")"),
             "212:54: " + getCheckMessage(MSG_WS_PRECEDED, ")"),
+            "216:18: " + getCheckMessage(MSG_WS_FOLLOWED, "("),
+            "216:20: " + getCheckMessage(MSG_WS_PRECEDED, ")"),
+            "218:21: " + getCheckMessage(MSG_WS_PRECEDED, ")"),
         };
         verify(checkConfig, getPath("InputParenPadLeftRightAndNoSpace.java"), expected);
     }

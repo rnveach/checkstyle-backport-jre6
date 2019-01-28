@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -156,4 +156,12 @@ public class SingleSpaceSeparatorCheckTest extends AbstractModuleTestSupport {
         verify(checkConfig, getPath("InputSingleSpaceSeparatorComments.java"), expected);
     }
 
+    @Test
+    public void testEmpty() throws Exception {
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(SingleSpaceSeparatorCheck.class);
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getPath("InputSingleSpaceSeparatorEmpty.java"), expected);
+    }
 }

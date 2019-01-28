@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -646,17 +646,20 @@ public class VisibilityModifierCheck
             final DetailAST type = variableDef.findFirstToken(TokenTypes.TYPE);
             final boolean isCanonicalName = isCanonicalName(type);
             final String typeName = getTypeName(type, isCanonicalName);
-            final DetailAST typeArgs = getGenericTypeArgs(type, isCanonicalName);
-            if (typeArgs == null) {
-                result = !isCanonicalName && isPrimitive(type)
-                    || immutableClassShortNames.contains(typeName)
-                    || isCanonicalName && immutableClassCanonicalNames.contains(typeName);
+            if (immutableClassShortNames.contains(typeName)
+                    || isCanonicalName && immutableClassCanonicalNames.contains(typeName)) {
+                final DetailAST typeArgs = getGenericTypeArgs(type, isCanonicalName);
+
+                if (typeArgs == null) {
+                    result = true;
+                }
+                else {
+                    final List<String> argsClassNames = getTypeArgsClassNames(typeArgs);
+                    result = areImmutableTypeArguments(argsClassNames);
+                }
             }
             else {
-                final List<String> argsClassNames = getTypeArgsClassNames(typeArgs);
-                result = (immutableClassShortNames.contains(typeName)
-                    || isCanonicalName && immutableClassCanonicalNames.contains(typeName))
-                    && areImmutableTypeArguments(argsClassNames);
+                result = !isCanonicalName && isPrimitive(type);
             }
         }
         return result;
@@ -783,13 +786,14 @@ public class VisibilityModifierCheck
         while (toVisit != null) {
             toVisit = getNextSubTreeNode(toVisit, type);
             if (toVisit != null && toVisit.getType() == TokenTypes.IDENT) {
+                if (canonicalNameBuilder.length() > 0) {
+                    canonicalNameBuilder.append('.');
+                }
                 canonicalNameBuilder.append(toVisit.getText());
                 final DetailAST nextSubTreeNode = getNextSubTreeNode(toVisit, type);
-                if (nextSubTreeNode != null) {
-                    if (nextSubTreeNode.getType() == TokenTypes.TYPE_ARGUMENTS) {
-                        break;
-                    }
-                    canonicalNameBuilder.append('.');
+                if (nextSubTreeNode != null
+                        && nextSubTreeNode.getType() == TokenTypes.TYPE_ARGUMENTS) {
+                    break;
                 }
             }
         }
@@ -810,13 +814,10 @@ public class VisibilityModifierCheck
         DetailAST toVisitAst = currentNode.getFirstChild();
         while (toVisitAst == null) {
             toVisitAst = currentNode.getNextSibling();
-            if (toVisitAst == null) {
-                if (currentNode.getParent().equals(subTreeRootAst)
-                         && currentNode.getParent().getColumnNo() == subTreeRootAst.getColumnNo()) {
-                    break;
-                }
-                currentNode = currentNode.getParent();
+            if (currentNode.getParent().getColumnNo() == subTreeRootAst.getColumnNo()) {
+                break;
             }
+            currentNode = currentNode.getParent();
         }
         return toVisitAst;
     }

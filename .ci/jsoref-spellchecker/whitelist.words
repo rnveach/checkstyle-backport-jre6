@@ -361,7 +361,6 @@ edb
 edef
 edf
 edu
-efnforce
 ej
 ejb
 elasticsearch
@@ -369,6 +368,7 @@ elementdef
 elif
 elist
 Ellipsize
+elsif
 emacs
 emptyblock
 emptycatchblock
@@ -982,6 +982,7 @@ pguyot
 php
 picocli
 pid
+PIPESTATUS
 pitest
 pitesttyle
 pkga
@@ -1075,7 +1076,6 @@ rp
 rparen
 rpmfind
 rq
-Rrequired
 Rrridden
 RRRR
 RSPEC
@@ -1289,6 +1289,7 @@ UTests
 utf
 UUID
 UWF
+uxxxx
 Validator
 VALUEEEE
 vararg

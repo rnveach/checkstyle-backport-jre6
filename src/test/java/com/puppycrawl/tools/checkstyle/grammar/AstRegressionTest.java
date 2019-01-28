@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -108,6 +108,12 @@ public class AstRegressionTest extends AbstractTreeTestSupport {
     public void testAnnotationAstTree1() throws Exception {
         verifyAst(getPath("InputRegressionJavaAnnotation1Ast.txt"),
                 getPath("InputRegressionJavaAnnotation1.java"));
+    }
+
+    @Test
+    public void testTypecast() throws Exception {
+        verifyAst(getPath("InputRegressionJavaTypecastAst.txt"),
+                getPath("InputRegressionJavaTypecast.java"));
     }
 
     @Test

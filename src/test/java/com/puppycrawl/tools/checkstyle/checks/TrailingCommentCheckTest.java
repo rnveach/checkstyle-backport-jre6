@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -62,6 +62,8 @@ public class TrailingCommentCheckTest extends AbstractModuleTestSupport {
             "18: " + getCheckMessage(MSG_KEY),
             "19: " + getCheckMessage(MSG_KEY),
             "29: " + getCheckMessage(MSG_KEY),
+            "30: " + getCheckMessage(MSG_KEY),
+            "31: " + getCheckMessage(MSG_KEY),
         };
         verify(checkConfig, getPath("InputTrailingComment.java"), expected);
     }
@@ -76,6 +78,7 @@ public class TrailingCommentCheckTest extends AbstractModuleTestSupport {
             "8: " + getCheckMessage(MSG_KEY),
             "18: " + getCheckMessage(MSG_KEY),
             "19: " + getCheckMessage(MSG_KEY),
+            "31: " + getCheckMessage(MSG_KEY),
         };
         verify(checkConfig, getPath("InputTrailingComment.java"), expected);
     }
@@ -97,6 +100,8 @@ public class TrailingCommentCheckTest extends AbstractModuleTestSupport {
             "19: " + getCheckMessage(MSG_KEY),
             "26: " + getCheckMessage(MSG_KEY),
             "29: " + getCheckMessage(MSG_KEY),
+            "30: " + getCheckMessage(MSG_KEY),
+            "31: " + getCheckMessage(MSG_KEY),
         };
         verify(checkConfig, getPath("InputTrailingComment.java"), expected);
     }

@@ -8,9 +8,13 @@
 
   <!-- intentional problem for testing -->
   <suppress checks="PackageDeclarationCheck"
+    files="packagedeclaration[\\/]InputPackageDeclarationNoPackage\.java"/>
+  <suppress checks="PackageDeclarationCheck"
     files="packagedeclaration[\\/]InputPackageDeclarationWithCommentOnly\.java"/>
   <suppress checks="PackageDeclarationCheck"
     files="[\\/]resources-noncompilable[\\/].*[\\/]packagedeclaration[\\/]Input.*\.java"/>
+  <suppress checks="PackageDeclarationCheck"
+    files="[\\/]resources[\\/].*[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorEmpty\.java"/>
 
   <!-- intentional problem for testing -->
   <suppress checks="PackageDeclarationCheck"
@@ -48,6 +52,10 @@
 
   <!-- intentional problem for testing -->
   <suppress checks="OuterTypeFilename"
+    files="outertypefilename[\\/]InputOuterTypeFilename1a\.java"/>
+  <suppress checks="OuterTypeFilename"
     files="outertypefilename[\\/]InputOuterTypeFilename5\.java"/>
+  <suppress checks="OuterTypeFilename"
+    files="outertypefilename[\\/]InputOuterTypeFilenameNoPublic\.java"/>
 
 </suppressions>

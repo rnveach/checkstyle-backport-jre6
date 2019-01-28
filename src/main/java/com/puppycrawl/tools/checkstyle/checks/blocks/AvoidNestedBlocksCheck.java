@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -119,7 +119,6 @@ public class AvoidNestedBlocksCheck extends AbstractCheck {
         final DetailAST parent = ast.getParent();
         if (parent.getType() == TokenTypes.SLIST
                 && (!allowInSwitchCase
-                    || parent.getParent().getType() != TokenTypes.CASE_GROUP
                     || parent.getNumberOfChildren() != 1)) {
             log(ast, MSG_KEY_BLOCK_NESTED);
         }

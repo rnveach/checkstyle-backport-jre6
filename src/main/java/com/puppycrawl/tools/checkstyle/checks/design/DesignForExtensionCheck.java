@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -235,21 +235,15 @@ public class DesignForExtensionCheck extends AbstractCheck {
      */
     private static boolean hasIgnoredAnnotation(DetailAST methodDef, final Set<String> annotations) {
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
-        boolean hasIgnoredAnnotation = false;
-        if (modifiers.findFirstToken(TokenTypes.ANNOTATION) != null) {
-            final Optional<DetailAST> annotation = TokenUtil.findFirstTokenByPredicate(modifiers,
-                new Predicate<DetailAST>() {
-                    @Override
-                    public boolean test(DetailAST currentToken) {
-                        return currentToken.getType() == TokenTypes.ANNOTATION
-                                && annotations.contains(getAnnotationName(currentToken));
-                    }
-                });
-            if (annotation.isPresent()) {
-                hasIgnoredAnnotation = true;
-            }
-        }
-        return hasIgnoredAnnotation;
+        final Optional<DetailAST> annotation = TokenUtil.findFirstTokenByPredicate(modifiers,
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST currentToken) {
+                    return currentToken.getType() == TokenTypes.ANNOTATION
+                            && annotations.contains(getAnnotationName(currentToken));
+                }
+            });
+        return annotation.isPresent();
     }
 
     /**

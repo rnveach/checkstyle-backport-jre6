@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -68,10 +68,9 @@ public enum LineSeparatorOption {
     public boolean matches(byte... bytes) {
         final boolean result;
         if (this == LF_CR_CRLF) {
-            // this silently assumes CRLF and ANY have the same length
-            // and LF and CR are of length 1
-            result = CRLF.matches(bytes)
-                || LF.matches(Arrays.copyOfRange(bytes, 1, 2))
+            // this silently assumes LF and CR are of length 1
+            // CRLF always matches LF, so CRLF isn't tested
+            result = LF.matches(Arrays.copyOfRange(bytes, 1, 2))
                 || CR.matches(Arrays.copyOfRange(bytes, 1, 2));
         }
         else {

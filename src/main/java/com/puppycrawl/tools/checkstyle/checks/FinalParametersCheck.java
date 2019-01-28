@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -135,14 +135,10 @@ public class FinalParametersCheck extends AbstractCheck {
     private void visitMethod(final DetailAST method) {
         final DetailAST modifiers =
             method.findFirstToken(TokenTypes.MODIFIERS);
-        // exit on fast lane if there is nothing to check here
 
-        if (method.findFirstToken(TokenTypes.PARAMETERS)
-                .findFirstToken(TokenTypes.PARAMETER_DEF) != null
-                // ignore abstract and native methods
-                && modifiers.findFirstToken(TokenTypes.ABSTRACT) == null
+        // ignore abstract and native methods
+        if (modifiers.findFirstToken(TokenTypes.ABSTRACT) == null
                 && modifiers.findFirstToken(TokenTypes.LITERAL_NATIVE) == null) {
-            // we can now be sure that there is at least one parameter
             final DetailAST parameters =
                 method.findFirstToken(TokenTypes.PARAMETERS);
             DetailAST child = parameters.getFirstChild();

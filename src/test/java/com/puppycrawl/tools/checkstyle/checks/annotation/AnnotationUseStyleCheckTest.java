@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -142,6 +142,7 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
         final String[] expected = {
             "43: " + getCheckMessage(MSG_KEY_ANNOTATION_INCORRECT_STYLE, "COMPACT"),
             "47: " + getCheckMessage(MSG_KEY_ANNOTATION_INCORRECT_STYLE, "COMPACT"),
+            "67: " + getCheckMessage(MSG_KEY_ANNOTATION_INCORRECT_STYLE, "COMPACT"),
         };
 
         verify(checkConfig, getPath("InputAnnotationUseStyleDifferentStyles.java"), expected);
@@ -225,6 +226,21 @@ public class AnnotationUseStyleCheckTest extends AbstractModuleTestSupport {
 
         verify(checkConfig,
                 getNonCompilablePath("InputAnnotationUseStyleWithTrailingComma.java"), expected);
+    }
+
+    /**
+     * Test that annotation parens are always present.
+     */
+    @Test
+    public void testTrailingArrayIgnore() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(AnnotationUseStyleCheck.class);
+        checkConfig.addAttribute("trailingArrayComma", "ignore");
+        final String[] expected = {
+            "9: " + getCheckMessage(MSG_KEY_ANNOTATION_INCORRECT_STYLE, "COMPACT_NO_ARRAY"),
+            "16: " + getCheckMessage(MSG_KEY_ANNOTATION_INCORRECT_STYLE, "COMPACT_NO_ARRAY"),
+        };
+
+        verify(checkConfig, getPath("InputAnnotationUseStyleWithTrailingComma.java"), expected);
     }
 
     @Test

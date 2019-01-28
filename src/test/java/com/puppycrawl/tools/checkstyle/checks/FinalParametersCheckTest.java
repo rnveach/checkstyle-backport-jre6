@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -121,6 +121,29 @@ public class FinalParametersCheckTest extends AbstractModuleTestSupport {
             "7:25: " + getCheckMessage(MSG_KEY, "o"),
             "8:15: " + getCheckMessage(MSG_KEY, "array"),
             "9:31: " + getCheckMessage(MSG_KEY, "s"),
+            "10:22: " + getCheckMessage(MSG_KEY, "l"),
+            "10:32: " + getCheckMessage(MSG_KEY, "s"),
+        };
+        verify(checkConfig, getPath("InputFinalParametersPrimitiveTypes.java"), expected);
+    }
+
+    @Test
+    public void testPrimitiveTypesParameters() throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(FinalParametersCheck.class);
+        final String[] expected = {
+            "5:14: " + getCheckMessage(MSG_KEY, "i"),
+            "6:15: " + getCheckMessage(MSG_KEY, "i"),
+            "6:22: " + getCheckMessage(MSG_KEY, "k"),
+            "6:32: " + getCheckMessage(MSG_KEY, "s"),
+            "7:15: " + getCheckMessage(MSG_KEY, "s"),
+            "7:25: " + getCheckMessage(MSG_KEY, "o"),
+            "7:35: " + getCheckMessage(MSG_KEY, "l"),
+            "8:15: " + getCheckMessage(MSG_KEY, "array"),
+            "9:15: " + getCheckMessage(MSG_KEY, "i"),
+            "9:22: " + getCheckMessage(MSG_KEY, "x"),
+            "9:31: " + getCheckMessage(MSG_KEY, "s"),
+            "10:15: " + getCheckMessage(MSG_KEY, "x"),
             "10:22: " + getCheckMessage(MSG_KEY, "l"),
             "10:32: " + getCheckMessage(MSG_KEY, "s"),
         };

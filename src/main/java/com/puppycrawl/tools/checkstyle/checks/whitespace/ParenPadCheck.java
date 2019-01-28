@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -201,22 +201,20 @@ public class ParenPadCheck extends AbstractParenPadCheck {
      * @param ast the token to check.
      */
     private void processExpression(DetailAST ast) {
-        if (ast.branchContains(TokenTypes.LPAREN)) {
-            DetailAST childAst = ast.getFirstChild();
-            while (childAst != null) {
-                if (childAst.getType() == TokenTypes.LPAREN) {
-                    processLeft(childAst);
-                }
-                else if (childAst.getType() == TokenTypes.RPAREN && !isInTypecast(childAst)) {
-                    processRight(childAst);
-                }
-                else if (!isAcceptableToken(childAst)) {
-                    //Traverse all subtree tokens which will never be configured
-                    //to be launched in visitToken()
-                    processExpression(childAst);
-                }
-                childAst = childAst.getNextSibling();
+        DetailAST childAst = ast.getFirstChild();
+        while (childAst != null) {
+            if (childAst.getType() == TokenTypes.LPAREN) {
+                processLeft(childAst);
             }
+            else if (childAst.getType() == TokenTypes.RPAREN && !isInTypecast(childAst)) {
+                processRight(childAst);
+            }
+            else if (!isAcceptableToken(childAst)) {
+                //Traverse all subtree tokens which will never be configured
+                //to be launched in visitToken()
+                processExpression(childAst);
+            }
+            childAst = childAst.getNextSibling();
         }
     }
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -264,19 +264,9 @@ public class AnnotationLocationCheck extends AbstractCheck {
     public void visitToken(DetailAST ast) {
         final DetailAST modifiersNode = ast.findFirstToken(TokenTypes.MODIFIERS);
 
-        if (hasAnnotations(modifiersNode)) {
+        if (modifiersNode != null) {
             checkAnnotations(modifiersNode, getExpectedAnnotationIndentation(modifiersNode));
         }
-    }
-
-    /**
-     * Checks whether a given modifier node has an annotation.
-     * @param modifierNode modifier node.
-     * @return true if the given modifier node has the annotation.
-     */
-    private static boolean hasAnnotations(DetailAST modifierNode) {
-        return modifierNode != null
-            && modifierNode.findFirstToken(TokenTypes.ANNOTATION) != null;
     }
 
     /**

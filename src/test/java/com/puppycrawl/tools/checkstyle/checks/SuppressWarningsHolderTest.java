@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -196,6 +196,14 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
     public void testIsSuppressedAfterEventEnd() throws Exception {
         createHolder("check", 100, 100, 350, 350);
         final AuditEvent event = createAuditEvent("check", 350, 352);
+
+        assertFalse("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
+    }
+
+    @Test
+    public void testIsSuppressedAfterEventEnd2() throws Exception {
+        createHolder("check", 100, 100, 350, 350);
+        final AuditEvent event = createAuditEvent("check", 400, 10);
 
         assertFalse("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
     }

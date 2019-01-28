@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -198,9 +198,8 @@ public class OperatorWrapCheck
     public void visitToken(DetailAST ast) {
         final DetailAST parent = ast.getParent();
         //we do not want to check colon for cases and defaults
-        if (ast.getType() != TokenTypes.COLON
-                || parent.getType() != TokenTypes.LITERAL_DEFAULT
-                    && parent.getType() != TokenTypes.LITERAL_CASE) {
+        if (parent.getType() != TokenTypes.LITERAL_DEFAULT
+                && parent.getType() != TokenTypes.LITERAL_CASE) {
             final String text = ast.getText();
             final int colNo = ast.getColumnNo();
             final int lineNo = ast.getLineNo();
