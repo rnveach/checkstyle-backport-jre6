@@ -151,7 +151,7 @@ public class TokenUtilTest {
 
     @Test
     public void testTokenValueIncorrect2() throws Exception {
-        final Integer id = 0;
+        final int id = 0;
         String[] originalValue = null;
         Field fieldToken = null;
         try {
@@ -286,7 +286,7 @@ public class TokenUtilTest {
                 }
             });
 
-        assertEquals("Invalid second sibling", secondSibling, result.get());
+        assertEquals("Invalid second sibling", secondSibling, result.orElse(null));
     }
 
     @Test

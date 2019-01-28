@@ -76,12 +76,7 @@ public class EmptyForInitializerPadCheck
      * @throws IllegalArgumentException if unable to decode
      */
     public void setOption(String optionStr) {
-        try {
-            option = PadOption.valueOf(optionStr.trim().toUpperCase(Locale.ENGLISH));
-        }
-        catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("unable to parse " + optionStr, iae);
-        }
+        option = PadOption.valueOf(optionStr.trim().toUpperCase(Locale.ENGLISH));
     }
 
     @Override
@@ -111,11 +106,11 @@ public class EmptyForInitializerPadCheck
             if (!CommonUtil.hasWhitespaceBefore(before, line)) {
                 if (option == PadOption.NOSPACE
                     && Character.isWhitespace(line.charAt(before))) {
-                    log(semi.getLineNo(), before, MSG_PRECEDED, SEMICOLON);
+                    log(ast, MSG_PRECEDED, SEMICOLON);
                 }
                 else if (option == PadOption.SPACE
                          && !Character.isWhitespace(line.charAt(before))) {
-                    log(semi.getLineNo(), before, MSG_NOT_PRECEDED, SEMICOLON);
+                    log(ast, MSG_NOT_PRECEDED, SEMICOLON);
                 }
             }
         }

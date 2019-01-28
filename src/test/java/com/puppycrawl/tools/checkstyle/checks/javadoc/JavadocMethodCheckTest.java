@@ -140,6 +140,9 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "305:22: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "aParam"),
             "328:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "337:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
+            "344:5: " + getCheckMessage(MSG_INVALID_INHERIT_DOC),
+            "383:8: " + getCheckMessage(MSG_DUPLICATE_TAG, "@return"),
+            "389:37: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "algorithm"),
         };
 
         verify(checkConfig, getPath("InputJavadocMethodTags.java"), expected);
@@ -180,6 +183,9 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "305:22: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "aParam"),
             "328:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "337:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
+            "344:5: " + getCheckMessage(MSG_INVALID_INHERIT_DOC),
+            "383:8: " + getCheckMessage(MSG_DUPLICATE_TAG, "@return"),
+            "389:37: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "algorithm"),
         };
         verify(checkConfig, getPath("InputJavadocMethodTags.java"), expected);
     }
@@ -300,6 +306,9 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "305:22: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "aParam"),
             "328:9: " + getCheckMessage(MSG_JAVADOC_MISSING),
             "337:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
+            "344:5: " + getCheckMessage(MSG_INVALID_INHERIT_DOC),
+            "383:8: " + getCheckMessage(MSG_DUPLICATE_TAG, "@return"),
+            "389:37: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "algorithm"),
         };
         verify(checkConfig, getPath("InputJavadocMethodTags.java"), expected);
     }
@@ -627,6 +636,29 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputJavadocMethodReceiverParameter.java"), expected);
+    }
+
+    @Test
+    public void testJavadocInMethod() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
+        final String[] expected = {
+            "4:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
+            "6:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
+            "9:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
+            "13:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
+        };
+        verify(checkConfig, getPath("InputJavadocMethodJavadocInMethod.java"), expected);
+    }
+
+    @Test
+    public void testConstructor() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
+        final String[] expected = {
+            "5:5: " + getCheckMessage(MSG_JAVADOC_MISSING),
+            "8:49: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "p1"),
+            "10:50: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "p1"),
+        };
+        verify(checkConfig, getPath("InputJavadocMethodConstructor.java"), expected);
     }
 
 }

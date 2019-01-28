@@ -214,6 +214,7 @@ Claira
 classdataabstractioncoupling
 classfanoutcomplexity
 classloader
+classmemberimpliedmodifier
 classname
 classpath
 classpathref
@@ -845,6 +846,7 @@ nbsp
 ncss
 ndex
 needbraces
+NEGS
 Nejmeh
 NEQ
 nestedfordepth
@@ -1034,6 +1036,7 @@ RBRACK
 rcurly
 rdiachenko
 RDz
+reactivex
 README
 Readonly
 rebasing
@@ -1083,6 +1086,7 @@ ru
 ruleset
 Ruslan
 rw
+rx
 sabaka
 Sameline
 saxonica
@@ -1324,6 +1328,7 @@ Whitebox
 whitelist
 whitespaceafter
 whitespacearound
+wholename
 Wifi
 wiki
 wikipedia
@@ -1371,6 +1376,7 @@ xmlvalidate
 Xms
 Xmx
 xpath
+xpathfilegeneratorastfilter
 xpathfilegeneratorauditlistener
 xpathfilter
 xpathmapper

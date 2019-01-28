@@ -75,12 +75,7 @@ public abstract class AbstractParenPadCheck
      * @throws IllegalArgumentException if unable to decode
      */
     public void setOption(String optionStr) {
-        try {
-            option = PadOption.valueOf(optionStr.trim().toUpperCase(Locale.ENGLISH));
-        }
-        catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("unable to parse " + optionStr, iae);
-        }
+        option = PadOption.valueOf(optionStr.trim().toUpperCase(Locale.ENGLISH));
     }
 
     /**
@@ -93,12 +88,12 @@ public abstract class AbstractParenPadCheck
         if (after < line.length()) {
             if (option == PadOption.NOSPACE
                 && Character.isWhitespace(line.charAt(after))) {
-                log(ast.getLineNo(), after, MSG_WS_FOLLOWED, OPEN_PARENTHESIS);
+                log(ast, MSG_WS_FOLLOWED, OPEN_PARENTHESIS);
             }
             else if (option == PadOption.SPACE
                      && !Character.isWhitespace(line.charAt(after))
                      && line.charAt(after) != CLOSE_PARENTHESIS) {
-                log(ast.getLineNo(), after, MSG_WS_NOT_FOLLOWED, OPEN_PARENTHESIS);
+                log(ast, MSG_WS_NOT_FOLLOWED, OPEN_PARENTHESIS);
             }
         }
     }
@@ -114,7 +109,7 @@ public abstract class AbstractParenPadCheck
             if (option == PadOption.NOSPACE
                 && Character.isWhitespace(line.charAt(before))
                 && !CommonUtil.hasWhitespaceBefore(before, line)) {
-                log(ast.getLineNo(), before, MSG_WS_PRECEDED, CLOSE_PARENTHESIS);
+                log(ast, MSG_WS_PRECEDED, CLOSE_PARENTHESIS);
             }
             else if (option == PadOption.SPACE
                 && !Character.isWhitespace(line.charAt(before))

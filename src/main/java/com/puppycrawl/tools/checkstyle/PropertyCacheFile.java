@@ -265,8 +265,8 @@ final class PropertyCacheFile {
         final Set<ExternalResource> resources = loadExternalResources(locations);
         if (areExternalResourcesChanged(resources)) {
             reset();
+            fillCacheWithExternalResources(resources);
         }
-        fillCacheWithExternalResources(resources);
     }
 
     /**
@@ -277,19 +277,18 @@ final class PropertyCacheFile {
     private static Set<ExternalResource> loadExternalResources(Set<String> resourceLocations) {
         final Set<ExternalResource> resources = new HashSet<ExternalResource>();
         for (String location : resourceLocations) {
-            String contentHashSum = null;
             try {
                 final byte[] content = loadExternalResource(location);
-                contentHashSum = getHashCodeBasedOnObjectContent(content);
+                final String contentHashSum = getHashCodeBasedOnObjectContent(content);
+                resources.add(new ExternalResource(EXTERNAL_RESOURCE_KEY_PREFIX + location,
+                        contentHashSum));
             }
             catch (CheckstyleException ex) {
                 // if exception happened (configuration resource was not found, connection is not
                 // available, resource is broken, etc), we need to calculate hash sum based on
                 // exception object content in order to check whether problem is resolved later
                 // and/or the configuration is changed.
-                contentHashSum = getHashCodeBasedOnObjectContent(ex);
-            }
-            finally {
+                final String contentHashSum = getHashCodeBasedOnObjectContent(ex);
                 resources.add(new ExternalResource(EXTERNAL_RESOURCE_KEY_PREFIX + location,
                         contentHashSum));
             }
@@ -348,9 +347,7 @@ final class PropertyCacheFile {
      */
     private void fillCacheWithExternalResources(Set<ExternalResource> externalResources) {
         for (ExternalResource resource : externalResources) {
-            if (!isResourceLocationInCache(resource.location)) {
-                details.setProperty(resource.location, resource.contentHashSum);
-            }
+            details.setProperty(resource.location, resource.contentHashSum);
         }
     }
 

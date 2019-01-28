@@ -114,12 +114,7 @@ public class RightCurlyCheck extends AbstractCheck {
      * @throws IllegalArgumentException if unable to decode
      */
     public void setOption(String optionStr) {
-        try {
-            option = RightCurlyOption.valueOf(optionStr.trim().toUpperCase(Locale.ENGLISH));
-        }
-        catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("unable to parse " + optionStr, iae);
-        }
+        option = RightCurlyOption.valueOf(optionStr.trim().toUpperCase(Locale.ENGLISH));
     }
 
     /**
@@ -495,17 +490,12 @@ public class RightCurlyCheck extends AbstractCheck {
                 rcurly = child.getLastChild();
                 nextToken = ast;
             }
-            else if (tokenType == TokenTypes.METHOD_DEF) {
+            else {
                 lcurly = ast.findFirstToken(TokenTypes.SLIST);
                 if (lcurly != null) {
                     // SLIST could be absent if method is abstract
                     rcurly = lcurly.getLastChild();
                 }
-                nextToken = getNextToken(ast);
-            }
-            else {
-                lcurly = ast.findFirstToken(TokenTypes.SLIST);
-                rcurly = lcurly.getLastChild();
                 nextToken = getNextToken(ast);
             }
             return new Details(lcurly, rcurly, nextToken, false);

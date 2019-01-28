@@ -35,6 +35,26 @@ public class AbbreviationAsWordInNameCheckTest extends AbstractModuleTestSupport
     }
 
     @Test
+    public void testDefault() throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(AbbreviationAsWordInNameCheck.class);
+        final int expectedCapitalCount = 4;
+
+        final String[] expected = {
+            "9: " + getWarningMessage("FactoryWithBADNAme", expectedCapitalCount),
+            "12: " + getWarningMessage("AbstractCLASSName", expectedCapitalCount),
+            "32: " + getWarningMessage("AbstractINNERRClass", expectedCapitalCount),
+            "37: " + getWarningMessage("WellNamedFACTORY", expectedCapitalCount),
+            "38: " + getWarningMessage("marazmaticMETHODName", expectedCapitalCount),
+            "39: " + getWarningMessage("marazmaticVARIABLEName", expectedCapitalCount),
+            "40: " + getWarningMessage("MARAZMATICVariableName", expectedCapitalCount),
+            "58: " + getWarningMessage("serialNUMBER", expectedCapitalCount),
+        };
+
+        verify(checkConfig, getPath("InputAbbreviationAsWordInNameType.java"), expected);
+    }
+
+    @Test
     public void testTypeNamesForThreePermittedCapitalLetters() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(AbbreviationAsWordInNameCheck.class);
@@ -229,6 +249,25 @@ public class AbbreviationAsWordInNameCheckTest extends AbstractModuleTestSupport
 
         final String[] expected = {
             "22: " + getWarningMessage("oveRRRRRrriddenMethod", expectedCapitalCount),
+        };
+
+        verify(checkConfig,
+                getPath("InputAbbreviationAsWordInNameOverridableMethod.java"), expected);
+    }
+
+    @Test
+    public void testOverriddenMethod()
+            throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(AbbreviationAsWordInNameCheck.class);
+        checkConfig.addAttribute("ignoreOverriddenMethods", "false");
+        final int expectedCapitalCount = 4;
+
+        final String[] expected = {
+            "6: " + getWarningMessage("serialNUMBER", expectedCapitalCount),
+            "14: " + getWarningMessage("oveRRRRRrriddenMethod", expectedCapitalCount),
+            "22: " + getWarningMessage("oveRRRRRrriddenMethod", expectedCapitalCount),
+            "34: " + getWarningMessage("oveRRRRRrriddenMethod", expectedCapitalCount),
         };
 
         verify(checkConfig,

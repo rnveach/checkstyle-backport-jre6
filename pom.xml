@@ -13,7 +13,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.15</version>
+  <version>8.16</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -171,11 +171,11 @@
     <projectVersion>${project.version}</projectVersion>
     <antlr4.version>4.5.3</antlr4.version>
     <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
-    <maven.spotbugs.plugin.version>3.1.8</maven.spotbugs.plugin.version>
+    <maven.spotbugs.plugin.version>3.1.10</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.11.0</maven.pmd.plugin.version>
     <pmd.version>6.6.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.2</maven.jacoco.plugin.version>
-    <powermock.version>2.0.0-beta.5</powermock.version>
+    <powermock.version>2.0.0-RC.4</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
     <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
     <maven.sevntu.checkstyle.plugin.version>1.32.0</maven.sevntu.checkstyle.plugin.version>
@@ -204,7 +204,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>3.8.0</version>
+      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -424,14 +424,6 @@
             <excludeFilterFile>config/spotbugs-exclude.xml</excludeFilterFile>
             <spotbugsXmlOutputDirectory>target/spotbugsreports</spotbugsXmlOutputDirectory>
           </configuration>
-          <dependencies>
-            <!-- till https://github.com/spotbugs/spotbugs/issues/746 -->
-            <dependency>
-              <groupId>com.github.spotbugs</groupId>
-              <artifactId>spotbugs</artifactId>
-              <version>3.1.5</version>
-            </dependency>
-          </dependencies>
         </plugin>
 
         <!-- This plugin's configuration is used to store Eclipse
@@ -823,7 +815,7 @@
                     <exclude>com.puppycrawl.tools.checkstyle.gui.ParseTreeTableModel*</exclude>
                     <exclude>com.puppycrawl.tools.checkstyle.gui.TreeTableCellRenderer*</exclude>
                     <exclude>com.puppycrawl.tools.checkstyle.gui.TreeTableModelAdapter*</exclude>
-                    <!-- Deprecated classes -->
+                    <!-- This class is in deprecation phase -->
                     <exclude>
                       com.puppycrawl.tools.checkstyle.checks.naming.AbstractTypeParameterNameCheck
                     </exclude>
@@ -951,7 +943,6 @@
           <xdocDirectory>${basedir}/src/xdocs</xdocDirectory>
           <!-- false till https://issues.apache.org/jira/browse/MSITE-774 -->
           <validate>false</validate>
-          <skipDeploy>true</skipDeploy>
         </configuration>
       </plugin>
 
@@ -1151,7 +1142,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
         <configuration>
           <archive>
             <manifest>
@@ -1748,24 +1739,35 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
-                <param>com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck*</param>
                 <param>
-                  com.puppycrawl.tools.checkstyle.checks.AvoidEscapedUnicodeCharactersCheck
+                  com.puppycrawl.tools.checkstyle.checks.AvoidEscapedUnicodeCharactersCheck*
                 </param>
-                <param>com.puppycrawl.tools.checkstyle.checks.DescendantTokenCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.FileSetCheckLifecycle</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.OuterTypeFilenameCheck</param>
-                <!-- this class will be rewritten in future releases -->
-                <!--<param>com.puppycrawl.tools.checkstyle.checks.SuppressWarningsHolder</param>-->
-                <param>com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.TranslationCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.UncommentedMainCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.UniquePropertiesCheck</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.UpperEllCheck</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.DescendantTokenCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.LineSeparatorOption*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.OuterTypeFilenameCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.SuppressWarningsHolder*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.TranslationCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.UncommentedMainCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.UniquePropertiesCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.UpperEllCheck*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheckTest</param>
@@ -1783,6 +1785,8 @@
                 <param>com.puppycrawl.tools.checkstyle.checks.UncommentedMainCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.UniquePropertiesCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.UpperEllCheckTest</param>
+                <!-- needed for SuppressWarningsFilter -->
+                <param>com.puppycrawl.tools.checkstyle.filters.SuppressWarningsFilterTest</param>
               </targetTests>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
@@ -1807,52 +1811,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationLocationCheck
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationOnSameLineCheck
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheck
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.MissingDeprecatedCheck
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.MissingOverrideCheck
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.PackageAnnotationCheck
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.SuppressWarningsCheck
-                </param>
+                <param>com.puppycrawl.tools.checkstyle.checks.annotation.*</param>
               </targetClasses>
               <targetTests>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationLocationCheckTest
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationOnSameLineCheckTest
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheckTest
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.MissingDeprecatedCheckTest
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.MissingOverrideCheckTest
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.PackageAnnotationCheckTest
-                </param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.annotation.SuppressWarningsCheckTest
-                </param>
+                <param>com.puppycrawl.tools.checkstyle.checks.annotation.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -1876,14 +1855,29 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.blocks.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.blocks.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
-              <mutationThreshold>97</mutationThreshold>
+              <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -1905,12 +1899,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.coding.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.coding.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>98</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -1934,12 +1943,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.design.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.design.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -1963,12 +1987,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.header.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.header.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -1992,12 +2031,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.imports.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.imports.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>96</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2021,14 +2075,29 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.indentation.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.indentation.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
-              <mutationThreshold>94</mutationThreshold>
+              <mutationThreshold>97</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -2050,14 +2119,29 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.javadoc.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.javadoc.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
-              <mutationThreshold>95</mutationThreshold>
+              <mutationThreshold>99</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -2079,12 +2163,28 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>REMOVE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.metrics.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.metrics.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2108,12 +2208,28 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>REMOVE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.modifier.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.modifier.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2137,14 +2253,30 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>REMOVE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.naming.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.naming.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <excludedClasses>
-                <!-- deprecated class -->
+                <!-- This class is in deprecation phase -->
                 <param>
                   com.puppycrawl.tools.checkstyle.checks.naming.AbstractTypeParameterNameCheck
                 </param>
@@ -2172,12 +2304,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.regexp.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.regexp.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2201,12 +2348,28 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>REMOVE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.sizes.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.sizes.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2230,12 +2393,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.checks.whitespace.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.whitespace.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2260,12 +2438,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.ant.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.ant.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2289,8 +2482,21 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>REMOVE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
-                <param>com.puppycrawl.tools.checkstyle.PackageNamesLoader</param>
+                <param>com.puppycrawl.tools.checkstyle.PackageNamesLoader*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.PackageNamesLoaderTest</param>
@@ -2318,19 +2524,40 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
-                <param>com.puppycrawl.tools.checkstyle.AuditEventDefaultFormatter</param>
+                <param>com.puppycrawl.tools.checkstyle.AuditEventDefaultFormatter*</param>
                 <param>com.puppycrawl.tools.checkstyle.ConfigurationLoader*</param>
-                <param>com.puppycrawl.tools.checkstyle.DefaultConfiguration</param>
-                <param>com.puppycrawl.tools.checkstyle.DefaultContext</param>
-                <param>com.puppycrawl.tools.checkstyle.DefaultLogger</param>
-                <param>com.puppycrawl.tools.checkstyle.Definitions</param>
-                <param>com.puppycrawl.tools.checkstyle.XMLLogger</param>
-                <param>com.puppycrawl.tools.checkstyle.PackageObjectFactory</param>
-                <param>com.puppycrawl.tools.checkstyle.PropertiesExpander</param>
-                <param>com.puppycrawl.tools.checkstyle.PropertyCacheFile</param>
-                <param>com.puppycrawl.tools.checkstyle.Checker</param>
-                <param>com.puppycrawl.tools.checkstyle.ThreadModeSettings</param>
+                <param>com.puppycrawl.tools.checkstyle.DefaultConfiguration*</param>
+                <param>com.puppycrawl.tools.checkstyle.DefaultContext*</param>
+                <param>com.puppycrawl.tools.checkstyle.DefaultLogger*</param>
+                <param>com.puppycrawl.tools.checkstyle.Definitions*</param>
+                <param>com.puppycrawl.tools.checkstyle.XMLLogger*</param>
+                <param>com.puppycrawl.tools.checkstyle.PackageObjectFactory*</param>
+                <param>com.puppycrawl.tools.checkstyle.PropertiesExpander*</param>
+                <param>com.puppycrawl.tools.checkstyle.PropertyCacheFile*</param>
+                <param>com.puppycrawl.tools.checkstyle.Checker*</param>
+                <param>com.puppycrawl.tools.checkstyle.ThreadModeSettings*</param>
+                <!-- interfaces -->
+                <param>com.puppycrawl.tools.checkstyle.AuditEventFormatter</param>
+                <param>com.puppycrawl.tools.checkstyle.FileStatefulCheck</param>
+                <param>com.puppycrawl.tools.checkstyle.ModuleFactory</param>
+                <param>com.puppycrawl.tools.checkstyle.PropertyResolver</param>
+                <param>com.puppycrawl.tools.checkstyle.StatelessCheck</param>
+                <param>com.puppycrawl.tools.checkstyle.TreeWalkerFilter</param>
+                <param>com.puppycrawl.tools.checkstyle.GlobalStatefulCheck</param>
+                <param>com.puppycrawl.tools.checkstyle.grammar.CommentListener</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.AuditEventDefaultFormatterTest</param>
@@ -2344,7 +2571,68 @@
                 <param>com.puppycrawl.tools.checkstyle.PropertyCacheFileTest</param>
                 <param>com.puppycrawl.tools.checkstyle.CheckerTest</param>
                 <param>com.puppycrawl.tools.checkstyle.ThreadModeSettingsTest</param>
+                <!-- this test is required for Checker -->
+                <param>com.puppycrawl.tools.checkstyle.filefilters.BeforeExecutionExclusionFileFilterTest</param>
               </targetTests>
+              <coverageThreshold>100</coverageThreshold>
+              <mutationThreshold>100</mutationThreshold>
+              <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
+              <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
+              <threads>${pitest.plugin.threads}</threads>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>pitest-common-2</id>
+      <properties>
+        <skipTests>true</skipTests>
+        <jacoco.skip>true</jacoco.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>${pitest.plugin.version}</version>
+            <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>REMOVE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
+              <targetClasses>
+                <param>com.puppycrawl.tools.checkstyle.JavadocPropertiesGenerator*</param>
+                <param>com.puppycrawl.tools.checkstyle.XmlLoader*</param>
+                <param>com.puppycrawl.tools.checkstyle.JavaParser*</param>
+              </targetClasses>
+              <targetTests>
+                <param>com.puppycrawl.tools.checkstyle.JavadocPropertiesGeneratorTest</param>
+                <param>com.puppycrawl.tools.checkstyle.XmlLoaderTest</param>
+                <param>com.puppycrawl.tools.checkstyle.JavaParserTest</param>
+                <!-- these tests are required for xml loader -->
+                <param>com.puppycrawl.tools.checkstyle.filters.SuppressionsLoaderTest</param>
+                <param>com.puppycrawl.tools.checkstyle.ConfigurationLoaderTest</param>
+              </targetTests>
+              <excludedMethods>
+                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605-->
+                <param>addFeaturesForVerySecureJavaInstallations</param>
+              </excludedMethods>
+              <avoidCallsTo>
+                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605-->
+                <avoidCallsTo>
+                  com.puppycrawl.tools.checkstyle.XmlLoader$FeaturesForVerySecureJavaInstallations
+                </avoidCallsTo>
+              </avoidCallsTo>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2368,8 +2656,20 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
-                <param>com.puppycrawl.tools.checkstyle.Main</param>
+                <param>com.puppycrawl.tools.checkstyle.Main*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.MainTest</param>
@@ -2397,12 +2697,25 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
-                <param>com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser</param>
-                <param>com.puppycrawl.tools.checkstyle.DetailNodeTreeStringPrinter</param>
-                <param>com.puppycrawl.tools.checkstyle.AstTreeStringPrinter</param>
-                <param>com.puppycrawl.tools.checkstyle.SuppressionsStringPrinter</param>
-                <param>com.puppycrawl.tools.checkstyle.TreeWalker</param>
+                <param>com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser*</param>
+                <param>com.puppycrawl.tools.checkstyle.DetailNodeTreeStringPrinter*</param>
+                <param>com.puppycrawl.tools.checkstyle.AstTreeStringPrinter*</param>
+                <param>com.puppycrawl.tools.checkstyle.SuppressionsStringPrinter*</param>
+                <param>com.puppycrawl.tools.checkstyle.TreeWalker*</param>
+                <param>com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.DetailNodeTreeStringPrinterTest</param>
@@ -2431,7 +2744,11 @@
                 <param>
                   com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheckTest
                 </param>
+                <param>com.puppycrawl.tools.checkstyle.filters.SuppressionCommentFilterTest</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <excludedMethods>
                 <!-- destroy in TreeWalker was added in case module had to free up resources
                 before ending, but currently it does nothing, so we cannot check it.
@@ -2439,6 +2756,14 @@
                 together, so we just exclude it from pitest check. -->
                 <param>destroy</param>
               </excludedMethods>
+              <avoidCallsTo>
+                <!-- JavadocDetailNodeParser$JavadocParserErrorStrategy calls super to handle
+                error which always results in throwing exception. There is no clear way to kill
+                mutation on it as mutation is only looking at the non-existent return value. -->
+                <avoidCallsTo>
+                  org.antlr.v4.runtime.BailErrorStrategy
+                </avoidCallsTo>
+              </avoidCallsTo>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2462,6 +2787,18 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.api.*</param>
               </targetClasses>
@@ -2481,16 +2818,9 @@
                 <param>com.puppycrawl.tools.checkstyle.CheckerTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.TranslationCheckTest</param>
               </targetTests>
-              <excludedMethods>
-                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605-->
-                <param>addFeaturesForVerySecureJavaInstallations</param>
-              </excludedMethods>
-              <avoidCallsTo>
-                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605-->
-                <avoidCallsTo>
-                  com.puppycrawl.tools.checkstyle.XmlLoader$FeaturesForVerySecureJavaInstallations
-                </avoidCallsTo>
-              </avoidCallsTo>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>99</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2514,6 +2844,18 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.filefilters.*</param>
                 <param>com.puppycrawl.tools.checkstyle.filters.*</param>
@@ -2522,6 +2864,9 @@
                 <param>com.puppycrawl.tools.checkstyle.filefilters.*</param>
                 <param>com.puppycrawl.tools.checkstyle.filters.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2545,6 +2890,18 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.utils.*</param>
               </targetClasses>
@@ -2569,6 +2926,9 @@
                   com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheckTest
                 </param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2592,12 +2952,27 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.gui.*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.gui.*</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>40</coverageThreshold>
               <mutationThreshold>29</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2646,12 +3021,31 @@
             <artifactId>pitest-maven</artifactId>
             <version>${pitest.plugin.version}</version>
             <configuration>
+              <mutators>
+                <mutator>CONDITIONALS_BOUNDARY</mutator>
+                <mutator>CONSTRUCTOR_CALLS</mutator>
+                <mutator>FALSE_RETURNS</mutator>
+                <mutator>INCREMENTS</mutator>
+                <mutator>INVERT_NEGS</mutator>
+                <mutator>MATH</mutator>
+                <mutator>NEGATE_CONDITIONALS</mutator>
+                <mutator>RETURN_VALS</mutator>
+                <mutator>TRUE_RETURNS</mutator>
+                <mutator>VOID_METHOD_CALLS</mutator>
+              </mutators>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.xpath.*</param>
+                <param>com.puppycrawl.tools.checkstyle.XpathFileGeneratorAuditListener*</param>
+                <param>com.puppycrawl.tools.checkstyle.XpathFileGeneratorAstFilter*</param>
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.xpath.*</param>
+                <param>com.puppycrawl.tools.checkstyle.XpathFileGeneratorAuditListenerTest</param>
+                <param>com.puppycrawl.tools.checkstyle.XpathFileGeneratorAstFilterTest</param>
               </targetTests>
+              <excludedTestClasses>
+                <param>*.Input*</param>
+              </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>

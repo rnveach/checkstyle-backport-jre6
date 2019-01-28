@@ -117,12 +117,7 @@ public class LeftCurlyCheck
      * @throws IllegalArgumentException if unable to decode
      */
     public void setOption(String optionStr) {
-        try {
-            option = LeftCurlyOption.valueOf(optionStr.trim().toUpperCase(Locale.ENGLISH));
-        }
-        catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("unable to parse " + optionStr, iae);
-        }
+        option = LeftCurlyOption.valueOf(optionStr.trim().toUpperCase(Locale.ENGLISH));
     }
 
     /**
@@ -277,11 +272,11 @@ public class LeftCurlyCheck
                     tokenAfterLast = lastAnnotation.getNextSibling();
                 }
 
-                if (tokenAfterLast.getLineNo() > lastAnnotation.getLineNo()) {
-                    resultNode = tokenAfterLast;
+                if (tokenAfterLast.getLineNo() == lastAnnotation.getLineNo()) {
+                    resultNode = getFirstAnnotationOnSameLine(lastAnnotation);
                 }
                 else {
-                    resultNode = getFirstAnnotationOnSameLine(lastAnnotation);
+                    resultNode = tokenAfterLast;
                 }
             }
         }

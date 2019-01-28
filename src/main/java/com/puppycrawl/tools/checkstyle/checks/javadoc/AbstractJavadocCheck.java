@@ -98,7 +98,6 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
      * generally tend to be fine with non tight html. It can be set through config file if a check
      * is to log violation upon encountering non-tight HTML in javadoc.
      *
-     * @see ParseStatus#firstNonTightHtmlTag
      * @see ParseStatus#isNonTight()
      * @see <a href="https://checkstyle.org/writingjavadocchecks.html#Tight-HTML_rules">
      *     Tight HTML rules</a>
@@ -286,7 +285,7 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
 
     @Override
     public final void finishTree(DetailAST rootAST) {
-        TREE_CACHE.get().clear();
+        // No code by default
     }
 
     @Override

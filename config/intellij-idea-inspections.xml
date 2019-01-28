@@ -960,7 +960,8 @@
     <inspection_tool class="CallToStringConcatCanBeReplacedByOperator" enabled="true" level="ERROR"
                      enabled_by_default="true"/>
     <inspection_tool class="CallerJS" enabled="true" level="ERROR" enabled_by_default="true"/>
-    <inspection_tool class="CanBeFinal" enabled="true" level="ERROR" enabled_by_default="true">
+    <!-- disabled till https://youtrack.jetbrains.com/issue/IDEA-203424 -->
+    <inspection_tool class="CanBeFinal" enabled="false" level="ERROR" enabled_by_default="true">
         <option name="REPORT_CLASSES" value="false"/>
         <option name="REPORT_METHODS" value="false"/>
         <option name="REPORT_FIELDS" value="true"/>
@@ -1098,7 +1099,8 @@
     </inspection_tool>
     <inspection_tool class="ClassInDefaultPackage" enabled="false" level="ERROR"
                      enabled_by_default="false"/>
-    <inspection_tool class="ClassIndependentOfModule" enabled="true" level="ERROR"
+    <!-- disabled till https://youtrack.jetbrains.com/issue/IDEA-203424 -->
+    <inspection_tool class="ClassIndependentOfModule" enabled="false" level="ERROR"
                      enabled_by_default="true"/>
     <inspection_tool class="ClassInheritanceDepth" enabled="true" level="ERROR"
                      enabled_by_default="true">
@@ -1136,7 +1138,9 @@
                      enabled_by_default="true"/>
     <inspection_tool class="ClassOnlyUsedInOneModule" enabled="true" level="ERROR"
                      enabled_by_default="true"/>
-    <inspection_tool class="ClassOnlyUsedInOnePackage" enabled="true" level="ERROR"
+    <!-- packages should be where we define.
+         we are a library project and other projects might use them. -->
+    <inspection_tool class="ClassOnlyUsedInOnePackage" enabled="false" level="ERROR"
                      enabled_by_default="true"/>
     <inspection_tool class="ClassReferencesSubclass" enabled="true" level="ERROR"
                      enabled_by_default="true"/>
@@ -1158,7 +1162,8 @@
                      enabled_by_default="true">
         <option name="limit" value="37"/>
     </inspection_tool>
-    <inspection_tool class="ClassWithTooManyDependents" enabled="true" level="ERROR"
+    <!-- disabled till https://youtrack.jetbrains.com/issue/IDEA-203424 -->
+    <inspection_tool class="ClassWithTooManyDependents" enabled="false" level="ERROR"
                      enabled_by_default="true">
         <option name="limit" value="300"/>
     </inspection_tool>
@@ -1608,7 +1613,8 @@
                      enabled_by_default="false"/>
     <inspection_tool class="DuplicatedDataProviderNames" enabled="true" level="WARNING"
                      enabled_by_default="true"/>
-    <inspection_tool class="Duplicates" enabled="true" level="ERROR" enabled_by_default="true">
+    <!-- this duplication algorithm generate too much won't fixes -->
+    <inspection_tool class="Duplicates" enabled="false" level="ERROR" enabled_by_default="true">
         <scope name="Tests" level="ERROR" enabled="false"/>
     </inspection_tool>
     <inspection_tool class="DynamicRegexReplaceableByCompiledPattern" enabled="true" level="WARNING"
@@ -4431,6 +4437,8 @@
                 <option value="MultipleReturnPointsPerMethod"/>
                 <!-- MT check markers are annotations -->
                 <option value="AnnotationClass"/>
+                <!-- Suppression is only for TokenTypes class -->
+                <option value="ClassWithTooManyDependents"/>
                 <!-- till #4870, used in MT check markers -->
                 <option value="ClassIndependentOfModule"/>
                 <!-- till #4870, used in MT check markers -->
@@ -4448,6 +4456,8 @@
                 <option value="NewClassNamingConvention"/>
                 <!-- false positives -->
                 <option value="JUnitTestClassNamingConvention"/>
+                <!-- usage of picocli library in Main.java case won't fixes -->
+                <option value="CanBeFinal"/>
             </list>
         </option>
     </inspection_tool>
@@ -4946,6 +4956,22 @@
                      enabled_by_default="false"/>
     <inspection_tool class="UnsecureRandomNumberGeneration" enabled="true" level="ERROR"
                      enabled_by_default="true"/>
+    <inspection_tool class="UnstableApiUsage" enabled="true" level="WARNING"
+                     enabled_by_default="true">
+      <option name="unstableApiAnnotations">
+        <set>
+          <!-- removed guava's Beta. Unstable doesn't mean it isn't safe to use, just might
+               change between versions and isn't stable -->
+          <option value="io.reactivex.annotations.Beta" />
+          <option value="io.reactivex.annotations.Experimental" />
+          <option value="org.apache.http.annotation.Beta" />
+          <option value="org.gradle.api.Incubating" />
+          <option value="org.jetbrains.annotations.ApiStatus.Experimental" />
+          <option value="rx.annotations.Beta" />
+          <option value="rx.annotations.Experimental" />
+        </set>
+      </option>
+    </inspection_tool>
     <inspection_tool class="UnterminatedStatementJS" enabled="true" level="ERROR"
                      enabled_by_default="true">
         <option name="ignoreSemicolonAtEndOfBlock" value="true"/>
@@ -5190,7 +5216,8 @@
     </inspection_tool>
     <inspection_tool class="gwtRawAsyncCallback" enabled="false" level="WARNING"
                      enabled_by_default="false"/>
-    <inspection_tool class="unused" enabled="true" level="WARNING" enabled_by_default="true"
+    <!-- disabled till https://youtrack.jetbrains.com/issue/IDEA-203421 -->
+    <inspection_tool class="unused" enabled="false" level="WARNING" enabled_by_default="true"
                      field="protected" ignoreAccessors="true">
         <option name="LOCAL_VARIABLE" value="true"/>
         <option name="FIELD" value="true"/>

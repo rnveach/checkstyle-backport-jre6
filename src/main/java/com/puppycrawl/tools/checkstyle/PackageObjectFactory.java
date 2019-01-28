@@ -159,8 +159,7 @@ public class PackageObjectFactory implements ModuleFactory {
             throw new IllegalArgumentException(NULL_PACKAGE_MESSAGE);
         }
 
-        packages = new LinkedHashSet<String>(1);
-        packages.add(packageName);
+        packages = Collections.singleton(packageName);
         this.moduleClassLoader = moduleClassLoader;
     }
 
@@ -304,20 +303,18 @@ public class PackageObjectFactory implements ModuleFactory {
             for (Class<?> clzz : ModuleReflectionUtil.getCheckstyleModules(packages, loader)) {
                 final String key = clzz.getSimpleName();
 
-                if (!NAME_TO_FULL_MODULE_NAME.keySet().contains(key)) {
-                    if (returnValue.containsKey(key)) {
-                        final Set<String> mergedNames = new LinkedHashSet<String>(returnValue.get(key));
-                        mergedNames.add(clzz.getCanonicalName());
-                        returnValue.put(key, mergedNames);
-                    }
-                    else {
-                        returnValue.put(key, Collections.singleton(clzz.getCanonicalName()));
-                    }
+                if (returnValue.containsKey(key)) {
+                    final Set<String> mergedNames = new LinkedHashSet<String>(returnValue.get(key));
+                    mergedNames.add(clzz.getCanonicalName());
+                    returnValue.put(key, mergedNames);
+                }
+                else {
+                    returnValue.put(key, Collections.singleton(clzz.getCanonicalName()));
                 }
             }
         }
         catch (IOException ignore) {
-            returnValue = new HashMap<String, Set<String>>();
+            returnValue = Collections.emptyMap();
         }
         return returnValue;
     }
@@ -695,6 +692,8 @@ public class PackageObjectFactory implements ModuleFactory {
      * Fill short-to-full module names map with Checks from modifier package.
      */
     private static void fillChecksFromModifierPackage() {
+        NAME_TO_FULL_MODULE_NAME.put("ClassMemberImpliedModifierCheck",
+            BASE_PACKAGE + ".checks.modifier.ClassMemberImpliedModifierCheck");
         NAME_TO_FULL_MODULE_NAME.put("InterfaceMemberImpliedModifierCheck",
             BASE_PACKAGE + ".checks.modifier.InterfaceMemberImpliedModifierCheck");
         NAME_TO_FULL_MODULE_NAME.put("ModifierOrderCheck",

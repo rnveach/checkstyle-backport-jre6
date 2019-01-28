@@ -19,16 +19,22 @@
 
 package com.puppycrawl.tools.checkstyle;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
+import antlr.NoViableAltException;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
@@ -49,6 +55,11 @@ public class JavaParserTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testNullRootWithComments() {
+        assertNull("Invalid return root", JavaParser.appendHiddenCommentNodes(null));
+    }
+
+    @Test
     public void testAppendHiddenBlockCommentNodes() throws Exception {
         final DetailAST root =
             JavaParser.parseFile(new File(getPath("InputJavaParserHiddenComments.java")),
@@ -64,8 +75,14 @@ public class JavaParserTest extends AbstractModuleTestSupport {
 
         assertTrue("Block comment should be present", blockComment.isPresent());
 
-        final DetailAST commentContent = blockComment.get().getFirstChild();
-        final DetailAST commentEnd = blockComment.get().getLastChild();
+        final DetailAST comment = blockComment.get();
+
+        assertEquals("Unexpected line number", 3, comment.getLineNo());
+        assertEquals("Unexpected column number", 0, comment.getColumnNo());
+        assertEquals("Unexpected comment content", "/*", comment.getText());
+
+        final DetailAST commentContent = comment.getFirstChild();
+        final DetailAST commentEnd = comment.getLastChild();
 
         assertEquals("Unexpected line number", 3, commentContent.getLineNo());
         assertEquals("Unexpected column number", 2, commentContent.getColumnNo());
@@ -88,7 +105,13 @@ public class JavaParserTest extends AbstractModuleTestSupport {
             });
         assertTrue("Single line comment should be present", singleLineComment.isPresent());
 
-        final DetailAST commentContent = singleLineComment.get().getFirstChild();
+        final DetailAST comment = singleLineComment.get();
+
+        assertEquals("Unexpected line number", 13, comment.getLineNo());
+        assertEquals("Unexpected column number", 0, comment.getColumnNo());
+        assertEquals("Unexpected comment content", "//", comment.getText());
+
+        final DetailAST commentContent = comment.getFirstChild();
 
         assertEquals("Unexpected token type", TokenTypes.COMMENT_CONTENT, commentContent.getType());
         assertEquals("Unexpected line number", 13, commentContent.getLineNo());
@@ -97,35 +120,108 @@ public class JavaParserTest extends AbstractModuleTestSupport {
             commentContent.getText().startsWith(" inline comment"));
     }
 
-    /**
-     * Could not find proper test case to test pitest mutations functionally.
-     * Should be rewritten during grammar update.
-     *
-     * @throws Exception when code tested throws exception
-     */
     @Test
-    public void testIsPositionGreater() throws Exception {
-        final DetailAST ast1 = createAst(1, 3);
-        final DetailAST ast2 = createAst(1, 2);
-        final DetailAST ast3 = createAst(2, 2);
+    public void testAppendHiddenSingleLineCommentNodes2() throws Exception {
+        final DetailAST root =
+            JavaParser.parseFile(new File(getPath("InputJavaParserHiddenComments2.java")),
+                JavaParser.Options.WITH_COMMENTS);
 
-        final TreeWalker treeWalker = new TreeWalker();
-        final Method isPositionGreater = Whitebox.getMethod(JavaParser.class,
-                "isPositionGreater", DetailAST.class, DetailAST.class);
+        final Optional<DetailAST> singleLineComment = TestUtil.findTokenInAstByPredicate(root,
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.SINGLE_LINE_COMMENT;
+                }
+            });
+        assertTrue("Single line comment should be present", singleLineComment.isPresent());
 
-        assertTrue("Should return true when lines are equal and column is greater",
-                (Boolean) isPositionGreater.invoke(treeWalker, ast1, ast2));
-        assertFalse("Should return false when lines are equal columns are equal",
-                (Boolean) isPositionGreater.invoke(treeWalker, ast1, ast1));
-        assertTrue("Should return true when line is greater",
-                (Boolean) isPositionGreater.invoke(treeWalker, ast3, ast1));
+        final DetailAST comment = singleLineComment.get();
+
+        assertEquals("Unexpected line number", 1, comment.getLineNo());
+        assertEquals("Unexpected column number", 4, comment.getColumnNo());
+        assertEquals("Unexpected comment content", "//", comment.getText());
+
+        final DetailAST commentContent = comment.getFirstChild();
+
+        assertEquals("Unexpected token type", TokenTypes.COMMENT_CONTENT, commentContent.getType());
+        assertEquals("Unexpected line number", 1, commentContent.getLineNo());
+        assertEquals("Unexpected column number", 6, commentContent.getColumnNo());
+        assertTrue("Unexpected comment content",
+            commentContent.getText().startsWith(" indented comment"));
     }
 
-    private static DetailAST createAst(int line, int column) {
-        final DetailAST ast = new DetailAST();
-        ast.setLineNo(line);
-        ast.setColumnNo(column);
-        return ast;
+    @Test
+    public void testDontAppendCommentNodes() throws Exception {
+        final DetailAST root =
+            JavaParser.parseFile(new File(getPath("InputJavaParserHiddenComments.java")),
+                JavaParser.Options.WITHOUT_COMMENTS);
+
+        final Optional<DetailAST> singleLineComment = TestUtil.findTokenInAstByPredicate(root,
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.SINGLE_LINE_COMMENT;
+                }
+            });
+        assertFalse("Single line comment should be present", singleLineComment.isPresent());
+    }
+
+    @Test
+    public void testParseException() throws Exception {
+        final File input = new File(getNonCompilablePath("InputJavaParser.java"));
+        try {
+            JavaParser.parseFile(input, JavaParser.Options.WITH_COMMENTS);
+            Assert.fail("exception expected");
+        }
+        catch (CheckstyleException ex) {
+            assertEquals("Invalid exception message",
+                    CheckstyleException.class.getName()
+                            + ": NoViableAltException occurred while parsing file "
+                            + input.getAbsolutePath() + ".",
+                    ex.toString());
+            Assert.assertSame("Invalid class",
+                    NoViableAltException.class, ex.getCause().getClass());
+            assertEquals("Invalid exception message",
+                    input.getAbsolutePath() + ":2:1: unexpected token: classD",
+                    ex.getCause().toString());
+        }
+    }
+
+    @Test
+    public void testComments() throws Exception {
+        final DetailAST root =
+            JavaParser.parseFile(new File(getPath("InputJavaParserHiddenComments3.java")),
+                JavaParser.Options.WITH_COMMENTS);
+        final CountComments counter = new CountComments(root);
+
+        assertArrayEquals("Invalid line comments",
+                Arrays.asList("1,4", "6,4", "9,0").toArray(),
+                counter.lineComments.toArray());
+        assertArrayEquals("Invalid block comments",
+                Arrays.asList("5,4", "8,0").toArray(),
+                counter.blockComments.toArray());
+    }
+
+    private static final class CountComments {
+        private final List<String> lineComments = new ArrayList<String>();
+        private final List<String> blockComments = new ArrayList<String>();
+
+        CountComments(DetailAST root) {
+            forEachChild(root);
+        }
+
+        private void forEachChild(DetailAST root) {
+            for (DetailAST ast = root; ast != null; ast = ast.getNextSibling()) {
+                if (ast.getType() == TokenTypes.SINGLE_LINE_COMMENT) {
+                    lineComments.add(ast.getLineNo() + "," + ast.getColumnNo());
+                }
+                else if (ast.getType() == TokenTypes.BLOCK_COMMENT_BEGIN) {
+                    blockComments.add(ast.getLineNo() + "," + ast.getColumnNo());
+                }
+
+                forEachChild(ast.getFirstChild());
+            }
+        }
     }
 
 }
