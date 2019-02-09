@@ -252,6 +252,15 @@
       <version>1.7.8</version>
       <scope>test</scope>
     </dependency>
+    <!-- javassist override because powermock brings in a java 8 compatible dependency
+         which won't work with backport.
+         3.23.0 can't be used because of an concurrent modification error. -->
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.22.0-GA</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito2</artifactId>
