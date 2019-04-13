@@ -40,28 +40,28 @@ import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-public class XpathFilterTest extends AbstractModuleTestSupport {
+public class XpathFilterElementTest extends AbstractModuleTestSupport {
 
     private File file;
     private FileContents fileContents;
 
     @Before
     public void setUp() throws Exception {
-        file = new File(getPath("InputXpathFilterSuppressByXpath.java"));
+        file = new File(getPath("InputXpathFilterElementSuppressByXpath.java"));
         fileContents = new FileContents(new FileText(file,
                 StandardCharsets.UTF_8.name()));
     }
 
     @Override
     protected String getPackageLocation() {
-        return "com/puppycrawl/tools/checkstyle/filters/xpathfilter";
+        return "com/puppycrawl/tools/checkstyle/filters/xpathfilterelement";
     }
 
     @Test
     public void testMatching() throws Exception {
-        final String xpath = "/CLASS_DEF[@text='InputXpathFilterSuppressByXpath']";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, xpath);
+        final String xpath = "/CLASS_DEF[@text='InputXpathFilterElementSuppressByXpath']";
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, xpath);
         final TreeWalkerAuditEvent ev = getEvent(3, 0,
                 TokenTypes.CLASS_DEF);
         assertFalse("Event should be rejected", filter.accept(ev));
@@ -70,8 +70,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testNonMatchingTokenType() throws Exception {
         final String xpath = "//METHOD_DEF[@text='countTokens']";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, xpath);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, xpath);
         final TreeWalkerAuditEvent ev = getEvent(3, 0,
                 TokenTypes.CLASS_DEF);
         assertTrue("Event should be accepted", filter.accept(ev));
@@ -79,9 +79,9 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
 
     @Test
     public void testNonMatchingLineNumber() throws Exception {
-        final String xpath = "/CLASS_DEF[@text='InputXpathFilterSuppressByXpath']";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, xpath);
+        final String xpath = "/CLASS_DEF[@text='InputXpathFilterElementSuppressByXpath']";
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, xpath);
         final TreeWalkerAuditEvent ev = getEvent(100, 0,
                 TokenTypes.CLASS_DEF);
         assertTrue("Event should be accepted", filter.accept(ev));
@@ -89,9 +89,9 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
 
     @Test
     public void testNonMatchingColumnNumber() throws Exception {
-        final String xpath = "/CLASS_DEF[@text='InputXpathFilterSuppressByXpath']";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, xpath);
+        final String xpath = "/CLASS_DEF[@text='InputXpathFilterElementSuppressByXpath']";
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, xpath);
         final TreeWalkerAuditEvent ev = getEvent(3, 100,
                 TokenTypes.CLASS_DEF);
         assertTrue("Event should be accepted", filter.accept(ev));
@@ -102,8 +102,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
         final String xpath = "//VARIABLE_DEF[@text='pi' and "
                 + "../..[@text='countTokens']] "
                 + "| //VARIABLE_DEF[@text='someVariable' and ../..[@text='sum']]";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, xpath);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, xpath);
         final TreeWalkerAuditEvent eventOne = getEvent(5, 8,
                 TokenTypes.VARIABLE_DEF);
         final TreeWalkerAuditEvent eventTwo = getEvent(10, 4,
@@ -119,11 +119,11 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     public void testIncorrectQuery() {
         final String xpath = "1@#";
         try {
-            final Object test = new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null,
-                    null, xpath);
+            final Object test = new XpathFilterElement("InputXpathFilterElementSuppressByXpath",
+                    "Test", null, null, xpath);
             fail("Exception was expected but got " + test);
         }
-        catch (IllegalStateException ex) {
+        catch (IllegalArgumentException ex) {
             assertTrue("Message should be: Unexpected xpath query",
                     ex.getMessage().contains("Unexpected xpath query"));
         }
@@ -133,16 +133,16 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     public void testNoQuery() throws Exception {
         final TreeWalkerAuditEvent event = getEvent(15, 8,
                 TokenTypes.VARIABLE_DEF);
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, null);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, null);
         assertFalse("Event should be accepted", filter.accept(event));
     }
 
     @Test
     public void testNullFileName() {
         final String xpath = "NON_MATCHING_QUERY";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, xpath);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, xpath);
         final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(null,
                 null, null, null);
         assertTrue("Event should be accepted", filter.accept(ev));
@@ -151,8 +151,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testNonMatchingFileRegexp() throws Exception {
         final String xpath = "NON_MATCHING_QUERY";
-        final XpathFilter filter =
-                new XpathFilter("NonMatchingRegexp", "Test", null, null, xpath);
+        final XpathFilterElement filter =
+                new XpathFilterElement("NonMatchingRegexp", "Test", null, null, xpath);
         final TreeWalkerAuditEvent ev = getEvent(3, 0,
                 TokenTypes.CLASS_DEF);
         assertTrue("Event should be accepted", filter.accept(ev));
@@ -161,8 +161,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testNullLocalizedMessage() {
         final String xpath = "NON_MATCHING_QUERY";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, xpath);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, xpath);
         final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(null,
                 file.getName(), null, null);
         assertTrue("Event should be accepted", filter.accept(ev));
@@ -171,8 +171,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testNonMatchingModuleId() throws Exception {
         final String xpath = "NON_MATCHING_QUERY";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, "id19", xpath);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, "id19", xpath);
         final LocalizedMessage message =
                 new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "", null, null, "id20",
                         getClass(), null);
@@ -183,9 +183,9 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
 
     @Test
     public void testMatchingModuleId() throws Exception {
-        final String xpath = "/CLASS_DEF[@text='InputXpathFilterSuppressByXpath']";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, "id19", xpath);
+        final String xpath = "/CLASS_DEF[@text='InputXpathFilterElementSuppressByXpath']";
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, "id19", xpath);
         final LocalizedMessage message =
                 new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "", null, null, "id19",
                         getClass(), null);
@@ -197,8 +197,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testNonMatchingChecks() throws Exception {
         final String xpath = "NON_MATCHING_QUERY";
-        final XpathFilter filter = new XpathFilter("InputXpathFilterSuppressByXpath",
-                "NonMatchingRegexp", null, "id19", xpath);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "NonMatchingRegexp", null, "id19", xpath);
         final LocalizedMessage message =
                 new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "", null, null, "id19",
                         getClass(), null);
@@ -210,8 +210,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testNonMatchingFileNameModuleIdAndCheck() throws Exception {
         final String xpath = "NON_MATCHING_QUERY";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", null, null, null, xpath);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", null, null, null, xpath);
         final TreeWalkerAuditEvent ev = getEvent(3, 0,
                 TokenTypes.CLASS_DEF);
         assertTrue("Event should be accepted", filter.accept(ev));
@@ -220,8 +220,8 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testNullModuleIdAndNonMatchingChecks() throws Exception {
         final String xpath = "NON_MATCHING_QUERY";
-        final XpathFilter filter = new XpathFilter("InputXpathFilterSuppressByXpath",
-                "NonMatchingRegexp", null, null, xpath);
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "NonMatchingRegexp", null, null, xpath);
         final TreeWalkerAuditEvent ev = getEvent(3, 0,
                 TokenTypes.CLASS_DEF);
         assertTrue("Event should be accepted", filter.accept(ev));
@@ -233,17 +233,17 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
                 null, null, null, getClass(), "Test");
         final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(fileContents, file.getName(),
                 message, JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));
-        final XpathFilter filter1 = new XpathFilter(null, null, "Test", null, null);
-        final XpathFilter filter2 = new XpathFilter(null, null, "Bad", null, null);
+        final XpathFilterElement filter1 = new XpathFilterElement(null, null, "Test", null, null);
+        final XpathFilterElement filter2 = new XpathFilterElement(null, null, "Bad", null, null);
         assertFalse("Message match", filter1.accept(ev));
         assertTrue("Message not match", filter2.accept(ev));
     }
 
     @Test
     public void testThrowException() {
-        final String xpath = "/CLASS_DEF[@text='InputXpathFilterSuppressByXpath']";
-        final XpathFilter filter =
-                new XpathFilter("InputXpathFilterSuppressByXpath", "Test", null, null, xpath);
+        final String xpath = "/CLASS_DEF[@text='InputXpathFilterElementSuppressByXpath']";
+        final XpathFilterElement filter = new XpathFilterElement(
+                "InputXpathFilterElementSuppressByXpath", "Test", null, null, xpath);
         final LocalizedMessage message =
                 new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "", null, null, "id19",
                         getClass(), null);
@@ -262,7 +262,7 @@ public class XpathFilterTest extends AbstractModuleTestSupport {
     @Test
     public void testEqualsAndHashCode() throws Exception {
         final XPathEvaluator xpathEvaluator = new XPathEvaluator();
-        EqualsVerifier.forClass(XpathFilter.class)
+        EqualsVerifier.forClass(XpathFilterElement.class)
             .withPrefabValues(XPathExpression.class,
                 xpathEvaluator.createExpression("//METHOD_DEF"),
                 xpathEvaluator.createExpression("//VARIABLE_DEF"))

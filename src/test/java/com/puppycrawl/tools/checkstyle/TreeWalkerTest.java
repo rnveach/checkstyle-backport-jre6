@@ -23,10 +23,6 @@ import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MS
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
 
 import java.io.File;
 import java.io.Writer;
@@ -41,18 +37,13 @@ import java.util.regex.Pattern;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.internal.util.Checks;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Context;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck;
@@ -72,8 +63,6 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(TreeWalker.class)
 public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     @Rule
@@ -363,46 +352,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testBehaviourWithOnlyOrdinaryChecks() throws Exception {
-        final TreeWalker treeWalkerSpy = spy(new TreeWalker());
-        final Class<?> classAstState =
-                Class.forName("com.puppycrawl.tools.checkstyle.TreeWalker$AstState");
-        final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
-        treeWalkerSpy.configure(createModuleConfig(TypeNameCheck.class));
-        treeWalkerSpy.setModuleFactory(factory);
-        treeWalkerSpy.setupChild(createModuleConfig(TypeNameCheck.class));
-        final File file = temporaryFolder.newFile("file.java");
-        final List<String> lines = new ArrayList<String>();
-        lines.add("class Test {}");
-        treeWalkerSpy.processFiltered(file, new FileText(file, lines));
-        verifyPrivate(treeWalkerSpy, times(1)).invoke("walk",
-                any(DetailAST.class), any(FileContents.class), any(classAstState));
-        verifyPrivate(treeWalkerSpy, times(0)).invoke("getFilteredMessages",
-                any(String.class), any(FileContents.class), any(DetailAST.class));
-    }
-
-    @Test
-    public void testBehaviourWithOnlyCommentChecks() throws Exception {
-        final TreeWalker treeWalkerSpy = spy(new TreeWalker());
-        final Class<?> classAstState =
-                Class.forName("com.puppycrawl.tools.checkstyle.TreeWalker$AstState");
-        final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
-        treeWalkerSpy.configure(createModuleConfig(CommentsIndentationCheck.class));
-        treeWalkerSpy.setModuleFactory(factory);
-        treeWalkerSpy.setupChild(createModuleConfig(CommentsIndentationCheck.class));
-        final File file = temporaryFolder.newFile("file.java");
-        final List<String> lines = new ArrayList<String>();
-        lines.add("class Test {}");
-        treeWalkerSpy.processFiltered(file, new FileText(file, lines));
-        verifyPrivate(treeWalkerSpy, times(1)).invoke("walk",
-                any(DetailAST.class), any(FileContents.class), any(classAstState));
-        verifyPrivate(treeWalkerSpy, times(0)).invoke("getFilteredMessages",
-                any(String.class), any(FileContents.class), any(DetailAST.class));
-    }
-
-    @Test
     public void testBehaviourWithOrdinaryAndCommentChecks() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
         treeWalker.configure(createModuleConfig(TypeNameCheck.class));
@@ -569,11 +518,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         verify(checkerConfig, filePath, expected);
     }
 
-    /**
-     * Non meaningful javadoc just to contain "noinspection" tag.
-     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
-     * @noinspection JUnitTestCaseWithNoTests
-     */
     private static class BadJavaDocCheck extends AbstractCheck {
 
         @Override
@@ -593,11 +537,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    /**
-     * Non meaningful javadoc just to contain "noinspection" tag.
-     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
-     * @noinspection JUnitTestCaseWithNoTests
-     */
     private static class VerifyInitCheck extends AbstractCheck {
 
         private static boolean initWasCalled;
@@ -629,11 +568,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    /**
-     * Non meaningful javadoc just to contain "noinspection" tag.
-     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
-     * @noinspection JUnitTestCaseWithNoTests
-     */
     private static class VerifyDestroyCheck extends AbstractCheck {
 
         private static boolean destroyWasCalled;
@@ -669,11 +603,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    /**
-     * Non meaningful javadoc just to contain "noinspection" tag.
-     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
-     * @noinspection JUnitTestCaseWithNoTests
-     */
     private static class VerifyDestroyCommentCheck extends VerifyDestroyCheck {
 
         @Override
@@ -683,11 +612,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    /**
-     * Non meaningful javadoc just to contain "noinspection" tag.
-     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
-     * @noinspection JUnitTestCaseWithNoTests
-     */
     private static class RequiredTokenIsNotInDefaultsCheck extends AbstractCheck {
 
         @Override
@@ -707,11 +631,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    /**
-     * Non meaningful javadoc just to contain "noinspection" tag.
-     * Till https://youtrack.jetbrains.com/issue/IDEA-187210
-     * @noinspection JUnitTestCaseWithNoTests
-     */
     private static class RequiredTokenIsEmptyIntArray extends AbstractCheck {
 
         @Override

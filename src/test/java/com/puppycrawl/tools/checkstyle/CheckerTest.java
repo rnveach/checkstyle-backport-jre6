@@ -23,21 +23,17 @@ import static com.puppycrawl.tools.checkstyle.Checker.EXCEPTION_MSG;
 import static com.puppycrawl.tools.checkstyle.DefaultLogger.AUDIT_FINISHED_MESSAGE;
 import static com.puppycrawl.tools.checkstyle.DefaultLogger.AUDIT_STARTED_MESSAGE;
 import static com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck.MSG_KEY_NO_NEWLINE_EOF;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,7 +55,6 @@ import java.util.TreeSet;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
@@ -459,7 +454,8 @@ public class CheckerTest extends AbstractModuleTestSupport {
         catch (CheckstyleException ex) {
             assertEquals("Error message is not expected",
                     "cannot initialize module com.puppycrawl.tools.checkstyle.TreeWalker"
-                        + " - Property '$$No such property' in module " + checkConfig.getName()
+                        + " - cannot initialize module " + checkConfig.getName()
+                        + " - Property '$$No such property'"
                         + " does not exist, please check the documentation", ex.getMessage());
         }
     }
@@ -661,37 +657,6 @@ public class CheckerTest extends AbstractModuleTestSupport {
             Whitebox.getInternalState(checker, "cacheFile"));
     }
 
-    @Test
-    public void testCatchErrorInProcessFilesMethod() throws Exception {
-        // The idea of the test is to satisfy coverage rate.
-        // An Error indicates serious problems that a reasonable application should not try to
-        // catch, but due to issue https://github.com/checkstyle/checkstyle/issues/2285
-        // we catch errors in 'processFiles' method. Most such errors are abnormal conditions,
-        // that is why we use PowerMockito to reproduce them.
-        final File mock = PowerMockito.mock(File.class);
-        // Assume that I/O error is happened when we try to invoke 'lastModified()' method.
-        final String errorMessage = "Java Virtual Machine is broken"
-            + " or has run out of resources necessary for it to continue operating.";
-        final Error expectedError = new IOError(new InternalError(errorMessage));
-        when(mock.lastModified()).thenThrow(expectedError);
-        final Checker checker = new Checker();
-        final List<File> filesToProcess = new ArrayList<File>();
-        filesToProcess.add(mock);
-        try {
-            checker.process(filesToProcess);
-            fail("IOError is expected!");
-        }
-        // -@cs[IllegalCatchExtended] Testing for catch Error is part of 100% coverage.
-        catch (Error error) {
-            assertThat("Error cause differs from IOError",
-                    error.getCause(), instanceOf(IOError.class));
-            assertThat("Error cause is not InternalError",
-                    error.getCause().getCause(), instanceOf(InternalError.class));
-            assertEquals("Error message is not expected",
-                    errorMessage, error.getCause().getCause().getMessage());
-        }
-    }
-
     /**
      * It is OK to have long test method name here as it describes the test purpose.
      */
@@ -875,6 +840,46 @@ public class CheckerTest extends AbstractModuleTestSupport {
         catch (CheckstyleException ex) {
             assertEquals("Error message is not expected",
                     "Exception was thrown while processing " + filePath, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testExceptionWithCache() throws Exception {
+        final File cacheFile = temporaryFolder.newFile();
+
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(CheckWhichThrowsError.class);
+
+        final DefaultConfiguration treewalkerConfig =
+                createModuleConfig(TreeWalker.class);
+        treewalkerConfig.addChild(checkConfig);
+
+        final DefaultConfiguration checkerConfig = createRootConfig(treewalkerConfig);
+        checkerConfig.addAttribute("charset", StandardCharsets.UTF_8.name());
+        checkerConfig.addAttribute("cacheFile", cacheFile.getPath());
+        checkerConfig.addChild(treewalkerConfig);
+
+        final Checker checker = createChecker(checkerConfig);
+
+        final String filePath = getPath("InputChecker.java");
+        try {
+            checker.process(Collections.singletonList(new File(filePath)));
+            fail("Exception is expected");
+        }
+        catch (CheckstyleException ex) {
+            assertEquals("Error message is not expected",
+                    "Exception was thrown while processing " + filePath, ex.getMessage());
+
+            // destroy is called by Main
+            checker.destroy();
+
+            final Properties cache = new Properties();
+            cache.load(Files7.newBufferedReader(new Path(cacheFile)));
+
+            assertEquals("Cache has unexpected size",
+                    1, cache.size());
+            assertNull("testFile is not in cache",
+                    cache.getProperty(filePath));
         }
     }
 

@@ -39,7 +39,7 @@ import net.sf.saxon.trans.XPathException;
  * objects based on the criteria of file, check, module id, xpathQuery.
  *
  */
-public class XpathFilter implements TreeWalkerFilter {
+public class XpathFilterElement implements TreeWalkerFilter {
 
     /** The regexp to match file names against. */
     private final Pattern fileRegexp;
@@ -76,7 +76,7 @@ public class XpathFilter implements TreeWalkerFilter {
      * @param moduleId the module id
      * @param query the xpath query
      */
-    public XpathFilter(String files, String checks,
+    public XpathFilterElement(String files, String checks,
                        String message, String moduleId, String query) {
         filePattern = files;
         if (files == null) {
@@ -110,24 +110,74 @@ public class XpathFilter implements TreeWalkerFilter {
                 xpathExpression = xpathEvaluator.createExpression(xpathQuery);
             }
             catch (XPathException ex) {
-                throw new IllegalStateException("Unexpected xpath query: " + xpathQuery, ex);
+                throw new IllegalArgumentException("Unexpected xpath query: " + xpathQuery, ex);
+            }
+        }
+    }
+
+    /**
+     * Creates a {@code XpathElement} instance.
+     * @param files regular expression for names of filtered files
+     * @param checks regular expression for filtered check classes
+     * @param message regular expression for messages.
+     * @param moduleId the module id
+     * @param query the xpath query
+     */
+    public XpathFilterElement(Pattern files, Pattern checks, Pattern message,
+                           String moduleId, String query) {
+        if (files == null) {
+            filePattern = null;
+            fileRegexp = null;
+        }
+        else {
+            filePattern = files.pattern();
+            fileRegexp = files;
+        }
+        if (checks == null) {
+            checkPattern = null;
+            checkRegexp = null;
+        }
+        else {
+            checkPattern = checks.pattern();
+            checkRegexp = checks;
+        }
+        if (message == null) {
+            messagePattern = null;
+            messageRegexp = null;
+        }
+        else {
+            messagePattern = message.pattern();
+            messageRegexp = message;
+        }
+        this.moduleId = moduleId;
+        xpathQuery = query;
+        if (xpathQuery == null) {
+            xpathExpression = null;
+        }
+        else {
+            final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+            try {
+                xpathExpression = xpathEvaluator.createExpression(xpathQuery);
+            }
+            catch (XPathException ex) {
+                throw new IllegalArgumentException("Incorrect xpath query: " + xpathQuery, ex);
             }
         }
     }
 
     @Override
     public boolean accept(TreeWalkerAuditEvent event) {
-        return !isFileNameAndModuleAndCheckNameMatching(event)
+        return !isFileNameAndModuleAndModuleNameMatching(event)
                 || !isMessageNameMatching(event)
                 || !isXpathQueryMatching(event);
     }
 
     /**
-     * Is matching by file name, moduleId and Check name.
+     * Is matching by file name, module id and Check name.
      * @param event event
      * @return true if it is matching
      */
-    private boolean isFileNameAndModuleAndCheckNameMatching(TreeWalkerAuditEvent event) {
+    private boolean isFileNameAndModuleAndModuleNameMatching(TreeWalkerAuditEvent event) {
         return event.getFileName() != null
                 && (fileRegexp == null || fileRegexp.matcher(event.getFileName()).find())
                 && event.getLocalizedMessage() != null
@@ -138,7 +188,7 @@ public class XpathFilter implements TreeWalkerFilter {
     /**
      * Is matching by message.
      * @param event event
-     * @return true is matching or not set.
+     * @return true if it is matching or not set.
      */
     private boolean isMessageNameMatching(TreeWalkerAuditEvent event) {
         return messageRegexp == null || messageRegexp.matcher(event.getMessage()).find();
@@ -147,7 +197,7 @@ public class XpathFilter implements TreeWalkerFilter {
     /**
      * Is matching by xpath query.
      * @param event event
-     * @return true is matching
+     * @return true if it is matching or not set.
      */
     private boolean isXpathQueryMatching(TreeWalkerAuditEvent event) {
         boolean isMatching;
@@ -209,7 +259,7 @@ public class XpathFilter implements TreeWalkerFilter {
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        final XpathFilter xpathFilter = (XpathFilter) other;
+        final XpathFilterElement xpathFilter = (XpathFilterElement) other;
         return Objects.equals(filePattern, xpathFilter.filePattern)
                 && Objects.equals(checkPattern, xpathFilter.checkPattern)
                 && Objects.equals(messagePattern, xpathFilter.messagePattern)

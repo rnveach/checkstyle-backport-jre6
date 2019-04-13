@@ -6,7 +6,7 @@
 
 <suppressions>
     <!-- can't split long messages between lines -->
-    <suppress checks="RegexpSingleline" files="google_checks\.xml" lines="37,77"/>
+    <suppress checks="RegexpSingleline" files="google_checks\.xml" lines="37,78"/>
 
     <suppress checks="FileLength"
               files="TokenTypes.java|IndentationCheckTest.java"
@@ -30,12 +30,8 @@
     <suppress checks="ExecutableStatementCount|JavaNCSS|BooleanExpressionComplexity|
                       |NestedIfDepth|MethodLength"
               files="[\\/]XdocsPagesTest\.java"/>
-    <suppress checks="IllegalCatch" files="[\\/]internal[\\/].*[\\/]\w+Util\.java"/>
-    <suppress checks="EmptyBlock" files=".*[\\/]src[\\/]test[\\/]"/>
 
     <suppress checks="JavadocPackage" files=".*[\\/]src[\\/](test|it)[\\/]"/>
-    <suppress checks="JavadocVariable" files=".*[\\/]src[\\/](test|it)[\\/]"/>
-    <suppress checks="JavadocType" files=".*[\\/]src[\\/](test|it)[\\/]"/>
     <!-- we do not need javadocs in all classes except for *Support classes -->
     <suppress checks="JavadocMethod" files=".*[\\/]src[\\/](test|it)[\\/].*(?&lt;!Support)\.java"/>
     <!-- till https://github.com/checkstyle/checkstyle/issues/6336 -->
@@ -45,11 +41,6 @@
     <suppress checks="JavadocMethod" files=".*AbstractModuleTestSupport\.java"/>
     <suppress checks="JavadocMethod" files=".*AbstractPathTestSupport\.java"/>
     <suppress checks="JavadocMethod" files=".*AbstractXmlTestSupport\.java"/>
-
-    <suppress checks="MagicNumber" files=".*[\\/]src[\\/](test|it)[\\/]"/>
-    <suppress checks="AvoidStaticImport" files=".*[\\/]src[\\/](test|it)[\\/]"/>
-    <suppress checks="WriteTag" files=".*[\\/]src[\\/](test|it)[\\/]"/>
-    <suppress checks="MethodCount" files=".*[\\/]src[\\/](test|it)[\\/]"/>
 
     <!--The Check generates too many violations, fixing them will make code unmanageable.-->
     <suppress checks="MagicNumber" files="(ParseTreeTablePresentation|MainFrame)\.java"/>
@@ -72,7 +63,6 @@
 
     <!-- Fixing these cases will decrease code readability -->
     <suppress checks="MultipleStringLiterals" files="JavadocStyleCheck\.java|XMLLogger\.java"/>
-    <suppress checks="MultipleStringLiterals" files=".*[\\/]src[\\/](test|it)[\\/]"/>
 
     <!-- There are a lot of setters/getters in the Check.
          A small number of methods is left for Check's logic -->
@@ -91,7 +81,7 @@
               files="(Checker|Main|CheckstyleAntTask|JavadocDetailNodeParser)\.java"/>
     <suppress checks="ClassDataAbstractionCoupling"
               files="(CheckerTest|AbstractModuleTestSupport|CheckstyleAntTaskTest|
-                     |TranslationCheckTest)\.java"/>
+                     |TranslationCheckTest|LocalizedMessageTest)\.java"/>
     <suppress checks="ClassDataAbstractionCoupling" files="PropertyCacheFileTest\.java"/>
     <suppress checks="ClassDataAbstractionCoupling"
               files="XpathFileGeneratorAuditListenerTest\.java"/>
@@ -110,6 +100,8 @@
     <!-- HandlerFactory crosses allowed limit for executable statements -->
     <suppress checks="ExecutableStatementCount" files="HandlerFactory\.java"/>
 
+    <suppress id="ImportControlTest" files="[\\/]powermock[\\/]" message=".* - org\.(powermock|mockito).*" />
+
     <!-- ========================================================= -->
     <!-- backport suppressions -->
     <!-- ========================================================= -->
@@ -120,6 +112,8 @@
     <suppress checks="MultipleStringLiterals" files=".*"/>
     <!-- check doesn't validate lambdas the same as anonymous classes -->
     <suppress checks="AnonInnerLength" files=".*"/>
+    <!-- suppress these as they are conversion from lambdas -->
+    <suppress checks="AvoidInlineConditionals" files="[\\/]XdocsJavaDocsTest\.java"/>
     <!-- exception are from newer jdk -->
     <suppress checks="IllegalCatch" files=".*"/>
     <!-- old code is more complex then new and fixing would cause issues with rebasing -->

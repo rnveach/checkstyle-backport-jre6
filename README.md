@@ -1,6 +1,7 @@
 checkstyle-backport-jre6
 ========================
 
+
 Checkstyle is a tool for checking Java source code for adherence to a Code Standard
 or set of validation rules (best practices).
 
@@ -53,7 +54,7 @@ these packages are in the file named "LICENSE.apache20" in this
 directory.
 
 The software uses the Picocli Library
-(https://github.com/remkop/picocli/). Its license terms 
+(https://github.com/remkop/picocli/). Its license terms
 are in the file named "LICENSE.apache20" in this directory.
 
 ![](https://raw.githubusercontent.com/checkstyle/resources/master/img/checkstyle-logos/checkstyle-logo-260x99.png)

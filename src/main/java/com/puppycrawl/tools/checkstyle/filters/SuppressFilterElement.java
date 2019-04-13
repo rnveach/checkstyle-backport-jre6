@@ -37,7 +37,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  * </ul>
  *
  */
-public class SuppressElement
+public class SuppressFilterElement
     implements Filter {
 
     /** The regexp to match file names against. */
@@ -62,19 +62,19 @@ public class SuppressElement
     private final String moduleId;
 
     /** Line number filter. */
-    private final CsvFilter lineFilter;
+    private final CsvFilterElement lineFilter;
 
     /** CSV for line number filter. */
     private final String linesCsv;
 
     /** Column number filter. */
-    private final CsvFilter columnFilter;
+    private final CsvFilterElement columnFilter;
 
     /** CSV for column number filter. */
     private final String columnsCsv;
 
     /**
-     * Constructs a {@code SuppressElement} for a
+     * Constructs a {@code SuppressFilterElement} for a
      * file name pattern.
      *
      * @param files   regular expression for names of filtered files.
@@ -84,7 +84,7 @@ public class SuppressElement
      * @param lines   lines CSV values and ranges for line number filtering.
      * @param columns columns CSV values and ranges for column number filtering.
      */
-    public SuppressElement(String files, String checks,
+    public SuppressFilterElement(String files, String checks,
                            String message, String modId, String lines, String columns) {
         filePattern = files;
         if (files == null) {
@@ -113,41 +113,41 @@ public class SuppressElement
             lineFilter = null;
         }
         else {
-            lineFilter = new CsvFilter(lines);
+            lineFilter = new CsvFilterElement(lines);
         }
         columnsCsv = columns;
         if (columns == null) {
             columnFilter = null;
         }
         else {
-            columnFilter = new CsvFilter(columns);
+            columnFilter = new CsvFilterElement(columns);
         }
     }
 
     @Override
     public boolean accept(AuditEvent event) {
-        return isFileNameAndModuleNotMatching(event)
+        return !isFileNameAndModuleNameMatching(event)
                 || !isMessageNameMatching(event)
-                || isLineAndColumnMatch(event);
+                || !isLineAndColumnMatching(event);
     }
 
     /**
-     * Is matching by file name and Check name.
+     * Is matching by file name, module id, and Check name.
      * @param event event
-     * @return true is matching
+     * @return true if it is matching
      */
-    private boolean isFileNameAndModuleNotMatching(AuditEvent event) {
-        return event.getFileName() == null
-                || fileRegexp != null && !fileRegexp.matcher(event.getFileName()).find()
-                || event.getLocalizedMessage() == null
-                || moduleId != null && !moduleId.equals(event.getModuleId())
-                || checkRegexp != null && !checkRegexp.matcher(event.getSourceName()).find();
+    private boolean isFileNameAndModuleNameMatching(AuditEvent event) {
+        return event.getFileName() != null
+                && (fileRegexp == null || fileRegexp.matcher(event.getFileName()).find())
+                && event.getLocalizedMessage() != null
+                && (moduleId == null || moduleId.equals(event.getModuleId()))
+                && (checkRegexp == null || checkRegexp.matcher(event.getSourceName()).find());
     }
 
     /**
      * Is matching by message.
      * @param event event
-     * @return true is matching or not set.
+     * @return true if it is matching or not set.
      */
     private boolean isMessageNameMatching(AuditEvent event) {
         return messageRegexp == null || messageRegexp.matcher(event.getMessage()).find();
@@ -156,12 +156,12 @@ public class SuppressElement
     /**
      * Whether line and column match.
      * @param event event to process.
-     * @return true if line and column match.
+     * @return true if line and column are matching or not set.
      */
-    private boolean isLineAndColumnMatch(AuditEvent event) {
-        return (lineFilter != null || columnFilter != null)
-                && (lineFilter == null || !lineFilter.accept(event.getLine()))
-                && (columnFilter == null || !columnFilter.accept(event.getColumn()));
+    private boolean isLineAndColumnMatching(AuditEvent event) {
+        return lineFilter == null && columnFilter == null
+                || lineFilter != null && lineFilter.accept(event.getLine())
+                || columnFilter != null && columnFilter.accept(event.getColumn());
     }
 
     @Override
@@ -178,7 +178,7 @@ public class SuppressElement
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        final SuppressElement suppressElement = (SuppressElement) other;
+        final SuppressFilterElement suppressElement = (SuppressFilterElement) other;
         return Objects.equals(filePattern, suppressElement.filePattern)
                 && Objects.equals(checkPattern, suppressElement.checkPattern)
                 && Objects.equals(messagePattern, suppressElement.messagePattern)

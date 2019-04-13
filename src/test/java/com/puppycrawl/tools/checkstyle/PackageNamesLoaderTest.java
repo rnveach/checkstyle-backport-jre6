@@ -19,44 +19,35 @@
 
 package com.puppycrawl.tools.checkstyle;
 
-import static com.puppycrawl.tools.checkstyle.utils.CommonUtil.EMPTY_BYTE_ARRAY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
-import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 
 /**
- * Enter a description of class PackageNamesLoaderTest.java.
+ * Custom class loader is needed to pass URLs to pretend these are loaded from the classpath
+ * though we can't add/change the files for testing. The class loader is nested in this class,
+ * so the custom class loader we are using is safe.
+ * @noinspection ClassLoaderInstantiation
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(PackageNamesLoader.class)
 public class PackageNamesLoaderTest extends AbstractPathTestSupport {
 
     @Override
@@ -74,30 +65,21 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
                 packageNames.size());
     }
 
-    /**
-     * Tests the loading of package names. This test needs mocking, because the package names would
-     * have to be placed in {@literal checkstyle_packages.xml}, but this will affect every test,
-     * which is undesired.
-     *
-     * @throws Exception if error occurs
-     */
     @Test
-    @SuppressWarnings("unchecked")
+    public void testNoPackages() throws Exception {
+        final Set<String> actualPackageNames = PackageNamesLoader
+                .getPackageNames(new TestUrlsClassLoader(Collections7.<URL>emptyEnumeration()));
+
+        assertEquals("Invalid package names length.", 0, actualPackageNames.size());
+    }
+
+    @Test
     public void testPackagesFile() throws Exception {
-        final URLConnection mockConnection = Mockito.mock(URLConnection.class);
-        when(mockConnection.getInputStream()).thenReturn(
-            Files7.newInputStream(Paths.get(getPath("InputPackageNamesLoaderFile.xml"))));
+        final Enumeration<URL> enumeration = Collections.enumeration(Collections.singleton(
+                new File(getPath("InputPackageNamesLoaderFile.xml")).toURI().toURL()));
 
-        final URL url = getMockUrl(mockConnection);
-
-        final Enumeration<URL> enumeration = mock(Enumeration.class);
-        when(enumeration.hasMoreElements()).thenReturn(true).thenReturn(false);
-        when(enumeration.nextElement()).thenReturn(url);
-
-        final ClassLoader classLoader = mock(ClassLoader.class);
-        when(classLoader.getResources("checkstyle_packages.xml")).thenReturn(enumeration);
-
-        final Set<String> actualPackageNames = PackageNamesLoader.getPackageNames(classLoader);
+        final Set<String> actualPackageNames = PackageNamesLoader
+                .getPackageNames(new TestUrlsClassLoader(enumeration));
         final String[] expectedPackageNames = {
             "com.puppycrawl.tools.checkstyle",
             "com.puppycrawl.tools.checkstyle.checks",
@@ -127,69 +109,49 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testPackagesWithDots() throws Exception {
-        final Constructor<PackageNamesLoader> constructor =
-                PackageNamesLoader.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        final PackageNamesLoader loader = constructor.newInstance();
+        final Enumeration<URL> enumeration = Collections.enumeration(Collections.singleton(
+                new File(getPath("InputPackageNamesLoaderWithDots.xml")).toURI().toURL()));
 
-        final Attributes attributes = mock(Attributes.class);
-        when(attributes.getValue("name")).thenReturn("coding.");
-        loader.startElement("", "", "package", attributes);
-        loader.endElement("", "", "package");
+        final Set<String> actualPackageNames = PackageNamesLoader
+                .getPackageNames(new TestUrlsClassLoader(enumeration));
+        final String[] expectedPackageNames = {
+            "coding.",
+        };
 
-        final Field field = PackageNamesLoader.class.getDeclaredField("packageNames");
-        field.setAccessible(true);
-        final Set<String> list = (Set<String>) field.get(loader);
-        assertEquals("Invalid package name", "coding.", list.iterator().next());
+        assertEquals("Invalid package names length.", expectedPackageNames.length,
+            actualPackageNames.size());
+        final Set<String> checkstylePackagesSet =
+                new HashSet<String>(Arrays.asList(expectedPackageNames));
+        assertEquals("Invalid names set.", checkstylePackagesSet, actualPackageNames);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testPackagesWithDotsEx() throws Exception {
-        final Constructor<PackageNamesLoader> constructor =
-                PackageNamesLoader.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        final PackageNamesLoader loader = constructor.newInstance();
+        final Enumeration<URL> enumeration = Collections.enumeration(Collections.singleton(
+                new File(getPath("InputPackageNamesLoaderWithDotsEx.xml")).toURI().toURL()));
 
-        final Attributes attributes1 = mock(Attributes.class);
-        when(attributes1.getValue("name")).thenReturn("coding.");
-        final Attributes attributes2 = mock(Attributes.class);
-        when(attributes2.getValue("name")).thenReturn("specific");
+        final Set<String> actualPackageNames = PackageNamesLoader
+                .getPackageNames(new TestUrlsClassLoader(enumeration));
+        final String[] expectedPackageNames = {
+            "coding.specific",
+            "coding.",
+        };
 
-        loader.startElement("", "", "package", attributes1);
-        loader.startElement("", "", "package", attributes2);
-        loader.endElement("", "", "package");
-        loader.endElement("", "", "package");
-
-        final Field field = PackageNamesLoader.class.getDeclaredField("packageNames");
-        field.setAccessible(true);
-        final Set<String> list = (Set<String>) field.get(loader);
-        assertEquals("Invalid list size", 2, list.size());
-        final Iterator<String> iterator = list.iterator();
-        assertEquals("Invalid package name", "coding.specific", iterator.next());
-        assertEquals("Invalid package name", "coding.", iterator.next());
+        assertEquals("Invalid package names length.", expectedPackageNames.length,
+            actualPackageNames.size());
+        final Set<String> checkstylePackagesSet =
+                new HashSet<String>(Arrays.asList(expectedPackageNames));
+        assertEquals("Invalid names set.", checkstylePackagesSet, actualPackageNames);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testPackagesWithSaxException() throws Exception {
-        final URLConnection mockConnection = Mockito.mock(URLConnection.class);
-        when(mockConnection.getInputStream()).thenReturn(
-                new ByteArrayInputStream(EMPTY_BYTE_ARRAY));
-
-        final URL url = getMockUrl(mockConnection);
-
-        final Enumeration<URL> enumeration = mock(Enumeration.class);
-        when(enumeration.hasMoreElements()).thenReturn(true);
-        when(enumeration.nextElement()).thenReturn(url);
-
-        final ClassLoader classLoader = mock(ClassLoader.class);
-        when(classLoader.getResources("checkstyle_packages.xml")).thenReturn(enumeration);
+        final Enumeration<URL> enumeration = Collections.enumeration(Collections.singleton(
+                new File(getPath("InputPackageNamesLoaderNotXml.java")).toURI().toURL()));
 
         try {
-            PackageNamesLoader.getPackageNames(classLoader);
+            PackageNamesLoader.getPackageNames(new TestUrlsClassLoader(enumeration));
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
@@ -198,22 +160,29 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testPackagesWithIoException() throws Exception {
-        final URLConnection mockConnection = Mockito.mock(URLConnection.class);
-        when(mockConnection.getInputStream()).thenReturn(null);
+        final URLConnection urlConnection = new URLConnection(null) {
+            @Override
+            public void connect() {
+                // no code
+            }
 
-        final URL url = getMockUrl(mockConnection);
+            @Override
+            public InputStream getInputStream() {
+                return null;
+            }
+        };
+        final URL url = new URL("test", null, 0, "", new URLStreamHandler() {
+            @Override
+            protected URLConnection openConnection(URL u) {
+                return urlConnection;
+            }
+        });
 
-        final Enumeration<URL> enumer = mock(Enumeration.class);
-        when(enumer.hasMoreElements()).thenReturn(true);
-        when(enumer.nextElement()).thenReturn(url);
-
-        final ClassLoader classLoader = mock(ClassLoader.class);
-        when(classLoader.getResources("checkstyle_packages.xml")).thenReturn(enumer);
+        final Enumeration<URL> enumeration = Collections.enumeration(Collections.singleton(url));
 
         try {
-            PackageNamesLoader.getPackageNames(classLoader);
+            PackageNamesLoader.getPackageNames(new TestUrlsClassLoader(enumeration));
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
@@ -224,12 +193,9 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
     }
 
     @Test
-    public void testPackagesWithIoExceptionGetResources() throws Exception {
-        final ClassLoader classLoader = mock(ClassLoader.class);
-        when(classLoader.getResources("checkstyle_packages.xml")).thenThrow(IOException.class);
-
+    public void testPackagesWithIoExceptionGetResources() {
         try {
-            PackageNamesLoader.getPackageNames(classLoader);
+            PackageNamesLoader.getPackageNames(new TestIoExceptionClassLoader());
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
@@ -239,14 +205,34 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
         }
     }
 
-    private static URL getMockUrl(final URLConnection connection) throws IOException {
-        final URLStreamHandler handler = new URLStreamHandler() {
-            @Override
-            protected URLConnection openConnection(final URL url) {
-                return connection;
-            }
-        };
-        return new URL("http://foo.bar", "foo.bar", 80, "", handler);
+    /**
+     * Custom class loader is needed to pass URLs to pretend these are loaded from the classpath
+     * though we can't add/change the files for testing.
+     * @noinspection CustomClassloader
+     */
+    private static class TestUrlsClassLoader extends ClassLoader {
+
+        private final Enumeration<URL> urls;
+
+        TestUrlsClassLoader(Enumeration<URL> urls) {
+            this.urls = urls;
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) {
+            return urls;
+        }
+    }
+
+    /**
+     * Custom class loader is needed to throw an exception to test a catch statement.
+     * @noinspection CustomClassloader
+     */
+    private static class TestIoExceptionClassLoader extends ClassLoader {
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            throw new IOException("test");
+        }
     }
 
 }

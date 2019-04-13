@@ -118,6 +118,17 @@ public class DetailASTTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testAddPreviousSiblingNullParent() {
+        final DetailAST child = new DetailAST();
+        final DetailAST newSibling = new DetailAST();
+
+        child.addPreviousSibling(newSibling);
+
+        assertEquals("Invalid child token", child, newSibling.getNextSibling());
+        assertEquals("Invalid child token", newSibling, child.getPreviousSibling());
+    }
+
+    @Test
     public void testInsertSiblingBetween() throws Exception {
         final DetailAST root = new DetailAST();
         final DetailAST firstLevelA = new DetailAST();
@@ -230,6 +241,16 @@ public class DetailASTTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testCacheBranchTokenTypes() {
+        final DetailAST root = new DetailAST();
+        final BitSet bitSet = new BitSet();
+        bitSet.set(999);
+
+        Whitebox.setInternalState(root, "branchTokenTypes", bitSet);
+        assertTrue("Branch tokens has changed", root.branchContains(999));
+    }
+
+    @Test
     public void testClearChildCountCache() {
         final DetailAST parent = new DetailAST();
         final DetailAST child = new DetailAST();
@@ -277,6 +298,14 @@ public class DetailASTTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testCacheGetChildCount() {
+        final DetailAST root = new DetailAST();
+
+        Whitebox.setInternalState(root, "childCount", 999);
+        assertEquals("Child count has changed", 999, root.getChildCount());
+    }
+
+    @Test
     public void testAddNextSibling() {
         final DetailAST parent = new DetailAST();
         final DetailAST child = new DetailAST();
@@ -288,6 +317,19 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
         assertEquals("Invalid parent", parent, newSibling.getParent());
         assertEquals("Invalid next sibling", sibling, newSibling.getNextSibling());
+        assertEquals("Invalid child", newSibling, child.getNextSibling());
+    }
+
+    @Test
+    public void testAddNextSiblingNullParent() {
+        final DetailAST child = new DetailAST();
+        final DetailAST newSibling = new DetailAST();
+        final DetailAST oldParent = new DetailAST();
+        oldParent.addChild(newSibling);
+        child.addNextSibling(newSibling);
+
+        assertEquals("Invalid parent", oldParent, newSibling.getParent());
+        assertNull("Invalid next sibling", newSibling.getNextSibling());
         assertEquals("Invalid child", newSibling, child.getNextSibling());
     }
 

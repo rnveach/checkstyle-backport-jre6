@@ -24,21 +24,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.powermock.api.mockito.PowerMockito.mock;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
@@ -59,13 +55,22 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(SuppressWarningsHolder.class)
 public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/suppresswarningsholder";
+    }
+
+    @After
+    public void cleanUp() {
+        // clear cache that may have been set by tests
+
+        new SuppressWarningsHolder().beginTree(null);
+
+        final Map<String, String> map = Whitebox.getInternalState(SuppressWarningsHolder.class,
+                "CHECK_ALIAS_MAP");
+        map.clear();
     }
 
     @Test
@@ -169,7 +174,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIsSuppressed() throws Exception {
-        createHolder("MockEntry", 100, 100, 350, 350);
+        populateHolder("MockEntry", 100, 100, 350, 350);
         final AuditEvent event = createAuditEvent("check", 100, 10);
 
         assertFalse("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
@@ -177,7 +182,8 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIsSuppressedByName() throws Exception {
-        final SuppressWarningsHolder holder = createHolder("check", 100, 100, 350, 350);
+        populateHolder("check", 100, 100, 350, 350);
+        final SuppressWarningsHolder holder = new SuppressWarningsHolder();
         final AuditEvent event = createAuditEvent("id", 110, 10);
         holder.setAliasList(MemberNameCheck.class.getName() + "=check");
 
@@ -186,7 +192,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIsSuppressedByModuleId() throws Exception {
-        createHolder("check", 100, 100, 350, 350);
+        populateHolder("check", 100, 100, 350, 350);
         final AuditEvent event = createAuditEvent("check", 350, 350);
 
         assertTrue("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
@@ -194,7 +200,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIsSuppressedAfterEventEnd() throws Exception {
-        createHolder("check", 100, 100, 350, 350);
+        populateHolder("check", 100, 100, 350, 350);
         final AuditEvent event = createAuditEvent("check", 350, 352);
 
         assertFalse("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
@@ -202,7 +208,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIsSuppressedAfterEventEnd2() throws Exception {
-        createHolder("check", 100, 100, 350, 350);
+        populateHolder("check", 100, 100, 350, 350);
         final AuditEvent event = createAuditEvent("check", 400, 10);
 
         assertFalse("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
@@ -210,7 +216,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIsSuppressedAfterEventStart() throws Exception {
-        createHolder("check", 100, 100, 350, 350);
+        populateHolder("check", 100, 100, 350, 350);
         final AuditEvent event = createAuditEvent("check", 100, 100);
 
         assertTrue("Event is not suppressed", SuppressWarningsHolder.isSuppressed(event));
@@ -218,7 +224,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
 
     @Test
     public void testIsSuppressedWithAllArgument() throws Exception {
-        createHolder("all", 100, 100, 350, 350);
+        populateHolder("all", 100, 100, 350, 350);
 
         final Checker source = new Checker();
         final LocalizedMessage firstMessageForTest =
@@ -404,9 +410,9 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
                 }));
     }
 
-    private static SuppressWarningsHolder createHolder(String checkName, int firstLine,
-                                                       int firstColumn, int lastLine,
-                                                       int lastColumn) throws Exception {
+    private static void populateHolder(String checkName, int firstLine,
+                                                         int firstColumn, int lastLine,
+                                                         int lastColumn) throws Exception {
         final Class<?> entry = Class
                 .forName("com.puppycrawl.tools.checkstyle.checks.SuppressWarningsHolder$Entry");
         final Constructor<?> entryConstr = entry.getDeclaredConstructor(String.class, int.class,
@@ -416,17 +422,9 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
         final Object entryInstance = entryConstr.newInstance(checkName, firstLine,
                 firstColumn, lastLine, lastColumn);
 
-        final List<Object> entriesList = new ArrayList<Object>();
-        entriesList.add(entryInstance);
-
-        final ThreadLocal<?> threadLocal = mock(ThreadLocal.class);
-        PowerMockito.doReturn(entriesList).when(threadLocal, "get");
-
-        final SuppressWarningsHolder holder = new SuppressWarningsHolder();
-        final Field entries = holder.getClass().getDeclaredField("ENTRIES");
-        entries.setAccessible(true);
-        entries.set(holder, threadLocal);
-        return holder;
+        final ThreadLocal<List<Object>> entries = Whitebox
+                .getInternalState(SuppressWarningsHolder.class, "ENTRIES");
+        entries.get().add(entryInstance);
     }
 
     private static AuditEvent createAuditEvent(String moduleId, int line, int column) {

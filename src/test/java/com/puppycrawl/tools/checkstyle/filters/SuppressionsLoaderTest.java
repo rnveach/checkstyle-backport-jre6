@@ -24,18 +24,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.xml.sax.InputSource;
 
@@ -47,12 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.FilterSet;
 /**
  * Tests SuppressionsLoader.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ SuppressionsLoader.class, SuppressionsLoaderTest.class })
 public class SuppressionsLoaderTest extends AbstractPathTestSupport {
-
-    @Rule
-    public final ExpectedException thrown = ExpectedException.none();
 
     @Override
     protected String getPackageLocation() {
@@ -121,20 +110,20 @@ public class SuppressionsLoaderTest extends AbstractPathTestSupport {
             SuppressionsLoader.loadSuppressions(getPath("InputSuppressionsLoaderMultiple.xml"));
         final FilterSet fc2 = new FilterSet();
 
-        final SuppressElement se0 =
-                new SuppressElement("file0", "check0", null, null, null, null);
+        final SuppressFilterElement se0 =
+                new SuppressFilterElement("file0", "check0", null, null, null, null);
         fc2.addFilter(se0);
-        final SuppressElement se1 =
-                new SuppressElement("file1", "check1", null, null, "1,2-3", null);
+        final SuppressFilterElement se1 =
+                new SuppressFilterElement("file1", "check1", null, null, "1,2-3", null);
         fc2.addFilter(se1);
-        final SuppressElement se2 =
-                new SuppressElement("file2", "check2", null, null, null, "1,2-3");
+        final SuppressFilterElement se2 =
+                new SuppressFilterElement("file2", "check2", null, null, null, "1,2-3");
         fc2.addFilter(se2);
-        final SuppressElement se3 =
-                new SuppressElement("file3", "check3", null, null, "1,2-3", "1,2-3");
+        final SuppressFilterElement se3 =
+                new SuppressFilterElement("file3", "check3", null, null, "1,2-3", "1,2-3");
         fc2.addFilter(se3);
-        final SuppressElement se4 =
-                new SuppressElement(null, null, "message0", null, null, null);
+        final SuppressFilterElement se4 =
+                new SuppressFilterElement(null, null, "message0", null, null, null);
         fc2.addFilter(se4);
         assertEquals("Multiple suppressions were loaded incorrectly", fc2, fc);
     }
@@ -232,34 +221,32 @@ public class SuppressionsLoaderTest extends AbstractPathTestSupport {
 
     @Test
     public void testUnableToFindSuppressions() throws Exception {
-        final Class<SuppressionsLoader> loaderClass = SuppressionsLoader.class;
-        final Method loadSuppressions =
-            loaderClass.getDeclaredMethod("loadSuppressions", InputSource.class, String.class);
-        loadSuppressions.setAccessible(true);
-
         final String sourceName = "InputSuppressionsLoaderNone.xml";
-        final InputSource inputSource = new InputSource(sourceName);
 
-        thrown.expect(CheckstyleException.class);
-        thrown.expectMessage("Unable to find: " + sourceName);
-
-        loadSuppressions.invoke(loaderClass, inputSource, sourceName);
+        try {
+            Whitebox.invokeMethod(SuppressionsLoader.class, "loadSuppressions",
+                    new InputSource(sourceName), sourceName);
+            fail("CheckstyleException is expected");
+        }
+        catch (CheckstyleException ex) {
+            assertEquals("Invalid exception message", "Unable to find: " + sourceName,
+                    ex.getMessage());
+        }
     }
 
     @Test
     public void testUnableToReadSuppressions() throws Exception {
-        final Class<SuppressionsLoader> loaderClass = SuppressionsLoader.class;
-        final Method loadSuppressions =
-            loaderClass.getDeclaredMethod("loadSuppressions", InputSource.class, String.class);
-        loadSuppressions.setAccessible(true);
-
-        final InputSource inputSource = new InputSource();
-
-        thrown.expect(CheckstyleException.class);
         final String sourceName = "InputSuppressionsLoaderNone.xml";
-        thrown.expectMessage("Unable to read " + sourceName);
 
-        loadSuppressions.invoke(loaderClass, inputSource, sourceName);
+        try {
+            Whitebox.invokeMethod(SuppressionsLoader.class, "loadSuppressions",
+                    new InputSource(), sourceName);
+            fail("CheckstyleException is expected");
+        }
+        catch (CheckstyleException ex) {
+            assertEquals("Invalid exception message", "Unable to read " + sourceName,
+                    ex.getMessage());
+        }
     }
 
     @Test
@@ -310,7 +297,8 @@ public class SuppressionsLoaderTest extends AbstractPathTestSupport {
     public void testSettingModuleId() throws Exception {
         final FilterSet fc =
                 SuppressionsLoader.loadSuppressions(getPath("InputSuppressionsLoaderWithId.xml"));
-        final SuppressElement suppressElement = (SuppressElement) fc.getFilters().toArray()[0];
+        final SuppressFilterElement suppressElement = (SuppressFilterElement) fc.getFilters()
+                .toArray()[0];
 
         final String id = Whitebox.getInternalState(suppressElement, "moduleId");
         assertEquals("Id has to be defined", "someId", id);
@@ -322,11 +310,11 @@ public class SuppressionsLoaderTest extends AbstractPathTestSupport {
         final Set<TreeWalkerFilter> filterSet = SuppressionsLoader.loadXpathSuppressions(fn);
 
         final Set<TreeWalkerFilter> expectedFilterSet = new HashSet<TreeWalkerFilter>();
-        final XpathFilter xf0 =
-                new XpathFilter("file1", "test", null, "id1", "/CLASS_DEF");
+        final XpathFilterElement xf0 =
+                new XpathFilterElement("file1", "test", null, "id1", "/CLASS_DEF");
         expectedFilterSet.add(xf0);
-        final XpathFilter xf1 =
-                new XpathFilter(null, null, "message1", null, "/CLASS_DEF");
+        final XpathFilterElement xf1 =
+                new XpathFilterElement(null, null, "message1", null, "/CLASS_DEF");
         expectedFilterSet.add(xf1);
         assertEquals("Multiple xpath suppressions were loaded incorrectly", expectedFilterSet,
                 filterSet);

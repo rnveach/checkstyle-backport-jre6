@@ -860,12 +860,6 @@ public class PackageObjectFactory implements ModuleFactory {
      * Fill short-to-full module names map with modules from filters package.
      */
     private static void fillModulesFromFiltersPackage() {
-        NAME_TO_FULL_MODULE_NAME.put("CsvFilter",
-                BASE_PACKAGE + ".filters.CsvFilter");
-        NAME_TO_FULL_MODULE_NAME.put("IntMatchFilter",
-                BASE_PACKAGE + ".filters.IntMatchFilter");
-        NAME_TO_FULL_MODULE_NAME.put("IntRangeFilter",
-                BASE_PACKAGE + ".filters.IntRangeFilter");
         NAME_TO_FULL_MODULE_NAME.put("SeverityMatchFilter",
                 BASE_PACKAGE + ".filters.SeverityMatchFilter");
         NAME_TO_FULL_MODULE_NAME.put("SuppressWithPlainTextCommentFilter",
@@ -876,6 +870,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".filters.SuppressionFilter");
         NAME_TO_FULL_MODULE_NAME.put("SuppressionXpathFilter",
                 BASE_PACKAGE + ".filters.SuppressionXpathFilter");
+        NAME_TO_FULL_MODULE_NAME.put("SuppressionXpathSingleFilter",
+                BASE_PACKAGE + ".filters.SuppressionXpathSingleFilter");
         NAME_TO_FULL_MODULE_NAME.put("SuppressWarningsFilter",
                 BASE_PACKAGE + ".filters.SuppressWarningsFilter");
         NAME_TO_FULL_MODULE_NAME.put("SuppressWithNearbyCommentFilter",

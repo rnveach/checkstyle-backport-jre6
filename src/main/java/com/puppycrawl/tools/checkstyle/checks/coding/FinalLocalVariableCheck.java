@@ -30,8 +30,8 @@ import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 
 /**
@@ -151,6 +151,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
             TokenTypes.SLIST,
             TokenTypes.OBJBLOCK,
             TokenTypes.LITERAL_BREAK,
+            TokenTypes.LITERAL_FOR,
         };
     }
 
@@ -163,6 +164,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
             TokenTypes.SLIST,
             TokenTypes.OBJBLOCK,
             TokenTypes.LITERAL_BREAK,
+            TokenTypes.LITERAL_FOR,
             TokenTypes.VARIABLE_DEF,
         };
     }
@@ -176,6 +178,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
             TokenTypes.SLIST,
             TokenTypes.OBJBLOCK,
             TokenTypes.LITERAL_BREAK,
+            TokenTypes.LITERAL_FOR,
             TokenTypes.VARIABLE_DEF,
             TokenTypes.PARAMETER_DEF,
         };
@@ -189,6 +192,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
             case TokenTypes.OBJBLOCK:
             case TokenTypes.METHOD_DEF:
             case TokenTypes.CTOR_DEF:
+            case TokenTypes.LITERAL_FOR:
                 scopeStack.push(new ScopeData());
                 break;
             case TokenTypes.SLIST:
@@ -246,6 +250,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
             case TokenTypes.OBJBLOCK:
             case TokenTypes.CTOR_DEF:
             case TokenTypes.METHOD_DEF:
+            case TokenTypes.LITERAL_FOR:
                 scope = scopeStack.pop().scope;
                 break;
             case TokenTypes.SLIST:
@@ -380,6 +385,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
         final Iterator<DetailAST> iterator = currentScopeAssignedVariables.peek().iterator();
         while (iterator.hasNext()) {
             final DetailAST assignedVariable = iterator.next();
+            boolean shouldRemove = false;
             for (DetailAST variable : scopeUninitializedVariableData) {
                 for (ScopeData scopeData : scopeStack) {
                     final FinalVariableCandidate candidate =
@@ -392,9 +398,12 @@ public class FinalLocalVariableCheck extends AbstractCheck {
                             && isSameVariables(storedVariable, variable)
                             && isSameVariables(assignedVariable, variable)) {
                         scopeData.uninitializedVariables.push(variable);
-                        iterator.remove();
+                        shouldRemove = true;
                     }
                 }
+            }
+            if (shouldRemove) {
+                iterator.remove();
             }
         }
     }
@@ -478,7 +487,10 @@ public class FinalLocalVariableCheck extends AbstractCheck {
     private void insertVariable(DetailAST ast) {
         final Map<String, FinalVariableCandidate> scope = scopeStack.peek().scope;
         final DetailAST astNode = ast.findFirstToken(TokenTypes.IDENT);
-        scope.put(astNode.getText(), new FinalVariableCandidate(astNode));
+        final FinalVariableCandidate candidate = new FinalVariableCandidate(astNode);
+        // for-each variables are implicitly assigned
+        candidate.assigned = ast.getParent().getType() == TokenTypes.FOR_EACH_CLAUSE;
+        scope.put(astNode.getText(), candidate);
         if (!isInitialized(astNode)) {
             scopeStack.peek().uninitializedVariables.add(astNode);
         }

@@ -47,7 +47,7 @@ public class XmlLoaderTest {
     @Test
     public void testIsProperUtilsClass() throws Exception {
         assertTrue("Constructor is not private", isUtilsClassHasPrivateConstructor(
-                XmlLoader.FeaturesForVerySecureJavaInstallations.class, true));
+                XmlLoader.LoadExternalDtdFeatureProvider.class, true));
     }
 
     @Test

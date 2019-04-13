@@ -22,7 +22,7 @@ package com.puppycrawl.tools.checkstyle.filters;
 /**
  * This filter accepts a matching Integer.
  */
-class IntMatchFilter implements IntFilter {
+class IntMatchFilterElement implements IntFilterElement {
 
     /** The matching Integer. */
     private final int matchValue;
@@ -31,7 +31,7 @@ class IntMatchFilter implements IntFilter {
      * Constructs a MatchFilter for an int.
      * @param matchValue the matching int.
      */
-    IntMatchFilter(int matchValue) {
+    IntMatchFilterElement(int matchValue) {
         this.matchValue = matchValue;
     }
 
@@ -42,7 +42,7 @@ class IntMatchFilter implements IntFilter {
 
     @Override
     public String toString() {
-        return "IntMatchFilter[" + matchValue + "]";
+        return "IntMatchFilterElement[" + matchValue + "]";
     }
 
     @Override
@@ -52,8 +52,8 @@ class IntMatchFilter implements IntFilter {
 
     @Override
     public final boolean equals(Object object) {
-        if (object instanceof IntMatchFilter) {
-            final IntMatchFilter other = (IntMatchFilter) object;
+        if (object instanceof IntMatchFilterElement) {
+            final IntMatchFilterElement other = (IntMatchFilterElement) object;
             return matchValue == other.matchValue;
         }
         return false;

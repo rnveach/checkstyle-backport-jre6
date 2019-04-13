@@ -25,9 +25,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,9 +47,7 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
@@ -64,10 +59,7 @@ import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
-import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Main.class, CommonUtil.class})
 public class MainTest {
 
     private static final String SHORT_USAGE = String.format(Locale.ROOT,
@@ -98,7 +90,7 @@ public class MainTest {
           + "                            (experimental) The number of Checker threads (must be"
           + " greater than zero)%n"
           + "  -d, --debug               Print all debug logging of CheckStyle utility%n"
-          + "  -e, --exclude=<exclude>   Directory path to exclude from CheckStyle%n"
+          + "  -e, --exclude=<exclude>   Directory/File path to exclude from CheckStyle%n"
           + "  -f=<format>               Sets the output format. Valid values: xml, plain."
           + " Defaults to plain%n"
           + "  -g, --generate-xpath-suppression%n"
@@ -124,7 +116,7 @@ public class MainTest {
           + "                            (experimental) The number of TreeWalker threads (must be"
           + " greater than zero)%n"
           + "  -x, --exclude-regexp=<excludeRegex>%n"
-          + "                            Regular expression of directory to exclude from"
+          + "                            Regular expression of directory/file to exclude from"
           + " CheckStyle%n");
 
     private static final Logger LOG = Logger.getLogger(MainTest.class.getName()).getParent();
@@ -317,7 +309,8 @@ public class MainTest {
             public void checkAssertion() {
                 assertEquals("Unexpected output log", "", systemOut.getLog());
                 assertEquals("Unexpected system error log",
-                        "Invalid value for option '-f': expected one of [xml, plain] but was 'xmlp'"
+                        "Invalid value for option '-f': expected one of [XML, PLAIN]"
+                            + " (case-insensitive) but was 'xmlp'"
                         + EOL + SHORT_USAGE, systemErr.getLog());
             }
         });
@@ -616,8 +609,9 @@ public class MainTest {
                 final String output = errorCounterOneMessage.getMessage() + EOL;
                 assertEquals("Unexpected output log", output, systemOut.getLog());
                 final String errorOutput = "com.puppycrawl.tools.checkstyle.api."
-                        + "CheckstyleException: cannot initialize module TreeWalker"
-                        + " - JavadocVariable is not allowed as a child in JavadocMethod";
+                        + "CheckstyleException: cannot initialize module TreeWalker - "
+                        + "cannot initialize module JavadocMethod - "
+                        + "JavadocVariable is not allowed as a child in JavadocMethod";
                 assertTrue("Unexpected system error log", systemErr.getLog().startsWith(errorOutput));
             }
         });
@@ -693,36 +687,64 @@ public class MainTest {
                 getPath(""));
     }
 
+    /**
+     * Test doesn't need to be serialized.
+     * @noinspection SerializableInnerClassWithNonSerializableOuterClass
+     */
     @Test
-    @SuppressWarnings("unchecked")
     public void testListFilesNotFile() throws Exception {
-        final Class<?> optionsClass = Class.forName(Main.class.getName());
-        final Method method = optionsClass.getDeclaredMethod("listFiles", File.class, List.class);
-        method.setAccessible(true);
+        final File fileMock = new File("") {
+            private static final long serialVersionUID = 1L;
 
-        final File fileMock = mock(File.class);
-        when(fileMock.canRead()).thenReturn(true);
-        when(fileMock.isDirectory()).thenReturn(false);
-        when(fileMock.isFile()).thenReturn(false);
+            @Override
+            public boolean canRead() {
+                return true;
+            }
 
-        final List<File> result = (List<File>) method.invoke(null, fileMock, null);
+            @Override
+            public boolean isDirectory() {
+                return false;
+            }
+
+            @Override
+            public boolean isFile() {
+                return false;
+            }
+        };
+
+        final List<File> result = Whitebox.invokeMethod(Main.class, "listFiles",
+                fileMock, new ArrayList<Pattern>());
         assertEquals("Invalid result size", 0, result.size());
     }
 
+    /**
+     * Test doesn't need to be serialized.
+     * @noinspection SerializableInnerClassWithNonSerializableOuterClass
+     */
     @Test
-    @SuppressWarnings("unchecked")
     public void testListFilesDirectoryWithNull() throws Exception {
-        final Class<?> optionsClass = Class.forName(Main.class.getName());
-        final Method method = optionsClass.getDeclaredMethod("listFiles", File.class, List.class);
-        method.setAccessible(true);
+        final File[] nullResult = null;
+        final File fileMock = new File("") {
+            private static final long serialVersionUID = 1L;
 
-        final File fileMock = mock(File.class);
-        when(fileMock.canRead()).thenReturn(true);
-        when(fileMock.isDirectory()).thenReturn(true);
-        when(fileMock.listFiles()).thenReturn(null);
+            @Override
+            public boolean canRead() {
+                return true;
+            }
 
-        final List<File> result = (List<File>) method.invoke(null, fileMock,
-                new ArrayList<Pattern>());
+            @Override
+            public boolean isDirectory() {
+                return true;
+            }
+
+            @Override
+            public File[] listFiles() {
+                return nullResult;
+            }
+        };
+
+        final List<File> result = Whitebox.invokeMethod(Main.class, "listFiles",
+                fileMock, new ArrayList<Pattern>());
         assertEquals("Invalid result size", 0, result.size());
     }
 
@@ -1325,6 +1347,21 @@ public class MainTest {
     }
 
     @Test
+    public void testExcludeOptionFile() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log", "Files to process must be specified, found 0."
+                    + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("Unexpected system error log", "", systemErr.getLog());
+            }
+        });
+        Main.main("-c", "/google_checks.xml", getFilePath("InputMain.java"), "-e",
+                getFilePath("InputMain.java"));
+    }
+
+    @Test
     public void testExcludeRegexpOption() throws Exception {
         exit.expectSystemExitWithStatus(-1);
         exit.checkAssertionAfterwards(new Assertion() {
@@ -1336,6 +1373,20 @@ public class MainTest {
             }
         });
         Main.main("-c", "/google_checks.xml", getFilePath(""), "-x", ".");
+    }
+
+    @Test
+    public void testExcludeRegexpOptionFile() throws Exception {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Unexpected output log", "Files to process must be specified, found 0."
+                    + System7.lineSeparator(), systemOut.getLog());
+                assertEquals("Unexpected output log", "", systemErr.getLog());
+            }
+        });
+        Main.main("-c", "/google_checks.xml", getFilePath("InputMain.java"), "-x", ".");
     }
 
     @Test
@@ -1565,23 +1616,6 @@ public class MainTest {
                     "Multi thread mode for Checker module is not implemented",
                 ex.getMessage());
         }
-    }
-
-    /**
-     * This test is a workaround for the Jacoco limitations. A call to {@link System#exit(int)}
-     * will never return, so Jacoco coverage probe will be missing. By mocking the {@code System}
-     * class we turn {@code System.exit()} to noop and the Jacoco coverage probe should succeed.
-     *
-     * @throws Exception if error occurs
-     * @see <a href="https://github.com/jacoco/jacoco/issues/117">Jacoco issue 117</a>
-     */
-    @Test
-    public void testJacocoWorkaround() throws Exception {
-        final String expected = "Missing required parameter: <files>" + EOL + SHORT_USAGE;
-        mockStatic(System.class);
-        Main.main();
-        assertEquals("Unexpected output log", "", systemOut.getLog());
-        assertEquals("Unexpected system error log", expected, systemErr.getLog());
     }
 
     @Test

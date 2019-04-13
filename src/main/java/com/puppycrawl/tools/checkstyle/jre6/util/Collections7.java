@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2018 the original author or authors.
+// Copyright (C) 2001-2019 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.jre6.util;
 
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -44,7 +45,20 @@ public final class Collections7 {
             result.add(item);
         }
         return result;
+    }
 
+    public static <T> Enumeration<T> emptyEnumeration() {
+        return new Enumeration<T>() {
+            @Override
+            public boolean hasMoreElements() {
+                return false;
+            }
+
+            @Override
+            public T nextElement() {
+                return null;
+            }
+        };
     }
 
     public static <T> Iterator<T> emptyIterator() {

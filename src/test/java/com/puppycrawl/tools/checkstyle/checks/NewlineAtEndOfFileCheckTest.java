@@ -23,22 +23,18 @@ import static com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck.MSG
 import static com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck.MSG_KEY_UNABLE_OPEN;
 import static java.util.Locale.ENGLISH;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -150,11 +146,11 @@ public class NewlineAtEndOfFileCheckTest
             fail("exception expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Error message is unexpected",
-                    ex.getMessage().startsWith(
+            assertEquals("Error message is unexpected",
                     "cannot initialize module com.puppycrawl.tools.checkstyle."
                             + "checks.NewlineAtEndOfFileCheck - "
-                            + "Cannot set property 'lineSeparator' to 'ct' in module"));
+                            + "Cannot set property 'lineSeparator' to 'ct'",
+                    ex.getMessage());
         }
     }
 
@@ -203,29 +199,26 @@ public class NewlineAtEndOfFileCheckTest
 
     @Test
     public void testWrongSeparatorLength() throws Exception {
-        final NewlineAtEndOfFileCheck check = new NewlineAtEndOfFileCheck();
-        final DefaultConfiguration checkConfig = createModuleConfig(NewlineAtEndOfFileCheck.class);
-        check.configure(checkConfig);
+        final RandomAccessFile file = new RandomAccessFile(
+                getPath("InputNewlineAtEndOfFileLf.java"), "r") {
+            @Override
+            public int read(byte[] bytes) {
+                return 0;
+            }
+        };
 
-        final Method method = NewlineAtEndOfFileCheck.class
-                .getDeclaredMethod("endsWithNewline", RandomAccessFile.class);
-        method.setAccessible(true);
-        final RandomAccessFile file = mock(RandomAccessFile.class);
-        when(file.length()).thenReturn(2000000L);
         try {
-            method.invoke(new NewlineAtEndOfFileCheck(), file);
+            Whitebox.invokeMethod(new NewlineAtEndOfFileCheck(), "endsWithNewline", file);
             fail("Exception is expected");
         }
-        catch (InvocationTargetException ex) {
-            assertTrue("Error type is unexpected",
-                    ex.getCause() instanceof IOException);
+        catch (IOException ex) {
             if (System.getProperty("os.name").toLowerCase(ENGLISH).startsWith("windows")) {
                 assertEquals("Error message is unexpected",
-                        "Unable to read 2 bytes, got 0", ex.getCause().getMessage());
+                        "Unable to read 2 bytes, got 0", ex.getMessage());
             }
             else {
                 assertEquals("Error message is unexpected",
-                        "Unable to read 1 bytes, got 0", ex.getCause().getMessage());
+                        "Unable to read 1 bytes, got 0", ex.getMessage());
             }
         }
     }

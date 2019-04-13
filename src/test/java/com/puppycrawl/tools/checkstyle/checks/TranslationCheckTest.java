@@ -27,29 +27,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mockito;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.w3c.dom.Node;
 
 import com.google.common.collect.ImmutableMap;
@@ -70,14 +63,10 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.BiPredicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
-@RunWith(PowerMockRunner.class)
 public class TranslationCheckTest extends AbstractXmlTestSupport {
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    @Captor
-    private ArgumentCaptor<SortedSet<LocalizedMessage>> captor;
 
     @Override
     protected String getPackageLocation() {
@@ -248,29 +237,26 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testLogIoExceptionFileNotFound() throws Exception {
         //I can't put wrong file here. Checkstyle fails before check started.
         //I saw some usage of file or handling of wrong file in Checker, or somewhere
         //in checks running part. So I had to do it with reflection to improve coverage.
         final TranslationCheck check = new TranslationCheck();
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        final MessageDispatcher dispatcher = mock(MessageDispatcher.class);
+        final TestMessageDispatcher dispatcher = new TestMessageDispatcher();
         check.configure(checkConfig);
         check.setMessageDispatcher(dispatcher);
 
-        final Method loadKeys =
-            check.getClass().getDeclaredMethod("getTranslationKeys", File.class);
-        loadKeys.setAccessible(true);
-        final Set<String> keys = (Set<String>) loadKeys.invoke(check, new File(".no.such.file"));
+        final Set<String> keys = Whitebox.invokeMethod(check, "getTranslationKeys",
+                new File(".no.such.file"));
         assertTrue("Translation keys should be empty when File is not found", keys.isEmpty());
 
-        Mockito.verify(dispatcher, times(1)).fireErrors(any(String.class), captor.capture());
-        final String actual = captor.getValue().first().getMessage();
+        assertEquals("expected number of errors to fire", 1, dispatcher.savedErrors.size());
         final LocalizedMessage localizedMessage = new LocalizedMessage(1,
                 Definitions.CHECKSTYLE_BUNDLE, "general.fileNotFound",
                 null, null, getClass(), null);
-        assertEquals("Invalid message", localizedMessage.getMessage(), actual);
+        assertEquals("Invalid message", localizedMessage.getMessage(),
+                dispatcher.savedErrors.iterator().next().getMessage());
     }
 
     @Test
@@ -280,20 +266,19 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
         //in checks running part. So I had to do it with reflection to improve coverage.
         final TranslationCheck check = new TranslationCheck();
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        final MessageDispatcher dispatcher = mock(MessageDispatcher.class);
+        final TestMessageDispatcher dispatcher = new TestMessageDispatcher();
         check.configure(checkConfig);
         check.setMessageDispatcher(dispatcher);
 
-        final Method logException = check.getClass().getDeclaredMethod("logException",
-                Exception.class,
-                File.class);
-        logException.setAccessible(true);
-        final File file = new File("");
-        logException.invoke(check, new IOException("test exception"), file);
+        final Exception exception = new IOException("test exception");
+        Whitebox.invokeMethod(check, "logException", exception, new File(""));
 
-        Mockito.verify(dispatcher, times(1)).fireErrors(any(String.class), captor.capture());
-        final String actual = captor.getValue().first().getMessage();
-        assertThat("Invalid message: " + actual, actual, endsWith("test exception"));
+        assertEquals("expected number of errors to fire", 1, dispatcher.savedErrors.size());
+        final LocalizedMessage localizedMessage = new LocalizedMessage(1,
+                Definitions.CHECKSTYLE_BUNDLE, "general.exception",
+                new String[] {exception.getMessage()}, null, getClass(), null);
+        assertEquals("Invalid message", localizedMessage.getMessage(),
+                dispatcher.savedErrors.iterator().next().getMessage());
     }
 
     @Test
@@ -639,6 +624,27 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
             assertThat("Error message is unexpected",
                     exceptionMessage, endsWith("[TranslationCheck]"));
         }
+    }
+
+    private static class TestMessageDispatcher implements MessageDispatcher {
+
+        private Set<LocalizedMessage> savedErrors;
+
+        @Override
+        public void fireFileStarted(String fileName) {
+            throw new IllegalStateException(fileName);
+        }
+
+        @Override
+        public void fireFileFinished(String fileName) {
+            throw new IllegalStateException(fileName);
+        }
+
+        @Override
+        public void fireErrors(String fileName, SortedSet<LocalizedMessage> errors) {
+            savedErrors = new TreeSet<LocalizedMessage>(errors);
+        }
+
     }
 
 }

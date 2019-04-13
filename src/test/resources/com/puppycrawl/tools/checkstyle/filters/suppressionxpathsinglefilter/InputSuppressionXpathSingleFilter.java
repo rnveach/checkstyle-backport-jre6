@@ -1,6 +1,6 @@
-package com.puppycrawl.tools.checkstyle.filters.xpathfilter;
+package com.puppycrawl.tools.checkstyle.filters.suppressionxpathsinglefilter;
 
-public class InputXpathFilterSuppressByXpath {
+public class InputSuppressionXpathSingleFilter {
     private int countTokens() {
         double pi = 3.14;
         return 123;
@@ -15,4 +15,5 @@ public class InputXpathFilterSuppressByXpath {
         String someVariable = "Hello World";
         return a + b;
     }
+
 }

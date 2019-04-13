@@ -21,14 +21,10 @@ package com.puppycrawl.tools.checkstyle.api;
 
 import static com.puppycrawl.tools.checkstyle.utils.CommonUtil.EMPTY_OBJECT_ARRAY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +34,7 @@ import java.net.URLStreamHandler;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.After;
 import org.junit.Test;
@@ -45,6 +42,12 @@ import org.powermock.reflect.Whitebox;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
+/**
+ * Custom class loader is needed to pass URLs to pretend these are loaded from the classpath
+ * though we can't add/change the files for testing. The class loader is nested in this class,
+ * so the custom class loader we are using is safe.
+ * @noinspection ClassLoaderInstantiation
+ */
 public class LocalizedMessageTest {
 
     private static final Locale DEFAULT_LOCALE = Locale.getDefault();
@@ -80,58 +83,115 @@ public class LocalizedMessageTest {
         assertNull("Bundle should be null when reload is true and URL is null", bundle);
     }
 
+    /**
+     * Ignore resource errors for testing.
+     * @noinspection resource, IOResourceOpenedButNotSafelyClosed
+     */
     @Test
     public void testBundleReloadUrlNotNull() throws IOException {
-        final ClassLoader classloader = mock(ClassLoader.class);
-        final String resource =
-                "com/puppycrawl/tools/checkstyle/checks/coding/messages_en.properties";
-        final URLConnection mockUrlCon = mock(URLConnection.class);
-        final URLStreamHandler stubUrlHandler = new URLStreamHandler() {
+        final AtomicBoolean closed = new AtomicBoolean();
+
+        final InputStream inputStream = new InputStream() {
             @Override
-            protected URLConnection openConnection(URL u) {
-                return mockUrlCon;
+            public int read() {
+                return -1;
+            }
+
+            @Override
+            public void close() {
+                closed.set(true);
             }
         };
-        final URL url = new URL("foo", "bar", 99, "/foobar", stubUrlHandler);
-        final InputStream inputStreamMock = mock(InputStream.class);
-        when(classloader.getResource(resource)).thenReturn(url);
-        when(mockUrlCon.getInputStream()).thenReturn(inputStreamMock);
-        when(inputStreamMock.read((byte[]) any(), anyInt(), anyInt())).thenReturn(-1);
+        final URLConnection urlConnection = new URLConnection(null) {
+            @Override
+            public void connect() {
+                // no code
+            }
+
+            @Override
+            public InputStream getInputStream() {
+                return inputStream;
+            }
+        };
+        final URL url = new URL("test", null, 0, "", new URLStreamHandler() {
+            @Override
+            protected URLConnection openConnection(URL u) {
+                return urlConnection;
+            }
+        });
 
         final LocalizedMessage.Utf8Control control = new LocalizedMessage.Utf8Control();
-        control.newBundle("com.puppycrawl.tools.checkstyle.checks.coding.messages",
-                Locale.ENGLISH, "java.class",
-                classloader, true);
+        final ResourceBundle bundle = control.newBundle(
+                "com.puppycrawl.tools.checkstyle.checks.coding.messages", Locale.ENGLISH,
+                "java.class", new TestUrlsClassLoader(url), true);
 
-        verify(mockUrlCon, times(1)).setUseCaches(false);
-        verify(inputStreamMock, times(1)).close();
+        assertNotNull("Bundle should not be null when stream is not null", bundle);
+        assertFalse("connection should not be using caches", urlConnection.getUseCaches());
+        assertTrue("connection should be closed", closed.get());
+    }
+
+    /**
+     * Ignore resource errors for testing.
+     * @noinspection resource, IOResourceOpenedButNotSafelyClosed
+     */
+    @Test
+    public void testBundleReloadUrlNotNullFalseReload() throws IOException {
+        final AtomicBoolean closed = new AtomicBoolean();
+
+        final InputStream inputStream = new InputStream() {
+            @Override
+            public int read() {
+                return -1;
+            }
+
+            @Override
+            public void close() {
+                closed.set(true);
+            }
+        };
+        final URLConnection urlConnection = new URLConnection(null) {
+            @Override
+            public void connect() {
+                // no code
+            }
+
+            @Override
+            public InputStream getInputStream() {
+                return inputStream;
+            }
+        };
+        final URL url = new URL("test", null, 0, "", new URLStreamHandler() {
+            @Override
+            protected URLConnection openConnection(URL u) {
+                return urlConnection;
+            }
+        });
+
+        final LocalizedMessage.Utf8Control control = new LocalizedMessage.Utf8Control();
+        final ResourceBundle bundle = control.newBundle(
+                "com.puppycrawl.tools.checkstyle.checks.coding.messages", Locale.ENGLISH,
+                "java.class", new TestUrlsClassLoader(url), false);
+
+        assertNotNull("Bundle should not be null when stream is not null", bundle);
+        assertTrue("connection should not be using caches", urlConnection.getUseCaches());
+        assertTrue("connection should be closed", closed.get());
     }
 
     @Test
     public void testBundleReloadUrlNotNullStreamNull() throws IOException {
-        final ClassLoader classloader = mock(ClassLoader.class);
-        final String resource =
-            "com/puppycrawl/tools/checkstyle/checks/coding/messages_en.properties";
-
-        final URL url = getMockUrl(null);
-        when(classloader.getResource(resource)).thenReturn(url);
+        final URL url = new URL("test", null, 0, "", new URLStreamHandler() {
+            @Override
+            protected URLConnection openConnection(URL u) {
+                return null;
+            }
+        });
 
         final LocalizedMessage.Utf8Control control = new LocalizedMessage.Utf8Control();
         final ResourceBundle bundle = control.newBundle(
                 "com.puppycrawl.tools.checkstyle.checks.coding.messages",
                 Locale.ENGLISH, "java.class",
-                classloader, true);
+                new TestUrlsClassLoader(url), true);
         assertNull("Bundle should be null when stream is null", bundle);
-    }
-
-    private static URL getMockUrl(final URLConnection connection) throws IOException {
-        final URLStreamHandler handler = new URLStreamHandler() {
-            @Override
-            protected URLConnection openConnection(final URL url) {
-                return connection;
-            }
-        };
-        return new URL("http://foo.bar", "foo.bar", 80, "", handler);
     }
 
     @Test
@@ -220,6 +280,17 @@ public class LocalizedMessageTest {
         assertTrue("Invalid comparing result", message1.compareTo(message2) < 0);
     }
 
+    @Test
+    public void testCompareToWithDifferentColumns() {
+        final LocalizedMessage message1 = createSampleLocalizedMessageWithColumn(1);
+        final LocalizedMessage message1a = createSampleLocalizedMessageWithColumn(1);
+        final LocalizedMessage message2 = createSampleLocalizedMessageWithColumn(2);
+
+        assertTrue("Invalid comparing result", message1.compareTo(message2) < 0);
+        assertTrue("Invalid comparing result", message2.compareTo(message1) > 0);
+        assertEquals("Invalid comparing result", 0, message1.compareTo(message1a));
+    }
+
     private static LocalizedMessage createSampleLocalizedMessage() {
         return createSampleLocalizedMessageWithId("module");
     }
@@ -229,11 +300,36 @@ public class LocalizedMessageTest {
                 "empty.statement", EMPTY_OBJECT_ARRAY, id, LocalizedMessage.class, null);
     }
 
+    private static LocalizedMessage createSampleLocalizedMessageWithColumn(int column) {
+        return new LocalizedMessage(1, column,
+                "com.puppycrawl.tools.checkstyle.checks.coding.messages", "empty.statement",
+                EMPTY_OBJECT_ARRAY, "module", LocalizedMessage.class, null);
+    }
+
     @After
     public void tearDown() {
         Locale.setDefault(DEFAULT_LOCALE);
         LocalizedMessage.clearCache();
         LocalizedMessage.setLocale(DEFAULT_LOCALE);
+    }
+
+    /**
+     * Custom class loader is needed to pass URLs to pretend these are loaded from the classpath
+     * though we can't add/change the files for testing.
+     * @noinspection CustomClassloader
+     */
+    private static class TestUrlsClassLoader extends ClassLoader {
+
+        private final URL url;
+
+        TestUrlsClassLoader(URL url) {
+            this.url = url;
+        }
+
+        @Override
+        public URL getResource(String name) {
+            return url;
+        }
     }
 
 }

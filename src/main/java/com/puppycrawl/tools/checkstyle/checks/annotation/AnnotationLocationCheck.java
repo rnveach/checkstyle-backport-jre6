@@ -23,7 +23,9 @@ import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * Check location of annotation on language elements.
@@ -245,12 +247,6 @@ public class AnnotationLocationCheck extends AbstractCheck {
             TokenTypes.VARIABLE_DEF,
             TokenTypes.PARAMETER_DEF,
             TokenTypes.ANNOTATION_DEF,
-            TokenTypes.TYPECAST,
-            TokenTypes.LITERAL_THROWS,
-            TokenTypes.IMPLEMENTS_CLAUSE,
-            TokenTypes.TYPE_ARGUMENT,
-            TokenTypes.LITERAL_NEW,
-            TokenTypes.DOT,
             TokenTypes.ANNOTATION_FIELD_DEF,
         };
     }
@@ -263,10 +259,7 @@ public class AnnotationLocationCheck extends AbstractCheck {
     @Override
     public void visitToken(DetailAST ast) {
         final DetailAST modifiersNode = ast.findFirstToken(TokenTypes.MODIFIERS);
-
-        if (modifiersNode != null) {
-            checkAnnotations(modifiersNode, getExpectedAnnotationIndentation(modifiersNode));
-        }
+        checkAnnotations(modifiersNode, getExpectedAnnotationIndentation(modifiersNode));
     }
 
     /**
@@ -311,7 +304,13 @@ public class AnnotationLocationCheck extends AbstractCheck {
      * @return true if the annotation has parameters.
      */
     private static boolean isParameterized(DetailAST annotation) {
-        return annotation.findFirstToken(TokenTypes.EXPR) != null;
+        return TokenUtil.findFirstTokenByPredicate(annotation, new Predicate<DetailAST>() {
+            @Override
+            public boolean test(DetailAST ast) {
+                return ast.getType() == TokenTypes.EXPR
+                    || ast.getType() == TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR;
+            }
+        }).isPresent();
     }
 
     /**
