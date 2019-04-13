@@ -1,6 +1,6 @@
 package com.google.checkstyle.test.chapter6programpractice.rule64finalizers;
 
-class NormalFinalizer {
+class InputNoFinalizeExtend {
 
     public static void doStuff() {
         // This method do some stuff
@@ -103,15 +103,15 @@ class WithoutFinalize {
 class WithoutMethods {}
 
 class WithAnonymousClass {
-    
+
     public static void doStuff() {
         // This method do some stuff
     }
-    
+
     public void foo() {
-        
+
         Ball b = new Ball() {
-            
+
             public void hit() {
                 System.identityHashCode("You hit it!");
             }

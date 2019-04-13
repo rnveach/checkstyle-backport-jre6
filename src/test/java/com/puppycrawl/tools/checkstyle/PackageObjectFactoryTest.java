@@ -29,7 +29,6 @@ import static com.puppycrawl.tools.checkstyle.PackageObjectFactory.PACKAGE_SEPAR
 import static com.puppycrawl.tools.checkstyle.PackageObjectFactory.STRING_SEPARATOR;
 import static com.puppycrawl.tools.checkstyle.PackageObjectFactory.UNABLE_TO_INSTANTIATE_EXCEPTION_MESSAGE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -341,8 +340,34 @@ public class PackageObjectFactoryTest {
         final Field field = packageObjectFactoryClass.getDeclaredField("NAME_TO_FULL_MODULE_NAME");
         field.setAccessible(true);
         final Collection<String> canonicalNames = ((Map<String, String>) field.get(null)).values();
+
+        Class<?> optional1 = null;
         for (Class<?> clazz : classes) {
-            assertFalse("Invalid canonical name", !canonicalNames.contains(clazz.getCanonicalName()));
+            if (!canonicalNames.contains(clazz.getCanonicalName())) {
+                optional1 = clazz;
+                break;
+            }
+        }
+        if (optional1 != null) {
+            fail("Invalid canonical name: " + optional1);
+        }
+        String optional2 = null;
+        for (String canonicalName : canonicalNames) {
+            boolean found = false;
+            for (Class<?> clazz : classes) {
+                final String clssCanonicalName = clazz.getCanonicalName();
+                if (clssCanonicalName.equals(canonicalName)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                optional2 = canonicalName;
+                break;
+            }
+        }
+        if (optional2 != null) {
+            fail("Invalid class: " + optional2);
         }
     }
 

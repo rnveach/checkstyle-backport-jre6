@@ -44,7 +44,7 @@ class ListToTreeSelectionModelWrapper extends DefaultTreeSelectionModel {
      * Constructor to initialise treeTable.
      * @param jTreeTable TreeTable to perform updates on.
      */
-    ListToTreeSelectionModelWrapper(TreeTable jTreeTable) {
+    /* package */ ListToTreeSelectionModelWrapper(TreeTable jTreeTable) {
         treeTable = jTreeTable;
         getListSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override

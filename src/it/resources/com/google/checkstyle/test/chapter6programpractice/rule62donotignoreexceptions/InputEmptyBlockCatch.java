@@ -4,11 +4,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.google.checkstyle.test.chapter6programpractice.rule62donotignoreexceptions;
 
-import java.io.*; 
+import java.io.*;
 import java.awt.Dimension;
 import java.awt.Color;
 
-class Catch {
+class InputEmptyBlockCatch {
     boolean flag;
     void doSm() {}
     void foo() {
@@ -50,7 +50,7 @@ class Catch {
             finally {} //warn
         }
     }
-    
+
     Inner anon = new Inner(){
         boolean flag;
         void doSm() {}

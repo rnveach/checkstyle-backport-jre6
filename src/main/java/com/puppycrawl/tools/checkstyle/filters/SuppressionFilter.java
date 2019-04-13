@@ -28,7 +28,6 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
 import com.puppycrawl.tools.checkstyle.api.Filter;
 import com.puppycrawl.tools.checkstyle.api.FilterSet;
-import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
 
 /**
@@ -36,7 +35,6 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * This filter accepts AuditEvents according to file, check, line, and
  * column, as specified in a suppression file.
  * </p>
- * @noinspection NonFinalFieldReferenceInEquals, NonFinalFieldReferencedInHashCode
  */
 public class SuppressionFilter extends AutomaticBean implements Filter, ExternalResourceHolder {
 
@@ -66,23 +64,6 @@ public class SuppressionFilter extends AutomaticBean implements Filter, External
     @Override
     public boolean accept(AuditEvent event) {
         return filters.accept(event);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final SuppressionFilter suppressionFilter = (SuppressionFilter) obj;
-        return Objects.equals(filters, suppressionFilter.filters);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(filters);
     }
 
     @Override

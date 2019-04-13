@@ -59,7 +59,7 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
                         public Boolean apply(DetailAST node) {
                             return BlockCommentPosition.isOnMethod(node);
                         }
-                    }, 4),
+                    }, 6),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnField.java",
                     new Function<DetailAST, Boolean>() {
                         @Override
@@ -102,13 +102,30 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
                             return BlockCommentPosition.isOnEnumConstant(node);
                         }
                     }, 2),
-                new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnAnnotationField.java",
+                new BlockCommentPositionTestMetadata(
+                        "InputBlockCommentPositionOnAnnotationField.java",
                     new Function<DetailAST, Boolean>() {
                         @Override
                         public Boolean apply(DetailAST node) {
                             return BlockCommentPosition.isOnAnnotationField(node);
                         }
-                    }, 4)
+                    }, 4),
+                new BlockCommentPositionTestMetadata(
+                        "inputs/normal/package-info.java",
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnPackage(node);
+                        }
+                    }, 1),
+                new BlockCommentPositionTestMetadata(
+                        "inputs/annotation/package-info.java",
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnPackage(node);
+                        }
+                    }, 1)
         );
 
         for (BlockCommentPositionTestMetadata metadata : metadataList) {
@@ -148,7 +165,7 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
         private final Function<DetailAST, Boolean> assertion;
         private final int matchesNum;
 
-        BlockCommentPositionTestMetadata(String fileName, Function<DetailAST,
+        /* package */ BlockCommentPositionTestMetadata(String fileName, Function<DetailAST,
                 Boolean> assertion, int matchesNum) {
             this.fileName = fileName;
             this.assertion = assertion;

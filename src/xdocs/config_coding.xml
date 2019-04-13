@@ -23,8 +23,8 @@
     </section>
 
     <section name="ArrayTrailingComma">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="ArrayTrailingComma_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that array initialization contains a trailing comma.
         </p>
@@ -68,7 +68,7 @@ return new int[] {
         </source>
         <p>
           If closing brace is on the same line as training comma, this benefit is gone
-          (as the Check does not demand a certain location of curly braces the following
+          (as the check does not demand a certain location of curly braces the following
           two cases will not produce a violation):
         </p>
         <source>
@@ -174,8 +174,8 @@ int[] a2 = new int[]{
     </section>
 
     <section name="AvoidInlineConditionals">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="AvoidInlineConditionals_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           Detects inline conditionals. Here is one example of an inline conditional:
         </p>
@@ -201,10 +201,6 @@ String b = (a==null || a.length&lt;1) ? null : a.substring(1);
 
       <subsection name="Example of Usage" id="AvoidInlineConditionals_Example_of_Usage">
         <ul>
-          <li>
-            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Asun_checks.xml+repo%3Acheckstyle%2Fcheckstyle+AvoidInlineConditionals">
-            Sun Style</a>
-          </li>
           <li>
             <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+AvoidInlineConditionals">
             Checkstyle Style</a>
@@ -239,13 +235,17 @@ String b = (a==null || a.length&lt;1) ? null : a.substring(1);
     </section>
 
     <section name="CovariantEquals">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="CovariantEquals_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that classes which define a covariant <code>equals()</code> method
-          also override method <code>equals(Object)</code>.<br/>
+          also override method <code>equals(Object)</code>.
+        </p>
+        <p>
           Covariant <code>equals()</code> - method that is similar to <code>equals(Object)</code>,
-          but with a covariant parameter type (any subtype of Object).<br/>
+          but with a covariant parameter type (any subtype of Object).
+        </p>
+        <p>
           <strong>Notice</strong>: the enums are also checked, even
           though they cannot override <code>equals(Object)</code>. The reason is
           to point out that implementing <code>equals()</code> in enums is considered an
@@ -299,17 +299,18 @@ public boolean equals(Foo obj) {...}
 
         <p>
           For example:
-          <source>
+        </p>
+        <source>
 class Test {
   public boolean equals(Test i) {  // violation
     return false;
   }
 }
-          </source>
-        </p>
+        </source>
         <p>
           The same class without violations:
-          <source>
+        </p>
+        <source>
 class Test {
   public boolean equals(Test i) {  // no violation
     return false;
@@ -319,8 +320,7 @@ class Test {
     return false;
   }
 }
-          </source>
-        </p>
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="CovariantEquals_Example_of_Usage">
@@ -359,8 +359,11 @@ class Test {
     </section>
 
     <section name="DeclarationOrder">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="DeclarationOrder_Description">
-        <p>Since Checkstyle 3.2</p>
+        <p>
+          Checks the order in which parts of the class or interface declaration are defined.
+        </p>
         <p>
           According to <a
           href="https://www.oracle.com/technetwork/java/javase/documentation/codeconventions-141855.html#1852">
@@ -391,18 +394,18 @@ class Test {
 
         <p>
           ATTENTION: the check skips class fields which have
-          <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.3.3">
+          <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.3">
               forward references</a>
            from validation due to the fact that we have Checkstyle's limitations to clearly
-          detect user intention of fields location and grouping. For example,
-          <source>
+          detect user intention of fields location and grouping. For example:
+        </p>
+        <source>
 public class A {
   private double x = 1.0;
   private double y = 2.0;
   public double slope = x / y; // will be skipped from validation due to forward reference
 }
-          </source>
-        </p>
+        </source>
       </subsection>
 
       <subsection name="Properties" id="DeclarationOrder_Properties">
@@ -416,14 +419,14 @@ public class A {
           </tr>
           <tr>
             <td>ignoreConstructors</td>
-            <td>whether to ignore constructors</td>
+            <td>control whether to ignore constructors.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.2</td>
           </tr>
           <tr>
             <td>ignoreModifiers</td>
-            <td>whether to ignore modifiers</td>
+            <td>control whether to ignore modifiers (fields, ...).</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.2</td>
@@ -440,7 +443,8 @@ public class A {
         </source>
 
         <p>
-        For example:
+          With default options:
+        </p>
         <source>
 class K {
   int a;
@@ -449,9 +453,9 @@ class K {
   int b; &lt;-- "Instance variable definition in wrong order"
 }
         </source>
-        </p>
         <p>
-        With <b>ignoreConstructors</b> option:
+          With <b>ignoreConstructors</b> option:
+        </p>
         <source>
 class K {
   int a;
@@ -460,9 +464,9 @@ class K {
   int b; &lt;-- "Instance variable definition in wrong order"
 }
         </source>
-        </p>
         <p>
-        With <b>ignoreConstructors</b> option and without a method definition in a source class:
+          With <b>ignoreConstructors</b> option and without a method definition in a source class:
+        </p>
         <source>
 class K {
   int a;
@@ -470,7 +474,6 @@ class K {
   int b; &lt;-- "Instance variable definition in wrong order"
 }
         </source>
-        </p>
       </subsection>
 
       <subsection name="Example of Usage" id="DeclarationOrder_Example_of_Usage">
@@ -521,11 +524,11 @@ class K {
     </section>
 
     <section name="DefaultComesLast">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="DefaultComesLast_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
           Check that the <code>default</code> is after all the
-          <code>case</code>s in a <code>switch</code> statement.
+          cases in a <code>switch</code> statement.
         </p>
 
         <p>
@@ -545,9 +548,12 @@ class K {
           </tr>
           <tr>
             <td>skipIfLastAndSharedWithCase</td>
-            <td>whether to allow <code>default</code> along with case if they are not last</td>
+            <td>
+              Control whether to allow <code>default</code> along with
+              <code>case</code> if they are not last.
+            </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>7.7</td>
           </tr>
         </table>
@@ -630,11 +636,17 @@ switch (i) {
     </section>
 
     <section name="EmptyStatement">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="EmptyStatement_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
-          Detects empty statements (standalone ";" semicolon).
+          Detects empty statements (standalone {@code ";"} semicolon).
+          Empty statements often introduce bugs that are hard to spot, such as in
         </p>
+        <source>
+if (someCondition);
+  doConditionalStuff();
+doUnconditionalStuff();
+        </source>
       </subsection>
 
       <subsection name="Examples" id="EmptyStatement_Examples">
@@ -686,11 +698,11 @@ switch (i) {
     </section>
 
     <section name="EqualsAvoidNull">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="EqualsAvoidNull_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           Checks that any combination of String literals
-          is on the left side of an equals() comparison.
+          is on the left side of an <code>equals()</code> comparison.
           Also checks for String literals assigned to some field
           (such as <code>someString.equals(anotherString = "text")</code>).
         </p>
@@ -698,7 +710,7 @@ switch (i) {
         <p>
           Rationale: Calling the <code>equals()</code>
           method on String literals will avoid a potential
-          NullPointerException. Also, it is pretty common to see null
+          <code>NullPointerException</code>. Also, it is pretty common to see null
           checks right before equals comparisons, which is not necessary
           in the example below.
         </p>
@@ -730,9 +742,11 @@ String nullString = null;
           </tr>
           <tr>
             <td>ignoreEqualsIgnoreCase</td>
-            <td>whether to ignore <code>String.equalsIgnoreCase()</code> invocations</td>
+            <td>
+              Control whether to ignore <code>String.equalsIgnoreCase(String)</code> invocations.
+            </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>5.4</td>
           </tr>
         </table>
@@ -787,13 +801,13 @@ String nullString = null;
     </section>
 
     <section name="EqualsHashCode">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="EqualsHashCode_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks that classes that either override <code>equals()</code>
           or <code>hashCode()</code> also overrides the other.
-          This checks only verifies that the method declarations match
-          <code>Object.equals(Object)}</code> and <code>Object.hashCode()</code> exactly to be
+          This check only verifies that the method declarations match
+          <code>Object.equals(Object)</code> and <code>Object.hashCode()</code> exactly to be
           considered an override. This check does not verify invalid method names, parameters
           other than <code>Object</code>, or anything else.
         </p>
@@ -871,13 +885,9 @@ String nullString = null;
 
         <p>
           Rationale: Each instance variable gets initialized twice, to the
-          same value.  Java initializes each instance variable to its default
+          same value. Java initializes each instance variable to its default
           value (0 or null) before performing any initialization specified in
-          the code.  So in this case, x gets initialized to 0 twice, and bar
-          gets initialized to null twice.  So there is a minor inefficiency.
-          This style of coding is a holdover from C/C++ style coding, and it
-          shows that the developer isn't really confident that Java
-          initializes instance variables to default values.
+          the code. So there is a minor inefficiency.
         </p>
       </subsection>
 
@@ -1602,8 +1612,8 @@ class SomeClass
     </section>
 
     <section name="IllegalInstantiation">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="IllegalInstantiation_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for illegal instantiations where a factory method is
           preferred.
@@ -1648,9 +1658,9 @@ class SomeClass
           </tr>
           <tr>
             <td>classes</td>
-            <td>classes that should not be instantiated</td>
+            <td>Specify fully qualified class names that should not be instantiated.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>{}</td>
+            <td><code>{}</code></td>
             <td>3.0</td>
           </tr>
 
@@ -1660,11 +1670,13 @@ class SomeClass
 
             <td>
               subset of tokens
-              CLASS_DEF.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
+              CLASS_DEF</a>.
             </td>
 
             <td>
-              CLASS_DEF.
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
+              CLASS_DEF</a>.
             </td>
             <td>3.0</td>
           </tr>
@@ -1673,7 +1685,7 @@ class SomeClass
 
       <subsection name="Examples" id="IllegalInstantiation_Examples">
         <p>
-          To configure the check to find instantiations of java.lang.Boolean:
+          To configure the check to find instantiations of <code>java.lang.Boolean</code>:
         </p>
         <source>
 &lt;module name=&quot;IllegalInstantiation&quot;&gt;
@@ -2293,16 +2305,6 @@ while ((line = bufferedReader.readLine()) != null) {
         <source>
 &lt;module name=&quot;InnerAssignment&quot;/&gt;
         </source>
-
-        <p>
-          To configure the check for only <code>=</code>, <code> +=</code>, and <code>-=</code>
-          operators:
-        </p>
-        <source>
-&lt;module name=&quot;InnerAssignment&quot;&gt;
-  &lt;property name=&quot;tokens&quot; value=&quot;ASSIGN,PLUS_ASSIGN,MINUS_ASSIGN&quot;/&gt;
-&lt;/module&gt;
-        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="InnerAssignment_Example_of_Usage">
@@ -2345,25 +2347,27 @@ while ((line = bufferedReader.readLine()) != null) {
     </section>
 
     <section name="MagicNumber">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="MagicNumber_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
-          Checks that there are no <a href="https://en.wikipedia.org/wiki/Magic_number_%28programming%29">
+          Checks that there are no
+          <a href="https://en.wikipedia.org/wiki/Magic_number_%28programming%29">
           &quot;magic numbers&quot;</a> where a magic
           number is a numeric literal that is not defined as a constant.
           By default, -1, 0, 1, and 2 are not considered to be magic numbers.
         </p>
         <p>
+          Constant definition is any variable/field that has 'final' modifier.
           It is fine to have one constant defining multiple numeric literals within one expression:
-          <source>
+        </p>
+        <source>
 static final int SECONDS_PER_DAY = 24 * 60 * 60;
 static final double SPECIAL_RATIO = 4.0 / 3.0;
 static final double SPECIAL_SUM = 1 + Math.E;
 static final double SPECIAL_DIFFERENCE = 4 - Math.PI;
 static final Border STANDARD_BORDER = BorderFactory.createEmptyBorder(3, 3, 3, 3);
 static final Integer ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE = new Integer(42);
-          </source>
-        </p>
+        </source>
       </subsection>
 
       <subsection name="Properties" id="MagicNumber_Properties">
@@ -2377,35 +2381,35 @@ static final Integer ANSWER_TO_THE_ULTIMATE_QUESTION_OF_LIFE = new Integer(42);
           </tr>
           <tr>
             <td>ignoreNumbers</td>
-            <td>non-magic numbers</td>
+            <td>Specify non-magic numbers.</td>
             <td><a href="property_types.html#intSet">Number Set</a></td>
-            <td>-1, 0, 1, 2</td>
+            <td><code>-1, 0, 1, 2</code></td>
             <td>3.1</td>
           </tr>
           <tr>
             <td>ignoreHashCodeMethod</td>
-            <td>ignore magic numbers in hashCode methods</td>
+            <td>Ignore magic numbers in hashCode methods.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td><span class="default">false</span></td>
+            <td><code>false</code></td>
             <td>5.3</td>
           </tr>
           <tr>
             <td>ignoreAnnotation</td>
-            <td>ignore magic numbers in annotation declarations.</td>
+            <td>Ignore magic numbers in annotation declarations.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td><span class="default">false</span></td>
+              <td><code>false</code></td>
             <td>5.4</td>
           </tr>
           <tr>
               <td>ignoreFieldDeclaration</td>
-              <td>ignore magic numbers in field declarations.</td>
+              <td>Ignore magic numbers in field declarations.</td>
               <td><a href="property_types.html#boolean">Boolean</a></td>
-              <td><span class="default">false</span></td>
+              <td><code>false</code></td>
               <td>6.6</td>
           </tr>
           <tr>
               <td>constantWaiverParentToken</td>
-              <td>Token that are allowed in the AST path from the number literal to the
+              <td>Specify tokens that are allowed in the AST path from the number literal to the
                   enclosing constant definition.</td>
               <td>subset of tokens
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html">TokenTypes</a>
@@ -2517,7 +2521,7 @@ class MyClass {
 }
         </source>
         <p>
-        Config Example for constantWaiverParentToken Option:
+        Config example of constantWaiverParentToken option:
         </p>
         <source>
 &lt;module name=&quot;MagicNumber&quot;&gt;
@@ -2586,8 +2590,8 @@ class TestMethodCall {
     </section>
 
     <section name="MissingCtor">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="MissingCtor_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
           Checks that classes (except abstract ones) define a constructor and don't
           rely on the default one.
@@ -4840,7 +4844,7 @@ for (int i = 0; i &lt; 20; i++) {
            Distance for variable 'sum' = 3.
          </p>
          <p>
-           As the distance is more then the default one, the Check
+           As the distance is more than the default one, the Check
            raises warning for variable 'sum' to move it into the 'for(...)' block.
            But there is situation when variable 'sum' hasn't to be 0 within each iteration.
            So, to avoid such warnings you can use Suppression Filter, provided by

@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import antlr.collections.AST;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -41,9 +40,10 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * calling the constructor.
  * </p>
  * <p>
- * A simple example is the java.lang.Boolean class, to save memory and CPU
- * cycles it is preferable to use the predefined constants TRUE and FALSE.
- * Constructor invocations should be replaced by calls to Boolean.valueOf().
+ * A simple example is the {@code java.lang.Boolean} class.
+ * For performance reasons, it is preferable to use the predefined constants
+ * {@code TRUE} and {@code FALSE}.
+ * Constructor invocations should be replaced by calls to {@code Boolean.valueOf()}.
  * </p>
  * <p>
  * Some extremely performance sensitive projects may require the use of factory
@@ -51,14 +51,30 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * object pools.
  * </p>
  * <p>
- * Limitations: It is currently not possible to specify array classes.
+ * There is a limitation that it is currently not possible to specify array classes.
  * </p>
+ * <ul>
+ * <li>
+ * Property {@code classes} - Specify fully qualified class names that should not be instantiated.
+ * Default value is {@code {}}.
+ * </li>
+ * <li>
+ * Property {@code tokens} - tokens to check
+ * Default value is:
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
+ * CLASS_DEF</a>.
+ * </li>
+ * </ul>
  * <p>
- * An example of how to configure the check is:
+ * To configure the check to find instantiations of {@code java.lang.Boolean}:
  * </p>
  * <pre>
- * &lt;module name="IllegalInstantiation"/&gt;
+ * &lt;module name=&quot;IllegalInstantiation&quot;&gt;
+ *   &lt;property name=&quot;classes&quot; value=&quot;java.lang.Boolean&quot;/&gt;
+ * &lt;/module&gt;
  * </pre>
+ *
+ * @since 3.0
  */
 @FileStatefulCheck
 public class IllegalInstantiationCheck
@@ -82,7 +98,7 @@ public class IllegalInstantiationCheck
     /** The instantiations in the file. */
     private final Set<DetailAST> instantiations = new HashSet<DetailAST>();
 
-    /** Set of fully qualified class names. E.g. "java.lang.Boolean" */
+    /** Specify fully qualified class names that should not be instantiated. */
     private Set<String> classes = new HashSet<String>();
 
     /** Name of the package. */
@@ -199,7 +215,7 @@ public class IllegalInstantiationCheck
      */
     private void postProcessLiteralNew(DetailAST newTokenAst) {
         final DetailAST typeNameAst = newTokenAst.getFirstChild();
-        final AST nameSibling = typeNameAst.getNextSibling();
+        final DetailAST nameSibling = typeNameAst.getNextSibling();
         if (nameSibling.getType() != TokenTypes.ARRAY_DECLARATOR) {
             // ast != "new Boolean[]"
             final FullIdent typeIdent = FullIdent.createFullIdent(typeNameAst);
@@ -323,7 +339,7 @@ public class IllegalInstantiationCheck
     }
 
     /**
-     * Sets the classes that are illegal to instantiate.
+     * Setter to specify fully qualified class names that should not be instantiated.
      * @param names a comma separate list of class names
      */
     public void setClasses(String... names) {

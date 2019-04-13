@@ -954,7 +954,7 @@ public class JavadocMethodCheck extends AbstractTypeAwareCheck {
          *
          * @param classInfo class info
          */
-        ExceptionInfo(AbstractClassInfo classInfo) {
+        /* package */ ExceptionInfo(AbstractClassInfo classInfo) {
             this.classInfo = classInfo;
         }
 

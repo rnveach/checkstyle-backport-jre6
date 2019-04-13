@@ -22,7 +22,6 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 import java.util.HashMap;
 import java.util.Map;
 
-import antlr.collections.AST;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -34,22 +33,24 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
  * <p>
  * Checks that classes that either override {@code equals()} or {@code hashCode()} also
  * overrides the other.
- * This checks only verifies that the method declarations match {@link Object#equals(Object)} and
- * {@link Object#hashCode()} exactly to be considered an override. This check does not verify
+ * This check only verifies that the method declarations match {@code Object.equals(Object)} and
+ * {@code Object.hashCode()} exactly to be considered an override. This check does not verify
  * invalid method names, parameters other than {@code Object}, or anything else.
  * </p>
  * <p>
- * Rationale: The contract of equals() and hashCode() requires that
- * equal objects have the same hashCode. Hence, whenever you override
- * equals() you must override hashCode() to ensure that your class can
- * be used in collections that are hash based.
+ * Rationale: The contract of {@code equals()} and {@code hashCode()} requires that
+ * equal objects have the same hashCode. Therefore, whenever you override
+ * {@code equals()} you must override {@code hashCode()} to ensure that your class can
+ * be used in hash-based collections.
  * </p>
  * <p>
- * An example of how to configure the check is:
+ * To configure the check:
  * </p>
  * <pre>
- * &lt;module name="EqualsHashCode"/&gt;
+ * &lt;module name=&quot;EqualsHashCode&quot;/&gt;
  * </pre>
+ *
+ * @since 3.0
  */
 @FileStatefulCheck
 public class EqualsHashCodeCheck
@@ -132,8 +133,8 @@ public class EqualsHashCodeCheck
      */
     private static boolean isHashCodeMethod(DetailAST ast) {
         final DetailAST modifiers = ast.getFirstChild();
-        final AST type = ast.findFirstToken(TokenTypes.TYPE);
-        final AST methodName = ast.findFirstToken(TokenTypes.IDENT);
+        final DetailAST type = ast.findFirstToken(TokenTypes.TYPE);
+        final DetailAST methodName = ast.findFirstToken(TokenTypes.IDENT);
         final DetailAST parameters = ast.findFirstToken(TokenTypes.PARAMETERS);
 
         return type.getFirstChild().getType() == TokenTypes.LITERAL_INT

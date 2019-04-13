@@ -41,8 +41,6 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
 
 public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
@@ -52,14 +50,6 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/filters/suppressionfilter";
-    }
-
-    @Test
-    public void testEqualsAndHashCode() {
-        EqualsVerifier.forClass(SuppressionFilter.class)
-                .usingGetClass()
-                .suppress(Warning.NONFINAL_FIELDS)
-                .verify();
     }
 
     @Test

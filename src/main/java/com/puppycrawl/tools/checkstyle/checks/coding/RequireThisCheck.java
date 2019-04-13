@@ -606,12 +606,34 @@ public class RequireThisCheck extends AbstractCheck {
 
         boolean returnedVariable = false;
         for (DetailAST returnToken : returnsInsideBlock) {
-            returnedVariable = returnToken.findAll(ident).hasMoreNodes();
+            returnedVariable = isAstInside(returnToken, ident);
             if (returnedVariable) {
                 break;
             }
         }
         return returnedVariable;
+    }
+
+    /**
+     * Checks if the given {@code ast} is equal to the {@code tree} or a child of it.
+     * @param tree The tree to search.
+     * @param ast The AST to look for.
+     * @return {@code true} if the {@code ast} was found.
+     */
+    private static boolean isAstInside(DetailAST tree, DetailAST ast) {
+        boolean result = false;
+
+        if (tree.equals(ast)) {
+            result = true;
+        }
+        else {
+            for (DetailAST child = tree.getFirstChild(); child != null
+                    && !result; child = child.getNextSibling()) {
+                result = isAstInside(child, ast);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -1187,7 +1209,7 @@ public class RequireThisCheck extends AbstractCheck {
          * @param parent parent frame.
          * @param ident frame name ident.
          */
-        ClassFrame(AbstractFrame parent, DetailAST ident) {
+        /* package */ ClassFrame(AbstractFrame parent, DetailAST ident) {
             super(parent, ident);
             instanceMembers = new HashSet<DetailAST>();
             instanceMethods = new HashSet<DetailAST>();
@@ -1405,7 +1427,7 @@ public class RequireThisCheck extends AbstractCheck {
     /**
      * A frame initiated on entering a catch block; holds local catch variable names.
      */
-    public static class CatchFrame extends AbstractFrame {
+    private static class CatchFrame extends AbstractFrame {
 
         /**
          * Creates catch frame.
@@ -1426,7 +1448,7 @@ public class RequireThisCheck extends AbstractCheck {
     /**
      * A frame initiated on entering a for block; holds local for variable names.
      */
-    public static class ForFrame extends AbstractFrame {
+    private static class ForFrame extends AbstractFrame {
 
         /**
          * Creates for frame.

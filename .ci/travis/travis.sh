@@ -186,7 +186,6 @@ no-error-test-sbe)
   cd .ci-temp/
   git clone https://github.com/real-logic/simple-binary-encoding.git
   cd simple-binary-encoding
-  git checkout 1.8.1
   sed -i'' \
     "s/'com.puppycrawl.tools:checkstyle:.*'/'com.puppycrawl.tools:checkstyle:$CS_POM_VERSION'/" \
     build.gradle
@@ -385,6 +384,22 @@ check-missing-pitests)
 
   sleep 5s
   exit $fail
+  ;;
+
+verify-no-exception-configs)
+  wget -q \
+    https://raw.githubusercontent.com/checkstyle/contribution/master/checkstyle-tester/checks-nonjavadoc-error.xml
+  wget -q \
+    https://raw.githubusercontent.com/checkstyle/contribution/master/checkstyle-tester/checks-only-javadoc-error.xml
+  MODULES_WITH_EXTERNAL_FILES="Filter|ImportControl"
+  xmlstarlet sel --net --template -m .//module -v "@name" \
+    -n checks-nonjavadoc-error.xml -n checks-only-javadoc-error.xml \
+    | grep -vE $MODULES_WITH_EXTERNAL_FILES | grep -v "^$" \
+    | sort | uniq | sed "s/Check$//" > web.txt
+  xmlstarlet sel --net --template -m .//module -v "@name" -n config/checkstyle_checks.xml \
+    | grep -vE $MODULES_WITH_EXTERNAL_FILES | grep -v "^$" \
+    | sort | uniq | sed "s/Check$//" > file.txt
+  diff -u web.txt file.txt
   ;;
 
 *)

@@ -44,6 +44,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Context;
+import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck;
@@ -186,7 +187,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final DefaultConfiguration config = new DefaultConfiguration("default config");
         treeWalker.setTabWidth(1);
         treeWalker.configure(config);
-        treeWalker.setCacheFile(temporaryFolder.newFile().getPath());
 
         assertEquals("Invalid setter result", 1,
             Whitebox.getInternalState(treeWalker, "tabWidth"));
@@ -224,6 +224,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
             new ArrayList<String>(Arrays.asList("package com.puppycrawl.tools.checkstyle;", "",
                 "error public class InputTreeWalkerFileWithViolation {}"));
         final FileText fileText = new FileText(file, lines);
+        treeWalker.setFileContents(new FileContents(fileText));
         try {
             treeWalker.processFiltered(file, fileText);
             fail("Exception expected");
@@ -272,6 +273,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final List<String> lines = new ArrayList<String>();
         lines.add(" classD a {} ");
         final FileText fileText = new FileText(file, lines);
+        treeWalker.setFileContents(new FileContents(fileText));
         try {
             treeWalker.processFiltered(file, fileText);
             fail("Exception is expected");
@@ -295,6 +297,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
         final FileText fileText = new FileText(file, lines);
+        treeWalker.setFileContents(new FileContents(fileText));
         try {
             treeWalker.processFiltered(file, fileText);
             fail("Exception is expected");
@@ -365,6 +368,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
         final FileText fileText = new FileText(file, lines);
+        treeWalker.setFileContents(new FileContents(fileText));
 
         try {
             treeWalker.processFiltered(file, fileText);

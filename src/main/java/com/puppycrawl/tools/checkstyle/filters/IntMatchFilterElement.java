@@ -20,7 +20,7 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 /**
- * This filter accepts a matching Integer.
+ * This filter element is immutable and accepts a matching Integer.
  */
 class IntMatchFilterElement implements IntFilterElement {
 
@@ -31,7 +31,7 @@ class IntMatchFilterElement implements IntFilterElement {
      * Constructs a MatchFilter for an int.
      * @param matchValue the matching int.
      */
-    IntMatchFilterElement(int matchValue) {
+    /* package */ IntMatchFilterElement(int matchValue) {
         this.matchValue = matchValue;
     }
 

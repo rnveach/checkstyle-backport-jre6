@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
-
 /**
  * A filter set applies filters to AuditEvents.
  * If a filter in the set rejects an AuditEvent, then the
@@ -63,23 +61,6 @@ public class FilterSet
     @Override
     public String toString() {
         return filters.toString();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (other == null || getClass() != other.getClass()) {
-            return false;
-        }
-        final FilterSet filterSet = (FilterSet) other;
-        return Objects.equals(filters, filterSet.filters);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(filters);
     }
 
     @Override

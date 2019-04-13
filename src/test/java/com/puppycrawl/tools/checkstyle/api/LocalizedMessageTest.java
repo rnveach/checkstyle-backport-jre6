@@ -322,7 +322,7 @@ public class LocalizedMessageTest {
 
         private final URL url;
 
-        TestUrlsClassLoader(URL url) {
+        /* package */ TestUrlsClassLoader(URL url) {
             this.url = url;
         }
 

@@ -22,7 +22,7 @@ package com.puppycrawl.tools.checkstyle.filters;
 import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
- * This filter accepts an Integer in a range.
+ * This filter element is immutable and accepts an Integer in a range.
  */
 class IntRangeFilterElement implements IntFilterElement {
 
@@ -38,7 +38,7 @@ class IntRangeFilterElement implements IntFilterElement {
      * @param lowerBound the lower bound of the range.
      * @param upperBound the upper bound of the range.
      */
-    IntRangeFilterElement(int lowerBound, int upperBound) {
+    /* package */ IntRangeFilterElement(int lowerBound, int upperBound) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
     }

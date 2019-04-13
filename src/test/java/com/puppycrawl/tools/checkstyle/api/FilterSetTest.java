@@ -25,15 +25,8 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.filters.SeverityMatchFilter;
-import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class FilterSetTest {
-
-    @Test
-    public void testEqualsAndHashCode() {
-        EqualsVerifier.forClass(FilterSet.class).usingGetClass()
-                .verify();
-    }
 
     @Test
     public void testGetFilters() {

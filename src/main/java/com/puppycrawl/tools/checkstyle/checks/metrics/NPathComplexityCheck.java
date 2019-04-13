@@ -61,7 +61,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
     private final Deque<Integer> expressionValues = new ArrayDeque<Integer>();
 
     /** Stack of belongs to range values for question operator. */
-    private final Deque<Boolean> isAfterValues = new ArrayDeque<Boolean>();
+    private final Deque<Boolean> afterValues = new ArrayDeque<Boolean>();
 
     /**
      * Range of the last processed expression. Used for checking that ternary operation
@@ -122,7 +122,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
     public void beginTree(DetailAST rootAST) {
         rangeValues.clear();
         expressionValues.clear();
-        isAfterValues.clear();
+        afterValues.clear();
         processingTokenEnd.reset();
         currentRangeValue = INITIAL_VALUE;
         branchVisited = false;
@@ -237,7 +237,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
      */
     private void visitUnitaryOperator(DetailAST ast, int basicBranchingFactor) {
         final boolean isAfter = processingTokenEnd.isAfter(ast);
-        isAfterValues.push(isAfter);
+        afterValues.push(isAfter);
         if (!isAfter) {
             processingTokenEnd.setToken(getLastToken(ast));
             final int expressionValue = basicBranchingFactor + countConditionalOperators(ast);
@@ -249,7 +249,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
      * Leaves ternary operator (?:) and return tokens.
      */
     private void leaveUnitaryOperator() {
-        if (!isAfterValues.pop()) {
+        if (!afterValues.pop()) {
             final Values valuePair = popValue();
             BigInteger basicRangeValue = valuePair.getRangeValue();
             BigInteger expressionValue = valuePair.getExpressionValue();
@@ -458,7 +458,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
          * @param valueOfRange NP value for range
          * @param valueOfExpression NP value for expression
          */
-        Values(BigInteger valueOfRange, BigInteger valueOfExpression) {
+        /* package */ Values(BigInteger valueOfRange, BigInteger valueOfExpression) {
             rangeValue = valueOfRange;
             expressionValue = valueOfExpression;
         }

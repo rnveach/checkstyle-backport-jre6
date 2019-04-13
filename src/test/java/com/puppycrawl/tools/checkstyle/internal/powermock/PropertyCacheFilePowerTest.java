@@ -26,17 +26,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,13 +45,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
-import com.google.common.io.Flushables;
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.PropertyCacheFile;
@@ -68,7 +60,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyCacheFile.class, ByteStreams.class,
-        CommonUtil.class, Closeables.class, Flushables.class})
+        CommonUtil.class})
 public class PropertyCacheFilePowerTest extends AbstractPathTestSupport {
 
     @Rule
@@ -77,26 +69,6 @@ public class PropertyCacheFilePowerTest extends AbstractPathTestSupport {
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/propertycachefile";
-    }
-
-    @Test
-    public void testCloseAndFlushOutputStreamAfterCreatingHashCode() throws IOException {
-        mockStatic(Closeables.class);
-        doNothing().when(Closeables.class);
-        Closeables.close(any(ObjectOutputStream.class), ArgumentMatchers.eq(false));
-        mockStatic(Flushables.class);
-        doNothing().when(Flushables.class);
-        Flushables.flush(any(ObjectOutputStream.class), ArgumentMatchers.eq(false));
-
-        final Configuration config = new DefaultConfiguration("myName");
-        final PropertyCacheFile cache = new PropertyCacheFile(config, "fileDoesNotExist.txt");
-        cache.load();
-
-        verifyStatic(Closeables.class, times(1));
-        Closeables.close(any(ObjectOutputStream.class), ArgumentMatchers.eq(false));
-
-        verifyStatic(Flushables.class, times(1));
-        Flushables.flush(any(ObjectOutputStream.class), ArgumentMatchers.eq(false));
     }
 
     /**
@@ -133,28 +105,6 @@ public class PropertyCacheFilePowerTest extends AbstractPathTestSupport {
                 cache.isInCache(myFile, 1));
         assertFalse("Should return false in file is not in cache",
                 cache.isInCache(resource, 1));
-    }
-
-    @Test
-    public void testFlushAndCloseCacheFileOutputStream() throws IOException {
-        mockStatic(Closeables.class);
-        doNothing().when(Closeables.class);
-        Closeables.close(any(OutputStream.class), ArgumentMatchers.eq(false));
-        mockStatic(Flushables.class);
-        doNothing().when(Flushables.class);
-        Flushables.flush(any(OutputStream.class), ArgumentMatchers.eq(false));
-
-        final Configuration config = new DefaultConfiguration("myName");
-        final PropertyCacheFile cache = new PropertyCacheFile(config,
-            temporaryFolder.newFile().getPath());
-
-        cache.put("CheckedFileName.java", System.currentTimeMillis());
-        cache.persist();
-
-        verifyStatic(Closeables.class, times(1));
-        Closeables.close(any(OutputStream.class), ArgumentMatchers.eq(false));
-        verifyStatic(Flushables.class, times(1));
-        Flushables.flush(any(OutputStream.class), ArgumentMatchers.eq(false));
     }
 
     @Test

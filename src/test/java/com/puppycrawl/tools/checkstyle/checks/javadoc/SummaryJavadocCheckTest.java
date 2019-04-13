@@ -75,6 +75,8 @@ public class SummaryJavadocCheckTest extends AbstractModuleTestSupport {
             "121: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "126: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "132: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "137: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "140: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
         };
         verify(checkConfig, getPath("InputSummaryJavadocIncorrect.java"), expected);
     }
@@ -115,6 +117,8 @@ public class SummaryJavadocCheckTest extends AbstractModuleTestSupport {
             "121: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "126: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
             "132: " + getCheckMessage(MSG_SUMMARY_FIRST_SENTENCE),
+            "137: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+            "140: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
         };
 
         createChecker(checkConfig);
@@ -134,6 +138,26 @@ public class SummaryJavadocCheckTest extends AbstractModuleTestSupport {
         };
 
         verify(checkConfig, getPath("InputSummaryJavadocPeriodAtEnd.java"), expected);
+    }
+
+    @Test
+    public void testPackageInfo() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(SummaryJavadocCheck.class);
+        final String[] expected = {
+            "1: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+        };
+
+        verify(checkConfig, getPath("package-info.java"), expected);
+    }
+
+    @Test
+    public void testPackageInfoWithAnnotation() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(SummaryJavadocCheck.class);
+        final String[] expected = {
+            "1: " + getCheckMessage(MSG_SUMMARY_JAVADOC_MISSING),
+        };
+
+        verify(checkConfig, getPath("inputs/package-info.java"), expected);
     }
 
 }

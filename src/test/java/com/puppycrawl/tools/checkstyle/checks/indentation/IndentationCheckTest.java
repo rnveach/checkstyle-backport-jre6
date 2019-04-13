@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,7 +167,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             final IndentComment... linesWithWarn) throws Exception {
         final Checker checker = createChecker(config);
         checker.addListener(new IndentAudit(linesWithWarn));
-        verify(checker, new File[] {new File(filePath)}, filePath, expected);
+        verify(checker, filePath, expected);
     }
 
     @Override
@@ -2034,7 +2033,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
         private final IndentComment[] comments;
         private int position;
 
-        IndentAudit(IndentComment... comments) {
+        /* package */ IndentAudit(IndentComment... comments) {
             this.comments = Arrays.copyOf(comments, comments.length);
         }
 
@@ -2110,7 +2109,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
         private final String expectedWarning;
         private final boolean warning;
 
-        IndentComment(Matcher match, int lineNumber) {
+        /* package */ IndentComment(Matcher match, int lineNumber) {
             this.lineNumber = lineNumber;
             indent = Integer.parseInt(match.group(1));
             if (match.group(2) == null) {

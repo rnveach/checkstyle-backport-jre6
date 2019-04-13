@@ -28,7 +28,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * <p>
- * This filter accepts an integer that matches a CSV value, where
+ * This filter element is immutable and accepts an integer that matches a CSV value, where
  * each value is an integer or a range of integers.
  * </p>
  */
@@ -46,7 +46,7 @@ class CsvFilterElement implements IntFilterElement {
      * @throws NumberFormatException if a component substring does not
      *     contain a parsable integer.
      */
-    CsvFilterElement(String pattern) {
+    /* package */ CsvFilterElement(String pattern) {
         final StringTokenizer tokenizer = new StringTokenizer(pattern, ",");
         while (tokenizer.hasMoreTokens()) {
             final String token = tokenizer.nextToken().trim();
@@ -69,7 +69,7 @@ class CsvFilterElement implements IntFilterElement {
      * Adds a IntFilterElement to the set.
      * @param filter the IntFilterElement to add.
      */
-    public final void addFilter(IntFilterElement filter) {
+    private void addFilter(IntFilterElement filter) {
         filters.add(filter);
     }
 

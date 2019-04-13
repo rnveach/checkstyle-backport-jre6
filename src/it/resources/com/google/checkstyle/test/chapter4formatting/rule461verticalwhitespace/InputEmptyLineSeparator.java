@@ -32,33 +32,33 @@ import javax.swing.AbstractAction;
 import org.apache.commons.beanutils.locale.converters.ByteLocaleConverter;
 class InputEmptyLineSeparator //warn
 {
-	public static final double FOO_PI = 3.1415;
-	private boolean flag = true; 
-	static {  //warn
+    public static final double FOO_PI = 3.1415;
+    private boolean flag = true;
+    static {  //warn
         //empty static initializer
-	}
+    }
 
-	{
-		//empty instance initializer
-	}
+    {
+        //empty instance initializer
+    }
 
-	/**
-	 * 
-	 * 
-	 * 
-	 */
-	private InputEmptyLineSeparator()
-	{
-		//empty
-	}
+    /**
+     *
+     *
+     *
+     */
+    private InputEmptyLineSeparator()
+    {
+        //empty
+    }
 
     public int compareTo(InputEmptyLineSeparator aObject)
     {
-    	int number = 0;
+        int number = 0;
         return 0;
     }
     /**
-     * 
+     *
      * @param task
      * @param result
      * @return
@@ -76,20 +76,20 @@ class InputEmptyLineSeparator //warn
     }
 
     class InnerClass {
-    	
-    	public static final double FOO_PI_INNER = 3.1415;
-    	private boolean flagInner = true; 
-    	{ //warn
-    		//empty instance initializer
-    	}
 
-    	private InnerClass()
-    	{
-    		//empty
-    	}
+        public static final double FOO_PI_INNER = 3.1415;
+        private boolean flagInner = true;
+        { //warn
+            //empty instance initializer
+        }
+
+        private InnerClass()
+        {
+            //empty
+        }
 
     }
-    
+
     class InnerClass2 { //ok
         private InnerClass2() //ok
         {
@@ -109,7 +109,7 @@ class InputEmptyLineSeparator //warn
 
 class Clazz { //ok
     private Clazz() {} //ok
-} 
+}
 class Class2{ //warn
     public int compareTo(InputEmptyLineSeparator aObject) //ok
     {

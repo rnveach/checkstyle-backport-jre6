@@ -79,7 +79,7 @@
 
           <!-- m2e-code-quality Eclipse IDE plugin temporary configuration files
                for Eclipse CS Checkstyle / PMD / SpotBugs Plug-Ins -->
-          <exclude name=".checkstyle/**/*"/>
+          <exclude name=".checkstyle"/>
           <exclude name=".pmd/**/*"/>
           <exclude name=".pmdruleset.xml"/>
           <exclude name=".fbExcludeFilterFile/**/*"/>
@@ -137,7 +137,8 @@
                 executeIgnoredModules="true"
                 >
       <path>
-        <fileset dir="src" includes="test/resources/**/*,test/resources-noncompilable/**/*">
+        <fileset dir="src"
+            includes="it/resources/**/*,test/resources/**/*,test/resources-noncompilable/**/*">
          <!-- bad syntax, permanent exclude -->
          <exclude name="**/InputAstTreeStringPrinter.java" />
          <exclude name="**/InputSuppressionsStringPrinter.java"/>

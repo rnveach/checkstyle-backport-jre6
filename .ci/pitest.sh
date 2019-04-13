@@ -10,7 +10,7 @@ function checkPitestReport() {
   grep -irE "$SEARCH_REGEXP" target/pit-reports \
      | sed -E 's/.*\/([A-Za-z]+.java.html)/\1/' | LC_ALL=C sort > target/actual.txt
   printf "%s\n" "${ignored[@]}" | sed '/^$/d' | LC_ALL=C sort > target/ignored.txt
-  if [ "$(diff --unified target/ignored.txt target/actual.txt)" != "" ] ; then
+  if [ "$(diff --unified -w target/ignored.txt target/actual.txt)" != "" ] ; then
       fail=1
       echo "Actual:" ;
       grep -irE "$SEARCH_REGEXP" target/pit-reports \
@@ -18,7 +18,7 @@ function checkPitestReport() {
       echo "Ignore:" ;
       printf '%s\n' "${ignored[@]}"
       echo "Diff:"
-      diff --unified target/ignored.txt target/actual.txt | cat
+      diff --unified -w target/ignored.txt target/actual.txt | cat
   fi;
   if [ "$fail" -ne "0" ]; then
     echo "Difference between 'Actual' and 'Ignore' lists is detected, lists should be equal."
@@ -35,29 +35,9 @@ pitest-annotation|pitest-design \
 |pitest-metrics|pitest-modifier|pitest-naming \
 |pitest-sizes|pitest-whitespace \
 |pitest-packagenamesloader \
-|pitest-common-2|pitest-misc)
+|pitest-common-2|pitest-misc|pitest-xpath)
   mvn -e -P$1 clean test org.pitest:pitest-maven:mutationCoverage;
   declare -a ignoredItems=();
-  checkPitestReport "${ignoredItems[@]}"
-  ;;
-
-pitest-xpath)
-  mvn -e -P$1 clean test org.pitest:pitest-maven:mutationCoverage;
-  declare -a ignoredItems=(
-  "ElementNode.java.html:<td class='covered'><pre><span  class='survived'>                if (hasChildNodes()) {</span></pre></td></tr>"
-  "ElementNode.java.html:<td class='covered'><pre><span  class='survived'>                if (hasChildNodes()) {</span></pre></td></tr>"
-  "RootNode.java.html:<td class='covered'><pre><span  class='survived'>        if (detailAst != null) {</span></pre></td></tr>"
-  "XpathFileGeneratorAstFilter.java.html:<td class='covered'><pre><span  class='survived'>            if (!xpathQueries.isEmpty()) {</span></pre></td></tr>"
-  "XpathFileGeneratorAuditListener.java.html:<td class='covered'><pre><span  class='survived'>            writer.close();</span></pre></td></tr>"
-  "XpathFileGeneratorAuditListener.java.html:<td class='covered'><pre><span  class='survived'>        closeStream = outputStreamOptions == OutputStreamOptions.CLOSE;</span></pre></td></tr>"
-  "XpathFileGeneratorAuditListener.java.html:<td class='covered'><pre><span  class='survived'>        if (closeStream) {</span></pre></td></tr>"
-  "XpathFileGeneratorAuditListener.java.html:<td class='covered'><pre><span  class='survived'>        writer.flush();</span></pre></td></tr>"
-  "XpathQueryGenerator.java.html:<td class='covered'><pre><span  class='survived'>        if (ast.getParent() == null) {</span></pre></td></tr>"
-  "XpathQueryGenerator.java.html:<td class='covered'><pre><span  class='survived'>            if (!result) {</span></pre></td></tr>"
-  "XpathQueryGenerator.java.html:<td class='covered'><pre><span  class='survived'>                if (toVisit == null) {</span></pre></td></tr>"
-  "XpathQueryGenerator.java.html:<td class='covered'><pre><span  class='survived'>            result = ast.getParent().getChildCount(ast.getType()) &#62; 1;</span></pre></td></tr>"
-  "XpathQueryGenerator.java.html:<td class='covered'><pre><span  class='survived'>        while (curNode != null &#38;&#38; curNode.getLineNo() &#60;= lineNumber) {</span></pre></td></tr>"
-  );
   checkPitestReport "${ignoredItems[@]}"
   ;;
 
@@ -175,13 +155,6 @@ pitest-common)
   "AuditEventDefaultFormatter.java.html:<td class='uncovered'><pre><span  class=''>                checkShortName = checkFullName;</span></pre></td></tr>"
   "AuditEventDefaultFormatter.java.html:<td class='uncovered'><pre><span  class='survived'>            if (checkFullName.endsWith(SUFFIX)) {</span></pre></td></tr>"
   "Checker.java.html:<td class='covered'><pre><span  class='survived'>                if (cacheFile != null &#38;&#38; cacheFile.isInCache(fileName, timestamp)</span></pre></td></tr>"
-  "Checker.java.html:<td class='covered'><pre><span  class='survived'>                if (fileName != null &#38;&#38; cacheFile != null) {</span></pre></td></tr>"
-  "Checker.java.html:<td class='uncovered'><pre><span  class=''>            catch (Error error) {</span></pre></td></tr>"
-  "Checker.java.html:<td class='uncovered'><pre><span  class='survived'>                    cacheFile.remove(fileName);</span></pre></td></tr>"
-  "Checker.java.html:<td class='uncovered'><pre><span  class='survived'>                if (fileName != null &#38;&#38; cacheFile != null) {</span></pre></td></tr>"
-  "Checker.java.html:<td class='uncovered'><pre><span  class='survived'>                throw new Error(&#34;Error was thrown while processing &#34; + file.getPath(), error);</span></pre></td></tr>"
-  "ConfigurationLoader.java.html:<td class='covered'><pre><span  class='survived'>                if (!qName.equals(METADATA)) {</span></pre></td></tr>"
-  "ConfigurationLoader.java.html:<td class='covered'><pre><span  class='survived'>            else if (qName.equals(MESSAGE)) {</span></pre></td></tr>"
   "ConfigurationLoader.java.html:<td class='covered'><pre><span  class='survived'>            final boolean omitIgnoreModules = ignoredModulesOptions == IgnoredModulesOptions.OMIT;</span></pre></td></tr>"
   "DefaultLogger.java.html:<td class='covered'><pre><span  class='survived'>        closeError = errorStreamOptions == OutputStreamOptions.CLOSE;</span></pre></td></tr>"
   "DefaultLogger.java.html:<td class='covered'><pre><span  class='survived'>        closeInfo = infoStreamOptions == OutputStreamOptions.CLOSE;</span></pre></td></tr>"
@@ -193,7 +166,6 @@ pitest-common)
   "ConfigurationLoader.java.html:<td class='uncovered'><pre><span  class=''>        catch (final ParserConfigurationException | IOException | SAXException ex) {</span></pre></td></tr>"
   "ConfigurationLoader.java.html:<td class='uncovered'><pre><span  class='survived'>                                        + recentModule.getName(), ex);</span></pre></td></tr>"
   "ConfigurationLoader.java.html:<td class='uncovered'><pre><span  class='survived'>                        throw new SAXException(</span></pre></td></tr>"
-  "ConfigurationLoader.java.html:<td class='uncovered'><pre><span  class='survived'>                    throw new IllegalStateException(&#34;Unknown name:&#34; + qName + &#34;.&#34;);</span></pre></td></tr>"
   "ConfigurationLoader.java.html:<td class='uncovered'><pre><span  class='survived'>            throw new CheckstyleException(UNABLE_TO_PARSE_EXCEPTION_PREFIX, ex);</span></pre></td></tr>"
   "PackageObjectFactory.java.html:<td class='covered'><pre><span  class='survived'>        if (instance == null</span></pre></td></tr>"
   "PackageObjectFactory.java.html:<td class='covered'><pre><span  class='survived'>        if (!name.contains(PACKAGE_SEPARATOR)) {</span></pre></td></tr>"
@@ -201,15 +173,13 @@ pitest-common)
   "PackageObjectFactory.java.html:<td class='uncovered'><pre><span  class=''>            returnValue = Collections.emptyMap();</span></pre></td></tr>"
   "PackageObjectFactory.java.html:<td class='uncovered'><pre><span  class=''>        catch (IOException ignore) {</span></pre></td></tr>"
   "PropertyCacheFile.java.html:<td class='covered'><pre><span  class='survived'>                if (!cachedHashSum.equals(contentHashSum)) {</span></pre></td></tr>"
-  "PropertyCacheFile.java.html:<td class='covered'><pre><span  class='survived'>            Flushables.flush(stream, false);</span></pre></td></tr>"
+  "PropertyCacheFile.java.html:<td class='covered'><pre><span  class='survived'>            stream.flush();</span></pre></td></tr>"
   "PropertyCacheFile.java.html:<td class='covered'><pre><span  class='survived'>            flushAndCloseOutStream(oos);</span></pre></td></tr>"
   "PropertyCacheFile.java.html:<td class='covered'><pre><span  class='survived'>            flushAndCloseOutStream(out);</span></pre></td></tr>"
-  "PropertyCacheFile.java.html:<td class='covered'><pre><span  class='survived'>        Closeables.close(stream, false);</span></pre></td></tr>"
+  "PropertyCacheFile.java.html:<td class='covered'><pre><span  class='survived'>            stream.close();</span></pre></td></tr>"
   "PropertyCacheFile.java.html:<td class='covered'><pre><span  class='survived'>        if (stream != null) {</span></pre></td></tr>"
   "PropertyCacheFile.java.html:<td class='uncovered'><pre><span  class=''>                    changed = true;</span></pre></td></tr>"
-  "PropertyCacheFile.java.html:<td class='uncovered'><pre><span  class=''>        catch (IOException ex) {</span></pre></td></tr>"
   "PropertyCacheFile.java.html:<td class='uncovered'><pre><span  class=''>        catch (final IOException | NoSuchAlgorithmException ex) {</span></pre></td></tr>"
-  "PropertyCacheFile.java.html:<td class='uncovered'><pre><span  class='survived'>            throw new CheckstyleException(&#34;Unable to load external resource file &#34; + location, ex);</span></pre></td></tr>"
   "PropertyCacheFile.java.html:<td class='uncovered'><pre><span  class='survived'>            throw new IllegalStateException(&#34;Unable to calculate hashcode.&#34;, ex);</span></pre></td></tr>"
   );
   checkPitestReport "${ignoredItems[@]}"

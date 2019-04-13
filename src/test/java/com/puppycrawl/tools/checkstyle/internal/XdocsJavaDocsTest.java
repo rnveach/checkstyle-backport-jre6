@@ -70,24 +70,49 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
     private static final String[] COMPATIBLE_CHECKS = {
         "AbbreviationAsWordInName",
         "AbstractClassName",
+        "AnnotationLocation",
+        "AnnotationOnSameLine",
+        "AnnotationUseStyle",
+        "ArrayTrailingComma",
         "AtclauseOrder",
+        "AvoidNestedBlocks",
+        "AvoidInlineConditionals",
         "CatchParameterName",
         "ClassMemberImpliedModifier",
         "ClassTypeParameterName",
         "ConstantName",
+        "CovariantEquals",
         "CustomImportOrder",
+        "DeclarationOrder",
+        "DefaultComesLast",
+        "EmptyBlock",
+        "EmptyCatchBlock",
+        "EmptyStatement",
+        "EqualsAvoidNull",
+        "EqualsHashCode",
+        "IllegalInstantiation",
         "ImportOrder",
         "InterfaceMemberImpliedModifier",
         "InterfaceTypeParameterName",
         "LambdaParameterName",
+        "LeftCurly",
         "LocalFinalVariableName",
         "LocalVariableName",
+        "MagicNumber",
         "MemberName",
         "MethodName",
         "MethodTypeParameterName",
+        "MissingCtor",
+        "MissingDeprecated",
+        "MissingOverride",
+        "NeedBraces",
+        "PackageAnnotation",
         "PackageName",
         "ParameterName",
+        "RightCurly",
         "StaticVariableName",
+        "SuppressWarnings",
+        "SuppressWarningsHolder",
         "TypeName",
     };
 
@@ -251,7 +276,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
     }
 
     private static String getNodeText(Node node, boolean fixLinks) {
-        final StringBuffer result = new StringBuffer(20);
+        final StringBuilder result = new StringBuilder(20);
 
         for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
             if (child.getNodeType() == Node.TEXT_NODE) {
@@ -276,7 +301,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
     }
 
     // -@cs[CyclomaticComplexity] No simple way to split this apart.
-    private static void appendNodeText(StringBuffer result, Node node, boolean fixLinks) {
+    private static void appendNodeText(StringBuilder result, Node node, boolean fixLinks) {
         final String name = transformXmlToJavaDocName(node.getNodeName());
         final boolean list = "ol".equals(name) || "ul".equals(name);
         final boolean newLineOpenBefore = list || "p".equals(name) || "pre".equals(name)
@@ -330,7 +355,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         }
     }
 
-    private static boolean shouldAppendSpace(StringBuffer text, char firstCharToAppend) {
+    private static boolean shouldAppendSpace(StringBuilder text, char firstCharToAppend) {
         final boolean result;
 
         if (text.length() == 0) {
@@ -471,7 +496,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                         CHECK_TEXT.get("Description")
                                 + (CHECK_TEXT.containsKey("Rule Description") ? CHECK_TEXT.get("Rule Description") : "")
                                 + (CHECK_TEXT.containsKey("Notes") ? CHECK_TEXT.get("Notes") : "")
-                                + CHECK_TEXT.get("Properties")
+                                + (CHECK_TEXT.containsKey("Properties") ? CHECK_TEXT.get("Properties") : "")
                                 + CHECK_TEXT.get("Examples") + " @since "
                                 + CHECK_TEXT.get("since"), getJavaDocText(ast));
             }
@@ -526,6 +551,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         private static String getJavaDocText(DetailAST node) {
             final String text = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<document>\n"
                     + node.getFirstChild().getText().replaceAll("(^|\\r?\\n)\\s*\\* ?", "\n")
+                            .replaceAll("\\n@noinspection.*\\r?\\n", "\n")
                             .trim() + "\n</document>";
             String result = null;
 

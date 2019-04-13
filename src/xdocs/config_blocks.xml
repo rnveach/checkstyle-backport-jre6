@@ -23,8 +23,8 @@
     </section>
 
     <section name="AvoidNestedBlocks">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="AvoidNestedBlocks_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           Finds nested blocks, i.e. blocks that are used freely in the code.
         </p>
@@ -42,7 +42,7 @@ public void guessTheOutput()
 {
   int whichIsWhich = 0;
   {
-      int whichIsWhich = 2;
+    int whichIsWhich = 2;
   }
   System.out.println("value = " + whichIsWhich);
 }
@@ -79,11 +79,11 @@ switch (a)
       x = 2;
       break;
     }
-  case 1:
+  case 2:
     // OK if allowInSwitchCase is true
     {
       System.out.println("Hello");
-      x = 2;
+      x = 3;
       break;
     }
 }
@@ -101,7 +101,7 @@ switch (a)
           </tr>
           <tr>
             <td>allowInSwitchCase</td>
-            <td>Allow nested blocks in case statements</td>
+            <td>Allow nested blocks if they are the only child of a switch case.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>3.2</td>
@@ -152,8 +152,8 @@ switch (a)
     </section>
 
     <section name="EmptyBlock">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="EmptyBlock_Description">
-        <p>Since Checkstyle 3.0</p>
         <p> Checks for empty blocks. This check does not validate sequential blocks. </p>
 
         <p> Sequential blocks won't be checked. Also, no violations for fallthrough: </p>
@@ -197,7 +197,7 @@ switch (a) {
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on block contents</td>
+            <td>specify the policy on block contents.</td>
             <td><a href="property_types.html#block">Block Policy</a></td>
             <td><code>statement</code></td>
             <td>3.0</td>
@@ -205,7 +205,6 @@ switch (a) {
           <tr>
             <td>tokens</td>
             <td>tokens to check</td>
-
             <td>
               subset of tokens
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_WHILE">
@@ -330,11 +329,19 @@ switch (a) {
     </section>
 
     <section name="EmptyCatchBlock">
+      <p>Since Checkstyle 6.4</p>
       <subsection name="Description" id="EmptyCatchBlock_Description">
-        <p>Since Checkstyle 6.4</p>
         <p>
-          Checks for empty catch blocks. There are two options to make validation more precise
-          (by default Check allows empty catch block with any comment inside):
+          Checks for empty catch blocks.
+          By default check allows empty catch block with any comment inside.
+        </p>
+      </subsection>
+
+      <subsection name="Notes" id="EmptyCatchBlock_Notes">
+        <p>
+          There are two options to make validation more precise: <b>exceptionVariableName</b> and
+          <b>commentFormat</b>.
+          If both options are specified - they are applied by <b>any of them is matching</b>.
         </p>
       </subsection>
 
@@ -349,16 +356,23 @@ switch (a) {
           </tr>
           <tr>
             <td>exceptionVariableName</td>
-            <td>The name of variable associated with exception</td>
-            <td><a href="property_types.html#string">String</a></td>
-            <td>&quot;^$&quot;</td>
+            <td>
+              Specify the RegExp for the name of the variable associated with exception.
+              If check meets variable name matching specified value - empty block is suppressed.
+            </td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>&quot;^$&quot; (empty)</code></td>
             <td>6.4</td>
           </tr>
           <tr>
             <td>commentFormat</td>
-            <td>The format of the first comment inside empty catch</td>
-            <td><a href="property_types.html#string">String</a></td>
-            <td>&quot;.*&quot;</td>
+            <td>
+              Specify the RegExp for the first comment inside empty catch block.
+              If check meets comment inside empty catch block matching specified format - empty
+              block is suppressed. If it is multi-line comment - only its first line is analyzed.
+            </td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>&quot;.*&quot;</code></td>
             <td>6.4</td>
           </tr>
         </table>
@@ -366,7 +380,7 @@ switch (a) {
 
       <subsection name="Examples" id="EmptyCatchBlock_Examples">
         <p>
-          To configure the Check to suppress empty catch block if exception's variable name is
+          To configure the check to suppress empty catch block if exception's variable name is
            <code>expected</code> or <code>ignore</code> or there's any comment inside:
         </p>
         <source>
@@ -375,7 +389,20 @@ switch (a) {
 &lt;/module&gt;
         </source>
         <p>
-          To configure the Check to suppress empty catch block if single-line comment inside
+          Such empty blocks would be both suppressed:
+        </p>
+        <source>
+try {
+  throw new RuntimeException();
+} catch (RuntimeException expected) {
+}
+try {
+  throw new RuntimeException();
+} catch (RuntimeException ignore) {
+}
+        </source>
+        <p>
+          To configure the check to suppress empty catch block if single-line comment inside
            is &quot;//This is expected&quot;:
         </p>
         <source>
@@ -384,9 +411,19 @@ switch (a) {
 &lt;/module&gt;
         </source>
         <p>
-          To configure the Check to suppress empty catch block if single-line comment inside
-           is &quot;//This is expected&quot; or exception's
-            variable name is &quot;myException&quot; (any option is matching):
+          Such empty block would be suppressed:
+        </p>
+        <source>
+try {
+  throw new RuntimeException();
+} catch (RuntimeException ex) {
+  //This is expected
+}
+        </source>
+        <p>
+          To configure the check to suppress empty catch block if single-line comment inside
+          is &quot;//This is expected&quot; or exception's
+          variable name is &quot;myException&quot; (any option is matching):
         </p>
         <source>
 &lt;module name=&quot;EmptyCatchBlock&quot;&gt;
@@ -477,12 +514,11 @@ try {
     </section>
 
     <section name="LeftCurly">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="LeftCurly_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for the placement of left curly braces
-          (<code>'{'</code>) for code blocks.  The policy to verify is
-          specified using the property <code>option</code>.
+          (<code>'{'</code>) for code blocks.
         </p>
       </subsection>
 
@@ -497,22 +533,21 @@ try {
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on placement of a left curly brace (<code>'{'</code>)</td>
+            <td>Specify the policy on placement of a left curly brace (<code>'{'</code>).</td>
             <td><a href="property_types.html#lcurly">Left Curly Brace Policy</a></td>
             <td><code>eol</code></td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>ignoreEnums</td>
-            <td>If true, Check will ignore enums when left curly brace policy is EOL</td>
+            <td>Allow to ignore enums when left curly brace policy is EOL.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>true</td>
+            <td><code>true</code></td>
             <td>6.9</td>
           </tr>
           <tr>
             <td>tokens</td>
             <td>tokens to check</td>
-
             <td>subset of tokens
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
                 ANNOTATION_DEF</a>,
@@ -684,8 +719,8 @@ try {
     </section>
 
     <section name="NeedBraces">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="NeedBraces_Description">
-        <p>Since Checkstyle 3.0</p>
         <p> Checks for braces around code blocks. </p>
       </subsection>
 
@@ -700,22 +735,21 @@ try {
           </tr>
           <tr>
             <td>allowSingleLineStatement</td>
-            <td>allows single-line statements without braces</td>
+            <td>allow single-line statements without braces.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>6.5</td>
           </tr>
           <tr>
             <td>allowEmptyLoopBody</td>
-            <td>allows loops with empty bodies</td>
+            <td>allow loops with empty bodies.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>6.12.1</td>
           </tr>
           <tr>
             <td>tokens</td>
             <td>tokens to check</td>
-
             <td>subset of tokens
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_DO">
                 LITERAL_DO</a>,
@@ -779,7 +813,7 @@ try {
         </source>
 
         <p>
-          Next statements won't be violated by Check:
+          Next statements won't be violated by check:
         </p>
         <source>
 if (obj.isValid()) return true; // OK
@@ -789,7 +823,7 @@ for (int i = 0; ; ) this.notify(); // OK
         </source>
 
         <p>
-          To configure the Check to allow <code>case, default</code> single-line statements
+          To configure the check to allow <code>case, default</code> single-line statements
           without braces:
         </p>
         <source>
@@ -800,7 +834,7 @@ for (int i = 0; ; ) this.notify(); // OK
         </source>
 
         <p>
-          Next statements won't be violated by Check:
+          Next statements won't be violated by check:
         </p>
         <source>
 switch (num) {
@@ -819,7 +853,7 @@ switch (num) {
           </source>
 
           <p>
-              Next statements won't be violated by Check:
+              Next statements won't be violated by check:
           </p>
           <source>
 while (value.incrementValue() &lt; 5); // OK
@@ -867,14 +901,13 @@ for(int i = 0; i &lt; 10; value.incrementValue()); // OK
     </section>
 
     <section name="RightCurly">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="RightCurly_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks the placement of right curly braces (<code>'}'</code>)
           for if-else, try-catch-finally blocks, while-loops, for-loops,
           method definitions, class definitions, constructor definitions,
           instance and static initialization blocks.
-          The policy to verify is specified using the property <code> option</code>.
           For right curly brace of expression blocks please follow issue
           <a href="https://github.com/checkstyle/checkstyle/issues/5945">#5945</a>.
         </p>
@@ -891,7 +924,7 @@ for(int i = 0; i &lt; 10; value.incrementValue()); // OK
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on placement of a right curly brace (<code>'}'</code>)</td>
+            <td>Specify the policy on placement of a right curly brace (<code>'}'</code>).</td>
             <td><a href="property_types.html#rcurly">Right Curly Brace Policy</a></td>
             <td><code>same</code></td>
             <td>3.0</td>
@@ -899,7 +932,6 @@ for(int i = 0; i &lt; 10; value.incrementValue()); // OK
           <tr>
             <td>tokens</td>
             <td>tokens to check</td>
-
             <td>subset of tokens <a
              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_TRY">
                 LITERAL_TRY</a>,

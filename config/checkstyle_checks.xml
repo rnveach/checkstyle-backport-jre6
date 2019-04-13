@@ -97,12 +97,12 @@
   <module name="RegexpSingleline">
     <property name="format" value="^(?!(.*http|import)).{101,}$"/>
     <property name="fileExtensions" value="g, g4"/>
-    <property name="message" value="Line should not be longer then 100 symbols"/>
+    <property name="message" value="Line should not be longer than 100 symbols"/>
   </module>
   <module name="RegexpSingleline">
     <property name="format" value="^(?!(.*href=&quot;|.*http)).{101,}$"/>
     <property name="fileExtensions" value="xml, vm"/>
-    <property name="message" value="Line should not be longer then 100 symbols"/>
+    <property name="message" value="Line should not be longer than 100 symbols"/>
   </module>
   <module name="RegexpOnFilename" />
   <module name="RegexpOnFilename">
@@ -145,6 +145,8 @@
     <module name="AnnotationLocation">
       <property name="tokens" value="ANNOTATION_DEF"/>
       <property name="tokens" value="ANNOTATION_FIELD_DEF"/>
+      <property name="tokens" value="PACKAGE_DEF"/>
+      <property name="tokens" value="ENUM_CONSTANT_DEF"/>
       <property name="allowSamelineSingleParameterlessAnnotation" value="false"/>
     </module>
     <module name="AnnotationLocation">
@@ -172,9 +174,7 @@
     </module>
     <module name="AnnotationUseStyle"/>
     <module name="MissingDeprecated"/>
-    <module name="MissingOverride">
-      <property name="javaFiveCompatibility" value="true"/>
-    </module>
+    <module name="MissingOverride"/>
     <module name="PackageAnnotation"/>
     <module name="SuppressWarnings">
         <property name="format" value="^((?!unchecked|deprecation|rawtypes|resource).)*$"/>
@@ -283,7 +283,8 @@
                          org.apache.commons.beanutils.ConversionException,
                          org.antlr.v4.runtime.misc.ParseCancellationException,
                          antlr.RecognitionException, antlr.TokenStreamException,
-                         antlr.TokenStreamRecognitionException, antlr.ANTLRException"/>
+                         antlr.TokenStreamRecognitionException, antlr.ANTLRException,
+                         java.lang.StringBuffer"/>
     </module>
     <module name="IllegalThrows"/>
     <module name="IllegalToken">
@@ -297,7 +298,13 @@
       <property name="format" value="^(US-ASCII|ISO-8859-1|UTF-8|UTF-16BE|UTF-16LE|UTF-16)$"/>
       <property name="ignoreCase" value="true"/>
     </module>
-    <module name="IllegalType"/>
+    <module name="IllegalType">
+      <property name="illegalClassNames"
+                value="java.util.HashSet, HashSet, java.util.LinkedHashMap, LinkedHashMap,
+                       java.util.TreeMap, TreeMap, java.util.HashMap, HashMap,
+                       java.util.LinkedHashSet, LinkedHashSet, java.util.TreeSet, TreeSet,
+                       java.lang.StringBuffer, StringBuffer"/>
+    </module>
     <module name="InnerAssignment"/>
     <module name="MagicNumber"/>
     <module name="MissingCtor">

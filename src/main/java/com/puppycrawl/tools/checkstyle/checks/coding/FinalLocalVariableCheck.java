@@ -756,7 +756,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
          * Creates new instance.
          * @param variableIdent variable identifier.
          */
-        FinalVariableCandidate(DetailAST variableIdent) {
+        /* package */ FinalVariableCandidate(DetailAST variableIdent) {
             this.variableIdent = variableIdent;
         }
 

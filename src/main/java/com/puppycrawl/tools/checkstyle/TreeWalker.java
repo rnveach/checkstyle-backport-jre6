@@ -51,9 +51,6 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 @FileStatefulCheck
 public final class TreeWalker extends AbstractFileSetCheck implements ExternalResourceHolder {
 
-    /** Default distance between tab stops. */
-    private static final int DEFAULT_TAB_WIDTH = 8;
-
     /** Maps from token name to ordinary checks. */
     private final Map<String, Set<AbstractCheck>> tokenToOrdinaryChecks =
         new HashMap<String, Set<AbstractCheck>>();
@@ -74,9 +71,6 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     /** The sorted set of messages. */
     private final SortedSet<LocalizedMessage> messages = new TreeSet<LocalizedMessage>();
 
-    /** The distance between tab stops. */
-    private int tabWidth = DEFAULT_TAB_WIDTH;
-
     /** Class loader to resolve classes with. **/
     private ClassLoader classLoader;
 
@@ -91,27 +85,6 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      */
     public TreeWalker() {
         setFileExtensions("java");
-    }
-
-    /**
-     * Sets tab width.
-     * @param tabWidth the distance between tab stops
-     */
-    public void setTabWidth(int tabWidth) {
-        this.tabWidth = tabWidth;
-    }
-
-    /**
-     * Sets cache file.
-     * @deprecated Use {@link Checker#setCacheFile} instead. It does not do anything now. We just
-     *             keep the setter for transition period to the same option in Checker. The
-     *             method will be completely removed in Checkstyle 8.0. See
-     *             <a href="https://github.com/checkstyle/checkstyle/issues/2883">issue#2883</a>
-     * @param fileName the cache file
-     */
-    @Deprecated
-    public void setCacheFile(String fileName) {
-        // Deprecated
     }
 
     /**
@@ -135,7 +108,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
         final DefaultContext checkContext = new DefaultContext();
         checkContext.add("classLoader", classLoader);
         checkContext.add("severity", getSeverity());
-        checkContext.add("tabWidth", String.valueOf(tabWidth));
+        checkContext.add("tabWidth", String.valueOf(getTabWidth()));
 
         childContext = checkContext;
     }
@@ -183,7 +156,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
         // check if already checked and passed the file
         if (!ordinaryChecks.isEmpty() || !commentChecks.isEmpty()) {
-            final FileContents contents = new FileContents(fileText);
+            final FileContents contents = getFileContents();
             final DetailAST rootAST = JavaParser.parse(contents);
             if (!ordinaryChecks.isEmpty()) {
                 walk(rootAST, contents, AstState.ORDINARY);

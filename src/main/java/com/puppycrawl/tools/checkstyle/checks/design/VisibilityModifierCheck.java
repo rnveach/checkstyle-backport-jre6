@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import antlr.collections.AST;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -117,7 +116,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  * that type will match to any named the same type without consideration of package.
  * </p>
  * <p>
- * <b>Rationale</b>: Forcing all fields of class to have private modified by default is good
+ * <b>Rationale</b>: Forcing all fields of class to have private modifier by default is good
  * in most cases, but in some cases it drawbacks in too much boilerplate get/set code.
  * One of such cases are immutable classes.
  * </p>
@@ -602,10 +601,10 @@ public class VisibilityModifierCheck
      * @return the set of modifier Strings for defAST.
      */
     private static Set<String> getModifiers(DetailAST defAST) {
-        final AST modifiersAST = defAST.findFirstToken(TokenTypes.MODIFIERS);
+        final DetailAST modifiersAST = defAST.findFirstToken(TokenTypes.MODIFIERS);
         final Set<String> modifiersSet = new HashSet<String>();
         if (modifiersAST != null) {
-            AST modifier = modifiersAST.getFirstChild();
+            DetailAST modifier = modifiersAST.getFirstChild();
             while (modifier != null) {
                 modifiersSet.add(modifier.getText());
                 modifier = modifier.getNextSibling();

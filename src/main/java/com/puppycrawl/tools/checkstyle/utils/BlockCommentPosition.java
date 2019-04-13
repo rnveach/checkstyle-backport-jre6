@@ -58,6 +58,17 @@ public final class BlockCommentPosition {
     }
 
     /**
+     * Node is on package definition.
+     * @param blockComment DetailAST
+     * @return true if node is before package
+     */
+    public static boolean isOnPackage(DetailAST blockComment) {
+        final DetailAST nextSibling = blockComment.getNextSibling();
+        return isOnTokenWithAnnotation(blockComment, TokenTypes.PACKAGE_DEF)
+                || nextSibling != null && nextSibling.getType() == TokenTypes.PACKAGE_DEF;
+    }
+
+    /**
      * Node is on interface definition.
      * @param blockComment DetailAST
      * @return true if node is before interface
@@ -203,7 +214,6 @@ public final class BlockCommentPosition {
         return blockComment.getParent() != null
                 && blockComment.getParent().getType() == TokenTypes.ANNOTATION
                 && getPrevSiblingSkipComments(blockComment.getParent()) == null
-                && blockComment.getParent().getParent().getType() == TokenTypes.MODIFIERS
                 && blockComment.getParent().getParent().getParent().getType() == tokenType
                 && getPrevSiblingSkipComments(blockComment) == null;
     }
@@ -217,11 +227,13 @@ public final class BlockCommentPosition {
     private static boolean isOnPlainClassMember(DetailAST blockComment, int memberType) {
         DetailAST parent = blockComment.getParent();
         // type could be in fully qualified form, so we go up to Type token
-        while (parent != null && parent.getType() == TokenTypes.DOT) {
+        while (parent != null && (parent.getType() == TokenTypes.DOT
+                || parent.getType() == TokenTypes.ARRAY_DECLARATOR)) {
             parent = parent.getParent();
         }
         return parent != null
-                && parent.getType() == TokenTypes.TYPE
+                && (parent.getType() == TokenTypes.TYPE
+                    || parent.getType() == TokenTypes.TYPE_PARAMETERS)
                 && parent.getParent().getType() == memberType
                 // previous parent sibling is always TokenTypes.MODIFIERS
                 && parent.getPreviousSibling().getChildCount() == 0;
