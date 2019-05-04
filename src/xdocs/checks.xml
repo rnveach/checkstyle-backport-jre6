@@ -161,7 +161,7 @@
         <td>
           Checks that the parts of a class or interface declaration
           appear in the order suggested by the <a
-          href="https://www.oracle.com/technetwork/java/javase/documentation/codeconventions-141855.html#1852"
+          href="styleguides/sun-code-conventions-19990420/CodeConventions.doc2.html#a1852"
           >Code Conventions for the Java Programming Language</a>.
         </td>
       </tr>
@@ -477,6 +477,11 @@
           This class is used to verify that both the java.lang.Deprecated annotation is
           present and the @deprecated Javadoc tag is present when either is present.
         </td>
+      </tr>
+      <tr>
+        <td><a href="config_javadoc.html#MissingJavadocType">MissingJavadocType</a></td>
+        <td>Checks for missing Javadoc comments for class, enum, interface, and annotation
+        interface definitions.</td>
       </tr>
       <tr>
         <td><a href="config_annotation.html#MissingOverride">MissingOverride</a></td>

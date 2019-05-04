@@ -32,16 +32,18 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
  * </p>
  * <p>
  * Rationale: <a
- * href="https://www.oracle.com/technetwork/java/javase/documentation/codeconventions-141270.html">
- * the SUN Code conventions chapter 6.1</a> recommends that
- * declarations should be one per line.
+ * href="https://checkstyle.org/styleguides/sun-code-conventions-19990420/CodeConventions.doc5.html#a2992">
+ * the Java code conventions chapter 6.1</a> recommends that
+ * declarations should be one per line/statement.
  * </p>
  * <p>
- * An example of how to configure the check is:
+ * To configure the check:
  * </p>
  * <pre>
  * &lt;module name="MultipleVariableDeclarations"/&gt;
  * </pre>
+ *
+ * @since 3.4
  */
 @StatelessCheck
 public class MultipleVariableDeclarationsCheck extends AbstractCheck {

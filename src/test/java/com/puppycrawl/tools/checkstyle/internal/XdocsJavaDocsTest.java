@@ -53,6 +53,7 @@ import com.puppycrawl.tools.checkstyle.internal.utils.XdocUtil;
 import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Character7;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
@@ -90,8 +91,18 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         "EmptyStatement",
         "EqualsAvoidNull",
         "EqualsHashCode",
+        "ExplicitInitialization",
+        "FallThrough",
+        "FinalLocalVariable",
+        "HiddenField",
+        "IllegalCatch",
         "IllegalInstantiation",
+        "IllegalThrows",
+        "IllegalToken",
+        "IllegalTokenText",
+        "IllegalType",
         "ImportOrder",
+        "InnerAssignment",
         "InterfaceMemberImpliedModifier",
         "InterfaceTypeParameterName",
         "LambdaParameterName",
@@ -104,16 +115,39 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         "MethodTypeParameterName",
         "MissingCtor",
         "MissingDeprecated",
+        "MissingJavadocType",
         "MissingOverride",
+        "MissingSwitchDefault",
+        "ModifiedControlVariable",
+        "MultipleStringLiterals",
+        "MultipleVariableDeclarations",
         "NeedBraces",
+        "NestedForDepth",
+        "NestedIfDepth",
+        "NestedTryDepth",
+        "NoClone",
+        "NoFinalizer",
+        "OneStatementPerLine",
+        "OverloadMethodsDeclarationOrder",
         "PackageAnnotation",
+        "PackageDeclaration",
         "PackageName",
+        "ParameterAssignment",
         "ParameterName",
+        "RequireThis",
+        "ReturnCount",
         "RightCurly",
+        "SimplifyBooleanExpression",
+        "SimplifyBooleanReturn",
         "StaticVariableName",
+        "StringLiteralEquality",
+        "SuperClone",
+        "SuperFinalize",
         "SuppressWarnings",
         "SuppressWarningsHolder",
         "TypeName",
+        "UnnecessaryParentheses",
+        "VariableDeclarationUsageDistance",
     };
 
     private static Checker checker;
@@ -364,8 +398,10 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         else {
             final char last = text.charAt(text.length() - 1);
 
-            result = (last == ':' || firstCharToAppend == '@' || Character.isLetter(last)
-                    || Character.isLetter(firstCharToAppend)) && !Character.isWhitespace(last);
+            result = (firstCharToAppend == '@'
+                    || Character.getType(last) == Character.OTHER_PUNCTUATION
+                    || Character7.isAlphabetic(last)
+                    || Character7.isAlphabetic(firstCharToAppend)) && !Character.isWhitespace(last);
         }
 
         return result;

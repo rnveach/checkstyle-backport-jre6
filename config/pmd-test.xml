@@ -114,12 +114,6 @@
                    test method.
                  In MainTest PMD does not find asserts in lambdas called in the method
                    exit.checkAssertionAfterwards.
-                 In FilterSetTest, LineColumnTest, LocalizedMessageTest, CsvFilterTest,
-                   IntMatchFilterTest, IntRangeFilterTest, SuppressElementTest,
-                   SuppressWithNearbyCommentFilterTest, SuppressWithPlainTextCommentFilterTest,
-                   SuppressionCommentFilterTest, SuppressionFilterTest, SuppressionXpathFilterTest,
-                   XpathFilterTest PMD does not accept nl.jqno.equalsverifier.EqualsVerifier.verify
-                   as correctness check method.
                  In AstRegressionTest PMD does not find asserts in inner classes methods called
                    from the test method.
                  In XdocsPagesTest PMD does not find asserts in lambdas.
@@ -131,15 +125,6 @@
               or @Image='ImportControlCheckTest']//PrimaryPrefix/Name[@Image='verify']
             | //ClassOrInterfaceDeclaration[@Image='MainTest']
                   //PrimaryPrefix//Name[starts-with(@Image, 'assert')]
-            | //ClassOrInterfaceDeclaration[@Image='FilterSetTest' or @Image='LineColumnTest'
-              or @Image='LocalizedMessageTest' or @Image='CsvFilterTest'
-              or @Image='IntMatchFilterTest'
-              or @Image='IntRangeFilterTest' or @Image='SuppressElementTest'
-              or @Image='SuppressWithNearbyCommentFilterTest'
-              or @Image='SuppressionCommentFilterTest'
-              or @Image='SuppressionFilterTest' or @Image='SuppressionXpathFilterTest'
-              or @Image='SuppressWithPlainTextCommentFilterTest'
-              or @Image='XpathFilterTest']//PrimarySuffix[@Image='verify']
             | //ClassOrInterfaceDeclaration[@Image='XdocsPagesTest']
                   //MethodDeclaration[@Name='testAllChecksPresentOnAvailableChecksPage']
             | //ClassOrInterfaceDeclaration[@Image='XdocsJavaDocsTest']
@@ -187,23 +172,23 @@
         <properties>
             <!-- This inherited from GeneratedJavaLexer. -->
             <property name="violationSuppressXPath"
-                      value="//ClassOrInterfaceDeclaration[@Image='AstRegressionTest']
-            | //ClassOrInterfaceDeclaration[@Image='AssertGeneratedJavaLexer']
+                      value="//ClassOrInterfaceDeclaration[@Image='AssertGeneratedJavaLexer']
                   //MethodDeclarator[@Image='LA']"/>
         </properties>
     </rule>
 
     <rule ref="category/java/design.xml/UseObjectForClearerAPI">
         <properties>
-            <!-- This is checking for amount of arguments more that 3 (hardcoded).
-                    But in make sense to start making violations on items where
-                    amount of arguments more that 7. Extra abstraction(object)
-                    for single method does not make code more readable or
-                    easy to maintain -->
+            <!-- This is checking for amount of String arguments more than 3 (hardcoded).
+                 Extra abstraction(object) for single method does not make code more readable or
+                 easy to maintain. The rule should also only check public methods but has a bug.
+                 Suppress the false-positives. -->
             <property name="violationSuppressXPath"
                       value="//ClassOrInterfaceDeclaration[
                       @Image='SuppressionXpathSingleFilterTest']
-                  //MethodDeclarator[@Image='createSuppressionXpathSingleFilter']"/>
+                  //MethodDeclarator[@Image='createSuppressionXpathSingleFilter']
+                  | //ClassOrInterfaceDeclaration[ @Image='XdocsPagesTest']
+                        //MethodDeclarator[@Image='validateRuleNameOrder']"/>
         </properties>
     </rule>
 </ruleset>

@@ -39,4 +39,8 @@ public class InputJavadocTypeScopeInnerClasses
             }
         }
     }
+    /** */
+    protected class InnerPublic2<T>
+    {
+    }
 }

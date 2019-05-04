@@ -20,6 +20,9 @@
 package com.puppycrawl.tools.checkstyle.internal;
 
 import static com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets.UTF_8;
+import static java.lang.Integer.parseInt;
+import static org.hamcrest.CoreMatchers.describedAs;
+import static org.hamcrest.CoreMatchers.is;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -143,6 +146,72 @@ public class XdocsPagesTest {
 
     private static final Set<String> SUN_MODULES = Collections.unmodifiableSet(
         new HashSet<String>(CheckUtil.getConfigSunStyleModules()));
+    // ignore the not yet properly covered modules while testing newly added ones
+    // add proper sections to the coverage report and integration tests
+    // and then remove this list eventually
+    private static final List<String> IGNORED_SUN_MODULES = Arrays.asList(
+            "ArrayTypeStyle",
+            "AvoidNestedBlocks",
+            "AvoidStarImport",
+            "ConstantName",
+            "DesignForExtension",
+            "EmptyBlock",
+            "EmptyForIteratorPad",
+            "EmptyStatement",
+            "EqualsHashCode",
+            "FileLength",
+            "FileTabCharacter",
+            "FinalClass",
+            "FinalParameters",
+            "GenericWhitespace",
+            "HiddenField",
+            "HideUtilityClassConstructor",
+            "IllegalImport",
+            "IllegalInstantiation",
+            "InnerAssignment",
+            "InterfaceIsType",
+            "JavadocMethod",
+            "JavadocPackage",
+            "JavadocStyle",
+            "JavadocType",
+            "JavadocVariable",
+            "LeftCurly",
+            "LineLength",
+            "LocalFinalVariableName",
+            "LocalVariableName",
+            "MagicNumber",
+            "MemberName",
+            "MethodLength",
+            "MethodName",
+            "MethodParamPad",
+            "MissingSwitchDefault",
+            "ModifierOrder",
+            "NeedBraces",
+            "NewlineAtEndOfFile",
+            "NoWhitespaceAfter",
+            "NoWhitespaceBefore",
+            "OperatorWrap",
+            "PackageName",
+            "ParameterName",
+            "ParameterNumber",
+            "ParenPad",
+            "RedundantImport",
+            "RedundantModifier",
+            "RegexpSingleline",
+            "RightCurly",
+            "SimplifyBooleanExpression",
+            "SimplifyBooleanReturn",
+            "StaticVariableName",
+            "TodoComment",
+            "Translation",
+            "TypecastParenPad",
+            "TypeName",
+            "UnusedImports",
+            "UpperEll",
+            "VisibilityModifier",
+            "WhitespaceAfter",
+            "WhitespaceAround"
+    );
     private static final Set<String> GOOGLE_MODULES = Collections.unmodifiableSet(
         new HashSet<String>(CheckUtil.getConfigGoogleStyleModules()));
 
@@ -921,10 +990,12 @@ public class XdocsPagesTest {
                 }
 
                 if (isPropertyTokenType(sectionName, propertyName)) {
-                    result = "";
                     boolean first = true;
 
-                    if (value instanceof BitSet) {
+                    if (value == null) {
+                        result = "no tokens";
+                    }
+                    else if (value instanceof BitSet) {
                         final BitSet list = (BitSet) value;
                         final StringBuilder sb = new StringBuilder(20);
 
@@ -943,7 +1014,7 @@ public class XdocsPagesTest {
 
                         result = sb.toString();
                     }
-                    else if (value != null) {
+                    else {
                         final StringBuilder sb = new StringBuilder(20);
 
                         for (int i = 0; i < Array.getLength(value); i++) {
@@ -1335,19 +1406,26 @@ public class XdocsPagesTest {
     public void testAllStyleRules() throws Exception {
         for (Path path : XdocUtil.getXdocsStyleFilePaths(XdocUtil.getXdocsFilePaths())) {
             final String fileName = path.getFileName().toString();
+            final String styleName = fileName.substring(0, fileName.lastIndexOf('_'));
             final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("tr");
-            Set<String> styleChecks = null;
 
-            if (path.toFile().getName().contains("google")) {
+            final Set<String> styleChecks;
+            if ("google".equals(styleName)) {
                 styleChecks = new HashSet<String>(GOOGLE_MODULES);
             }
-            else if (path.toFile().getName().contains("sun")) {
-                styleChecks = new HashSet<String>();
+            else if ("sun".equals(styleName)) {
+                styleChecks = new HashSet<String>(SUN_MODULES);
+                styleChecks.removeAll(IGNORED_SUN_MODULES);
+            }
+            else {
+                Assert.fail("Missing modules list for style file '" + fileName + "'");
+                styleChecks = null;
             }
 
             String lastRuleName = null;
+            String[] lastRuleNumberParts = null;
 
             for (int position = 0; position < sources.getLength(); position++) {
                 final Node row = sources.item(position);
@@ -1359,14 +1437,8 @@ public class XdocsPagesTest {
                 }
 
                 final String ruleName = columns.get(1).getTextContent().trim();
-
-                if (lastRuleName != null) {
-                    Assert.assertTrue(
-                            fileName + " rule '" + ruleName + "' is out of order compared to '"
-                                    + lastRuleName + "'",
-                            ruleName.toLowerCase(Locale.ENGLISH).compareTo(
-                                    lastRuleName.toLowerCase(Locale.ENGLISH)) >= 0);
-                }
+                lastRuleNumberParts = validateRuleNameOrder(
+                        fileName, lastRuleName, lastRuleNumberParts, ruleName);
 
                 if (!"--".equals(ruleName)) {
                     validateStyleAnchors(XmlUtil.findChildElementsByTag(columns.get(0), "a"),
@@ -1374,7 +1446,7 @@ public class XdocsPagesTest {
                 }
 
                 validateStyleModules(XmlUtil.findChildElementsByTag(columns.get(2), "a"),
-                        XmlUtil.findChildElementsByTag(columns.get(3), "a"), styleChecks, fileName,
+                        XmlUtil.findChildElementsByTag(columns.get(3), "a"), styleChecks, styleName,
                         ruleName);
 
                 lastRuleName = ruleName;
@@ -1388,6 +1460,82 @@ public class XdocsPagesTest {
             Assert.assertTrue(fileName + " requires the following check(s) to appear: "
                     + styleChecks, styleChecks.isEmpty());
         }
+    }
+
+    private static String[] validateRuleNameOrder(String fileName, String lastRuleName,
+                                                  String[] lastRuleNumberParts, String ruleName) {
+        final String[] ruleNumberParts = ruleName.split(" ", 2)[0].split("\\.");
+
+        if (lastRuleName != null) {
+            final int ruleNumberPartsAmount = ruleNumberParts.length;
+            final int lastRuleNumberPartsAmount = lastRuleNumberParts.length;
+            final String outOfOrderReason = fileName + " rule '" + ruleName
+                    + "' is out of order compared to '" + lastRuleName + "'";
+            boolean lastRuleNumberPartWasEqual = false;
+            int partIndex;
+            for (partIndex = 0; partIndex < ruleNumberPartsAmount; partIndex++) {
+                if (lastRuleNumberPartsAmount <= partIndex) {
+                    // equal up to here and last rule has less parts,
+                    // thus order is correct, stop comparing
+                    break;
+                }
+
+                final String ruleNumberPart = ruleNumberParts[partIndex];
+                final String lastRuleNumberPart = lastRuleNumberParts[partIndex];
+                boolean ruleNumberPartsAreNumeric = true;
+
+                for (char c : ruleNumberPart.toCharArray()) {
+                    if (!Character.isDigit(c)) {
+                        ruleNumberPartsAreNumeric = false;
+                        break;
+                    }
+                }
+                if (!ruleNumberPartsAreNumeric) {
+                    for (char c : lastRuleNumberPart.toCharArray()) {
+                        if (!Character.isDigit(c)) {
+                            ruleNumberPartsAreNumeric = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (ruleNumberPartsAreNumeric) {
+                    final int numericRuleNumberPart = parseInt(ruleNumberPart);
+                    final int numericLastRuleNumberPart = parseInt(lastRuleNumberPart);
+                    Assert.assertThat(
+                            outOfOrderReason,
+                            numericRuleNumberPart < numericLastRuleNumberPart,
+                            describedAs("'%0' should not be less than '%1'",
+                                    is(false),
+                                    numericRuleNumberPart, numericLastRuleNumberPart));
+                }
+                else {
+                    Assert.assertThat(
+                            outOfOrderReason,
+                            ruleNumberPart.compareToIgnoreCase(lastRuleNumberPart) < 0,
+                            describedAs("'%0' should not be less than '%1'",
+                                    is(false),
+                                    ruleNumberPart, lastRuleNumberPart));
+                }
+                lastRuleNumberPartWasEqual = ruleNumberPart.equalsIgnoreCase(lastRuleNumberPart);
+                if (!lastRuleNumberPartWasEqual) {
+                    // number part is not equal but properly ordered,
+                    // thus order is correct, stop comparing
+                    break;
+                }
+            }
+            if (ruleNumberPartsAmount == partIndex && lastRuleNumberPartWasEqual) {
+                if (lastRuleNumberPartsAmount == partIndex) {
+                    Assert.fail(fileName + " rule '" + ruleName + "' and rule '"
+                            + lastRuleName + "' have the same rule number");
+                }
+                else {
+                    Assert.fail(outOfOrderReason);
+                }
+            }
+        }
+
+        return ruleNumberParts;
     }
 
     private static void validateStyleAnchors(Set<Node> anchors, String fileName, String ruleName) {
@@ -1424,7 +1572,7 @@ public class XdocsPagesTest {
     }
 
     private static void validateStyleModules(Set<Node> checks, Set<Node> configs,
-            Set<String> styleChecks, String fileName, String ruleName) {
+            Set<String> styleChecks, String styleName, String ruleName) {
         final Iterator<Node> itrChecks = checks.iterator();
         final Iterator<Node> itrConfigs = configs.iterator();
 
@@ -1437,7 +1585,7 @@ public class XdocsPagesTest {
                 continue;
             }
 
-            Assert.assertTrue(fileName + " rule '" + ruleName + "' module '" + moduleName
+            Assert.assertTrue(styleName + "_style.xml rule '" + ruleName + "' module '" + moduleName
                     + "' shouldn't end with 'Check'", !moduleName.endsWith("Check"));
 
             styleChecks.remove(moduleName);
@@ -1449,43 +1597,45 @@ public class XdocsPagesTest {
                     config = itrConfigs.next();
                 }
                 catch (NoSuchElementException ignore) {
-                    Assert.fail(fileName + " rule '" + ruleName + "' module '" + moduleName
-                            + "' is missing the config link: " + configName);
+                    Assert.fail(styleName + "_style.xml rule '" + ruleName + "' module '"
+                            + moduleName + "' is missing the config link: " + configName);
                 }
 
-                Assert.assertEquals(fileName + " rule '" + ruleName + "' module '" + moduleName
-                        + "' has mismatched config/test links", configName, config.getTextContent()
-                        .trim());
+                Assert.assertEquals(styleName + "_style.xml rule '" + ruleName + "' module '"
+                        + moduleName + "' has mismatched config/test links", configName,
+                        config.getTextContent().trim());
 
                 final String configUrl = config.getAttributes().getNamedItem("href")
                         .getTextContent();
 
                 if ("config".equals(configName)) {
                     final String expectedUrl = "https://github.com/search?q="
-                            + "path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+"
-                            + "repo%3Acheckstyle%2Fcheckstyle+" + moduleName;
+                            + "path%3Asrc%2Fmain%2Fresources+filename%3A" + styleName
+                            + "_checks.xml+repo%3Acheckstyle%2Fcheckstyle+" + moduleName;
 
-                    Assert.assertEquals(fileName + " rule '" + ruleName + "' module '" + moduleName
-                            + "' should have matching " + configName + " url", expectedUrl,
-                            configUrl);
+                    Assert.assertEquals(styleName + "_style.xml rule '" + ruleName + "' module '"
+                                    + moduleName + "' should have matching " + configName + " url",
+                            expectedUrl, configUrl);
                 }
                 else if ("test".equals(configName)) {
-                    Assert.assertTrue(fileName + " rule '" + ruleName + "' module '" + moduleName
-                            + "' should have matching " + configName + " url",
+                    Assert.assertTrue(styleName + "_style.xml rule '" + ruleName + "' module '"
+                                    + moduleName + "' should have matching " + configName + " url",
                             configUrl.startsWith("https://github.com/checkstyle/checkstyle/"
-                                    + "blob/master/src/it/java/com/google/checkstyle/test/"));
-                    Assert.assertTrue(fileName + " rule '" + ruleName + "' module '" + moduleName
-                            + "' should have matching " + configName + " url",
+                                    + "blob/master/src/it/java/com/" + styleName
+                                    + "/checkstyle/test/"));
+                    Assert.assertTrue(styleName + "_style.xml rule '" + ruleName + "' module '"
+                                    + moduleName + "' should have matching " + configName + " url",
                             configUrl.endsWith("/" + moduleName + "Test.java"));
 
-                    Assert.assertTrue(fileName + " rule '" + ruleName + "' module '" + moduleName
-                            + "' should have a test that exists", new File(configUrl.substring(53)
-                            .replace('/', File.separatorChar)).exists());
+                    Assert.assertTrue(styleName + "_style.xml rule '" + ruleName + "' module '"
+                            + moduleName + "' should have a test that exists",
+                            new File(configUrl.substring(53)
+                                    .replace('/', File.separatorChar)).exists());
                 }
             }
         }
 
-        Assert.assertFalse(fileName + " rule '" + ruleName + "' has too many configs",
+        Assert.assertFalse(styleName + "_style.xml rule '" + ruleName + "' has too many configs",
                 itrConfigs.hasNext());
     }
 

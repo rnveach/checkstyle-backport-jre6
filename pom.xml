@@ -13,7 +13,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.19</version>
+  <version>8.20</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -173,7 +173,7 @@
     <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
     <maven.spotbugs.plugin.version>3.1.11</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.11.0</maven.pmd.plugin.version>
-    <pmd.version>6.12.0</pmd.version>
+    <pmd.version>6.13.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.3</maven.jacoco.plugin.version>
     <powermock.version>2.0.0</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
@@ -184,7 +184,7 @@
     </maven.sevntu-checkstyle-check.checkstyle.version>
     <maven.versions.plugin.version>2.7</maven.versions.plugin.version>
     <java.version>1.6</java.version>
-    <pitest.plugin.version>1.4.5</pitest.plugin.version>
+    <pitest.plugin.version>1.4.6</pitest.plugin.version>
     <pitest.plugin.timeout.factor>10</pitest.plugin.timeout.factor>
     <pitest.plugin.timeout.constant>50000</pitest.plugin.timeout.constant>
     <pitest.plugin.threads>4</pitest.plugin.threads>
@@ -204,7 +204,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>3.9.5</version>
+      <version>3.9.6</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -362,7 +362,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.1.0</version>
           <configuration>
             <source>${java.version}</source>
             <failOnError>true</failOnError>
@@ -957,7 +957,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.4.1</version>
+        <version>3.0.0-M2</version>
         <executions>
           <execution>
             <id>enforce-versions</id>
@@ -2835,26 +2835,12 @@
               </targetClasses>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.api.*</param>
-                <param>com.puppycrawl.tools.checkstyle.TreeWalkerTest</param>
-                <param>com.puppycrawl.tools.checkstyle.grammar.comments.CommentsTest</param>
-                <param>com.puppycrawl.tools.checkstyle.filefilters.*</param>
-                <param>com.puppycrawl.tools.checkstyle.filters.*</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheckTest</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.imports.ImportControlCheckTest</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.javadoc.WriteTagCheckTest</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheckTest</param>
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.regexp.RegexpMultilineCheckTest
-                </param>
-                <param>com.puppycrawl.tools.checkstyle.ConfigurationLoaderTest</param>
-                <param>com.puppycrawl.tools.checkstyle.CheckerTest</param>
-                <param>com.puppycrawl.tools.checkstyle.checks.TranslationCheckTest</param>
               </targetTests>
               <excludedTestClasses>
                 <param>*.Input*</param>
               </excludedTestClasses>
-              <coverageThreshold>99</coverageThreshold>
-              <mutationThreshold>99</mutationThreshold>
+              <coverageThreshold>100</coverageThreshold>
+              <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>

@@ -454,9 +454,6 @@ public class TranslationCheck extends AbstractFileSetCheck {
     private void checkFilesForConsistencyRegardingTheirKeys(Map<File, Set<String>> fileKeys,
                                                             Set<String> keysThatMustExist) {
         for (Entry<File, Set<String>> fileKey : fileKeys.entrySet()) {
-            final MessageDispatcher dispatcher = getMessageDispatcher();
-            final String path = fileKey.getKey().getPath();
-            dispatcher.fireFileStarted(path);
             final Set<String> currentFileKeys = fileKey.getValue();
             final Set<String> missingKeys = new HashSet<String>();
             for (String e : keysThatMustExist) {
@@ -464,11 +461,16 @@ public class TranslationCheck extends AbstractFileSetCheck {
                     missingKeys.add(e);
                 }
             }
-            for (Object key : missingKeys) {
-                log(1, MSG_KEY, key);
+            if (!missingKeys.isEmpty()) {
+                final MessageDispatcher dispatcher = getMessageDispatcher();
+                final String path = fileKey.getKey().getAbsolutePath();
+                dispatcher.fireFileStarted(path);
+                for (Object key : missingKeys) {
+                    log(1, MSG_KEY, key);
+                }
+                fireErrors(path);
+                dispatcher.fireFileFinished(path);
             }
-            fireErrors(path);
-            dispatcher.fireFileFinished(path);
         }
     }
 

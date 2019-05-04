@@ -366,7 +366,7 @@ class Test {
         </p>
         <p>
           According to <a
-          href="https://www.oracle.com/technetwork/java/javase/documentation/codeconventions-141855.html#1852">
+          href="https://checkstyle.org/styleguides/sun-code-conventions-19990420/CodeConventions.doc2.html#a1852">
           Code Conventions for the Java Programming Language</a> , the parts
           of a class or interface declaration should appear in the following
           order:
@@ -874,8 +874,8 @@ String nullString = null;
     </section>
 
     <section name="ExplicitInitialization">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="ExplicitInitialization_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks if any class or object member is explicitly initialized to
           default for its type value (<code>null</code> for
@@ -885,8 +885,8 @@ String nullString = null;
 
         <p>
           Rationale: Each instance variable gets initialized twice, to the
-          same value. Java initializes each instance variable to its default
-          value (0 or null) before performing any initialization specified in
+          same value. Java initializes each instance variable to its default value
+          (<code>0</code> or <code>null</code>) before performing any initialization specified in
           the code. So there is a minor inefficiency.
         </p>
       </subsection>
@@ -902,8 +902,8 @@ String nullString = null;
           </tr>
           <tr>
             <td>onlyObjectReferences</td>
-            <td>whether only explicit initializations made to
-                null for objects should be checked</td>
+            <td>control whether only explicit initializations made to
+                null for objects should be checked.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>7.8</td>
@@ -929,8 +929,7 @@ String nullString = null;
 &lt;/module&gt;
         </source>
         <p>Example:</p>
-        <p>
-          <source>
+        <source>
 public class Test {
   private int a = 0;
   private int b = 1;
@@ -956,8 +955,7 @@ public class Test {
   public static void main( String [] args ) {
   }
 }
-          </source>
-        </p>
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="ExplicitInitialization_Example_of_Usage">
@@ -996,8 +994,8 @@ public class Test {
     </section>
 
     <section name="FallThrough">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="FallThrough_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
           Checks for fall-through in <code>switch</code>
           statements. Finds locations where a <code>case</code>
@@ -1016,7 +1014,7 @@ public class Test {
           (ugly, but possible).
         </p>
         <source>
-switch (i){
+switch (i) {
 case 0:
   i++; // fall through
 
@@ -1040,6 +1038,20 @@ case 5:
           Note: The check assumes that there is no unreachable
           code in the <code>case</code>.
         </p>
+        <p>
+          The following fragment of code will NOT trigger the check,
+          because of the comment "fallthru" and absence of any Java code
+          in case 5.
+        </p>
+        <pre>
+case 3:
+    x = 2;
+    // fallthru
+case 4:
+case 5:
+case 6:
+    break;
+        </pre>
       </subsection>
 
       <subsection name="Properties" id="FallThrough_Properties">
@@ -1054,7 +1066,7 @@ case 5:
           <tr>
             <td>checkLastCaseGroup</td>
             <td>
-              Whether the last case group must be checked.
+              Control whether the last case group must be checked.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -1063,7 +1075,7 @@ case 5:
           <tr>
             <td>reliefPattern</td>
             <td>
-              Regular expression to match the relief comment that suppresses
+              Define the RegExp to match the relief comment that suppresses
               the warning about a fall through.
             </td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
@@ -1134,8 +1146,8 @@ case 5:
     </section>
 
     <section name="FinalLocalVariable">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="FinalLocalVariable_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that local variables that never have their values changed are
           declared final. The check can be configured to also check that
@@ -1161,7 +1173,10 @@ case 5:
           </tr>
           <tr>
             <td>validateEnhancedForLoopVariable</td>
-            <td>Controls whether to check <a href = "https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.14.2">enhanced for-loop</a> variable.</td>
+            <td>
+              Control whether to check
+              <a href = "https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.14.2">
+              enhanced for-loop</a> variable.</td>
             <td>
               <a
               href="property_types.html#boolean">Boolean</a>
@@ -1213,7 +1228,7 @@ case 5:
         </source>
         <p>
          By default, this Check skip final validation on
-         <a href = "https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.14.2">
+         <a href = "https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.14.2">
          Enhanced For-Loop</a>.
          </p>
          <p>
@@ -1231,25 +1246,22 @@ case 5:
 &lt;/module&gt;
          </source>
          <p>Example:</p>
-         <p>
          <source>
 for (int number : myNumbers) { // violation
   System.out.println(number);
 }
          </source>
-         </p>
          <p>
          An example of how to configure check on local variables and parameters
          but do not validate loop variables:
          </p>
          <source>
  &lt;module name="FinalLocalVariable"&gt;
-     &lt;property name="tokens" value="VARIABLE_DEF,PARAMETER_DEF"/&gt;
-     &lt;property name="validateEnhancedForLoopVariable" value="false"/&gt;
+   &lt;property name="tokens" value="VARIABLE_DEF,PARAMETER_DEF"/&gt;
+   &lt;property name="validateEnhancedForLoopVariable" value="false"/&gt;
  &lt;/module&gt;
          </source>
          <p>Example:</p>
-         <p>
          <source>
 public class MyClass {
   static int foo(int x, int y) { //violations, parameters should be final
@@ -1257,13 +1269,12 @@ public class MyClass {
   }
   public static void main (String []args) { //violation, parameters should be final
     for (String i : args) {
-        System.out.println(i);
+      System.out.println(i);
     }
     int result=foo(1,2); // violation
   }
 }
          </source>
-        </p>
       </subsection>
 
       <subsection name="Example of Usage" id="FinalLocalVariable_Example_of_Usage">
@@ -1302,11 +1313,47 @@ public class MyClass {
     </section>
 
     <section name="HiddenField">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="HiddenField_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks that a local variable or a parameter does not shadow a field
           that is defined in the same class.
+        </p>
+      </subsection>
+      <subsection name="Notes" id="HiddenField_Notes">
+        <p>
+          It is possible to configure the check to ignore all property setter methods.
+        </p>
+        <p>
+          A method is recognized as a setter if it is in the following form
+        </p>
+        <source>
+${returnType} set${Name}(${anyType} ${name}) { ... }
+        </source>
+        <p>
+          where ${anyType} is any primitive type, class or interface name;
+          ${name} is name of the variable that is being set and ${Name} its
+          capitalized form that appears in the method name. By default it is expected
+          that setter returns void, i.e. ${returnType} is 'void'. For example
+        </p>
+        <source>
+void setTime(long time) { ... }
+        </source>
+        <p>
+          Any other return types will not let method match a setter pattern. However,
+          by setting <em>setterCanReturnItsClass</em> property to <em>true</em>
+          definition of a setter is expanded, so that setter return type can also
+          be a class in which setter is declared. For example
+        </p>
+        <source>
+class PageBuilder {
+  PageBuilder setName(String name) { ... }
+}
+        </source>
+        <p>
+          Such methods are known as chain-setters and a common when Builder-pattern
+          is used. Property <em>setterCanReturnItsClass</em> has effect only if
+          <em>ignoreSetter</em> is set to true.
         </p>
       </subsection>
 
@@ -1321,7 +1368,7 @@ public class MyClass {
           </tr>
           <tr>
             <td>ignoreFormat</td>
-            <td>pattern for names of variables and parameters to ignore</td>
+            <td>Define the RegExp for names of variables and parameters to ignore.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>null</code></td>
             <td>3.2</td>
@@ -1329,7 +1376,7 @@ public class MyClass {
 
           <tr>
             <td>ignoreConstructorParameter</td>
-            <td>Controls whether to ignore constructor parameters.</td>
+            <td>Control whether to ignore constructor parameters.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>3.2</td>
@@ -1338,13 +1385,7 @@ public class MyClass {
           <tr>
             <td>ignoreSetter</td>
             <td>
-              Controls whether to ignore the parameter of a property setter
-              method, where the property setter method for field
-              &quot;xyz&quot; has name &quot;setXyz&quot;, one parameter named
-              &quot;xyz&quot; and return type of <code>void</code>
-              ( default behavior) or class in which method is declared (only
-              if property <code>setterCanReturnItsClass</code> is set
-              to <code>true</code>).
+              Allow to ignore the parameter of a property setter method.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -1354,24 +1395,8 @@ public class MyClass {
           <tr>
             <td>setterCanReturnItsClass</td>
             <td>
-              Used in conjunction with <code>ignoreSetter</code> property it
-              controls rule that recognizes method as a setter. By default
-              setter is a method with signature of type
-              <pre>
-                void setXyz(${someType} xyz)
-              </pre>
-              By setting this property (<code>setterCanReturnItsClass</code>)
-              to <code>true</code> we expand definition of setter to also
-              include returning class in which setter is defined. For example
-              <pre>
-                class Foo {
-                    int prop;
-                    Foo setProp(int prop) {
-                        this.prop = prop;
-                        return this;
-                    }
-                }
-              </pre>
+              Allow to expand the definition of a setter method
+              to include methods that return the class' instance.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -1380,7 +1405,7 @@ public class MyClass {
 
           <tr>
             <td>ignoreAbstractMethods</td>
-            <td>Controls whether to ignore parameters of abstract methods.</td>
+            <td>Control whether to ignore parameters of abstract methods.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>4.0</td>
@@ -1396,7 +1421,9 @@ public class MyClass {
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
                 PARAMETER_DEF</a>,
-              LAMBDA.
+              <a
+              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LAMBDA">
+                LAMBDA</a>.
             </td>
 
             <td>
@@ -1406,7 +1433,9 @@ public class MyClass {
               <a
               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
                 PARAMETER_DEF</a>,
-              LAMBDA.
+              <a
+              href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LAMBDA">
+                LAMBDA</a>.
             </td>
             <td>3.0</td>
           </tr>
@@ -1531,19 +1560,20 @@ class SomeClass
     </section>
 
     <section name="IllegalCatch">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="IllegalCatch_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
         Checks that certain exception types do not appear in a <code>catch</code> statement.
         </p>
 
         <p>
           Rationale:
-          Catching java.lang.Exception, java.lang.Error or
-          java.lang.RuntimeException is almost never acceptable.
+          catching <code>java.lang.Exception</code>, <code>java.lang.Error</code> or
+          <code>java.lang.RuntimeException</code> is almost never acceptable.
           Novice developers often simply catch Exception in an
           attempt to handle multiple exception classes. This unfortunately
-          leads to code that inadvertently catches NullPointerException, OutOfMemoryError, etc.
+          leads to code that inadvertently catches <code>NullPointerException</code>,
+          <code>OutOfMemoryError</code>, etc.
         </p>
       </subsection>
 
@@ -1558,7 +1588,7 @@ class SomeClass
           </tr>
           <tr>
             <td>illegalClassNames</td>
-            <td>exception class names to reject</td>
+            <td>Specify exception class names to reject.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>java.lang.Throwable, RuntimeException, Error, Throwable, java.lang.Error,
                 java.lang.RuntimeException, Exception, java.lang.Exception</code></td>
@@ -1734,12 +1764,12 @@ class SomeClass
     </section>
 
     <section name="IllegalThrows">
+      <p>Since Checkstyle 4.0</p>
       <subsection name="Description" id="IllegalThrows_Description">
-        <p>Since Checkstyle 4.0</p>
         <p>
           This check can be used to ensure that types are not declared
-          to be thrown. Declaring that a method throws java.lang.Error or
-          java.lang.RuntimeException is almost never acceptable.
+          to be thrown. Declaring that a method throws <code>java.lang.Error</code> or
+          <code>java.lang.RuntimeException</code> is almost never acceptable.
         </p>
       </subsection>
 
@@ -1754,7 +1784,7 @@ class SomeClass
           </tr>
           <tr>
             <td>illegalClassNames</td>
-            <td>throw class names to reject</td>
+            <td>Specify throw class names to reject.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td>
               <code>java.lang.Throwable, RuntimeException, Error, Throwable, java.lang.Error,
@@ -1764,15 +1794,17 @@ class SomeClass
           </tr>
           <tr>
             <td>ignoredMethodNames</td>
-            <td>names of methods to ignore</td>
+            <td>Specify names of methods to ignore.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>finalize</code></td>
             <td>5.4</td>
           </tr>
           <tr>
             <td>ignoreOverriddenMethods</td>
-            <td>ignore checking overridden methods (marked with Override or java.lang.Override
-             annotation).</td>
+            <td>
+              allow to ignore checking overridden methods (marked with <code>Override</code>
+              or <code>java.lang.Override</code> annotation).
+            </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>6.4</td>
@@ -1849,8 +1881,8 @@ class SomeClass
     </section>
 
     <section name="IllegalToken">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="IllegalToken_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks for illegal tokens. By default labels are prohibited.
         </p>
@@ -1888,6 +1920,12 @@ class SomeClass
       </subsection>
 
       <subsection name="Examples" id="IllegalToken_Examples">
+        <p>
+          To configure the check:
+        </p>
+        <source>
+&lt;module name=&quot;IllegalToken&quot;/&gt;
+        </source>
         <p>
           To configure the check to find token LITERAL_NATIVE:
         </p>
@@ -1934,8 +1972,8 @@ class SomeClass
     </section>
 
     <section name="IllegalTokenText">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="IllegalTokenText_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks specified tokens text for matching an illegal pattern from
           <code>format</code> property. By default no tokens are specified.
@@ -1953,21 +1991,21 @@ class SomeClass
           </tr>
           <tr>
             <td>format</td>
-            <td>illegal pattern</td>
+            <td>Define the RegExp for illegal pattern.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>&quot;^$&quot; (empty)</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>ignoreCase</td>
-            <td>Controls whether to ignore case when matching.</td>
+            <td>Control whether to ignore case when matching.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>message</td>
-            <td>Message which is used to notify about violations;
+            <td>Define the message which is used to notify about violations;
             if empty then the default message is used.</td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>&quot;&quot;</code></td>
@@ -2065,8 +2103,8 @@ class SomeClass
     </section>
 
     <section name="IllegalType">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="IllegalType_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that particular classes or interfaces are never used.
         </p>
@@ -2076,7 +2114,8 @@ class SomeClass
         </p>
         <p>
           For additional restriction of type usage see also:
-          <a href="#IllegalInstantiation">IllegalInstantiation</a>, <a href="config_imports.html#IllegalImport">IllegalImport</a>
+          <a href="#IllegalInstantiation">IllegalInstantiation</a>,
+          <a href="config_imports.html#IllegalImport">IllegalImport</a>
         </p>
       </subsection>
 
@@ -2091,49 +2130,54 @@ class SomeClass
           </tr>
           <tr>
             <td>validateAbstractClassNames</td>
-            <td>Whether to validate abstract class names</td>
+            <td>Control whether to validate abstract class names.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>6.10</td>
           </tr>
           <tr>
             <td>illegalClassNames</td>
-            <td>Classes that should not be used as types in variable
-            declarations, return values or parameters</td>
+            <td>Specify classes that should not be used as types in variable
+            declarations, return values or parameters.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>LinkedHashSet, java.util.HashSet, java.util.LinkedHashMap,
-            java.util.TreeMap, HashMap, TreeSet, java.util.HashMap, TreeMap,
-            java.util.LinkedHashSet, java.util.TreeSet, HashSet, LinkedHashMap</td>
+            <td>
+              <code>LinkedHashSet, java.util.HashSet, java.util.LinkedHashMap,
+              java.util.TreeMap, HashMap, TreeSet, java.util.HashMap, TreeMap,
+              java.util.LinkedHashSet, java.util.TreeSet, HashSet, LinkedHashMap</code>
+            </td>
             <td>3.2</td>
           </tr>
           <tr>
           <td>legalAbstractClassNames</td>
-          <td>Abstract classes that may be used as types. </td>
+          <td>Define abstract classes that may be used as types. </td>
           <td><a href="property_types.html#stringSet">String Set</a></td>
-          <td>{}</td>
+          <td><code>{}</code></td>
           <td>4.2</td>
         </tr>
         <tr>
             <td>ignoredMethodNames</td>
-            <td>Methods that should not be checked.</td>
+            <td>Specify methods that should not be checked.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>getInitialContext, getEnvironment</td>
+            <td><code>getInitialContext, getEnvironment</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>illegalAbstractClassNameFormat</td>
-            <td>Pattern for illegal abstract class names.</td>
+            <td>Specify RegExp for illegal abstract class names.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^(.*[.])?Abstract.*$"</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>memberModifiers</td>
-            <td>To check only methods and fields with any of the specified modifiers.
-                This property does not affect method calls nor method references.</td>
+            <td>
+              Control whether to check only methods and fields with any of the specified modifiers.
+              This property does not affect method calls nor method references.
+            </td>
             <td>subset of tokens
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html">TokenTypes</a></td>
-            <td/>
+              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html">TokenTypes</a>
+            </td>
+            <td>no tokens</td>
             <td>6.3</td>
           </tr>
           <tr>
@@ -2181,6 +2225,40 @@ class SomeClass
         </table>
       </subsection>
 
+      <subsection name="Notes" id="IllegalType_Notes">
+        <p>
+          It is possible to set illegal class names via short or
+          <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-6.html#jls-6.7">
+          canonical</a> name.
+          Specifying illegal type invokes analyzing imports and Check puts violations at
+          corresponding declarations
+          (of variables, methods or parameters). This helps to avoid ambiguous cases, e.g.:
+          <code>java.awt.List</code> was set as illegal class name, then, code like:
+        </p>
+        <pre>
+import java.util.List;
+...
+List list; //No violation here
+        </pre>
+        <p>
+          will be ok.
+        </p>
+        <p>
+          In most cases it's justified to put following classes to <b>illegalClassNames</b>:
+        </p>
+        <ul>
+          <li>GregorianCalendar</li>
+          <li>Hashtable</li>
+          <li>ArrayList</li>
+          <li>LinkedList</li>
+          <li>Vector</li>
+        </ul>
+        <p>
+          as methods that are differ from interface methods are rarely used, so in most cases user
+          will benefit from checking for them.
+        </p>
+      </subsection>
+
       <subsection name="Examples" id="IllegalType_Examples">
         <p>
           To configure the check so that it ignores getInstance() methods:
@@ -2220,7 +2298,7 @@ public class Test {
     final Consumer&lt;Foo&gt; consumer = Foo&lt;Boolean&gt;::foo; // violation
   }
 
-  public &lt;T extends Boolean, U extends Serializable&gt; void typeParameter(T a) {} // violation
+  public &lt;T extends Boolean, U extends Serializable&gt; void typeParam(T a) {} // violation
 
   public void fullName(java.util.ArrayList&lt;? super Boolean&gt; a) {} // violation
 
@@ -2270,8 +2348,8 @@ public class Test {
     </section>
 
     <section name="InnerAssignment">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="InnerAssignment_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for assignments in subexpressions, such as in
           <code>String s = Integer.toString(i = 2);</code>.
@@ -2286,12 +2364,14 @@ public class Test {
 
         <p>
           Note: Check allows usage of the popular assignment in <code>while</code> idiom:
-          <source>
+        </p>
+        <source>
 String line;
 while ((line = bufferedReader.readLine()) != null) {
   // process the line
 }
-          </source>
+        </source>
+        <p>
           Assignment inside a condition is not a problem here, as the assignment is surrounded by
           an extra pair of parentheses. The comparison is <code>!= null</code> and there is no
           chance that intention was to write <code>line == reader.readLine()</code>.
@@ -2643,8 +2723,8 @@ class TestMethodCall {
     </section>
 
     <section name="MissingSwitchDefault">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="MissingSwitchDefault_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           Checks that switch statement has a &quot;default&quot; clause.
         </p>
@@ -2712,8 +2792,8 @@ class TestMethodCall {
     </section>
 
     <section name="ModifiedControlVariable">
+      <p>Since Checkstyle 3.5</p>
       <subsection name="Description" id="ModifiedControlVariable_Description">
-        <p>Since Checkstyle 3.5</p>
         <p>
             Check for ensuring that for loop control variables are not modified inside
             the for block. An example is:
@@ -2725,9 +2805,9 @@ for (int i = 0; i &lt; 1; i++) {
         </source>
           <p>
             Rationale: If the control variable is modified inside the loop
-            body, the program flow becomes more difficult to follow.<br/>
-            See <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.14">
-              FOR statement</a> specification for more details.
+            body, the program flow becomes more difficult to follow. See
+            <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.14">
+            FOR statement</a> specification for more details.
           </p>
         <p>
             Such loop would be suppressed:
@@ -2751,9 +2831,9 @@ for (int i = 0; i &lt; 10;) {
 
           <tr>
             <td>skipEnhancedForLoopVariable</td>
-            <td>Controls whether to check
-                <a href = "https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.14.2">
-                    enhanced for-loop</a> variable.</td>
+            <td>Control whether to check
+              <a href = "https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.14.2">
+              enhanced for-loop</a> variable.</td>
             <td>
               <a
               href="property_types.html#boolean">Boolean</a>
@@ -2778,7 +2858,7 @@ for (int i = 0; i &lt; 10;) {
 
         <p>
          By default, This Check validates
-         <a href = "https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.14.2">
+         <a href = "https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.14.2">
          Enhanced For-Loop</a>.
          </p>
          <p>
@@ -2794,13 +2874,11 @@ for (int i = 0; i &lt; 10;) {
 &lt;/module&gt;
          </source>
          <p>Example:</p>
-         <p>
          <source>
-for ( String line: lines ) {
+for (String line: lines) {
   line = line.trim();   // it will skip this violation
 }
          </source>
-         </p>
       </subsection>
 
       <subsection name="Example of Usage" id="ModifiedControlVariable_Example_of_Usage">
@@ -2839,8 +2917,8 @@ for ( String line: lines ) {
     </section>
 
     <section name="MultipleStringLiterals">
+      <p>Since Checkstyle 3.5</p>
       <subsection name="Description" id="MultipleStringLiterals_Description">
-        <p>Since Checkstyle 3.5</p>
         <p>
           Checks for multiple occurrences of the same string literal within a
           single file.
@@ -2864,17 +2942,17 @@ for ( String line: lines ) {
           <tr>
             <td>allowedDuplicates</td>
             <td>
-              The maximum number of occurrences to allow without generating a
-              warning
+              Specify the maximum number of occurrences to allow without generating a
+              warning.
             </td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>1</td>
+            <td><code>1</code></td>
             <td>3.5</td>
           </tr>
           <tr>
             <td>ignoreStringsRegexp</td>
             <td>
-              Regular expression pattern for ignored strings (with quotation marks)
+              Specify RegExp for ignored strings (with quotation marks).
             </td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^""$"</code></td>
@@ -2883,7 +2961,7 @@ for ( String line: lines ) {
           <tr>
             <td>ignoreOccurrenceContext</td>
             <td>
-              Token type names where duplicate strings are ignored even if they don't match
+              Specify token type names where duplicate strings are ignored even if they don't match
               ignoredStringsRegexp. This allows you to exclude syntactical contexts like
               annotations or static initializers from the check.
             </td>
@@ -2922,7 +3000,8 @@ for ( String line: lines ) {
         </p>
         <source>
 &lt;module name=&quot;MultipleStringLiterals&quot;&gt;
-  &lt;property name=&quot;ignoreStringsRegexp&quot; value='^((&quot;&quot;)|(&quot;, &quot;))$'/&gt;
+  &lt;property name=&quot;ignoreStringsRegexp&quot;
+    value='^((&quot;&quot;)|(&quot;, &quot;))$'/&gt;
 &lt;/module&gt;
         </source>
 
@@ -2974,8 +3053,8 @@ for ( String line: lines ) {
     </section>
 
     <section name="MultipleVariableDeclarations">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="MultipleVariableDeclarations_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
           Checks that each variable declaration is in its own statement and on
           its own line.
@@ -2983,7 +3062,7 @@ for ( String line: lines ) {
 
         <p>
           Rationale: <a
-          href="https://www.oracle.com/technetwork/java/javase/documentation/codeconventions-141270.html#2992">
+          href="https://checkstyle.org/styleguides/sun-code-conventions-19990420/CodeConventions.doc5.html#a2992">
           the Java code conventions chapter 6.1</a> recommends that
           declarations should be one per line/statement.
         </p>
@@ -3003,6 +3082,10 @@ for ( String line: lines ) {
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+MultipleVariableDeclarations">
             Google Style</a>
+          </li>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Asun_checks.xml+repo%3Acheckstyle%2Fcheckstyle+MultipleVariableDeclarations">
+            Sun Style</a>
           </li>
           <li>
             <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+MultipleVariableDeclarations">
@@ -3042,8 +3125,8 @@ for ( String line: lines ) {
     </section>
 
     <section name="NestedForDepth">
+      <p>Since Checkstyle 5.3</p>
       <subsection name="Description" id="NestedForDepth_Description">
-        <p>Since Checkstyle 5.3</p>
         <p>
           Restricts nested <code>for</code> blocks to a specified depth
           (default = 1).
@@ -3061,9 +3144,9 @@ for ( String line: lines ) {
           </tr>
           <tr>
             <td>max</td>
-            <td>allowed nesting depth</td>
+            <td>Specify maximum allowed nesting depth.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td><span class="default">1</span></td>
+            <td><code>1</code></td>
             <td>5.3</td>
           </tr>
         </table>
@@ -3123,8 +3206,8 @@ for ( String line: lines ) {
     </section>
 
     <section name="NestedIfDepth">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="NestedIfDepth_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Restricts nested if-else blocks to a specified depth (default = 1).
         </p>
@@ -3141,7 +3224,7 @@ for ( String line: lines ) {
           </tr>
           <tr>
             <td>max</td>
-            <td>allowed nesting depth</td>
+            <td>Specify maximum allowed nesting depth.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>1</code></td>
             <td>3.2</td>
@@ -3203,8 +3286,8 @@ for ( String line: lines ) {
     </section>
 
     <section name="NestedTryDepth">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="NestedTryDepth_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Restricts nested try blocks to a specified depth (default = 1).
         </p>
@@ -3221,7 +3304,7 @@ for ( String line: lines ) {
           </tr>
           <tr>
             <td>max</td>
-            <td>allowed nesting depth</td>
+            <td>Specify maximum allowed nesting depth.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>1</code></td>
             <td>3.2</td>
@@ -3283,27 +3366,109 @@ for ( String line: lines ) {
     </section>
 
     <section name="NoClone">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="NoClone_Description">
-       <p>Since Checkstyle 5.0</p>
-       <p>
-       Checks that the clone method is not overridden from the
-       Object class.
-       </p>
-
-       <p>
-       Rationale: The clone method relies on strange, hard to follow rules that
-       are difficult to get right and do not work in all situations.
-       In some cases, either a copy constructor
-       or a static factory method can be used instead of the clone method
-       to return copies of an object.
-       For more information on rules for the clone method and its issues, see Effective Java:
-       Programming Language Guide First Edition by Joshua Bloch
-       pages 45-52.
-       </p>
-
-       <p>
-       This check is almost exactly the same as the {@link NoFinalizerCheck}
-       </p>
+        <p>
+          Checks that the clone method is not overridden from the
+          Object class.
+        </p>
+        <p>
+          This check is almost exactly the same as the <code>NoFinalizerCheck</code>.
+        </p>
+        <p>
+          See <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#clone()">
+          Object.clone()</a>
+        </p>
+        <p>
+          Rationale: The clone method relies on strange, hard to follow rules that
+          are difficult to get right and do not work in all situations.
+          In some cases, either a copy constructor
+          or a static factory method can be used instead of the clone method
+          to return copies of an object.
+          For more information on rules for the clone method and its issues, see Effective Java:
+          Programming Language Guide First Edition by Joshua Bloch
+          pages 45-52.
+        </p>
+        <p>
+          Below are some of the rules/reasons why the clone method should be avoided.
+        </p>
+        <ul>
+          <li>
+            Classes supporting the clone method should implement the Cloneable interface
+            but the Cloneable interface does not include the clone method.
+            As a result, it doesn't enforce the method override.
+          </li>
+          <li>
+            The Cloneable interface forces the Object's clone method to work correctly.
+            Without implementing it, the Object's clone method will throw a
+            CloneNotSupportedException.
+          </li>
+          <li>
+            Non-final classes must return the object returned from a call to super.clone().
+          </li>
+          <li>
+            Final classes can use a constructor to create a clone which is different
+            from non-final classes.
+          </li>
+          <li>
+            If a super class implements the clone method incorrectly all subclasses calling
+            super.clone() are doomed to failure.
+          </li>
+          <li>
+            If a class has references to mutable objects then those object references must be
+            replaced with copies in the clone method after calling super.clone().
+          </li>
+          <li>
+            The clone method does not work correctly with final mutable object references because
+            final references cannot be reassigned.
+          </li>
+          <li>
+            If a super class overrides the clone method then all subclasses must provide a correct
+            clone implementation.
+          </li>
+        </ul>
+        <p>
+          Two alternatives to the clone method, in some cases, is a copy constructor or a static
+          factory method to return copies of an object. Both of these approaches are simpler and
+          do not conflict with final fields. They do not force the calling client to handle a
+          CloneNotSupportedException.  They also are typed therefore no casting is necessary.
+          Finally, they are more flexible since they can take interface types rather than concrete
+          classes.
+        </p>
+        <p>
+          Sometimes a copy constructor or static factory is not an acceptable alternative to the
+          clone method.  The example below highlights the limitation of a copy constructor
+          (or static factory). Assume Square is a subclass for Shape.
+        </p>
+        <source>
+Shape s1 = new Square();
+System.out.println(s1 instanceof Square); //true
+        </source>
+        <p>
+          ...assume at this point the code knows nothing of s1 being a Square that's the beauty
+          of polymorphism but the code wants to copy the Square which is declared as a Shape,
+          its super type...
+        </p>
+        <source>
+Shape s2 = new Shape(s1); //using the copy constructor
+System.out.println(s2 instanceof Square); //false
+        </source>
+        <p>
+          The working solution (without knowing about all subclasses and doing many casts) is to do
+          the following (assuming correct clone implementation).
+        </p>
+        <source>
+Shape s2 = s1.clone();
+System.out.println(s2 instanceof Square); //true
+        </source>
+        <p>
+          Just keep in mind if this type of polymorphic cloning is required then a properly
+          implemented clone method may be the best choice.
+        </p>
+        <p>
+          Much of this information was taken from Effective Java: Programming Language Guide First
+          Edition by Joshua Bloch pages 45-52.  Give Bloch credit for writing an excellent book.
+        </p>
       </subsection>
       <subsection name="Examples" id="NoClone_Examples">
         <p>
@@ -3350,11 +3515,21 @@ for ( String line: lines ) {
     </section>
 
     <section name="NoFinalizer">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="NoFinalizer_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           Verifies there are no <code>finalize()</code> methods
           defined in a class.
+        </p>
+        <p>
+          See <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#finalize()">
+          Object.finalize()</a>
+        </p>
+        <p>
+            Rationale: Finalizers are unpredictable, often dangerous, and generally unnecessary.
+            Their use can cause erratic behavior, poor performance, and portability problems.
+            For more information for the finalize method and its issues, see Effective Java:
+            Programming Language Guide Third Edition by Joshua Bloch, &#167;8.
         </p>
       </subsection>
 
@@ -3407,8 +3582,8 @@ for ( String line: lines ) {
     </section>
 
     <section name="OneStatementPerLine">
+      <p>Since Checkstyle 5.3</p>
       <subsection name="Description" id="OneStatementPerLine_Description">
-          <p>Since Checkstyle 5.3</p>
           <p>
           Checks that there is only one statement per line.
           </p>
@@ -3497,8 +3672,8 @@ r = 5; int t; //violation here
     </section>
 
     <section name="OverloadMethodsDeclarationOrder">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="OverloadMethodsDeclarationOrder_Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
           Checks that overload methods are grouped together.
         </p>
@@ -3562,8 +3737,8 @@ public void foo(int i, String s) {}
     </section>
 
     <section name="PackageDeclaration">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="PackageDeclaration_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Ensures that a class has a package declaration, and (optionally) whether
           the package name matches the directory name for the source file.
@@ -3591,7 +3766,7 @@ public void foo(int i, String s) {}
           </tr>
           <tr>
             <td>matchDirectoryStructure</td>
-            <td>Whether to check for directory and package name match.</td>
+            <td>Control whether to check for directory and package name match.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>7.6.1</td>
@@ -3675,8 +3850,8 @@ public class AnnotationLocationCheck extends AbstractCheck {
     </section>
 
     <section name="ParameterAssignment">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="ParameterAssignment_Description">
-        <p>Since Checkstyle 3.2</p>
         <p> Disallows assignment of parameters.</p>
         <p>
           Rationale: Parameter assignment is often considered poor programming
@@ -3731,8 +3906,8 @@ public class AnnotationLocationCheck extends AbstractCheck {
     </section>
 
     <section name="RequireThis">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="RequireThis_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
           Checks that references to instance variables and methods of the present
           object are explicitly of the form &quot;this.varName&quot; or
@@ -3760,6 +3935,15 @@ public class AnnotationLocationCheck extends AbstractCheck {
           </li>
         </ol>
       </subsection>
+      <subsection name="Notes" id="RequireThis_Notes">
+            <p>
+              Limitations: Nothing is currently done about static variables
+              or catch-blocks.  Static methods invoked on a class name seem to be OK;
+              both the class name and the method name have a DOT parent.
+              Non-static methods invoked on either this or a variable name seem to be
+              OK, likewise.
+            </p>
+      </subsection>
 
       <subsection name="Properties" id="RequireThis_Properties">
         <table>
@@ -3772,21 +3956,21 @@ public class AnnotationLocationCheck extends AbstractCheck {
           </tr>
           <tr>
             <td>checkFields</td>
-            <td>Whether to check references to fields.</td>
+            <td>Control whether to check references to fields.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>3.4</td>
           </tr>
           <tr>
             <td>checkMethods</td>
-            <td>Whether to check references to methods.</td>
+            <td>Control whether to check references to methods.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>3.4</td>
           </tr>
           <tr>
             <td>validateOnlyOverlapping</td>
-            <td>Whether to check only overlapping by variables or arguments.</td>
+            <td>Control whether to check only overlapping by variables or arguments.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>6.17</td>
@@ -3833,15 +4017,15 @@ public static class A {
 }
 
 public static class B {
-  private int field1;
+  private int field;
 
   public A(int f) {
-    field1 = f;
+    field = f;
   }
 
-  String addSuffixToField(String field1) {
-    // Overlapping by method argument. Equal to "return field1 = field1 + "suffix";"
-    return field1 += "suffix"; // violation: Reference to instance variable "field1" needs "this".
+  String addSuffixToField(String field) {
+    // Overlapping by method argument. Equal to "return field = field + "suffix";"
+    return field += "suffix"; // violation: Reference to instance variable "field" needs "this".
   }
 }
        </source>
@@ -3900,14 +4084,14 @@ public static class A {
 }
 
 public static class B {
-  private int field1;
+  private int field;
 
   public A(int f) {
-    field1 = f; // violation:  Reference to instance variable "field1" needs "this".
+    field = f; // violation:  Reference to instance variable "field" needs "this".
   }
 
-  String addSuffixToField(String field1) {
-    return field1 += "suffix"; // violation: Reference to instance variable "field1" needs "this".
+  String addSuffixToField(String field) {
+    return field += "suffix"; // violation: Reference to instance variable "field" needs "this".
   }
 }
 
@@ -3967,8 +4151,8 @@ class C {
     </section>
 
     <section name="ReturnCount">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="ReturnCount_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Restricts the number of return statements in methods, constructors and lambda expressions
           (2 by default). Ignores specified methods (<code>equals()</code> by default).
@@ -4004,22 +4188,24 @@ class C {
           </tr>
           <tr>
             <td>max</td>
-            <td>maximum allowed number of return statements in non-void methods/lambdas</td>
+            <td>
+              Specify maximum allowed number of return statements in non-void methods/lambdas.
+            </td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>2</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>maxForVoid</td>
-            <td>maximum allowed number of return statements in void
-                methods/constructors/lambdas</td>
+            <td>Specify maximum allowed number of return statements in void
+                methods/constructors/lambdas.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>1</code></td>
             <td>6.19</td>
           </tr>
           <tr>
             <td>format</td>
-            <td>method names to ignore</td>
+            <td>Specify method names to ignore.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^equals$"</code></td>
             <td>3.4</td>
@@ -4155,8 +4341,8 @@ class C {
     </section>
 
     <section name="SimplifyBooleanExpression">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="SimplifyBooleanExpression_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for over-complicated boolean expressions. Currently finds
           code like <code> if (b == true)</code>, <code>b || true</code>, <code>!false</code>,
@@ -4218,8 +4404,8 @@ class C {
     </section>
 
     <section name="SimplifyBooleanReturn">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="SimplifyBooleanReturn_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for over-complicated boolean return statements. For example
           the following code
@@ -4293,8 +4479,8 @@ return !valid();
     </section>
 
     <section name="StringLiteralEquality">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="StringLiteralEquality_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that string literals are not used with <code>==</code> or
           <code>&#33;=</code>.
@@ -4358,8 +4544,8 @@ if (&quot;something&quot;.equals(x))
     </section>
 
     <section name="SuperClone">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="SuperClone_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that an overriding <code>clone()</code> method invokes
           <code>super.clone()</code>. Does not check native methods, as
@@ -4368,7 +4554,8 @@ if (&quot;something&quot;.equals(x))
 
         <p>
           Reference: <a
-          href="https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#clone%28%29">Object.clone()</a>.
+          href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#clone%28%29">
+          Object.clone()</a>.
         </p>
       </subsection>
 
@@ -4417,8 +4604,8 @@ if (&quot;something&quot;.equals(x))
     </section>
 
     <section name="SuperFinalize">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="SuperFinalize_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks that an overriding <code>finalize()</code> method invokes
           <code>super.finalize()</code>. Does not check native methods, as
@@ -4426,9 +4613,11 @@ if (&quot;something&quot;.equals(x))
         </p>
 
         <p>
-          Reference: <a
-          href="https://www.oracle.com/technetwork/java/javamail/finalization-137655.html">
-          Use Finalization Only When You Must</a>.
+          References:
+          <a href="https://www.oracle.com/technetwork/java/javamail/finalization-137655.html">
+          How to Handle Java Finalization's Memory-Retention Issues</a>;
+          <a href="https://javarevisited.blogspot.com/2012/03/finalize-method-in-java-tutorial.html">
+          10 points on finalize method in Java</a>.
         </p>
       </subsection>
 
@@ -4477,10 +4666,33 @@ if (&quot;something&quot;.equals(x))
     </section>
 
     <section name="UnnecessaryParentheses">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="UnnecessaryParentheses_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
-          Checks for the use of unnecessary parentheses.
+          Checks if unnecessary parentheses are used in a statement or expression.
+          The check will flag the following with warnings:
+        </p>
+        <source>
+    return (x);          // parens around identifier
+    return (x + 1);      // parens around return value
+    int x = (y / 2 + 1); // parens around assignment rhs
+    for (int i = (0); i &lt; 10; i++) {  // parens around literal
+    t -= (z + 1);        // parens around assignment rhs
+        </source>
+      </subsection>
+
+      <subsection name="Notes" id="UnnecessaryParentheses_Notes">
+        <p>
+          The check is not "type aware", that is to say, it can't tell if parentheses
+          are unnecessary based on the types in an expression.  It also doesn't know about
+          operator precedence and associativity; therefore it won't catch something like
+        </p>
+        <source>
+            int x = (a + b) + c;
+        </source>
+        <p>
+          In the above case, given that <em>a</em>,<em>b</em>, and <em>c</em> are all
+          <code>int</code> variables, the parentheses around <code>a + b</code> are not needed.
         </p>
       </subsection>
 
@@ -4667,8 +4879,8 @@ if (&quot;something&quot;.equals(x))
     </section>
 
     <section name="VariableDeclarationUsageDistance">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="VariableDeclarationUsageDistance_Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
           Checks the distance between declaration of variable and its first usage.
         </p>
@@ -4686,16 +4898,18 @@ if (&quot;something&quot;.equals(x))
 
           <tr>
             <td>allowedDistance</td>
-            <td>A distance between declaration of variable and its first usage.
+            <td>Specify distance between declaration of variable and its first usage.
                 Values should be greater than 0.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>3</td>
+            <td><code>3</code></td>
             <td>5.8</td>
           </tr>
 
           <tr>
             <td>ignoreVariablePattern</td>
-            <td>pattern for ignoring the distance calculation</td>
+            <td>
+              Define RegExp to ignore distance calculation for variables listed in this pattern.
+            </td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>""</code></td>
             <td>5.8</td>
@@ -4703,7 +4917,7 @@ if (&quot;something&quot;.equals(x))
 
           <tr>
             <td>validateBetweenScopes</td>
-            <td>Allows to calculate the distance between declaration of variable and its
+            <td>Allow to calculate the distance between declaration of variable and its
                 first usage in the different scopes.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -4712,7 +4926,7 @@ if (&quot;something&quot;.equals(x))
 
           <tr>
             <td>ignoreFinal</td>
-            <td>Allows to ignore variables with a 'final' modifier.</td>
+            <td>Allow to ignore variables with a 'final' modifier.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>5.8</td>
@@ -4739,7 +4953,7 @@ int count;
 {
   a = a + b;
   count = b; // DECLARATION OF VARIABLE 'count'
-            // SHOULD BE HERE (distance = 2)
+             // SHOULD BE HERE (distance = 2)
 }
         </source>
         <p>

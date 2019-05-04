@@ -8,6 +8,7 @@ abcun
 abego
 abstractcheck
 abstractclassname
+abstractfileset
 abstractjavadoc
 abstracttypeaware
 ABx
@@ -252,7 +253,7 @@ commerical
 Compat
 Compiletime
 Comspace
-Concat
+concat
 config
 configurationloader
 Connell's
@@ -790,6 +791,7 @@ misconfigured
 Misordered
 missingctor
 missingdeprecated
+missingjavadoctype
 missingoverride
 missingswitchdefault
 missingtag
@@ -906,6 +908,7 @@ nts
 nullanalysis
 NULLCHECK
 nullness
+numberperline
 numericliterals
 nutsandbolts
 nyu

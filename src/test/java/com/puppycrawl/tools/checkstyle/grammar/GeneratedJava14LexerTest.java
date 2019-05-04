@@ -21,12 +21,15 @@ package com.puppycrawl.tools.checkstyle.grammar;
 
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
 
+import java.nio.charset.Charset;
+
 import org.junit.Assume;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -36,11 +39,10 @@ public class GeneratedJava14LexerTest
     extends AbstractModuleTestSupport {
 
     /**
-     * <p>Is {@code true} if this is Windows.</p>
-     *
-     * <p>Adapted from org.apache.commons.lang3.SystemUtils.</p>
+     * Is {@code true} if current default encoding is UTF-8.
      */
-    private static final boolean IS_WINDOWS = System.getProperty("os.name").startsWith("Windows");
+    private static final boolean IS_UTF8 = Charset.forName(System.getProperty("file.encoding"))
+            .equals(StandardCharsets.UTF_8);
 
     @Override
     protected String getPackageLocation() {
@@ -49,8 +51,8 @@ public class GeneratedJava14LexerTest
 
     @Test
     public void testUnexpectedChar() throws Exception {
-        // Encoding problems can occur in Windows
-        Assume.assumeFalse("Problems with encoding may occur", IS_WINDOWS);
+        // Encoding problems will occur if default encoding is not UTF-8
+        Assume.assumeTrue("Problems with encoding may occur", IS_UTF8);
 
         final DefaultConfiguration checkConfig =
             createModuleConfig(MemberNameCheck.class);

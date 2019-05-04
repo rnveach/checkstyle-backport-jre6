@@ -141,15 +141,15 @@ class FooInner
  */
 class Absent_CustomFieldSerializer3 {
 
-    public static void serialize() {} //Expected nothing but was "'}' should be alone on a line."
+    public static void serialize() {} //empty body - violation
 }
 
 class Absent_CustomFieldSerializer4
 {
-    public Absent_CustomFieldSerializer4() {}
+    public Absent_CustomFieldSerializer4() {} //empty body - violation
 }
 
-class EmptyClass2 {}
+class EmptyClass2 {} //empty body - violation
 
 interface EmptyInterface3 {}
 
@@ -167,4 +167,25 @@ class ClassWithStaticInitializers
         }
     }
 
+    public void emptyBlocks() {
+        try {
+            // comment
+        } catch (RuntimeException e) { // violation except for SAME
+            new Object();
+        } catch (Exception e) { // violation except for SAME
+            // comment
+        } catch (Throwable e) { // violation except for SAME
+        } finally { // violation except for SAME
+            // comment
+        }
+
+        do {
+        } while (true); // violation except for SAME
+    }
+
+    public void codeAfterLastRightCurly() {
+        while (new Object().equals(new Object())) {
+        }; // violation
+        for (int i = 0; i < 1; i++) { new Object(); }; // violation
+    }
 }

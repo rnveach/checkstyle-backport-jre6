@@ -1,6 +1,7 @@
 package com.puppycrawl.tools.checkstyle.checks.javadoc.javadoctype;
 
-public class InputJavadocTypeNoJavadoc //comment test
+/** */
+public class InputJavadocTypeNoJavadoc<T> //comment test
 {
     public int i1;
     protected int i2;
@@ -117,4 +118,8 @@ class PackageClass {
 
     /**/
     void methodWithTwoStarComment() {}
+
+    /** */
+    protected class ProtectedInner2<T> {
+    }
 }

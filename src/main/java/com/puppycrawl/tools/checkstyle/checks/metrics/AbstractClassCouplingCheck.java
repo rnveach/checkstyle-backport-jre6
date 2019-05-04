@@ -82,6 +82,12 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     /** User-configured regular expressions to ignore classes. */
     private final List<Pattern> excludeClassesRegexps = new ArrayList<Pattern>();
 
+    /** A map of (imported class name -> class name with package) pairs. */
+    private final Map<String, String> importedClassPackages = new HashMap<String, String>();
+
+    /** Stack of class contexts. */
+    private final Deque<ClassContext> classesContexts = new ArrayDeque<ClassContext>();
+
     /** User-configured class names to ignore. */
     private Set<String> excludedClasses = DEFAULT_EXCLUDED_CLASSES;
     /** User-configured package names to ignore. */
@@ -89,8 +95,8 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     /** Allowed complexity. */
     private int max;
 
-    /** Current file context. */
-    private FileContext fileContext;
+    /** Current file package. */
+    private String packageName;
 
     /**
      * Creates new instance of the check.
@@ -146,9 +152,9 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      */
     public final void setExcludedPackages(String... excludedPackages) {
         final List<String> invalidIdentifiers = new ArrayList<String>();
-        for (String packageName : excludedPackages) {
-            if (!CommonUtil.isName(packageName)) {
-                invalidIdentifiers.add(packageName);
+        for (String excludedPackageName : excludedPackages) {
+            if (!CommonUtil.isName(excludedPackageName)) {
+                invalidIdentifiers.add(excludedPackageName);
             }
         }
         if (!invalidIdentifiers.isEmpty()) {
@@ -170,7 +176,10 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
 
     @Override
     public final void beginTree(DetailAST ast) {
-        fileContext = new FileContext();
+        importedClassPackages.clear();
+        classesContexts.clear();
+        classesContexts.push(new ClassContext("", null));
+        packageName = "";
     }
 
     @Override
@@ -180,7 +189,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
                 visitPackageDef(ast);
                 break;
             case TokenTypes.IMPORT:
-                fileContext.registerImport(ast);
+                registerImport(ast);
                 break;
             case TokenTypes.CLASS_DEF:
             case TokenTypes.INTERFACE_DEF:
@@ -191,16 +200,16 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
             case TokenTypes.EXTENDS_CLAUSE:
             case TokenTypes.IMPLEMENTS_CLAUSE:
             case TokenTypes.TYPE:
-                fileContext.visitType(ast);
+                visitType(ast);
                 break;
             case TokenTypes.LITERAL_NEW:
-                fileContext.visitLiteralNew(ast);
+                visitLiteralNew(ast);
                 break;
             case TokenTypes.LITERAL_THROWS:
-                fileContext.visitLiteralThrows(ast);
+                visitLiteralThrows(ast);
                 break;
             case TokenTypes.ANNOTATION:
-                fileContext.visitAnnotationType(ast);
+                visitAnnotationType(ast);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown type: " + ast);
@@ -227,7 +236,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      */
     private void visitPackageDef(DetailAST pkg) {
         final FullIdent ident = FullIdent.createFullIdent(pkg.getLastChild().getPreviousSibling());
-        fileContext.setPackageName(ident.getText());
+        packageName = ident.getText();
     }
 
     /**
@@ -236,120 +245,72 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      */
     private void visitClassDef(DetailAST classDef) {
         final String className = classDef.findFirstToken(TokenTypes.IDENT).getText();
-        fileContext.createNewClassContext(className, classDef);
+        createNewClassContext(className, classDef);
     }
 
     /** Restores previous context. */
     private void leaveClassDef() {
-        fileContext.checkCurrentClassAndRestorePrevious();
+        checkCurrentClassAndRestorePrevious();
     }
 
     /**
-     * Encapsulates information about classes coupling inside single file.
-     * @noinspection ThisEscapedInObjectConstruction
+     * Registers given import. This allows us to track imported classes.
+     * @param imp import definition.
      */
-    private class FileContext {
+    private void registerImport(DetailAST imp) {
+        final FullIdent ident = FullIdent.createFullIdent(
+            imp.getLastChild().getPreviousSibling());
+        final String fullName = ident.getText();
+        final int lastDot = fullName.lastIndexOf(DOT);
+        importedClassPackages.put(fullName.substring(lastDot + 1), fullName);
+    }
 
-        /** A map of (imported class name -> class name with package) pairs. */
-        private final Map<String, String> importedClassPackage = new HashMap<String, String>();
+    /**
+     * Creates new inner class context with given name and location.
+     * @param className The class name.
+     * @param ast The class ast.
+     */
+    private void createNewClassContext(String className, DetailAST ast) {
+        classesContexts.push(new ClassContext(className, ast));
+    }
 
-        /** Stack of class contexts. */
-        private final Deque<ClassContext> classesContexts = new ArrayDeque<ClassContext>();
+    /** Restores previous context. */
+    private void checkCurrentClassAndRestorePrevious() {
+        classesContexts.pop().checkCoupling();
+    }
 
-        /** Current file package. */
-        private String packageName = "";
+    /**
+     * Visits type token for the current class context.
+     * @param ast TYPE token.
+     */
+    private void visitType(DetailAST ast) {
+        classesContexts.peek().visitType(ast);
+    }
 
-        /** Current context. */
-        private ClassContext classContext = new ClassContext(this, "", null);
+    /**
+     * Visits NEW token for the current class context.
+     * @param ast NEW token.
+     */
+    private void visitLiteralNew(DetailAST ast) {
+        classesContexts.peek().visitLiteralNew(ast);
+    }
 
-        /**
-         * Retrieves current file package name.
-         * @return Package name.
-         */
-        public String getPackageName() {
-            return packageName;
-        }
+    /**
+     * Visits THROWS token for the current class context.
+     * @param ast THROWS token.
+     */
+    private void visitLiteralThrows(DetailAST ast) {
+        classesContexts.peek().visitLiteralThrows(ast);
+    }
 
-        /**
-         * Sets current context package name.
-         * @param packageName Package name to be set.
-         */
-        public void setPackageName(String packageName) {
-            this.packageName = packageName;
-        }
-
-        /**
-         * Registers given import. This allows us to track imported classes.
-         * @param imp import definition.
-         */
-        public void registerImport(DetailAST imp) {
-            final FullIdent ident = FullIdent.createFullIdent(
-                imp.getLastChild().getPreviousSibling());
-            final String fullName = ident.getText();
-            final int lastDot = fullName.lastIndexOf(DOT);
-            importedClassPackage.put(fullName.substring(lastDot + 1), fullName);
-        }
-
-        /**
-         * Retrieves class name with packages. Uses previously registered imports to
-         * get the full class name.
-         * @param className Class name to be retrieved.
-         * @return Class name with package name, if found, {@link Optional#empty()} otherwise.
-         */
-        public Optional<String> getClassNameWithPackage(String className) {
-            return Optional.ofNullable(importedClassPackage.get(className));
-        }
-
-        /**
-         * Creates new inner class context with given name and location.
-         * @param className The class name.
-         * @param ast The class ast.
-         */
-        public void createNewClassContext(String className, DetailAST ast) {
-            classesContexts.push(classContext);
-            classContext = new ClassContext(this, className, ast);
-        }
-
-        /** Restores previous context. */
-        public void checkCurrentClassAndRestorePrevious() {
-            classContext.checkCoupling();
-            classContext = classesContexts.pop();
-        }
-
-        /**
-         * Visits type token for the current class context.
-         * @param ast TYPE token.
-         */
-        public void visitType(DetailAST ast) {
-            classContext.visitType(ast);
-        }
-
-        /**
-         * Visits NEW token for the current class context.
-         * @param ast NEW token.
-         */
-        public void visitLiteralNew(DetailAST ast) {
-            classContext.visitLiteralNew(ast);
-        }
-
-        /**
-         * Visits THROWS token for the current class context.
-         * @param ast THROWS token.
-         */
-        public void visitLiteralThrows(DetailAST ast) {
-            classContext.visitLiteralThrows(ast);
-        }
-
-        /**
-         * Visit ANNOTATION literal and get its type to referenced classes of context.
-         * @param annotationAST Annotation ast.
-         */
-        private void visitAnnotationType(DetailAST annotationAST) {
-            final DetailAST children = annotationAST.getFirstChild();
-            final DetailAST type = children.getNextSibling();
-            classContext.addReferencedClassName(type.getText());
-        }
-
+    /**
+     * Visit ANNOTATION literal and get its type to referenced classes of context.
+     * @param annotationAST Annotation ast.
+     */
+    private void visitAnnotationType(DetailAST annotationAST) {
+        final DetailAST children = annotationAST.getFirstChild();
+        final DetailAST type = children.getNextSibling();
+        classesContexts.peek().addReferencedClassName(type.getText());
     }
 
     /**
@@ -358,8 +319,6 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      */
     private class ClassContext {
 
-        /** Parent file context. */
-        private final FileContext parentContext;
         /**
          * Set of referenced classes.
          * Sorted by name for predictable error messages in unit tests.
@@ -373,12 +332,10 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
 
         /**
          * Create new context associated with given class.
-         * @param parentContext Parent file context.
          * @param className name of the given class.
          * @param ast ast of class definition.
          */
-        /* package */ ClassContext(FileContext parentContext, String className, DetailAST ast) {
-            this.parentContext = parentContext;
+        /* package */ ClassContext(String className, DetailAST ast) {
             this.className = className;
             classAst = ast;
         }
@@ -436,7 +393,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
         /** Checks if coupling less than allowed or not. */
         public void checkCoupling() {
             referencedClassNames.remove(className);
-            referencedClassNames.remove(parentContext.getPackageName() + DOT + className);
+            referencedClassNames.remove(packageName + DOT + className);
 
             if (referencedClassNames.size() > max) {
                 log(classAst, getLogMessageId(),
@@ -464,17 +421,28 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
         private boolean isFromExcludedPackage(String candidateClassName) {
             String classNameWithPackage = candidateClassName;
             if (!candidateClassName.contains(DOT)) {
-                classNameWithPackage = parentContext.getClassNameWithPackage(candidateClassName)
+                classNameWithPackage = getClassNameWithPackage(candidateClassName)
                     .orElse("");
             }
             boolean isFromExcludedPackage = false;
             if (classNameWithPackage.contains(DOT)) {
                 final int lastDotIndex = classNameWithPackage.lastIndexOf(DOT);
-                final String packageName = classNameWithPackage.substring(0, lastDotIndex);
-                isFromExcludedPackage = packageName.startsWith("java.lang")
-                    || excludedPackages.contains(packageName);
+                final String candidatePackageName =
+                    classNameWithPackage.substring(0, lastDotIndex);
+                isFromExcludedPackage = candidatePackageName.startsWith("java.lang")
+                    || excludedPackages.contains(candidatePackageName);
             }
             return isFromExcludedPackage;
+        }
+
+        /**
+         * Retrieves class name with packages. Uses previously registered imports to
+         * get the full class name.
+         * @param examineClassName Class name to be retrieved.
+         * @return Class name with package name, if found, {@link Optional#empty()} otherwise.
+         */
+        private Optional<String> getClassNameWithPackage(String examineClassName) {
+            return Optional.ofNullable(importedClassPackages.get(examineClassName));
         }
 
         /**

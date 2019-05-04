@@ -32,8 +32,31 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 
 /**
- * Catching java.lang.Exception, java.lang.Error or java.lang.RuntimeException
- * is almost never acceptable.
+ * <p>
+ * Checks that certain exception types do not appear in a {@code catch} statement.
+ * </p>
+ * <p>
+ * Rationale: catching {@code java.lang.Exception}, {@code java.lang.Error} or
+ * {@code java.lang.RuntimeException} is almost never acceptable.
+ * Novice developers often simply catch Exception in an attempt to handle
+ * multiple exception classes. This unfortunately leads to code that inadvertently
+ * catches {@code NullPointerException}, {@code OutOfMemoryError}, etc.
+ * </p>
+ * <ul>
+ * <li>
+ * Property {@code illegalClassNames} - Specify exception class names to reject.
+ * Default value is {@code java.lang.Throwable, RuntimeException, Error, Throwable,
+ * java.lang.Error, java.lang.RuntimeException, Exception, java.lang.Exception}.
+ * </li>
+ * </ul>
+ * <p>
+ * To configure the check:
+ * </p>
+ * <pre>
+ * &lt;module name=&quot;IllegalCatch&quot;/&gt;
+ * </pre>
+ *
+ * @since 3.2
  */
 @StatelessCheck
 public final class IllegalCatchCheck extends AbstractCheck {
@@ -44,13 +67,13 @@ public final class IllegalCatchCheck extends AbstractCheck {
      */
     public static final String MSG_KEY = "illegal.catch";
 
-    /** Illegal class names. */
+    /** Specify exception class names to reject. */
     private final Set<String> illegalClassNames = Collections7.newHashSet("Exception", "Error",
         "RuntimeException", "Throwable", "java.lang.Error", "java.lang.Exception",
         "java.lang.RuntimeException", "java.lang.Throwable");
 
     /**
-     * Set the list of illegal classes.
+     * Setter to specify exception class names to reject.
      *
      * @param classNames
      *            array of illegal exception classes
