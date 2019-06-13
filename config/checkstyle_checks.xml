@@ -147,11 +147,8 @@
       <property name="tokens" value="ANNOTATION_FIELD_DEF"/>
       <property name="tokens" value="PACKAGE_DEF"/>
       <property name="tokens" value="ENUM_CONSTANT_DEF"/>
+      <property name="tokens" value="VARIABLE_DEF"/>
       <property name="allowSamelineSingleParameterlessAnnotation" value="false"/>
-    </module>
-    <module name="AnnotationLocation">
-      <property name="tokens" value="PARAMETER_DEF"/>
-      <property name="allowSamelineMultipleAnnotations" value="true"/>
     </module>
     <module name="AnnotationOnSameLine">
       <!-- we can not use it as it conflicts with AnnotationLocation -->
@@ -438,7 +435,6 @@
     <module name="JavadocMethod">
       <property name="allowUndeclaredRTE" value="true"/>
       <property name="allowThrowsTagsForSubclasses" value="true"/>
-      <property name="allowMissingPropertyJavadoc" value="true"/>
       <property name="validateThrows" value="true"/>
     </module>
     <module name="JavadocParagraph"/>
@@ -451,6 +447,9 @@
       <property name="allowUnknownTags" value="true"/>
     </module>
     <module name="JavadocVariable"/>
+    <module name="MissingJavadocMethod">
+      <property name="allowMissingPropertyJavadoc" value="true"/>
+    </module>
     <module name="MissingJavadocType"/>
     <module name="NonEmptyAtclauseDescription"/>
     <module name="SingleLineJavadoc"/>

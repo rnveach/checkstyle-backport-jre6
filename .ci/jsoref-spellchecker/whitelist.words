@@ -313,6 +313,7 @@ DEST
 destfile
 Destructuring
 detailast
+detailastimpl
 detailnodetreestringprinter
 Dexec
 dfn
@@ -553,7 +554,7 @@ hurz
 iae
 ibs
 ico
-identificator
+icu
 identifiernames
 Idref
 idx
@@ -590,7 +591,6 @@ innerassignment
 Innerclass
 INNERR
 innertypelast
-Inpection
 instanceof
 Intelli
 intellij
@@ -791,6 +791,7 @@ misconfigured
 Misordered
 missingctor
 missingdeprecated
+missingjavadocmethod
 missingjavadoctype
 missingoverride
 missingswitchdefault

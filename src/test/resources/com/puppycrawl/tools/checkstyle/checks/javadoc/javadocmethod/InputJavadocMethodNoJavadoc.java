@@ -12,6 +12,15 @@ public class InputJavadocMethodNoJavadoc //comment test
     void foo3() {}
     private void foo4() {}
 
+    /** @return wrong */
+    public void foo5() {}
+    /** @return wrong */
+    protected void foo6() {}
+    /** @return wrong */
+    void foo7() {}
+    /** @return wrong */
+    private void foo8() {}
+
     protected class ProtectedInner {
         public int i1;
         protected int i2;

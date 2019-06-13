@@ -23,8 +23,8 @@
     </section>
 
     <section name="EmptyForInitializerPad">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="EmptyForInitializerPad_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
           Checks the padding of an empty for initializer; that is whether
           white space is required at an empty for initializer, or such white
@@ -49,7 +49,7 @@ for (
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on how to pad an empty for iterator</td>
+            <td>Specify policy on how to pad an empty for iterator.</td>
             <td><a href="property_types.html#parenPad">Pad Policy</a></td>
             <td><code>nospace</code></td>
             <td>3.4</td>
@@ -118,12 +118,12 @@ for (
     </section>
 
     <section name="EmptyForIteratorPad">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="EmptyForIteratorPad_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Checks the padding of an empty for iterator; that is whether white
-          space is required at an empty for iterator, or such white space is
-          forbidden.  No check occurs if there is a line wrap at the iterator,
+          Checks the padding of an empty for iterator; that is whether a white
+          space is required at an empty for iterator, or such white spaces are
+          forbidden. No check occurs if there is a line wrap at the iterator,
           as in
         </p>
         <source>
@@ -144,7 +144,7 @@ for (Iterator foo = very.long.line.iterator();
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on how to pad an empty for iterator</td>
+            <td>Specify policy on how to pad an empty for iterator.</td>
             <td><a href="property_types.html#parenPad">Pad Policy</a></td>
             <td><code>nospace</code></td>
             <td>3.0</td>
@@ -217,8 +217,8 @@ for (Iterator foo = very.long.line.iterator();
     </section>
 
     <section name="EmptyLineSeparator">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="EmptyLineSeparator_Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
           Checks for empty line separators after header, package, all import declarations,
           fields, constructors, methods, nested classes,
@@ -241,25 +241,25 @@ for (Iterator foo = very.long.line.iterator();
           </tr>
           <tr>
             <td>allowNoEmptyLineBetweenFields</td>
-            <td>Allow no empty line between fields</td>
+            <td>Allow no empty line between fields.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>5.8</td>
           </tr>
           <tr>
-             <td>allowMultipleEmptyLines</td>
-             <td>Allow multiple empty lines between class members</td>
-             <td><a href="property_types.html#boolean">Boolean</a></td>
-             <td>true</td>
-             <td>6.3</td>
+            <td>allowMultipleEmptyLines</td>
+            <td>Allow multiple empty lines between class members.</td>
+            <td><a href="property_types.html#boolean">Boolean</a></td>
+            <td><code>true</code></td>
+            <td>6.3</td>
           </tr>
-            <tr>
-                <td>allowMultipleEmptyLinesInsideClassMembers</td>
-                <td>Allow multiple empty lines inside class members</td>
-                <td><a href="property_types.html#boolean">Boolean</a></td>
-                <td>true</td>
-                <td>6.18</td>
-            </tr>
+          <tr>
+            <td>allowMultipleEmptyLinesInsideClassMembers</td>
+            <td>Allow multiple empty lines inside class members.</td>
+            <td><a href="property_types.html#boolean">Boolean</a></td>
+            <td><code>true</code></td>
+            <td>6.18</td>
+          </tr>
           <tr>
             <td>tokens</td>
             <td>tokens to check</td>
@@ -333,7 +333,7 @@ class Foo
 }
       </source>
       <p>
-        An example of how to configure the check with default parameters is:
+        To configure the check with default parameters:
       </p>
       <source>
 &lt;module name="EmptyLineSeparator"/&gt;
@@ -354,11 +354,11 @@ class Foo
 {
   public static final int FOO_CONST = 1;
 
-  public void foo() {} //should be separated from previous statement.
+  public void foo() {}
 }
       </source>
       <p>
-        An example how to check empty line after  <a
+        To check empty line after  <a
                href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
                 VARIABLE_DEF</a> and <a
                href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
@@ -370,7 +370,7 @@ class Foo
 &lt;/module&gt;
       </source>
       <p>
-        An example how to allow no empty line between fields:
+        To allow no empty line between fields:
       </p>
       <source>
 &lt;module name="EmptyLineSeparator"&gt;
@@ -378,7 +378,35 @@ class Foo
 &lt;/module&gt;
       </source>
       <p>
-          An example how to disallow multiple empty lines inside constructor,
+        Example of declarations with multiple empty lines between class members
+        (allowed by default):
+      </p>
+      <source>
+///////////////////////////////////////////////////
+//HEADER
+///////////////////////////////////////////////////&#10;
+
+package com.puppycrawl.tools.checkstyle.whitespace;&#10;&#10;
+
+import java.io.Serializable;&#10;
+
+class Foo
+{
+  public static final int FOO_CONST = 1;&#10;&#10;
+
+  public void foo() {} //should be separated from previous statement.
+}
+      </source>
+      <p>
+        To disallow multiple empty lines between class members:
+      </p>
+      <source>
+&lt;module name="EmptyLineSeparator"&gt;
+  &lt;property name="allowMultipleEmptyLines" value="false"/&gt;
+&lt;/module&gt;
+      </source>
+      <p>
+        To disallow multiple empty lines inside constructor,
           initialization block and method:
       </p>
       <source>
@@ -402,7 +430,7 @@ class Foo
           <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
                 METHOD_DEF</a>,
           <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">
-                CTOR_DEF</a>,
+                CTOR_DEF</a>.
       </p>
       <p>
           Example of declarations with multiple empty lines inside method:
@@ -417,8 +445,7 @@ package com.puppycrawl.tools.checkstyle.whitespace;
 class Foo
 {
 
-  public void foo() {
-  <br/>
+  public void foo() {&#10;
 
     System.out.println(1); // violation since method has 2 empty lines subsequently
   }
@@ -478,8 +505,8 @@ class Foo
     </section>
 
     <section name="FileTabCharacter">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="FileTabCharacter_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           Checks that there are no tab characters (<code>'\t'</code>) in the source code.
         </p>
@@ -513,14 +540,16 @@ class Foo
           </tr>
           <tr>
             <td>eachLine</td>
-            <td>whether to report on each line containing a tab, or just the first instance</td>
+            <td>
+              Control whether to report on each line containing a tab, or just the first instance.
+            </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>file type extension of files to process</td>
+            <td>Specify file type extension of files to process.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>all files</code></td>
             <td>5.0</td>
@@ -594,8 +623,8 @@ class Foo
     </section>
 
     <section name="GenericWhitespace">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="GenericWhitespace_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           Checks that the whitespace around the Generic tokens (angle brackets)
           "&lt;" and "&gt;" are correct to the <i>typical</i> convention.
@@ -623,13 +652,20 @@ class Foo
           Examples with correct spacing:
         </p>
         <source>
-public void &lt;K, V extends Number&gt; boolean foo(K, V) {} // Generic methods definitions
-class name&lt;T1, T2, ..., Tn&gt; {}                         // Generic type definition
-OrderedPair&lt;String, Box&lt;Integer&gt;&gt; p;                   // Generic type reference
-boolean same = Util.&lt;Integer, String&gt;compare(p1, p2);  // Generic preceded method name
-Pair&lt;Integer, String> p1 = new Pair&lt;&gt;(1, "apple");     // Diamond operator
-List&lt;T&gt; list = ImmutableList.Builder&lt;T&gt;::new;          // Method reference
-sort(list, Comparable::&lt;String&gt;compareTo);             // Method reference
+// Generic methods definitions
+public void &lt;K, V extends Number&gt; boolean foo(K, V) {}
+// Generic type definition
+class name&lt;T1, T2, ..., Tn&gt; {}
+// Generic type reference
+OrderedPair&lt;String, Box&lt;Integer&gt;&gt; p;
+// Generic preceded method name
+boolean same = Util.&lt;Integer, String&gt;compare(p1, p2);
+// Diamond operator
+Pair&lt;Integer, String&gt; p1 = new Pair&lt;&gt;(1, "apple");
+// Method reference
+List&lt;T&gt; list = ImmutableList.Builder&lt;T&gt;::new;
+// Method reference
+sort(list, Comparable::&lt;String&gt;compareTo);
         </source>
       </subsection>
 
@@ -698,16 +734,16 @@ sort(list, Comparable::&lt;String&gt;compareTo);             // Method reference
     </section>
 
     <section name="MethodParamPad">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="MethodParamPad_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
           Checks the padding between the identifier of a method definition,
           constructor definition, method call, or constructor invocation; and
-          the left parenthesis of the parameter list.  That is, if the
+          the left parenthesis of the parameter list. That is, if the
           identifier and left parenthesis are on the same line, checks whether
           a space is required immediately after the identifier or such a space
-          is forbidden.  If they are not on the same line, reports an error,
-          unless configured to allow line breaks.  To allow linebreaks after
+          is forbidden. If they are not on the same line, reports an error,
+          unless configured to allow line breaks. To allow linebreaks after
           the identifier, set property <code>allowLineBreaks</code> to <code>
           true</code>.
         </p>
@@ -725,8 +761,7 @@ sort(list, Comparable::&lt;String&gt;compareTo);             // Method reference
           <tr>
             <td>allowLineBreaks</td>
             <td>
-              whether a line break between the identifier and left parenthesis
-              is allowed
+              Allow a line break between the identifier and left parenthesis.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -734,7 +769,7 @@ sort(list, Comparable::&lt;String&gt;compareTo);             // Method reference
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on how to pad method parameter</td>
+            <td>Specify policy on how to pad method parameter.</td>
             <td>
               <a href="property_types.html#parenPad">Pad Policy</a>
             </td>
@@ -865,8 +900,8 @@ sort(list, Comparable::&lt;String&gt;compareTo);             // Method reference
     </section>
 
     <section name="NoLineWrap">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="NoLineWrap_Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
           Checks that chosen statements are not line-wrapped. By default this
           Check restricts wrapping import and package statements, but it's possible to check
@@ -1005,8 +1040,8 @@ import static java.math.BigInteger.ZERO;
     </section>
 
     <section name="NoWhitespaceAfter">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="NoWhitespaceAfter_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks that there is no whitespace after a token. More specifically,
           it checks that it is not followed by whitespace, or (if linebreaks
@@ -1051,7 +1086,7 @@ import static java.math.BigInteger.ZERO;
           <tr>
             <td>allowLineBreaks</td>
             <td>
-              whether whitespace is allowed if the token is at a linebreak
+              Control whether whitespace is allowed if the token is at a linebreak.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
@@ -1212,8 +1247,8 @@ public void foo(final char @NotNull [] param) {} // No violation
     </section>
 
     <section name="NoWhitespaceBefore">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="NoWhitespaceBefore_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks that there is no whitespace before a token. More
           specifically, it checks that it is not preceded with whitespace, or
@@ -1236,7 +1271,7 @@ public void foo(final char @NotNull [] param) {} // No violation
           <tr>
             <td>allowLineBreaks</td>
             <td>
-              whether whitespace is allowed if the token is at a linebreak
+              Control whether whitespace is allowed if the token is at a linebreak.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -1347,8 +1382,8 @@ public void foo(final char @NotNull [] param) {} // No violation
     </section>
 
     <section name="OperatorWrap">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="OperatorWrap_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks the policy on how to wrap lines on operators.
         </p>
@@ -1365,7 +1400,7 @@ public void foo(final char @NotNull [] param) {} // No violation
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on how to wrap lines</td>
+            <td>Specify policy on how to wrap lines.</td>
             <td>
               <a href="property_types.html#wrapOp">Wrap Operator Policy</a>
             </td>
@@ -1514,12 +1549,14 @@ public void foo(final char @NotNull [] param) {} // No violation
         </source>
 
         <p>
-          To configure the check for the assignment operator, <code>=</code>, at the end of a line:
+          To configure the check for assignment operators at the end of a line:
         </p>
         <source>
 &lt;module name=&quot;OperatorWrap&quot;&gt;
-  &lt;property name=&quot;tokens&quot; value=&quot;ASSIGN&quot;/&gt;
-  &lt;property name=&quot;option&quot; value=&quot;eol&quot;/&gt;
+  &lt;property name="tokens"
+    value="ASSIGN,DIV_ASSIGN,PLUS_ASSIGN,MINUS_ASSIGN,STAR_ASSIGN,MOD_ASSIGN,
+           SR_ASSIGN,BSR_ASSIGN,SL_ASSIGN,BXOR_ASSIGN,BOR_ASSIGN,BAND_ASSIGN"/&gt;
+  &lt;property name="option" value="eol"/&gt;
 &lt;/module&gt;
         </source>
       </subsection>
@@ -1574,8 +1611,8 @@ public void foo(final char @NotNull [] param) {} // No violation
     </section>
 
     <section name="ParenPad">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="ParenPad_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks the policy on the padding of parentheses; i.e. whether a
           space is required after a left parenthesis and before a right
@@ -1585,12 +1622,13 @@ public void foo(final char @NotNull [] param) {} // No violation
           parenthesis of a try-with-resources resource specification where
           the last resource variable has a trailing semi-colon.
           Use Check <a
-          href="config_whitespace.html#EmptyForIteratorPad">EmptyForIteratorPad</a>
-          to validate empty for iterators and <a
-          href="config_whitespace.html#EmptyForInitializerPad">EmptyForInitializerPad</a>
-          to validate empty for initializers. Typecasts are also not checked, as there is <a
-          href="config_whitespace.html#TypecastParenPad">TypecastParenPad</a>
-          to validate them.
+          href="https://checkstyle.org/config_whitespace.html#EmptyForIteratorPad">
+          EmptyForIteratorPad</a> to validate empty for iterators and <a
+          href="https://checkstyle.org/config_whitespace.html#EmptyForInitializerPad">
+          EmptyForInitializerPad</a> to validate empty for initializers.
+          Typecasts are also not checked, as there is <a
+          href="https://checkstyle.org/config_whitespace.html#TypecastParenPad">
+          TypecastParenPad</a> to validate them.
         </p>
       </subsection>
 
@@ -1605,7 +1643,7 @@ public void foo(final char @NotNull [] param) {} // No violation
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on how to pad parentheses</td>
+            <td>Specify policy on how to pad parentheses.</td>
             <td><a href="property_types.html#parenPad">Pad Policy</a></td>
             <td><code>nospace</code></td>
             <td>3.0</td>
@@ -1837,8 +1875,8 @@ try (Closeable resource = acquire(); ) // no check before right parenthesis
     </section>
 
     <section name="SeparatorWrap">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="SeparatorWrap_Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
           Checks line wrapping with separators.
         </p>
@@ -1855,7 +1893,7 @@ try (Closeable resource = acquire(); ) // no check before right parenthesis
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on how to wrap lines</td>
+            <td>Specify policy on how to wrap lines.</td>
             <td>
               <a href="property_types.html#wrapOp">Wrap Operator Policy</a>
             </td>
@@ -1923,7 +1961,7 @@ foo(i
     ,s);
         </source>
         <p>
-          An example of how to configure the check is:
+          To configure the check:
         </p>
         <source>
 &lt;module name="SeparatorWrap"/&gt;
@@ -1947,7 +1985,7 @@ Arrays.sort(stringArray, String
     ::compareToIgnoreCase); // good
         </source>
         <p>
-          An example of how to configure the check for <a
+          To configure the check for <a
                href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_REF">
             METHOD_REF</a> at new line:
         </p>
@@ -1958,7 +1996,7 @@ Arrays.sort(stringArray, String
 &lt;/module&gt;
         </source>
         <p>
-          An example of how to configure the check for comma at the new line is:
+          To configure the check for comma at the new line:
         </p>
         <source>
 &lt;module name="SeparatorWrap"&gt;
@@ -2012,18 +2050,18 @@ Arrays.sort(stringArray, String
     </section>
 
     <section name="SingleSpaceSeparator">
+      <p>Since Checkstyle 6.19</p>
       <subsection name="Description" id="SingleSpaceSeparator_Description">
-        <p>Since Checkstyle 6.19</p>
         <p>
           Checks that non-whitespace characters are separated by no more than one
           whitespace. Separating characters by tabs or multiple spaces will be
           reported. Currently the check doesn't permit horizontal alignment. To inspect
           whitespaces before and after comments, set the property
-          validateComments to true.
+          <code>validateComments</code> to true.
         </p>
 
         <p>
-          Setting validateComments to false will ignore cases like:
+          Setting <code>validateComments</code> to false will ignore cases like:
         </p>
 
         <source>
@@ -2055,7 +2093,7 @@ public long toMicros(long d) { return d / (C1 / C0); }
           </tr>
           <tr>
             <td>validateComments</td>
-            <td>If set to true, whitespaces surrounding comments will be validated.</td>
+            <td>Control whether to validate whitespaces surrounding comments.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>6.19</td>
@@ -2119,8 +2157,8 @@ public long toMicros(long d) { return d / (C1 / C0); }
     </section>
 
     <section name="TypecastParenPad">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="TypecastParenPad_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks the policy on the padding of parentheses for typecasts. That
           is, whether a space is required after a left parenthesis and before
@@ -2139,7 +2177,7 @@ public long toMicros(long d) { return d / (C1 / C0); }
           </tr>
           <tr>
             <td>option</td>
-            <td>policy on how to pad parentheses</td>
+            <td>Specify policy on how to pad parentheses.</td>
             <td><a href="property_types.html#parenPad">Pad Policy</a></td>
             <td><code>nospace</code></td>
             <td>3.2</td>
@@ -2217,10 +2255,13 @@ public long toMicros(long d) { return d / (C1 / C0); }
     </section>
 
     <section name="WhitespaceAfter">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="WhitespaceAfter_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Checks that a token is followed by whitespace.
+          Checks that a token is followed by whitespace, with the exception that it
+          does not check for whitespace after the semicolon of an empty for iterator. Use Check
+          <a href="https://checkstyle.org/config_whitespace.html#EmptyForIteratorPad">
+          EmptyForIteratorPad</a> to validate empty for iterators.
         </p>
       </subsection>
 
@@ -2366,10 +2407,10 @@ public long toMicros(long d) { return d / (C1 / C0); }
     </section>
 
     <section name="WhitespaceAround">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="WhitespaceAround_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-        Checks that a token is surrounded by whitespace.  Empty constructor,
+        Checks that a token is surrounded by whitespace. Empty constructor,
         method, class, enum, interface, loop bodies (blocks), lambdas of the form
         </p>
 
@@ -2389,7 +2430,7 @@ public @interface Beta {} // empty annotation type
         <p>
         may optionally be exempted from the policy using the <code>
         allowEmptyMethods</code>, <code>allowEmptyConstructors
-        </code>, <code>allowEmptyTypes</code>, <code>allowEmptyLoops</code>
+        </code>, <code>allowEmptyTypes</code>, <code>allowEmptyLoops</code>,
         <code>allowEmptyLambdas</code> and <code>allowEmptyCatches</code>
         properties.
         </p>
@@ -2425,49 +2466,51 @@ try {
           </tr>
           <tr>
             <td>allowEmptyConstructors</td>
-            <td>allow empty constructor bodies</td>
+            <td>Allow empty constructor bodies.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>4.0</td>
           </tr>
           <tr>
             <td>allowEmptyMethods</td>
-            <td>allow empty method bodies</td>
+            <td>Allow empty method bodies.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>4.0</td>
           </tr>
           <tr>
             <td>allowEmptyTypes</td>
-            <td>allow empty class, interface and enum bodies</td>
+            <td>Allow empty class, interface and enum bodies.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>allowEmptyLoops</td>
-            <td>allow empty loop bodies</td>
+            <td>Allow empty loop bodies.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>allowEmptyLambdas</td>
-            <td>allow empty lambda bodies</td>
+            <td>Allow empty lambda bodies.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>6.14</td>
           </tr>
           <tr>
             <td>allowEmptyCatches</td>
-            <td>allow empty catch bodies</td>
+            <td>Allow empty catch bodies.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>7.6</td>
           </tr>
           <tr>
             <td>ignoreEnhancedForColon</td>
-            <td>ignore whitespace around colon in for-each loops</td>
+            <td>Ignore whitespace around colon in
+              <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.14.2">
+                enhanced for</a> loop.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>5.5</td>
@@ -2707,14 +2750,83 @@ try {
         <source>
 &lt;module name=&quot;WhitespaceAround&quot;/&gt;
         </source>
-
         <p>
-          To configure the check for whitespace around the assignment
-          operator, <code>=</code>:
+          To configure the check for whitespace only around assignment operators:
+        </p>
+        <source>
+&lt;module name="WhitespaceAround"&gt;
+  &lt;property name="tokens"
+    value="ASSIGN,DIV_ASSIGN,PLUS_ASSIGN,MINUS_ASSIGN,STAR_ASSIGN,
+           MOD_ASSIGN,SR_ASSIGN,BSR_ASSIGN,SL_ASSIGN,BXOR_ASSIGN,
+           BOR_ASSIGN,BAND_ASSIGN"/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          To configure the check for whitespace only around curly braces:
+        </p>
+        <source>
+&lt;module name="WhitespaceAround"&gt;
+  &lt;property name="tokens" value="LCURLY,RCURLY"/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          To configure the check to allow empty method bodies:
         </p>
         <source>
 &lt;module name=&quot;WhitespaceAround&quot;&gt;
-  &lt;property name=&quot;tokens&quot; value=&quot;ASSIGN&quot;/&gt;
+  &lt;property name=&quot;allowEmptyMethods&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          To configure the check to allow empty constructor bodies:
+        </p>
+        <source>
+&lt;module name=&quot;WhitespaceAround&quot;&gt;
+  &lt;property name=&quot;allowEmptyConstructors&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          To configure the check to allow empty type bodies:
+        </p>
+        <source>
+&lt;module name=&quot;WhitespaceAround&quot;&gt;
+  &lt;property name=&quot;allowEmptyTypes&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          To configure the check to allow empty loop bodies:
+        </p>
+        <source>
+&lt;module name=&quot;WhitespaceAround&quot;&gt;
+  &lt;property name=&quot;allowEmptyLoops&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          To configure the check to allow empty lambda bodies:
+        </p>
+        <source>
+&lt;module name=&quot;WhitespaceAround&quot;&gt;
+  &lt;property name=&quot;allowEmptyLambdas&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          To configure the check to allow empty catch bodies:
+        </p>
+        <source>
+&lt;module name=&quot;WhitespaceAround&quot;&gt;
+  &lt;property name=&quot;allowEmptyCatches&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          Also, this check can be configured to ignore the colon in an enhanced for loop.
+          The colon in an enhanced for loop is ignored by default.
+        </p>
+        <p>
+          To configure the check to ignore the colon:
+        </p>
+        <source>
+&lt;module name=&quot;WhitespaceAround&quot;&gt;
+  &lt;property name="ignoreEnhancedForColon" value="true" /&gt;
 &lt;/module&gt;
         </source>
       </subsection>

@@ -13,7 +13,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.20</version>
+  <version>8.21</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -172,10 +172,10 @@
     <antlr4.version>4.5.3</antlr4.version>
     <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
     <maven.spotbugs.plugin.version>3.1.11</maven.spotbugs.plugin.version>
-    <maven.pmd.plugin.version>3.11.0</maven.pmd.plugin.version>
-    <pmd.version>6.13.0</pmd.version>
+    <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
+    <pmd.version>6.14.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.3</maven.jacoco.plugin.version>
-    <powermock.version>2.0.0</powermock.version>
+    <powermock.version>2.0.2</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
     <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
     <maven.sevntu.checkstyle.plugin.version>1.33.0</maven.sevntu.checkstyle.plugin.version>
@@ -184,7 +184,7 @@
     </maven.sevntu-checkstyle-check.checkstyle.version>
     <maven.versions.plugin.version>2.7</maven.versions.plugin.version>
     <java.version>1.6</java.version>
-    <pitest.plugin.version>1.4.6</pitest.plugin.version>
+    <pitest.plugin.version>1.4.7</pitest.plugin.version>
     <pitest.plugin.timeout.factor>10</pitest.plugin.timeout.factor>
     <pitest.plugin.timeout.constant>50000</pitest.plugin.timeout.constant>
     <pitest.plugin.threads>4</pitest.plugin.threads>
@@ -302,6 +302,12 @@
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
       <version>${saxon.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.ibm.icu</groupId>
+          <artifactId>icu4j</artifactId>
+        </exclusion>
+      </exclusions> 
     </dependency>
   </dependencies>
 
@@ -644,7 +650,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -1073,7 +1079,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.22.1</version>
+        <version>2.22.2</version>
         <configuration>
           <includes>
             <include>com/google/**/*.java</include>
@@ -1100,7 +1106,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.1</version>
+        <version>2.22.2</version>
         <configuration>
           <systemPropertyVariables>
             <jacoco-agent.destfile>${project.build.directory}/jacoco.exec</jacoco-agent.destfile>
@@ -2639,11 +2645,13 @@
                 <mutator>VOID_METHOD_CALLS</mutator>
               </mutators>
               <targetClasses>
+                <param>com.puppycrawl.tools.checkstyle.DetailAstImpl*</param>
                 <param>com.puppycrawl.tools.checkstyle.JavadocPropertiesGenerator*</param>
                 <param>com.puppycrawl.tools.checkstyle.XmlLoader*</param>
                 <param>com.puppycrawl.tools.checkstyle.JavaParser*</param>
               </targetClasses>
               <targetTests>
+                <param>com.puppycrawl.tools.checkstyle.DetailAstImplTest</param>
                 <param>com.puppycrawl.tools.checkstyle.JavadocPropertiesGeneratorTest</param>
                 <param>com.puppycrawl.tools.checkstyle.XmlLoaderTest</param>
                 <param>com.puppycrawl.tools.checkstyle.JavaParserTest</param>

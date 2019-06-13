@@ -42,7 +42,10 @@ public class TokenTypesTest {
 
         final Set<String> expected = new HashSet<String>();
         for (int tokenId : TokenUtil.getAllTokenIds()) {
-            expected.add(TokenUtil.getTokenName(tokenId));
+            final String name = TokenUtil.getTokenName(tokenId);
+            if (name.charAt(0) != '$') {
+                expected.add(name);
+            }
         }
         final Set<String> actual = bundle.keySet();
         assertEquals("TokenTypes without description", expected, actual);
@@ -52,9 +55,12 @@ public class TokenTypesTest {
     public void testAllDescriptionsEndsWithPeriod() {
         final Set<String> badDescriptions = new HashSet<String>();
         for (int tokenId : TokenUtil.getAllTokenIds()) {
-            final String desc = TokenUtil.getShortDescription(TokenUtil.getTokenName(tokenId));
-            if (desc.charAt(desc.length() - 1) != '.') {
-                badDescriptions.add(desc);
+            final String name = TokenUtil.getTokenName(tokenId);
+            if (name.charAt(0) != '$') {
+                final String desc = TokenUtil.getShortDescription(name);
+                if (desc.charAt(desc.length() - 1) != '.') {
+                    badDescriptions.add(desc);
+                }
             }
         }
         assertEquals("Malformed TokenType descriptions", Collections.emptySet(), badDescriptions);

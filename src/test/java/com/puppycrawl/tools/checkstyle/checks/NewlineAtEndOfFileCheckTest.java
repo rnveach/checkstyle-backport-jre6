@@ -21,7 +21,6 @@ package com.puppycrawl.tools.checkstyle.checks;
 
 import static com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck.MSG_KEY_NO_NEWLINE_EOF;
 import static com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck.MSG_KEY_UNABLE_OPEN;
-import static java.util.Locale.ENGLISH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -181,6 +180,18 @@ public class NewlineAtEndOfFileCheckTest
     }
 
     @Test
+    public void testFileWithEmptyLineOnlyWithLfCrCrlf() throws Exception {
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(NewlineAtEndOfFileCheck.class);
+        checkConfig.addAttribute("lineSeparator", LineSeparatorOption.LF_CR_CRLF.toString());
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+        verify(
+                createChecker(checkConfig),
+                getPath("InputNewlineAtEndOfFileNewlineAtEndLf.txt"),
+                expected);
+    }
+
+    @Test
     public void testWrongFile() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(NewlineAtEndOfFileCheck.class);
         final NewlineAtEndOfFileCheck check = new NewlineAtEndOfFileCheck();
@@ -212,14 +223,8 @@ public class NewlineAtEndOfFileCheckTest
             fail("Exception is expected");
         }
         catch (IOException ex) {
-            if (System.getProperty("os.name").toLowerCase(ENGLISH).startsWith("windows")) {
-                assertEquals("Error message is unexpected",
-                        "Unable to read 2 bytes, got 0", ex.getMessage());
-            }
-            else {
-                assertEquals("Error message is unexpected",
-                        "Unable to read 1 bytes, got 0", ex.getMessage());
-            }
+            assertEquals("Error message is unexpected",
+                    "Unable to read 1 bytes, got 0", ex.getMessage());
         }
     }
 

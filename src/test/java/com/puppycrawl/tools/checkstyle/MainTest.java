@@ -1030,7 +1030,7 @@ public class MainTest {
                 + "<suppressions>" + EOL
                 + "<suppress-xpath" + EOL
                 + "       files=\"InputMainComplexityOverflow.java\"" + EOL
-                + "       checks=\"JavadocMethodCheck\"" + EOL
+                + "       checks=\"MissingJavadocMethodCheck\"" + EOL
                 + "       query=\"/CLASS_DEF[./IDENT[@text='InputMainComplexityOverflow']]/OBJBLOCK"
                 + "/METHOD_DEF[./IDENT[@text='provokeNpathIntegerOverflow']]\"/>" + EOL
                 + "<suppress-xpath" + EOL

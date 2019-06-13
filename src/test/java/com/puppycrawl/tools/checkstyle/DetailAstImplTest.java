@@ -17,10 +17,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.puppycrawl.tools.checkstyle.api;
+package com.puppycrawl.tools.checkstyle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -30,6 +31,7 @@ import java.io.FileFilter;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -40,9 +42,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.powermock.reflect.Whitebox;
 
-import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
-import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
-import com.puppycrawl.tools.checkstyle.JavaParser;
+import antlr.CommonHiddenStreamToken;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
@@ -53,7 +55,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 /**
  * TestCase to check DetailAST.
  */
-public class DetailASTTest extends AbstractModuleTestSupport {
+public class DetailAstImplTest extends AbstractModuleTestSupport {
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -64,19 +66,53 @@ public class DetailASTTest extends AbstractModuleTestSupport {
     }
 
     private static Method getSetParentMethod() throws Exception {
-        final Class<DetailAST> detailAstClass = DetailAST.class;
+        final Class<DetailAstImpl> detailAstClass = DetailAstImpl.class;
         final Method setParentMethod =
-            detailAstClass.getDeclaredMethod("setParent", DetailAST.class);
+            detailAstClass.getDeclaredMethod("setParent", DetailAstImpl.class);
         setParentMethod.setAccessible(true);
         return setParentMethod;
     }
 
     @Test
+    public void testInitialize() {
+        final DetailAstImpl ast = new DetailAstImpl();
+        ast.setText("test");
+        ast.setType(1);
+        ast.setLineNo(2);
+        ast.setColumnNo(3);
+
+        final DetailAstImpl copy = new DetailAstImpl();
+        copy.initialize(ast);
+
+        assertEquals("Invalid text", "test", copy.getText());
+        assertEquals("Invalid type", 1, copy.getType());
+        assertEquals("Invalid line number", 2, copy.getLineNo());
+        assertEquals("Invalid column number", 3, copy.getColumnNo());
+    }
+
+    @Test
+    public void testInitializeToken() {
+        final CommonHiddenStreamToken token = new CommonHiddenStreamToken();
+        token.setText("test");
+        token.setType(1);
+        token.setLine(2);
+        token.setColumn(4);
+
+        final DetailAstImpl ast = new DetailAstImpl();
+        ast.initialize(token);
+
+        assertEquals("Invalid text", "test", ast.getText());
+        assertEquals("Invalid type", 1, ast.getType());
+        assertEquals("Invalid line number", 2, ast.getLineNo());
+        assertEquals("Invalid column number", 3, ast.getColumnNo());
+    }
+
+    @Test
     public void testGetChildCount() throws Exception {
-        final DetailAST root = new DetailAST();
-        final DetailAST firstLevelA = new DetailAST();
-        final DetailAST firstLevelB = new DetailAST();
-        final DetailAST secondLevelA = new DetailAST();
+        final DetailAstImpl root = new DetailAstImpl();
+        final DetailAstImpl firstLevelA = new DetailAstImpl();
+        final DetailAstImpl firstLevelB = new DetailAstImpl();
+        final DetailAstImpl secondLevelA = new DetailAstImpl();
 
         root.setFirstChild(firstLevelA);
 
@@ -103,9 +139,9 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testGetChildCountType() throws Exception {
-        final DetailAST root = new DetailAST();
-        final DetailAST firstLevelA = new DetailAST();
-        final DetailAST firstLevelB = new DetailAST();
+        final DetailAstImpl root = new DetailAstImpl();
+        final DetailAstImpl firstLevelA = new DetailAstImpl();
+        final DetailAstImpl firstLevelB = new DetailAstImpl();
 
         root.setFirstChild(firstLevelA);
 
@@ -127,8 +163,8 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testSetSiblingNull() throws Exception {
-        final DetailAST root = new DetailAST();
-        final DetailAST firstLevelA = new DetailAST();
+        final DetailAstImpl root = new DetailAstImpl();
+        final DetailAstImpl firstLevelA = new DetailAstImpl();
 
         root.setFirstChild(firstLevelA);
 
@@ -143,9 +179,9 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAddPreviousSibling() {
-        final DetailAST previousSibling = new DetailAST();
-        final DetailAST instance = new DetailAST();
-        final DetailAST parent = new DetailAST();
+        final DetailAST previousSibling = new DetailAstImpl();
+        final DetailAstImpl instance = new DetailAstImpl();
+        final DetailAstImpl parent = new DetailAstImpl();
 
         parent.setFirstChild(instance);
 
@@ -154,7 +190,7 @@ public class DetailASTTest extends AbstractModuleTestSupport {
         assertEquals("unexpected result", previousSibling, instance.getPreviousSibling());
         assertEquals("unexpected result", previousSibling, parent.getFirstChild());
 
-        final DetailAST newPreviousSibling = new DetailAST();
+        final DetailAST newPreviousSibling = new DetailAstImpl();
 
         instance.addPreviousSibling(newPreviousSibling);
 
@@ -166,8 +202,8 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAddPreviousSiblingNullParent() {
-        final DetailAST child = new DetailAST();
-        final DetailAST newSibling = new DetailAST();
+        final DetailAST child = new DetailAstImpl();
+        final DetailAST newSibling = new DetailAstImpl();
 
         child.addPreviousSibling(newSibling);
 
@@ -177,10 +213,10 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testInsertSiblingBetween() throws Exception {
-        final DetailAST root = new DetailAST();
-        final DetailAST firstLevelA = new DetailAST();
-        final DetailAST firstLevelB = new DetailAST();
-        final DetailAST firstLevelC = new DetailAST();
+        final DetailAstImpl root = new DetailAstImpl();
+        final DetailAstImpl firstLevelA = new DetailAstImpl();
+        final DetailAST firstLevelB = new DetailAstImpl();
+        final DetailAST firstLevelC = new DetailAstImpl();
 
         assertEquals("Invalid child count", 0, root.getChildCount());
 
@@ -203,16 +239,16 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testBranchContains() {
-        final DetailAST root = createToken(null, TokenTypes.CLASS_DEF);
-        final DetailAST modifiers = createToken(root, TokenTypes.MODIFIERS);
+        final DetailAstImpl root = createToken(null, TokenTypes.CLASS_DEF);
+        final DetailAstImpl modifiers = createToken(root, TokenTypes.MODIFIERS);
         createToken(modifiers, TokenTypes.LITERAL_PUBLIC);
 
         assertTrue("invalid result", root.branchContains(TokenTypes.LITERAL_PUBLIC));
         assertFalse("invalid result", root.branchContains(TokenTypes.OBJBLOCK));
     }
 
-    private static DetailAST createToken(DetailAST root, int type) {
-        final DetailAST result = new DetailAST();
+    private static DetailAstImpl createToken(DetailAstImpl root, int type) {
+        final DetailAstImpl result = new DetailAstImpl();
         result.setType(type);
         if (root != null) {
             root.addChild(result);
@@ -222,49 +258,49 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testClearBranchTokenTypes() throws Exception {
-        final DetailAST parent = new DetailAST();
-        final DetailAST child = new DetailAST();
+        final DetailAstImpl parent = new DetailAstImpl();
+        final DetailAstImpl child = new DetailAstImpl();
         parent.setFirstChild(child);
 
-        final List<Consumer<DetailAST>> clearBranchTokenTypesMethods = Arrays.asList(
-            new Consumer<DetailAST>() {
+        final List<Consumer<DetailAstImpl>> clearBranchTokenTypesMethods = Arrays.asList(
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     child.setFirstChild(ast);
                     return false;
                 }
             },
-            new Consumer<DetailAST>() {
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     child.setNextSibling(ast);
                     return false;
                 }
             },
-            new Consumer<DetailAST>() {
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     child.addPreviousSibling(ast);
                     return false;
                 }
             },
-            new Consumer<DetailAST>() {
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     child.addNextSibling(ast);
                     return false;
                 }
             },
-            new Consumer<DetailAST>() {
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     child.addChild(ast);
                     return false;
                 }
             },
-            new Consumer<DetailAST>() {
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     try {
                         Whitebox.invokeMethod(child, "setParent", ast);
                     }
@@ -277,7 +313,7 @@ public class DetailASTTest extends AbstractModuleTestSupport {
             }
         );
 
-        for (Consumer<DetailAST> method : clearBranchTokenTypesMethods) {
+        for (Consumer<DetailAstImpl> method : clearBranchTokenTypesMethods) {
             final BitSet branchTokenTypes = Whitebox.invokeMethod(parent, "getBranchTokenTypes");
             method.accept(null);
             final BitSet branchTokenTypes2 = Whitebox.invokeMethod(parent, "getBranchTokenTypes");
@@ -289,7 +325,7 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testCacheBranchTokenTypes() {
-        final DetailAST root = new DetailAST();
+        final DetailAST root = new DetailAstImpl();
         final BitSet bitSet = new BitSet();
         bitSet.set(999);
 
@@ -299,35 +335,35 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testClearChildCountCache() {
-        final DetailAST parent = new DetailAST();
-        final DetailAST child = new DetailAST();
+        final DetailAstImpl parent = new DetailAstImpl();
+        final DetailAstImpl child = new DetailAstImpl();
         parent.setFirstChild(child);
 
-        final List<Consumer<DetailAST>> clearChildCountCacheMethods = Arrays.asList(
-            new Consumer<DetailAST>() {
+        final List<Consumer<DetailAstImpl>> clearChildCountCacheMethods = Arrays.asList(
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     child.setNextSibling(ast);
                     return false;
                 }
             },
-            new Consumer<DetailAST>() {
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     child.addPreviousSibling(ast);
                     return false;
                 }
             },
-            new Consumer<DetailAST>() {
+            new Consumer<DetailAstImpl>() {
                 @Override
-                public boolean accept(DetailAST ast) {
+                public boolean accept(DetailAstImpl ast) {
                     child.addNextSibling(ast);
                     return false;
                 }
             }
         );
 
-        for (Consumer<DetailAST> method : clearChildCountCacheMethods) {
+        for (Consumer<DetailAstImpl> method : clearChildCountCacheMethods) {
             final int startCount = parent.getChildCount();
             method.accept(null);
             final int intermediateCount = Whitebox.getInternalState(parent, "childCount");
@@ -346,7 +382,7 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testCacheGetChildCount() {
-        final DetailAST root = new DetailAST();
+        final DetailAST root = new DetailAstImpl();
 
         Whitebox.setInternalState(root, "childCount", 999);
         assertEquals("Child count has changed", 999, root.getChildCount());
@@ -354,10 +390,10 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAddNextSibling() {
-        final DetailAST parent = new DetailAST();
-        final DetailAST child = new DetailAST();
-        final DetailAST sibling = new DetailAST();
-        final DetailAST newSibling = new DetailAST();
+        final DetailAstImpl parent = new DetailAstImpl();
+        final DetailAstImpl child = new DetailAstImpl();
+        final DetailAstImpl sibling = new DetailAstImpl();
+        final DetailAST newSibling = new DetailAstImpl();
         parent.setFirstChild(child);
         child.setNextSibling(sibling);
         child.addNextSibling(newSibling);
@@ -369,9 +405,9 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAddNextSiblingNullParent() {
-        final DetailAST child = new DetailAST();
-        final DetailAST newSibling = new DetailAST();
-        final DetailAST oldParent = new DetailAST();
+        final DetailAST child = new DetailAstImpl();
+        final DetailAstImpl newSibling = new DetailAstImpl();
+        final DetailAstImpl oldParent = new DetailAstImpl();
         oldParent.addChild(newSibling);
         child.addNextSibling(newSibling);
 
@@ -382,24 +418,24 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testGetLineNo() {
-        final DetailAST root1 = new DetailAST();
+        final DetailAST root1 = new DetailAstImpl();
         root1.setLineNo(1);
         assertEquals("Invalid line number", 1, root1.getLineNo());
 
-        final DetailAST root2 = new DetailAST();
-        final DetailAST firstChild = new DetailAST();
+        final DetailAstImpl root2 = new DetailAstImpl();
+        final DetailAstImpl firstChild = new DetailAstImpl();
         firstChild.setLineNo(2);
         root2.setFirstChild(firstChild);
         assertEquals("Invalid line number", 2, root2.getLineNo());
 
-        final DetailAST root3 = new DetailAST();
-        final DetailAST nextSibling = new DetailAST();
+        final DetailAstImpl root3 = new DetailAstImpl();
+        final DetailAstImpl nextSibling = new DetailAstImpl();
         nextSibling.setLineNo(3);
         root3.setNextSibling(nextSibling);
         assertEquals("Invalid line number", 3, root3.getLineNo());
 
-        final DetailAST root4 = new DetailAST();
-        final DetailAST comment = new DetailAST();
+        final DetailAstImpl root4 = new DetailAstImpl();
+        final DetailAstImpl comment = new DetailAstImpl();
         comment.setType(TokenTypes.SINGLE_LINE_COMMENT);
         comment.setLineNo(3);
         root4.setFirstChild(comment);
@@ -408,24 +444,24 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testGetColumnNo() {
-        final DetailAST root1 = new DetailAST();
+        final DetailAST root1 = new DetailAstImpl();
         root1.setColumnNo(1);
         assertEquals("Invalid column number", 1, root1.getColumnNo());
 
-        final DetailAST root2 = new DetailAST();
-        final DetailAST firstChild = new DetailAST();
+        final DetailAstImpl root2 = new DetailAstImpl();
+        final DetailAstImpl firstChild = new DetailAstImpl();
         firstChild.setColumnNo(2);
         root2.setFirstChild(firstChild);
         assertEquals("Invalid column number", 2, root2.getColumnNo());
 
-        final DetailAST root3 = new DetailAST();
-        final DetailAST nextSibling = new DetailAST();
+        final DetailAstImpl root3 = new DetailAstImpl();
+        final DetailAstImpl nextSibling = new DetailAstImpl();
         nextSibling.setColumnNo(3);
         root3.setNextSibling(nextSibling);
         assertEquals("Invalid column number", 3, root3.getColumnNo());
 
-        final DetailAST root4 = new DetailAST();
-        final DetailAST comment = new DetailAST();
+        final DetailAstImpl root4 = new DetailAstImpl();
+        final DetailAstImpl comment = new DetailAstImpl();
         comment.setType(TokenTypes.SINGLE_LINE_COMMENT);
         comment.setColumnNo(3);
         root4.setFirstChild(comment);
@@ -434,12 +470,12 @@ public class DetailASTTest extends AbstractModuleTestSupport {
 
     @Test
     public void testFindFirstToken() {
-        final DetailAST root = new DetailAST();
-        final DetailAST firstChild = new DetailAST();
+        final DetailAstImpl root = new DetailAstImpl();
+        final DetailAstImpl firstChild = new DetailAstImpl();
         firstChild.setType(TokenTypes.IDENT);
-        final DetailAST secondChild = new DetailAST();
+        final DetailAstImpl secondChild = new DetailAstImpl();
         secondChild.setType(TokenTypes.EXPR);
-        final DetailAST thirdChild = new DetailAST();
+        final DetailAstImpl thirdChild = new DetailAstImpl();
         thirdChild.setType(TokenTypes.IDENT);
 
         root.addChild(firstChild);
@@ -456,7 +492,6 @@ public class DetailASTTest extends AbstractModuleTestSupport {
     public void testManyComments() throws Exception {
         final File file = temporaryFolder.newFile("InputDetailASTManyComments.java");
         final Writer bw = Files7.newBufferedWriter(new Path(file), StandardCharsets.UTF_8);
-
         try {
             bw.write("class C {\n");
             for (int i = 0; i <= 30000; i++) {
@@ -474,52 +509,57 @@ public class DetailASTTest extends AbstractModuleTestSupport {
         verify(checkConfig, file.getAbsolutePath(), expected);
     }
 
-    /**
-     * There are asserts in checkNode, but idea does not see them.
-     * @noinspection JUnitTestMethodWithNoAssertions
-     */
     @Test
     public void testTreeStructure() throws Exception {
-        checkDir(new File("src/test/resources/com/puppycrawl/tools/checkstyle"));
+        final List<File> files = getAllFiles(
+                new File("src/test/resources/com/puppycrawl/tools/checkstyle"));
+
+        for (File file : files) {
+            final String fileName = file.getCanonicalPath();
+            final DetailAST rootAST = JavaParser.parseFile(new File(fileName),
+                    JavaParser.Options.WITHOUT_COMMENTS);
+
+            assertNotNull("file must return a root node: " + fileName, rootAST);
+
+            assertTrue("tree is valid", checkTree(fileName, rootAST));
+        }
     }
 
     @Test
     public void testToString() {
-        final DetailAST ast = new DetailAST();
+        final DetailAST ast = new DetailAstImpl();
         ast.setText("text");
         ast.setColumnNo(0);
         ast.setLineNo(0);
         assertEquals("Invalid text", "text[0x0]", ast.toString());
     }
 
-    private static void checkDir(File dir) throws Exception {
-        final File[] files = dir.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return (file.getName().endsWith(".java")
-                            || file.isDirectory())
-                        && !file.getName().endsWith("InputGrammar.java");
+    private static List<File> getAllFiles(File dir) {
+        final List<File> result = new ArrayList<File>();
+
+        dir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                if (file.isDirectory()) {
+                    result.addAll(getAllFiles(file));
                 }
-            });
-        for (File file : files) {
-            if (file.isFile()) {
-                checkFile(file.getCanonicalPath());
+                else if (file.getName().endsWith(".java")
+                        // fails with unexpected character
+                        && !file.getName().endsWith("InputGrammar.java")
+                        // comment only files, no root
+                        && !file.getName().endsWith("InputPackageDeclarationWithCommentOnly.java")
+                        && !file.getName().endsWith("InputSingleSpaceSeparatorEmpty.java")) {
+                    result.add(file);
+                }
+
+                return false;
             }
-            else if (file.isDirectory()) {
-                checkDir(file);
-            }
-        }
+        });
+
+        return result;
     }
 
-    private static void checkFile(String filename) throws Exception {
-        final DetailAST rootAST =
-            JavaParser.parseFile(new File(filename), JavaParser.Options.WITHOUT_COMMENTS);
-        if (rootAST != null) {
-            checkTree(filename, rootAST);
-        }
-    }
-
-    private static void checkTree(final String filename, final DetailAST root) {
+    private static boolean checkTree(final String filename, final DetailAST root) {
         DetailAST curNode = root;
         DetailAST parent = null;
         DetailAST prev = null;
@@ -547,6 +587,8 @@ public class DetailASTTest extends AbstractModuleTestSupport {
                 prev = null;
             }
         }
+
+        return true;
     }
 
     private static void checkNode(final DetailAST node,

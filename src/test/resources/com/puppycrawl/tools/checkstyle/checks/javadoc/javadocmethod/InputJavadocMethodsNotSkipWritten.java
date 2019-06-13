@@ -32,3 +32,4 @@ public class InputJavadocMethodsNotSkipWritten {
         return "";
     }
 }
+@interface MyAnnotation {}

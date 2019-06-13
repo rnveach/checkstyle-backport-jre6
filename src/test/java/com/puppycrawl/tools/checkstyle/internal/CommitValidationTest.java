@@ -240,6 +240,9 @@ public class CommitValidationTest {
         catch (IOException ignored) {
             revCommitIteratorPair = new RevCommitsPair();
         }
+        finally {
+            git.close();
+        }
 
         return revCommitIteratorPair;
     }

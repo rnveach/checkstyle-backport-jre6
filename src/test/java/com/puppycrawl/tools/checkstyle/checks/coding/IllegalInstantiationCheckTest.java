@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -153,7 +154,7 @@ public class IllegalInstantiationCheckTest
     public void testImproperToken() {
         final IllegalInstantiationCheck check = new IllegalInstantiationCheck();
 
-        final DetailAST lambdaAst = new DetailAST();
+        final DetailAST lambdaAst = new DetailAstImpl();
         lambdaAst.setType(TokenTypes.LAMBDA);
 
         try {

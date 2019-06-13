@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
-import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class JavadocMethodTest extends AbstractModuleTestSupport {
 
@@ -34,11 +34,8 @@ public class JavadocMethodTest extends AbstractModuleTestSupport {
 
     @Test
     public void testJavadocMethod() throws Exception {
-        final String msg = getCheckMessage(JavadocMethodCheck.class, "javadoc.missing");
 
-        final String[] expected = {
-            "57:5: " + msg,
-        };
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         final Configuration checkConfig = getModuleConfig("JavadocMethod");
         final String filePath = getPath("InputJavadocMethodCheck.java");

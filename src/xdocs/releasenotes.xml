@@ -15,6 +15,226 @@
 
   <body>
     <!-- placeholder for a new section -->
+    <section name="Release 8.21">
+      <div class="releaseDate">26.05.2019</div>
+      <p>Breaking backward compatibility:</p>
+        <ul>
+          <li>
+            NewlineAtEndOfFile default should be OS agnostic.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/4073">#4073</a>
+          </li>
+          <li>
+            Remove PARAMETER_DEF from AnnotationLocation.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6462">#6462</a>
+          </li>
+          <li>
+            API: make api not depend on antlr by splitting DetailAST between
+            implementation and interface.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/3417">#3417</a>
+          </li>
+          <li>
+            new check: MissingJavadocMethod from JavadocMethod.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/6703">#6703</a>
+          </li>
+        </ul>
+      <p>Bug fixes:</p>
+        <ul>
+          <li>
+            LocalVariableName:  allowOneCharVarInForLoop should allow one char variable in loop.
+            Author: Andrei Paikin
+            <a href="https://github.com/checkstyle/checkstyle/issues/6489">#6489</a>
+          </li>
+          <li>
+            Do not handle local variables for VARIABLE_DEF in AnnotationLocation.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6463">#6463</a>
+          </li>
+          <li>
+            OneStatementPerLine: false-positive on try-with-resource when objects just referenced.
+            Author: Andrei Paikin
+            <a href="https://github.com/checkstyle/checkstyle/issues/6125">#6125</a>
+          </li>
+          <li>
+            NewlineAtEndOfFile with LF_CR_CRLF does not work properly.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6508">#6508</a>
+          </li>
+          <li>
+            EmptyCatchBlock check does not work properly with non-system line endings in files.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6513">#6513</a>
+          </li>
+        </ul>
+      <p>Notes:</p>
+        <ul>
+          <li>
+            Code samples for Naming Checks.
+            Author: jack870131
+            <a href="https://github.com/checkstyle/checkstyle/issues/5832">#5832</a>
+          </li>
+          <li>
+            Align XDocs and Javadocs for whitespace package.
+            Author: pbludov
+            <a href="https://github.com/checkstyle/checkstyle/issues/6749">#6749</a>
+          </li>
+          <li>
+            spelling: identificator-&gt;identifier.
+            Author: pbludov
+          </li>
+          <li>
+            spelling: inpection.
+            Author: pbludov
+          </li>
+          <li>
+            refactoring of DetailASTTest.testTreeStructure.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/4900">#4900</a>
+          </li>
+          <li>
+            Fix sonar warnings.
+            Author: Andrei Paikin
+            <a href="https://github.com/checkstyle/checkstyle/issues/6764">#6764</a>
+          </li>
+          <li>
+            move OSX executions from travis.yml to travis.sh .
+            Author: ahmadshabib
+            <a href="https://github.com/checkstyle/checkstyle/issues/6701">#6701</a>
+          </li>
+          <li>
+            doc: fix my name in release notes.
+            Author: Björn Kautler
+          </li>
+          <li>
+            Issue template should clarify failure to follow template will lead to issue being closed
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/6742">#6742</a>
+          </li>
+          <li>
+            Align XDocs and Javadocs for design package.
+            Author: pbludov
+            <a href="https://github.com/checkstyle/checkstyle/issues/6725">#6725</a>
+          </li>
+          <li>
+            investigate increase of &#39;-all&#39; jar.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/6713">#6713</a>
+          </li>
+          <li>
+            Cached Google Style is slightly outdated and not like original.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6619">#6619</a>
+          </li>
+        </ul>
+    </section>
+
+    <section name="Release 8.20">
+      <div class="releaseDate">28.04.2019</div>
+      <p>New:</p>
+        <ul>
+          <li>
+            New MissingJavadocCheck(s).
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/5411">#5411</a>
+          </li>
+        </ul>
+      <p>Bug fixes:</p>
+        <ul>
+          <li>
+            IllegalType: illegal types in overridden methods should not be reported.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6612">#6612</a>
+          </li>
+          <li>
+            EmptyLineSeparator check does not validate newlines before comments.
+            Author: kazachka
+            <a href="https://github.com/checkstyle/checkstyle/issues/5981">#5981</a>
+          </li>
+          <li>
+            Exception in JavadocMethod to get access to class in jdk9.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/6606">#6606</a>
+          </li>
+          <li>
+            RightCurly false-positives for multi-block continuation.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6466">#6466</a>
+          </li>
+          <li>
+            TranslationCheck reports duplicate lines in xml report.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/5103">#5103</a>
+          </li>
+          <li>
+            AnnotationUseStyle: false positive on annotation with default nested
+annotation inside.
+            Author: Andrei Paikin
+            <a href="https://github.com/checkstyle/checkstyle/issues/6540">#6540</a>
+          </li>
+          <li>
+            RightCurly with option alone false negative for class, method and constructor.
+            Author: WANG CHAO
+            <a href="https://github.com/checkstyle/checkstyle/issues/6345">#6345</a>
+          </li>
+        </ul>
+      <p>Notes:</p>
+        <ul>
+          <li>
+            Align XDocs and Javadocs for coding package.
+            Author: pbludov
+            <a href="https://github.com/checkstyle/checkstyle/issues/6586">#6586</a>
+          </li>
+          <li>
+            set up JDK12 buid.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/6687">#6687</a>
+          </li>
+          <li>
+            minor: GeneratedJava14LexerTest depends on encoding, not on OS, so
+fix the assumption to represent this.
+            Author: BBjörnKautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6608">#6608</a>
+          </li>
+          <li>
+            MultipleVariableDeclarations missing from sun style.
+            Author: Björn Kautler
+            <a href="https://github.com/checkstyle/checkstyle/issues/6490">#6490</a>
+          </li>
+          <li>
+            doc: expand documentation for scope property type.
+            Author: rnveach
+          </li>
+          <li>
+            pitest: increase mutation coverage for api profile to 100%.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/6635">#6635</a>
+          </li>
+          <li>
+            Remove usage of antlr specific methods from our checks.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/6624">#6624</a>
+          </li>
+          <li>
+            idea: fix ThisEscapedInConstructor idea violation for
+AbstractClassCouplingCheck.FileContext class.
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/4861">#4861</a>
+          </li>
+          <li>
+            Test inputs should be completely standalone..
+            Author: rnveach
+            <a href="https://github.com/checkstyle/checkstyle/issues/4845">#4845</a>
+          </li>
+          <li>
+            Fix pitest coverage for RightCurly.
+            Author: WANG CHAO
+            <a href="https://github.com/checkstyle/checkstyle/issues/6367">#6367</a>
+          </li>
+        </ul>
+    </section>
 
     <section name="Release 8.19">
       <div class="releaseDate">31.03.2019</div>

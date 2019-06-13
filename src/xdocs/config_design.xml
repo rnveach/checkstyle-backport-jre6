@@ -23,8 +23,8 @@
     </section>
 
     <section name="DesignForExtension">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="DesignForExtension_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           The check finds classes that are designed for extension (subclass creation).
         </p>
@@ -156,7 +156,7 @@ public abstract class Plant {
                 <tr>
                     <td>ignoredAnnotations</td>
                     <td>
-                        Annotations which allow the check to skip the method from validation.
+                      Specify annotations which allow the check to skip the method from validation.
                     </td>
                     <td><a href="property_types.html#stringSet">String Set</a></td>
                     <td><code>Before, BeforeClass, Test, After, AfterClass</code></td>
@@ -259,8 +259,8 @@ public class FooTest {
     </section>
 
     <section name="FinalClass">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="FinalClass_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           Checks that a class which has only private constructors is declared
           as final. Doesn't check for classes nested in interfaces
@@ -317,15 +317,15 @@ public class FooTest {
     </section>
 
     <section name="HideUtilityClassConstructor">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="HideUtilityClassConstructor_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           Makes sure that utility classes (classes that contain only static
           methods or fields in their API) do not have a public constructor.
         </p>
 
         <p>
-          Rationale: Instantiating utility classes does not make sense.  Hence
+          Rationale: Instantiating utility classes does not make sense. Hence
           the constructors should either be private or (if you want to allow
           subclassing) protected. A common mistake is forgetting to hide the
           default constructor.
@@ -401,8 +401,8 @@ public class StringUtils // not final to allow subclassing
     </section>
 
     <section name="InnerTypeLast">
+      <p>Since Checkstyle 5.2</p>
       <subsection name="Description" id="InnerTypeLast_Description">
-        <p>Since Checkstyle 5.2</p>
         <p>
           Check nested (inner) classes/interfaces are declared at the
           bottom of the class after all method and field declarations.
@@ -454,8 +454,8 @@ public class StringUtils // not final to allow subclassing
     </section>
 
     <section name="InterfaceIsType">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="InterfaceIsType_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           Implements Joshua Bloch, Effective Java, Item 17 - Use Interfaces only to
           define types.
@@ -489,7 +489,7 @@ public class StringUtils // not final to allow subclassing
           <tr>
             <td>allowMarkerInterfaces</td>
             <td>
-              Controls whether marker interfaces like Serializable are
+              Control whether marker interfaces like Serializable are
               allowed.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
@@ -548,8 +548,8 @@ public class StringUtils // not final to allow subclassing
     </section>
 
     <section name="MutableException">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="MutableException_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Ensures that exception classes (classes with names conforming to some regular
           expression and explicitly extending classes with names conforming to other
@@ -558,9 +558,9 @@ public class StringUtils // not final to allow subclassing
 
         <p>
           The current algorithm is very simple: it checks that all members of
-          exception are final.  The user can still mutate an exception's instance
+          exception are final. The user can still mutate an exception's instance
           (e.g. Throwable has a method called <code>setStackTrace</code>
-          which changes the exception's stack trace).  But, at least, all information
+          which changes the exception's stack trace). But, at least, all information
           provided by this exception type is unchangeable.
         </p>
 
@@ -585,14 +585,14 @@ public class StringUtils // not final to allow subclassing
           </tr>
           <tr>
             <td>format</td>
-            <td>pattern for exception class names</td>
+            <td>Specify pattern for exception class names.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^.*Exception$|^.*Error$|^.*Throwable$"</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>extendedClassNameFormat</td>
-            <td>pattern for extended class names</td>
+            <td>Specify pattern for extended class names.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^.*Exception$|^.*Error$|^.*Throwable$"</code></td>
             <td>6.2</td>
@@ -645,13 +645,13 @@ public class StringUtils // not final to allow subclassing
     </section>
 
     <section name="OneTopLevelClass">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="OneTopLevelClass_Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
           Checks that each top-level class, interface or
           enum resides in a source file of its own.
           Official description of a 'top-level' term:<a
-          href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-7.html#jls-7.6">
+          href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-7.html#jls-7.6">
             7.6. Top Level Type Declarations</a>.
           If file doesn't contains public class, enum or interface,
           top-level type is the first type in file.
@@ -743,8 +743,8 @@ public class Foo{
     </section>
 
     <section name="ThrowsCount">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="ThrowsCount_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Restricts throws statements to a specified count (4 by default).
           Methods with "Override" or "java.lang.Override" annotation are skipped
@@ -761,7 +761,7 @@ public class Foo{
           This check also forces developers to put exceptions into a hierarchy
           such that in the simplest case, only one type of exception need be
           checked for by a caller but any subclasses can be caught specifically
-          if necessary.For more information on rules for the exceptions and
+          if necessary. For more information on rules for the exceptions and
           their issues, see Effective Java: Programming Language Guide
           Second Edition by Joshua Bloch pages 264-273.
         </p>
@@ -783,14 +783,14 @@ public class Foo{
           </tr>
           <tr>
             <td>max</td>
-            <td>maximum allowed number of throws statements</td>
+            <td>Specify maximum allowed number of throws statements.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>4</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>ignorePrivateMethods</td>
-            <td>whether private methods must be ignored</td>
+            <td>Allow private methods to be ignored.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>6.7</td>
@@ -855,8 +855,8 @@ public class Foo{
     </section>
 
     <section name="VisibilityModifier">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="VisibilityModifier_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks visibility of class members. Only static final, immutable or annotated
           by specified annotation members may be public; other class members must be private
@@ -883,22 +883,25 @@ public class Foo{
         <p>
           <b>ignoreAnnotationCanonicalNames</b> - the list of annotations which ignore variables
           in consideration. If user will provide short annotation name that type will match to any
-          named the same type without consideration of package
+          named the same type without consideration of package.
         </p>
         <p>
           <b>allowPublicFinalFields</b> - which allows public final fields.
-          Default value is <b>false</b>
         </p>
         <p>
           <b>allowPublicImmutableFields</b> - which allows immutable fields to be declared as
-          public if defined in final class. Default value is <b>false</b>
+          public if defined in final class.
         </p>
         <p>
           Field is known to be immutable if:
-          - It's declared as final
-          - Has either a primitive type or instance of class user defined to be immutable
-          (such as String, ImmutableCollection from Guava and etc)
         </p>
+        <ul>
+          <li>It's declared as final</li>
+          <li>
+            Has either a primitive type or instance of class user defined to be immutable
+            (such as String, ImmutableCollection from Guava and etc)
+          </li>
+        </ul>
         <p>
           Classes known to be immutable are listed in <b>immutableClassCanonicalNames</b> by their
           <b>canonical</b> names.
@@ -934,56 +937,59 @@ public class Foo{
           </tr>
           <tr>
             <td>packageAllowed</td>
-            <td>whether package visible members are allowed</td>
+            <td>Control whether package visible members are allowed.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>protectedAllowed</td>
-            <td>whether protected members are allowed</td>
+            <td>Control whether protected members are allowed.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>publicMemberPattern</td>
-            <td>pattern for public members that should be ignored</td>
+            <td>Specify pattern for public members that should be ignored.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^serialVersionUID$"</code></td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>allowPublicFinalFields</td>
-            <td>allows public final fields</td>
+            <td>Allow final fields to be declared as public.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>7.0</td>
           </tr>
           <tr>
             <td>allowPublicImmutableFields</td>
-            <td>allows immutable fields to be declared as public if defined in final class</td>
+            <td>Allow immutable fields to be declared as public if defined in final class.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>6.4</td>
           </tr>
           <tr>
             <td>immutableClassCanonicalNames</td>
-            <td>immutable classes canonical names</td>
+            <td>Specify immutable classes canonical names.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>java.lang.String, java.lang.Integer, java.lang.Byte, java.lang.Character,
+            <td><code>java.lang.String, java.lang.Integer, java.lang.Byte, java.lang.Character,
             java.lang.Short, java.lang.Boolean, java.lang.Long, java.lang.Double, java.lang.Float,
             java.lang.StackTraceElement, java.math.BigInteger, java.math.BigDecimal, java.io.File,
             java.util.Locale, java.util.UUID, java.net.URL, java.net.URI,
-            java.net.Inet4Address, java.net.Inet6Address, java.net.InetSocketAddress</td>
+            java.net.Inet4Address, java.net.Inet6Address, java.net.InetSocketAddress</code></td>
             <td>6.4.1</td>
           </tr>
           <tr>
             <td>ignoreAnnotationCanonicalNames</td>
-            <td>ignore annotations canonical names</td>
+            <td>
+              Specify the list of annotations canonical names which ignore variables in
+              consideration.
+            </td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>org.junit.Rule, org.junit.ClassRule,
-                com.google.common.annotations.VisibleForTesting</td>
+            <td><code>org.junit.Rule, org.junit.ClassRule,
+                com.google.common.annotations.VisibleForTesting</code></td>
             <td>6.5</td>
           </tr>
         </table>
