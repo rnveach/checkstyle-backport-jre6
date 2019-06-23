@@ -65,115 +65,80 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
     private static final Map<String, String> CHECK_TEXT = new HashMap<String, String>();
 
     /**
-     * The list of checks that are compatible with this rule.
-     * When the list becomes large, it should be replaced by a suppression list.
+     * The list of checks that are not yet compatible with this rule.
      */
-    private static final String[] COMPATIBLE_CHECKS = {
-        "AbbreviationAsWordInName",
-        "AbstractClassName",
-        "AnnotationLocation",
-        "AnnotationOnSameLine",
-        "AnnotationUseStyle",
-        "ArrayTrailingComma",
-        "AtclauseOrder",
-        "AvoidNestedBlocks",
-        "AvoidInlineConditionals",
-        "CatchParameterName",
-        "ClassMemberImpliedModifier",
-        "ClassTypeParameterName",
-        "ConstantName",
-        "CovariantEquals",
-        "CustomImportOrder",
-        "DeclarationOrder",
-        "DefaultComesLast",
-        "DesignForExtension",
-        "EmptyBlock",
-        "EmptyCatchBlock",
-        "EmptyForInitializerPad",
-        "EmptyForIteratorPad",
-        "EmptyLineSeparator",
-        "EmptyStatement",
-        "EqualsAvoidNull",
-        "EqualsHashCode",
-        "ExplicitInitialization",
-        "FallThrough",
-        "FileTabCharacter",
-        "FinalClass",
-        "FinalLocalVariable",
-        "GenericWhitespace",
-        "HiddenField",
-        "HideUtilityClassConstructor",
-        "IllegalCatch",
-        "IllegalInstantiation",
-        "IllegalThrows",
-        "IllegalToken",
-        "IllegalTokenText",
-        "IllegalType",
-        "ImportOrder",
-        "InnerAssignment",
-        "InnerTypeLast",
-        "InterfaceIsType",
-        "InterfaceMemberImpliedModifier",
-        "InterfaceTypeParameterName",
-        "LambdaParameterName",
-        "LeftCurly",
-        "LocalFinalVariableName",
-        "LocalVariableName",
-        "MagicNumber",
-        "MemberName",
-        "MethodName",
-        "MethodParamPad",
-        "MethodTypeParameterName",
-        "MissingCtor",
-        "MissingDeprecated",
-        "MissingJavadocMethod",
-        "MissingJavadocType",
-        "MissingOverride",
-        "MissingSwitchDefault",
-        "ModifiedControlVariable",
-        "MutableException",
-        "MultipleStringLiterals",
-        "MultipleVariableDeclarations",
-        "NeedBraces",
-        "NestedForDepth",
-        "NestedIfDepth",
-        "NestedTryDepth",
-        "NoClone",
-        "NoFinalizer",
-        "NoLineWrap",
-        "NoWhitespaceAfter",
-        "NoWhitespaceBefore",
-        "OneStatementPerLine",
-        "OneTopLevelClass",
-        "OperatorWrap",
-        "OverloadMethodsDeclarationOrder",
-        "PackageAnnotation",
-        "PackageDeclaration",
-        "PackageName",
-        "ParameterAssignment",
-        "ParameterName",
-        "ParenPad",
-        "RequireThis",
-        "ReturnCount",
-        "RightCurly",
-        "SeparatorWrap",
-        "SimplifyBooleanExpression",
-        "SimplifyBooleanReturn",
-        "SingleSpaceSeparator",
-        "StaticVariableName",
-        "StringLiteralEquality",
-        "SuperClone",
-        "SuperFinalize",
-        "SuppressWarnings",
-        "SuppressWarningsHolder",
-        "ThrowsCount",
-        "TypecastParenPad",
-        "TypeName",
-        "UnnecessaryParentheses",
-        "VariableDeclarationUsageDistance",
-        "VisibilityModifier",
-        "WhitespaceAfter",
-        "WhitespaceAround",
+    private static final String[] INCOMPATIBLE_CHECKS = {
+        // file filters
+        "BeforeExecutionExclusionFileFilter",
+        // filters
+        "SeverityMatchFilter",
+        "SuppressionCommentFilter",
+        "SuppressionXpathFilter",
+        "SuppressionXpathSingleFilter",
+        "SuppressWarningsFilter",
+        "SuppressWithNearbyCommentFilter",
+        "SuppressWithPlainTextCommentFilter",
+        // javadoc
+        "JavadocMethod",
+        "JavadocPackage",
+        "JavadocParagraph",
+        "JavadocStyle",
+        "JavadocTagContinuationIndentation",
+        "JavadocType",
+        "JavadocVariable",
+        "NonEmptyAtclauseDescription",
+        "SingleLineJavadoc",
+        "SummaryJavadoc",
+        "WriteTag",
+        // header
+        "Header",
+        "RegexpHeader",
+        // imports
+        "AvoidStarImport",
+        "AvoidStaticImport",
+        "IllegalImport",
+        "ImportControl",
+        "RedundantImport",
+        "UnusedImports",
+        // metrics
+        "BooleanExpressionComplexity",
+        "ClassDataAbstractionCoupling",
+        "ClassFanOutComplexity",
+        "CyclomaticComplexity",
+        "JavaNCSS",
+        "NPathComplexity",
+        // miscellaneous
+        "ArrayTypeStyle",
+        "AvoidEscapedUnicodeCharacters",
+        "CommentsIndentation",
+        "DescendantToken",
+        "FinalParameters",
+        "Indentation",
+        "NewlineAtEndOfFile",
+        "OuterTypeFilename",
+        "TodoComment",
+        "TrailingComment",
+        "Translation",
+        "UncommentedMain",
+        "UniqueProperties",
+        "UpperEll",
+        // modifier
+        "AnonInnerLength",
+        "ExecutableStatementCount",
+        "FileLength",
+        "LineLength",
+        "MethodCount",
+        "MethodLength",
+        "OuterTypeNumber",
+        "ParameterNumber",
+        "ModifierOrder",
+        "RedundantModifier",
+        // regexp
+        "Regexp",
+        "RegexpMultiline",
+        "RegexpOnFilename",
+        "RegexpSingleline",
+        "RegexpSinglelineJava",
     };
 
     private static Checker checker;
@@ -181,7 +146,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
     private static String checkName;
 
     static {
-        Arrays.sort(COMPATIBLE_CHECKS);
+        Arrays.sort(INCOMPATIBLE_CHECKS);
     }
 
     @Override
@@ -222,7 +187,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                         .getNodeValue();
 
                 if ("Content".equals(sectionName) || "Overview".equals(sectionName)
-                        || Arrays.binarySearch(COMPATIBLE_CHECKS, sectionName) < 0) {
+                        || Arrays.binarySearch(INCOMPATIBLE_CHECKS, sectionName) >= 0) {
                     continue;
                 }
 
@@ -425,6 +390,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
             final char last = text.charAt(text.length() - 1);
 
             result = (firstCharToAppend == '@'
+                    || Character.getType(firstCharToAppend) == Character.DASH_PUNCTUATION
                     || Character.getType(last) == Character.OTHER_PUNCTUATION
                     || Character7.isAlphabetic(last)
                     || Character7.isAlphabetic(firstCharToAppend)) && !Character.isWhitespace(last);

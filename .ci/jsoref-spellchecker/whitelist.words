@@ -129,6 +129,7 @@ blablabla
 bleh
 Blic
 blockandinlinetags
+blockcomment
 blockcommentposition
 blockcommentstyle
 blockquote
@@ -250,6 +251,7 @@ columnlimit
 Combobox
 commentsindentation
 commerical
+commonutil
 Compat
 Compiletime
 Comspace
@@ -544,6 +546,7 @@ Homepage
 horizontalwhitespace
 Hostname
 href
+htaccess
 htag
 htdocs
 html
@@ -792,6 +795,7 @@ Misordered
 missingctor
 missingdeprecated
 missingjavadocmethod
+missingjavadocpackage
 missingjavadoctype
 missingoverride
 missingswitchdefault
@@ -879,6 +883,7 @@ nofinalizer
 NOI
 noinfo
 noinspection
+nojavadoc
 nolinewrap
 nonascii
 noncompilable
@@ -933,6 +938,7 @@ optgroup
 optimisation
 Optimizable
 oraclejdk
+orderedproperties
 orderingandspacing
 orekit
 Orgorgan
@@ -950,6 +956,7 @@ overridable
 Overriden
 OVERRIDERS
 packageannotation
+packagecomment
 packagedeclaration
 packagediffdirectory
 packageinfo
@@ -1278,6 +1285,8 @@ uniqueproperties
 Unitless
 unlzma
 unnecessaryparentheses
+unnecessarysemicoloninenumeration
+unnecessarysemicolonintrywithresources
 Unproxyable
 unregister
 unsubscribe

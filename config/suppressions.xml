@@ -80,7 +80,8 @@
     <suppress checks="ClassDataAbstractionCoupling"
               files="(Checker|Main|CheckstyleAntTask|JavadocDetailNodeParser)\.java"/>
     <suppress checks="ClassDataAbstractionCoupling"
-              files="(CheckerTest|AbstractModuleTestSupport|CheckstyleAntTaskTest|
+              files="(CheckerTest|AbstractModuleTestSupport|AbstractItModuleTestSupport|
+                     |CheckstyleAntTaskTest|
                      |TranslationCheckTest|LocalizedMessageTest|AbstractFileSetCheckTest|
                      |AbstractCheckTest|AutomaticBeanTest)\.java"/>
     <suppress checks="ClassDataAbstractionCoupling" files="PropertyCacheFileTest\.java"/>
@@ -101,7 +102,13 @@
     <!-- HandlerFactory crosses allowed limit for executable statements -->
     <suppress checks="ExecutableStatementCount" files="HandlerFactory\.java"/>
 
-    <suppress id="ImportControlTest" files="[\\/]powermock[\\/]" message=".* - org\.(powermock|mockito).*" />
+    <suppress id="ImportControlTest" files="[\\/]powermock[\\/]"
+              message=".* - org\.(powermock|mockito).*" />
+
+    <suppress id="noSourceforgeNetLinks" files="[\\/]google_style.xml" lines="31"/>
+    <suppress id="noSourceforgeNetLinks" files="[\\/]releasenotes.xml"/>
+    <suppress id="noSourceforgeIoLinks" files="[\\/]sun_style.xml" lines="31"/>
+    <suppress id="noSourceforgeIoLinks" files="[\\/]index.xml.vm"/>
 
     <!-- ========================================================= -->
     <!-- backport suppressions -->

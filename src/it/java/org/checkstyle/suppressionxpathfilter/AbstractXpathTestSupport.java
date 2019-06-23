@@ -28,10 +28,10 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.checkstyle.base.AbstractCheckstyleModuleTestSupport;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
-import com.google.checkstyle.test.base.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
@@ -41,10 +41,11 @@ import com.puppycrawl.tools.checkstyle.filters.SuppressionXpathFilter;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.xpath.XpathQueryGenerator;
 
-public abstract class AbstractXpathTestSupport extends AbstractModuleTestSupport {
+public abstract class AbstractXpathTestSupport extends AbstractCheckstyleModuleTestSupport {
 
     private static final int DEFAULT_TAB_WIDTH = 4;
 
@@ -62,7 +63,7 @@ public abstract class AbstractXpathTestSupport extends AbstractModuleTestSupport
     protected String getPackageLocation() {
         final String subpackage = getCheckName().toLowerCase(Locale.ENGLISH)
                 .replace("check", "");
-        return "org/checkstyle/suppressionxpathfilter" + "/" + subpackage;
+        return "org/checkstyle/suppressionxpathfilter/" + subpackage;
     }
 
     private static List<String> generateXpathQueries(File fileToProcess,
@@ -105,19 +106,7 @@ public abstract class AbstractXpathTestSupport extends AbstractModuleTestSupport
             bw.write(checkName);
             bw.write("\"\n");
             bw.write("       query=\"");
-
-            boolean first = true;
-            for (String xpathQuery : xpathQueries) {
-                if (first) {
-                    first = false;
-                }
-                else {
-                    bw.write(DELIMITER);
-                }
-
-                bw.write(xpathQuery);
-            }
-
+            bw.write(String7.join(DELIMITER, xpathQueries));
             bw.write("\"/>\n");
             bw.write("</suppressions>");
         }

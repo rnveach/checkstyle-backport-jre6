@@ -113,6 +113,7 @@ public class XdocsPagesTest {
             "name=\"RegexpMultiline\"",
             "name=\"JavadocPackage\"",
             "name=\"NewlineAtEndOfFile\"",
+            "name=\"OrderedProperties\"",
             "name=\"UniqueProperties\"",
             "name=\"FileLength\"",
             "name=\"FileTabCharacter\""
@@ -294,10 +295,10 @@ public class XdocsPagesTest {
                 final String unserializedSource = sources.item(position).getTextContent()
                         .replace("...", "").trim();
 
-                if (unserializedSource.charAt(0) != '<'
+                if (unserializedSource.length() > 1 && (unserializedSource.charAt(0) != '<'
                         || unserializedSource.charAt(unserializedSource.length() - 1) != '>'
                         // no dtd testing yet
-                        || unserializedSource.contains("<!")) {
+                        || unserializedSource.contains("<!"))) {
                     continue;
                 }
 
@@ -505,12 +506,8 @@ public class XdocsPagesTest {
                     subSectionName);
 
             switch (subSectionPos) {
-                case 0:
-                    break;
                 case 1:
                     validatePropertySection(fileName, sectionName, subSection, instance);
-                    break;
-                case 2:
                     break;
                 case 3:
                     validateUsageExample(fileName, sectionName, subSection);
@@ -524,6 +521,8 @@ public class XdocsPagesTest {
                 case 6:
                     validateParentSection(fileName, sectionName, subSection);
                     break;
+                case 0:
+                case 2:
                 default:
                     break;
             }
@@ -593,7 +592,17 @@ public class XdocsPagesTest {
             Assert.assertTrue(fileName + " section '" + sectionName
                     + "' should have no properties to show", !properties.isEmpty());
 
-            validatePropertySectionProperties(fileName, sectionName, subSection, instance,
+            final Set<Node> nodes = XmlUtil.getChildrenElements(subSection);
+            Assert.assertEquals(fileName + " section '" + sectionName
+                    + "' subsection 'Properties' should have one child node",
+                1, nodes.size());
+
+            final Node table = nodes.iterator().next();
+            Assert.assertEquals(fileName + " section '" + sectionName
+                    + "' subsection 'Properties' has unexpected child node",
+                "table", table.getNodeName());
+
+            validatePropertySectionProperties(fileName, sectionName, table, instance,
                     properties);
         }
 
@@ -663,12 +672,12 @@ public class XdocsPagesTest {
     }
 
     private static void validatePropertySectionProperties(String fileName, String sectionName,
-            Node subSection, Object instance, Set<String> properties) throws Exception {
+            Node table, Object instance, Set<String> properties) throws Exception {
         boolean skip = true;
         boolean didJavadocTokens = false;
         boolean didTokens = false;
 
-        for (Node row : XmlUtil.getChildrenElements(XmlUtil.getFirstChildElement(subSection))) {
+        for (Node row : XmlUtil.getChildrenElements(table)) {
             final List<Node> columns = new ArrayList<Node>(XmlUtil.getChildrenElements(row));
 
             Assert.assertEquals(fileName + " section '" + sectionName

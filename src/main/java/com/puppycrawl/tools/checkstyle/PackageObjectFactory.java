@@ -570,6 +570,10 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.coding.SuperFinalizeCheck");
         NAME_TO_FULL_MODULE_NAME.put("UnnecessaryParenthesesCheck",
                 BASE_PACKAGE + ".checks.coding.UnnecessaryParenthesesCheck");
+        NAME_TO_FULL_MODULE_NAME.put("UnnecessarySemicolonInEnumerationCheck",
+                BASE_PACKAGE + ".checks.coding.UnnecessarySemicolonInEnumerationCheck");
+        NAME_TO_FULL_MODULE_NAME.put("UnnecessarySemicolonInTryWithResourcesCheck",
+                BASE_PACKAGE + ".checks.coding.UnnecessarySemicolonInTryWithResourcesCheck");
         NAME_TO_FULL_MODULE_NAME.put("VariableDeclarationUsageDistanceCheck",
                 BASE_PACKAGE + ".checks.coding.VariableDeclarationUsageDistanceCheck");
     }
@@ -662,6 +666,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.javadoc.JavadocVariableCheck");
         NAME_TO_FULL_MODULE_NAME.put("MissingJavadocMethodCheck",
                 BASE_PACKAGE + ".checks.javadoc.MissingJavadocMethodCheck");
+        NAME_TO_FULL_MODULE_NAME.put("MissingJavadocPackageCheck",
+                BASE_PACKAGE + ".checks.javadoc.MissingJavadocPackageCheck");
         NAME_TO_FULL_MODULE_NAME.put("MissingJavadocTypeCheck",
                 BASE_PACKAGE + ".checks.javadoc.MissingJavadocTypeCheck");
         NAME_TO_FULL_MODULE_NAME.put("NonEmptyAtclauseDescriptionCheck",
@@ -836,6 +842,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.NewlineAtEndOfFileCheck");
         NAME_TO_FULL_MODULE_NAME.put("OuterTypeFilenameCheck",
                 BASE_PACKAGE + ".checks.OuterTypeFilenameCheck");
+        NAME_TO_FULL_MODULE_NAME.put("OrderedPropertiesCheck",
+                BASE_PACKAGE + ".checks.OrderedPropertiesCheck");
         NAME_TO_FULL_MODULE_NAME.put("SuppressWarningsHolder",
                 BASE_PACKAGE + ".checks.SuppressWarningsHolder");
         NAME_TO_FULL_MODULE_NAME.put("TodoCommentCheck",

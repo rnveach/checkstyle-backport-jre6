@@ -69,6 +69,7 @@
     <property name="requiredTranslations" value="de, fr, fi, es, pt, ja, tr, zh"/>
   </module>
   <module name="UniqueProperties"/>
+  <module name="OrderedProperties" />
 
   <!-- Regexp -->
   <module name="RegexpMultiline"/>
@@ -103,6 +104,18 @@
     <property name="format" value="^(?!(.*href=&quot;|.*http)).{101,}$"/>
     <property name="fileExtensions" value="xml, vm"/>
     <property name="message" value="Line should not be longer than 100 symbols"/>
+  </module>
+  <module name="RegexpSingleline">
+    <property name="id" value="noSourceforgeNetLinks"/>
+    <property name="format" value="checkstyle\.sourceforge\.net"/>
+    <property name="message"
+              value="Old site links should not be used, please use https://checkstyle.org"/>
+  </module>
+  <module name="RegexpSingleline">
+    <property name="id" value="noSourceforgeIoLinks"/>
+    <property name="format" value="checkstyle\.sourceforge\.io"/>
+    <property name="message"
+              value="Old site links should not be used, please use https://checkstyle.org"/>
   </module>
   <module name="RegexpOnFilename" />
   <module name="RegexpOnFilename">
@@ -339,6 +352,8 @@
     <module name="SuperClone"/>
     <module name="SuperFinalize"/>
     <module name="UnnecessaryParentheses"/>
+    <module name="UnnecessarySemicolonInEnumeration"/>
+    <module name="UnnecessarySemicolonInTryWithResources"/>
     <module name="VariableDeclarationUsageDistance"/>
 
     <!-- Filters-->
@@ -450,6 +465,7 @@
     <module name="MissingJavadocMethod">
       <property name="allowMissingPropertyJavadoc" value="true"/>
     </module>
+    <module name="MissingJavadocPackage"/>
     <module name="MissingJavadocType"/>
     <module name="NonEmptyAtclauseDescription"/>
     <module name="SingleLineJavadoc"/>

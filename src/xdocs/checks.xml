@@ -483,6 +483,10 @@
         <td>Checks for missing Javadoc comments for a method or constructor.</td>
       </tr>
       <tr>
+        <td><a href="config_javadoc.html#MissingJavadocPackage">MissingJavadocPackage</a></td>
+        <td>Checks for missing Javadoc comments in package-info.java files.</td>
+      </tr>
+      <tr>
         <td><a href="config_javadoc.html#MissingJavadocType">MissingJavadocType</a></td>
         <td>Checks for missing Javadoc comments for class, enum, interface, and annotation
         interface definitions.</td>
@@ -600,6 +604,10 @@
         <td><a href="config_whitespace.html#OperatorWrap">OperatorWrap</a></td>
         <td>
         Checks line wrapping for operators.</td>
+      </tr>
+      <tr>
+        <td><a href="config_misc.html#OrderedProperties">OrderedProperties</a></td>
+        <td>Detects if keys in properties files are in correct order.</td>
       </tr>
       <tr>
         <td><a href="config_misc.html#OuterTypeFilename">OuterTypeFilename</a></td>
@@ -809,6 +817,14 @@
         <td><a href="config_coding.html#UnnecessaryParentheses">UnnecessaryParentheses</a></td>
         <td>
         Checks if unnecessary parentheses are used in a statement or expression.</td>
+      </tr>
+      <tr>
+        <td><a href="config_coding.html#UnnecessarySemicolonInEnumeration">UnnecessarySemicolonInEnumeration</a></td>
+        <td>Checks if unnecessary semicolon is in enum definitions.</td>
+      </tr>
+      <tr>
+        <td><a href="config_coding.html#UnnecessarySemicolonInTryWithResources">UnnecessarySemicolonInTryWithResources</a></td>
+        <td>Checks if unnecessary semicolon is used in last resource declaration.</td>
       </tr>
       <tr>
         <td><a href="config_imports.html#UnusedImports">UnusedImports</a></td>
