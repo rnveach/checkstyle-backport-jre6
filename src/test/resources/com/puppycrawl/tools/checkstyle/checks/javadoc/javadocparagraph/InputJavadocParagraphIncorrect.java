@@ -18,7 +18,7 @@ class InputJavadocParagraphIncorrect {
      * @since 8.0
      */
     public static final byte NUL = 0;
-       
+
     /**
      * Some <p>Javadoc.//WARN
      *
@@ -28,7 +28,7 @@ class InputJavadocParagraphIncorrect {
      *     Documentation about GWT emulated source</a>
      */
     boolean emulated() {return false;}
-    
+
     /**<p>Some Javadoc.<p>  //WARN
      * <p>  //WARN
      * <p><p>  //WARN
@@ -41,7 +41,7 @@ class InputJavadocParagraphIncorrect {
          * @since 8.0
          */
         public static final byte NUL = 0;
-           
+
         /**<p>  //WARN
          * /^WARN/ Some Javadoc.
          *
@@ -57,7 +57,7 @@ class InputJavadocParagraphIncorrect {
 
     InnerInputJavadocParagraphIncorrect anon = new InnerInputJavadocParagraphIncorrect() {
 
-    	/**
+            /**
          * <p>Some Javadoc. //WARN
          *
          * Some Javadoc.

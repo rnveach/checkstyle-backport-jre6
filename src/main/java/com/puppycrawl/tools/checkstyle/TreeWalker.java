@@ -205,9 +205,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * @param check the check to register
      * @throws CheckstyleException if an error occurs
      */
-    private void registerCheck(AbstractCheck check)
-            throws CheckstyleException {
-        validateDefaultTokens(check);
+    private void registerCheck(AbstractCheck check) throws CheckstyleException {
         final int[] tokens;
         final Set<String> checkTokens = check.getTokenNames();
         if (checkTokens.isEmpty()) {
@@ -286,24 +284,6 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
             }
 
             checks.add(check);
-        }
-    }
-
-    /**
-     * Validates that check's required tokens are subset of default tokens.
-     * @param check to validate
-     * @throws CheckstyleException when validation of default tokens fails
-     */
-    private static void validateDefaultTokens(AbstractCheck check) throws CheckstyleException {
-        final int[] defaultTokens = check.getDefaultTokens();
-        Arrays.sort(defaultTokens);
-        for (final int token : check.getRequiredTokens()) {
-            if (Arrays.binarySearch(defaultTokens, token) < 0) {
-                final String message = String.format(Locale.ROOT, "Token \"%s\" from required "
-                        + "tokens was not found in default tokens list in check %s",
-                        token, check.getClass().getName());
-                throw new CheckstyleException(message);
-            }
         }
     }
 

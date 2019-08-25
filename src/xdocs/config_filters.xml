@@ -23,8 +23,8 @@
     </section>
 
     <section name="SeverityMatchFilter">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="SeverityMatchFilter_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Filter <code>SeverityMatchFilter</code> decides
           audit events according to the <a href="config.html#Severity">severity
@@ -42,7 +42,7 @@
           </tr>
           <tr>
             <td>severity</td>
-            <td>the severity level of this filter</td>
+            <td>Specify the severity level of this filter.</td>
             <td><a href="property_types.html#severity">Severity</a></td>
             <td><code>error</code></td>
             <td>3.2</td>
@@ -50,8 +50,7 @@
           <tr>
             <td>acceptOnMatch</td>
             <td>
-               If acceptOnMatch is <code>true</code>, then
-               the filter accepts an audit event if and only if there is
+               Control whether the filter accepts an audit event if and only if there is
                a match between the event's severity level and property
                severity. If acceptOnMatch
                is <code>false</code>, then the filter
@@ -95,18 +94,18 @@
     </section>
 
     <section name="SuppressionCommentFilter">
+      <p>Since Checkstyle 3.5</p>
       <subsection name="Description" id="SuppressionCommentFilter_Description">
-          <p>Since Checkstyle 3.5</p>
           <p>
             Filter <code>SuppressionCommentFilter</code> uses
             pairs of comments to suppress audit events.
           </p>
           <p>
             Rationale: Sometimes there are legitimate reasons for violating
-            a check.  When this is a matter of the code in question and not
+            a check. When this is a matter of the code in question and not
             personal preference, the best place to override the policy is in
-            the code itself.  Semi-structured comments can be associated
-            with the check.  This is sometimes superior to a separate
+            the code itself. Semi-structured comments can be associated
+            with the check. This is sometimes superior to a separate
             suppressions file, which must be kept up-to-date as the source
             file is edited.
           </p>
@@ -123,6 +122,13 @@
             SuppressWithPlainTextCommentFilter</a> or similar filter must be used.
           </p>
       </subsection>
+      <subsection name="Notes" id="SuppressionCommentFilter_Notes">
+        <p>
+          <code>offCommentFormat</code> and <code>onCommentFormat</code> must have equal
+          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Matcher.html#groupCount()">
+            paren counts</a>.
+        </p>
+      </subsection>
       <subsection name="Properties" id="SuppressionCommentFilter_Properties">
           <table>
               <tr>
@@ -134,54 +140,47 @@
               </tr>
               <tr>
                   <td>offCommentFormat</td>
-                  <td>comment pattern to trigger filter to begin suppression</td>
+                  <td>Specify comment pattern to trigger filter to begin suppression.</td>
                   <td><a href="property_types.html#regexp">Regular Expression</a></td>
                   <td><code>"CHECKSTYLE:OFF"</code></td>
                   <td>3.5</td>
               </tr>
               <tr>
                   <td>onCommentFormat</td>
-                  <td>comment pattern to trigger filter to end suppression</td>
+                  <td>Specify comment pattern to trigger filter to end suppression.</td>
                   <td><a href="property_types.html#regexp">Regular Expression</a></td>
                   <td><code>"CHECKSTYLE:ON"</code></td>
                   <td>3.5</td>
               </tr>
               <tr>
                   <td>checkFormat</td>
-                  <td>check pattern to suppress</td>
+                  <td>Specify check pattern to suppress.</td>
                   <td><a href="property_types.html#regexp">Regular Expression</a></td>
                   <td><code>".*"</code></td>
                   <td>3.5</td>
               </tr>
               <tr>
                   <td>messageFormat</td>
-                  <td>message pattern to suppress</td>
+                  <td>Specify message pattern to suppress.</td>
                   <td><a href="property_types.html#regexp">Regular Expression</a></td>
                   <td><code>null</code></td>
                   <td>3.5</td>
               </tr>
               <tr>
                   <td>checkCPP</td>
-                  <td>whether to check C++ style comments (<code>//</code>)</td>
+                  <td>Control whether to check C++ style comments (<code>//</code>).</td>
                   <td><a href="property_types.html#boolean">Boolean</a></td>
                   <td><code>true</code></td>
                   <td>3.5</td>
               </tr>
               <tr>
                   <td>checkC</td>
-                  <td>whether to check C style comments (<code>/* ... */</code>)</td>
+                  <td>Control whether to check C style comments (<code>/* ... */</code>).</td>
                   <td><a href="property_types.html#boolean">Boolean</a></td>
                   <td><code>true</code></td>
                   <td>3.5</td>
               </tr>
           </table>
-      </subsection>
-      <subsection name="Notes" id="SuppressionCommentFilter_Notes">
-          <p>
-              offCommentFormat and onCommentFormat must have equal
-              <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Matcher.html#groupCount()">
-              paren counts</a>.
-          </p>
       </subsection>
       <subsection name="Examples" id="SuppressionCommentFilter_Examples">
           <p>
@@ -427,7 +426,7 @@ public class UserService {
           <p>
             Filter <code>SuppressionFilter</code> rejects
             audit events for Check errors according to
-            a <a href="https://checkstyle.org/dtds/suppressions_1_2.dtd">suppressions XML
+            a <a href="dtds/suppressions_1_2.dtd">suppressions XML
             document</a> in a file. If there is no configured
             suppressions file or the optional is set to true and
             suppressions file was not found the Filter accepts all audit events.
@@ -468,32 +467,32 @@ public class UserService {
       </subsection>
       <subsection name="Notes" id="SuppressionFilter_Notes">
         <p>
-          A <a href="https://checkstyle.org/dtds/suppressions_1_2.dtd">suppressions XML
+          A <a href="dtds/suppressions_1_2.dtd">suppressions XML
           document</a> contains a set of <code>suppress</code> elements, where
           each <code>suppress</code> element can have the following attributes:
         </p>
         <ul>
           <li>
             <code>files</code> -
-            a <a href="https://checkstyle.org/property_types.html#regexp">Regular Expression</a>
+            a <a href="property_types.html#regexp">Regular Expression</a>
             matched against the file name associated with an audit
             event. It is optional.
           </li>
           <li>
             <code>checks</code> -
-            a <a href="https://checkstyle.org/property_types.html#regexp">Regular Expression</a>
+            a <a href="property_types.html#regexp">Regular Expression</a>
             matched against the name of the check associated with an audit
             event. Optional as long as <code>id</code> or <code>message</code> is specified.
           </li>
           <li>
             <code>message</code> -
-            a <a href="https://checkstyle.org/property_types.html#regexp">Regular Expression</a>
+            a <a href="property_types.html#regexp">Regular Expression</a>
             matched against the message of the check associated with an audit
             event. Optional as long as <code>checks</code> or <code>id</code> is specified.
           </li>
           <li>
             <code>id</code> -
-            a <a href="https://checkstyle.org/property_types.html#string">string</a>
+            a <a href="property_types.html#string">string</a>
             matched against the <a href="config.html#Id">check id</a> associated with an audit
             event. Optional as long as <code>checks</code> or <code>message</code>
             is specified.
@@ -501,13 +500,13 @@ public class UserService {
           <li>
             <code>lines</code> - a comma-separated list of
             values, where each value is
-            an <a href="https://checkstyle.org/property_types.html#integer">integer</a> or a
+            an <a href="property_types.html#integer">integer</a> or a
             range of integers denoted by integer-integer. It is optional.
           </li>
           <li>
             <code>columns</code> - a comma-separated list of
             values, where each value is
-            an <a href="https://checkstyle.org/property_types.html#integer">integer</a> or a
+            an <a href="property_types.html#integer">integer</a> or a
             range of integers denoted by integer-integer. It is optional.
           </li>
         </ul>
@@ -521,7 +520,7 @@ public class UserService {
         </p>
         <p>
           You can download template of empty suppression filter
-          <a href="https://checkstyle.org/files/suppressions_none.xml">here</a>.
+          <a href="files/suppressions_none.xml">here</a>.
         </p>
         <p>
           Location of the file defined in <code>file</code> property is checked
@@ -582,7 +581,7 @@ public class UserService {
 &lt;/suppressions&gt;
           </source>
           <p>
-            Suppress check by <a href="https://checkstyle.org/config.html#Id">module id</a>
+            Suppress check by <a href="config.html#Id">module id</a>
             when config have two instances on the same check:
           </p>
           <source>
@@ -656,12 +655,222 @@ public class UserService {
       </subsection>
     </section>
 
+    <section name="SuppressionSingleFilter">
+      <p>Since Checkstyle 8.23</p>
+      <subsection name="Description" id="SuppressionSingleFilter_Description">
+        <p>
+          Filter <code>SuppressionSingleFilter</code> suppresses audit events for
+          Checks violations in the specified file, class, checks, message, module id,
+          lines, and columns.
+        </p>
+        <p>
+          Rationale: To allow users use suppressions configured in the same config with
+          other modules. SuppressionFilter and SuppressionXpathFilter are require separate
+          file.
+        </p>
+        <p>
+          Advice: If checkstyle configuration is used for several projects, single suppressions
+          on common files/folders is better to put in checkstyle configuration as common rule.
+          All suppression that are for specific file names is better to keep in project specific
+          config file.
+        </p>
+        <p>
+          Attention: This filter only supports single suppression, and will need
+          multiple instances if users wants to suppress multiple violations.
+        </p>
+      </subsection>
+      <subsection name="Properties" id="SuppressionSingleFilter_Properties">
+        <table>
+          <tr>
+            <th>name</th>
+            <th>description</th>
+            <th>type</th>
+            <th>default value</th>
+            <th>since</th>
+          </tr>
+          <tr>
+            <td>files</td>
+            <td>Define the RegExp for matching against the file name associated
+                with an audit event.</td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>null</code></td>
+            <td>8.23</td>
+          </tr>
+          <tr>
+            <td>checks</td>
+            <td>Define the RegExp for matching against the name of the check
+                associated with an audit event.</td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>null</code></td>
+            <td>8.23</td>
+          </tr>
+          <tr>
+            <td>message</td>
+            <td>Define the RegExp for matching against the message of the check associated
+                with an audit event.</td>
+            <td><a href="property_types.html#regexp">Regular Expression</a></td>
+            <td><code>null</code></td>
+            <td>8.23</td>
+          </tr>
+          <tr>
+            <td>id</td>
+            <td>Specify a string matched against the ID of the check associated with an audit
+                event.</td>
+            <td><a href="property_types.html#string">String</a></td>
+            <td><code>null</code></td>
+            <td>8.23</td>
+          </tr>
+          <tr>
+            <td>lines</td>
+            <td>Specify a comma-separated list of values, where each value is an integer or a range
+                of integers denoted by integer-integer.</td>
+            <td><a href="property_types.html#string">String</a></td>
+            <td><code>null</code></td>
+            <td>8.23</td>
+          </tr>
+          <tr>
+            <td>columns</td>
+            <td>Specify a comma-separated list of values, where each value is an integer or a range
+                of integers denoted by integer-integer.</td>
+            <td><a href="property_types.html#string">String</a></td>
+            <td><code>null</code></td>
+            <td>8.23</td>
+          </tr>
+        </table>
+      </subsection>
+      <subsection name="Examples" id="SuppressionSingleFilter_Examples">
+          <p>
+            The following suppressions directs
+            a <code>SuppressionSingleFilter</code> to
+            reject <code>JavadocStyleCheck</code> errors for
+            lines 82 and 108 to 122 of
+            file <code>AbstractComplexityCheck.java</code>,
+            and <code>MagicNumberCheck</code> errors for line
+            221 of file <code>JavadocStyleCheck.java</code>,
+            and <code>'Missing a Javadoc comment'</code> errors
+            for all lines and files:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;JavadocStyleCheck&quot;/&gt;
+  &lt;property name=&quot;files&quot; value=&quot;AbstractComplexityCheck.java&quot;/&gt;
+  &lt;property name=&quot;lines&quot; value=&quot;82,108-122&quot;/&gt;
+&lt;/module&gt;
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;MagicNumberCheck&quot;/&gt;
+  &lt;property name=&quot;files&quot; value=&quot;JavadocStyleCheck.java&quot;/&gt;
+  &lt;property name=&quot;lines&quot; value=&quot;221&quot;/&gt;
+&lt;/module&gt;
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;message&quot; value=&quot;Missing a Javadoc comment&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress check by <a href="https://checkstyle.org/config.html#Id">module id</a>
+            when config have two instances on the same check:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;id&quot; value=&quot;stringEqual&quot;/&gt;
+  &lt;property name=&quot;files&quot; value=&quot;SomeTestCode.java&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress all checks for hidden files and folders:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;files&quot; value=&quot;[/\\]\..+&quot;/&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;.*&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress all checks for Maven-generated code:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;files&quot; value=&quot;[/\\]target[/\\]&quot;/&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;.*&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress all checks for archives, classes and other binary files:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;files&quot; value=&quot;.+\.(?:jar|zip|war|class|tar|bin)$&quot;/&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;.*&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress all checks for image files:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;files&quot; value=&quot;.+\.(?:png|gif|jpg|jpeg)$&quot;/&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;.*&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress all checks for non-java files:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;files&quot;
+    value=&quot;.+\.(?:txt|xml|csv|sh|thrift|html|sql|eot|ttf|woff|css|png)$&quot;/&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;.*&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress all checks in generated sources:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;files&quot; value=&quot;com[\\/]mycompany[\\/]app[\\/]gen[\\/]&quot;/&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;.*&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress FileLength check on integration tests in certain folder:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;files&quot; value=&quot;com[\\/]mycompany[\\/]app[\\/].*IT.java&quot;/&gt;
+  &lt;property name=&quot;checks&quot; value=&quot;FileLength&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+            Suppress naming errors on variable named 'log' in all files:
+          </p>
+          <source>
+&lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
+  &lt;property name=&quot;message&quot; value=&quot;Name 'log' must match pattern&quot;/&gt;
+&lt;/module&gt;
+          </source>
+      </subsection>
+      <subsection name="Example of Usage" id="SuppressionSingleFilter_Example_of_Usage">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+SuppressionSingleFilter">
+            Checkstyle Style</a>
+          </li>
+        </ul>
+      </subsection>
+      <subsection name="Package" id="SuppressionSingleFilter_Package">
+        <p> com.puppycrawl.tools.checkstyle.filters </p>
+      </subsection>
+      <subsection name="Parent Module" id="SuppressionSingleFilter_Parent_Module">
+        <p> <a href="config.html#Checker">Checker</a> </p>
+      </subsection>
+    </section>
+
     <section name="SuppressionXpathFilter">
+      <p>Since Checkstyle 8.6</p>
       <subsection name="Description" id="SuppressionXpathFilter_Description">
-        <p>Since Checkstyle 8.6</p>
         <p>
           Filter <code>SuppressionXpathFilter</code> works as
-          <a href="config_filters.html#SuppressionFilter">SuppressionFilter</a>.
+          <a href="config_filters.html#SuppressionFilter">
+          SuppressionFilter</a>.
           Additionally, filter processes <code>suppress-xpath</code> elements,
           which contains xpath-expressions. Xpath-expressions
           are queries for suppressed nodes inside the AST tree.
@@ -760,6 +969,8 @@ public class UserService {
           <li>ThrowsCount</li>
           <li>TypecastParenPad</li>
           <li>TypeName</li>
+          <li>UnnecessarySemicolonInEnumeration</li>
+          <li>UnnecessarySemicolonInTryWithResources</li>
           <li>UnusedImports</li>
           <li>UpperEll</li>
           <li>VisibilityModifier</li>
@@ -778,6 +989,23 @@ public class UserService {
           for more details.
         </p>
       </subsection>
+      <subsection name="Notes" id="SuppressionXpathFilter_Notes">
+        <p>
+          The suppression file location is checked in following order:
+        </p>
+        <ol>
+          <li>as a filesystem location</li>
+          <li>
+            if no file found, and the location starts with either
+            <code>http://</code> or <code>https://</code>, then it
+            is interpreted as a URL
+          </li>
+          <li>
+            if no file found, then passed to the
+            <code>ClassLoader.getResource()</code> method.
+          </li>
+        </ol>
+      </subsection>
       <subsection name="Properties" id="SuppressionXpathFilter_Properties">
         <table>
           <tr>
@@ -790,20 +1018,7 @@ public class UserService {
           <tr>
             <td>file</td>
             <td>
-              the location of the <em>suppressions XML document</em> file.
-              The order the location is checked is:
-              <ol>
-                <li>as a filesystem location</li>
-                <li>
-                  if no file found, and the location starts with either
-                  <code>http://</code> or <code>https://</code>, then it
-                  is interpreted as a URL
-                </li>
-                <li>
-                  if no file found, then passed to the
-                  <code>ClassLoader.getResource()</code> method.
-                </li>
-              </ol>
+              Specify the location of the <em>suppressions XML document</em> file.
             </td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
@@ -812,7 +1027,7 @@ public class UserService {
           <tr>
             <td>optional</td>
             <td>
-              Tells what to do when the file is not existing. If
+              Control what to do when the file is not existing. If
               optional is set to false the file must exist, or else
               it ends with error. On the other hand if optional is
               true and file is not found, the filter accepts all
@@ -861,13 +1076,13 @@ public class UserService {
             <code>message</code> -
             a <a href="property_types.html#regexp">Regular Expression</a>
             matched against the message of the check associated with an audit
-            event.  Optional as long as <code>checks</code> or <code>id</code> is specified.
+            event. Optional as long as <code>checks</code> or <code>id</code> is specified.
           </li>
           <li>
             <code>id</code> -
             a <a href="property_types.html#string">string</a>
             matched against the ID of the check associated with an audit
-            event.  Optional as long as <code>checks</code> or <code>message</code> is specified.
+            event. Optional as long as <code>checks</code> or <code>message</code> is specified.
           </li>
           <li>
             <code>query</code> -
@@ -967,7 +1182,8 @@ public class UserService {
           variable <i>age</i> inside <i>changeAge</i> method.
         </p>
         <source>
-&lt;suppress-xpath checks=&quot;RequireThis&quot; query=&quot;/CLASS_DEF[./IDENT[@text='InputTest']]
+&lt;suppress-xpath checks=&quot;RequireThis&quot;
+     query=&quot;/CLASS_DEF[./IDENT[@text='InputTest']]
           //METHOD_DEF[./IDENT[@text='changeAge']]//ASSIGN/IDENT[@text='age']&quot;/&gt;
         </source>
         <source>
@@ -1551,11 +1767,11 @@ public class TestClass {
     </section>
 
     <section name="SuppressWarningsFilter">
+      <p>Since Checkstyle 5.7</p>
       <subsection name="Description" id="SuppressWarningsFilter_Description">
-          <p>Since Checkstyle 5.7</p>
           <p>
-              Filter <code>SuppressWarningsFilter</code> uses annotations to
-              suppress audit events.
+              Filter <code>SuppressWarningsFilter</code> uses annotation
+              {@code SuppressWarnings} to suppress audit events.
           </p>
           <p>
               Rationale: Same as for
@@ -1615,7 +1831,8 @@ private int [] ARRAY; // should NOT fail MemberNameCheck and NoWhitespaceAfterCh
 &lt;module name="RegexpSinglelineJava&quot;&gt;
   &lt;property name="id" value="systemout"/&gt;
   &lt;property name="format" value=&quot;^.*System\.(out|err).*$&quot;/&gt;
-  &lt;property name="message" value="Don't use System.out/err, use SLF4J instead."/&gt;
+  &lt;property name="message"
+    value="Don't use System.out/err, use SLF4J instead."/&gt;
 &lt;/module&gt;
           </source>
           <p>
@@ -1659,18 +1876,18 @@ public static void foo() {
     </section>
 
     <section name="SuppressWithNearbyCommentFilter">
-        <subsection name="Description" id="SuppressWithNearbyCommentFilter_Description">
-            <p>Since Checkstyle 5.0</p>
+      <p>Since Checkstyle 5.0</p>
+      <subsection name="Description" id="SuppressWithNearbyCommentFilter_Description">
             <p>
                 Filter <code>SuppressWithNearbyCommentFilter</code> uses
-                individual comments to suppress audit events.
+                nearby comments to suppress audit events.
             </p>
             <p>
                 Rationale: Same as <code>SuppressionCommentFilter</code>.
                 Whereas the SuppressionCommentFilter uses matched pairs of
                 filters to turn on/off comment matching,
                 <code>SuppressWithNearbyCommentFilter</code> uses
-                single comments.  This requires fewer lines to mark a region, and
+                single comments. This requires fewer lines to mark a region, and
                 may be aesthetically preferable in some contexts.
             </p>
             <p>
@@ -1693,43 +1910,43 @@ public static void foo() {
                 </tr>
                 <tr>
                     <td>commentFormat</td>
-                    <td>comment pattern to trigger filter to begin suppression</td>
+                    <td>Specify comment pattern to trigger filter to begin suppression.</td>
                     <td><a href="property_types.html#regexp">Regular Expression</a></td>
                     <td><code>"SUPPRESS CHECKSTYLE (\w+)"</code></td>
                     <td>5.0</td>
                 </tr>
                 <tr>
                     <td>checkFormat</td>
-                    <td>check pattern to suppress</td>
+                    <td>Specify check pattern to suppress.</td>
                     <td><a href="property_types.html#regexp">Regular Expression</a></td>
                     <td><code>".*"</code></td>
                     <td>5.0</td>
                 </tr>
                 <tr>
                     <td>messageFormat</td>
-                    <td>message pattern to suppress</td>
+                    <td>Define message pattern to suppress.</td>
                     <td><a href="property_types.html#regexp">Regular Expression</a></td>
                     <td><code>null</code></td>
                     <td>5.0</td>
                 </tr>
                 <tr>
                     <td>influenceFormat</td>
-                    <td>a negative/zero/positive value that defines the number of
-                        lines preceding/at/following the suppression comment</td>
+                    <td>Specify negative/zero/positive value that defines the number of
+                        lines preceding/at/following the suppression comment.</td>
                     <td><a href="property_types.html#regexp">Regular Expression</a></td>
                     <td><code>"0"</code></td>
                     <td>5.0</td>
                 </tr>
                 <tr>
                     <td>checkCPP</td>
-                    <td>whether to check C++ style comments (<code>//</code>)</td>
+                    <td>Control whether to check C++ style comments (<code>//</code>).</td>
                     <td><a href="property_types.html#boolean">Boolean</a></td>
                     <td><code>true</code></td>
                     <td>5.0</td>
                 </tr>
                 <tr>
                     <td>checkC</td>
-                    <td>whether to check C style comments (<code>/* ... */</code>)</td>
+                    <td>Control whether to check C style comments (<code>/* ... */</code>).</td>
                     <td><a href="property_types.html#boolean">Boolean</a></td>
                     <td><code>true</code></td>
                     <td>5.0</td>
@@ -1797,18 +2014,19 @@ catch (Throwable th) { ... }
 &lt;/module&gt;
             </source>
             <source>
-public static final int lowerCaseConstant; // CHECKSTYLE IGNORE ConstantNameCheck FOR NEXT 3 LINES
-public static final int lowerCaseConstant1;
-public static final int lowerCaseConstant2;
-public static final int lowerCaseConstant3;
-public static final int lowerCaseConstant4; // will warn here
+static final int lowerCaseConstant; // CHECKSTYLE IGNORE ConstantNameCheck FOR NEXT 3 LINES
+static final int lowerCaseConstant1;
+static final int lowerCaseConstant2;
+static final int lowerCaseConstant3;
+static final int lowerCaseConstant4; // will warn here
             </source>
             <p>
                 To configure a filter to avoid any audits on code like:
             </p>
             <source>
 &lt;module name=&quot;SuppressWithNearbyCommentFilter&quot;&gt;
-  &lt;property name=&quot;commentFormat&quot; value=&quot;ALLOW (\\w+) ON PREVIOUS LINE&quot;/&gt;
+  &lt;property name=&quot;commentFormat&quot;
+    value=&quot;ALLOW (\\w+) ON PREVIOUS LINE&quot;/&gt;
   &lt;property name=&quot;checkFormat&quot; value=&quot;$1&quot;/&gt;
   &lt;property name=&quot;influenceFormat&quot; value=&quot;-1&quot;/&gt;
 &lt;/module&gt;
@@ -1917,8 +2135,8 @@ public class UserService {
       </section>
 
     <section name="SuppressWithPlainTextCommentFilter">
+          <p>Since Checkstyle 8.6</p>
           <subsection name="Description" id="SuppressWithPlainTextCommentFilter_Description">
-              <p>Since Checkstyle 8.6</p>
               <p>
                   Filter <code>SuppressWithPlainTextCommentFilter</code> uses plain text to suppress
                   audit events. The filter can be used only to suppress audit events received from
@@ -1935,10 +2153,10 @@ public class UserService {
               </p>
               <p>
                   Rationale: Sometimes there are legitimate reasons for violating
-                  a check.  When this is a matter of the code in question and not
+                  a check. When this is a matter of the code in question and not
                   personal preference, the best place to override the policy is in
-                  the code itself.  Semi-structured comments can be associated
-                  with the check.  This is sometimes superior to a separate
+                  the code itself. Semi-structured comments can be associated
+                  with the check. This is sometimes superior to a separate
                   suppressions file, which must be kept up-to-date as the source
                   file is edited.
               </p>
@@ -1958,28 +2176,28 @@ public class UserService {
                   </tr>
                   <tr>
                       <td>offCommentFormat</td>
-                      <td>comment pattern to trigger filter to begin suppression</td>
+                      <td>Specify comment pattern to trigger filter to begin suppression.</td>
                       <td><a href="property_types.html#regexp">Regular Expression</a></td>
                       <td><code>"// CHECKSTYLE:OFF"</code></td>
                       <td>8.6</td>
                   </tr>
                   <tr>
                       <td>onCommentFormat</td>
-                      <td>comment pattern to trigger filter to end suppression</td>
+                      <td>Specify comment pattern to trigger filter to end suppression.</td>
                       <td><a href="property_types.html#regexp">Regular Expression</a></td>
                       <td><code>"// CHECKSTYLE:ON"</code></td>
                       <td>8.6</td>
                   </tr>
                   <tr>
                       <td>checkFormat</td>
-                      <td>check pattern to suppress</td>
+                      <td>Specify check pattern to suppress.</td>
                       <td><a href="property_types.html#regexp">Regular Expression</a></td>
                       <td><code>".*"</code></td>
                       <td>8.6</td>
                   </tr>
                   <tr>
                       <td>messageFormat</td>
-                      <td>message pattern to suppress</td>
+                      <td>Specify message pattern to suppress.</td>
                       <td><a href="property_types.html#regexp">Regular Expression</a></td>
                       <td><code>null</code></td>
                       <td>8.6</td>
@@ -1988,8 +2206,9 @@ public class UserService {
           </subsection>
           <subsection name="Notes" id="SuppressWithPlainTextCommentFilter_Notes">
               <p>
-                  offCommentFormat and onCommentFormat must have equal
-                  <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Matcher.html#groupCount()">
+                  Properties <code>offCommentFormat</code> and <code>onCommentFormat</code>
+                  must have equal
+                  <a href="https://docs.oracle.com/javase/11/docs/api/java/util/regex/Matcher.html#groupCount()">
                   paren counts</a>.
               </p>
           </subsection>
@@ -2092,8 +2311,10 @@ my.property=value2 // No violation events will be reported
   &lt;property name=&quot;fileExtensions&quot; value=&quot;java&quot;/&gt;
 
   &lt;module name=&quot;SuppressWithPlainTextCommentFilter&quot;&gt;
-    &lt;property name=&quot;offCommentFormat&quot; value=&quot;CHECKSTYLE_OFF: ALMOST_ALL&quot;/&gt;
-    &lt;property name=&quot;onCommentFormat&quot; value=&quot;CHECKSTYLE_ON: ALMOST_ALL&quot;/&gt;
+    &lt;property name=&quot;offCommentFormat&quot;
+      value=&quot;CHECKSTYLE_OFF: ALMOST_ALL&quot;/&gt;
+    &lt;property name=&quot;onCommentFormat&quot;
+      value=&quot;CHECKSTYLE_ON: ALMOST_ALL&quot;/&gt;
     &lt;property name=&quot;checkFormat&quot;
       value=&quot;^((?!(FileTabCharacterCheck)).)*$&quot;/&gt;
   &lt;/module&gt;
@@ -2139,13 +2360,15 @@ private int array1 [];
 &lt;module name=&quot;RegexpSinglelineJava&quot;&gt;
   &lt;property name=&quot;id&quot; value=&quot;count&quot;/&gt;
   &lt;property name="format" value="^.*COUNT(*).*$"/&gt;
-  &lt;property name="message" value="Don't use COUNT(*), use COUNT(1) instead."/&gt;
+  &lt;property name="message"
+    value="Don't use COUNT(*), use COUNT(1) instead."/&gt;
 &lt;/module&gt;
 
 &lt;module name=&quot;RegexpSinglelineJava&quot;&gt;
   &lt;property name=&quot;id&quot; value=&quot;join&quot;/&gt;
   &lt;property name="format" value="^.*JOIN\s.+\s(ON|USING)$"/&gt;
-  &lt;property name="message" value="Don't use JOIN, use sub-select instead."/&gt;
+  &lt;property name="message"
+    value="Don't use JOIN, use sub-select instead."/&gt;
 &lt;/module&gt;
               </source>
               <p>

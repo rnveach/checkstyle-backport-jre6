@@ -189,7 +189,7 @@ class TestHashCodeMethod {
     @InputMagicNumberIntMethodAnnotation(value=43)
     public void another2() {
     }
-    
+
     @InputMagicNumberIntMethodAnnotation(-44)
     public void anotherNegative() {
     }
@@ -201,16 +201,28 @@ class TestHashCodeMethod {
 
 class TestMethodCall {
 
-	public TestMethodCall(int x){
+        public TestMethodCall(int x){
 
     }
 
-	public void method2() {
+        public void method2() {
         final TestMethodCall dummyObject = new TestMethodCall(62);
-	}
+        }
 }
 
 class Binary {
     int intValue = 0b101;
     long longValue = 0b1010000101000101101000010100010110100001010001011010000101000101L;
+}
+@interface AnnotationWithDefaultValue {
+    int value() default 101;
+    int[] ar() default {102};
+}
+class A {
+    {
+        switch (Blah2.LOW) {
+        default:
+            int b = 122; // violation
+        }
+    }
 }

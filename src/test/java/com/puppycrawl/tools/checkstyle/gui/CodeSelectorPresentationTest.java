@@ -79,7 +79,7 @@ public class CodeSelectorPresentationTest extends AbstractPathTestSupport {
                 linesToPosition);
         selector.findSelectionPositions();
         Assert.assertEquals("Invalid selection start", 94, selector.getSelectionStart());
-        Assert.assertEquals("Invalid selection end", 280, selector.getSelectionEnd());
+        Assert.assertEquals("Invalid selection end", 279, selector.getSelectionEnd());
     }
 
     @Test

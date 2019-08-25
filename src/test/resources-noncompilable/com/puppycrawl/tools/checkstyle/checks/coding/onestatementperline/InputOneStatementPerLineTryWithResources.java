@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.PipedOutputStream;
 import java.io.OutputStream;
 
+/**
+ * Config treatTryResourcesAsStatement = true
+ */
 public class InputOneStatementPerLineTryWithResources {
 
     void method() throws IOException {
@@ -28,11 +31,11 @@ OutputStream s9=new PipedOutputStream();s2;OutputStream s10 = new PipedOutputStr
         try (s1; OutputStream s11 = new PipedOutputStream();
              s2;) {
         }
-        try (OutputStream 
+        try (OutputStream
              s12 = new PipedOutputStream();s1;OutputStream s3 = new PipedOutputStream() // VIOLATION
              ;s2;) {
         }
-        try (OutputStream 
+        try (OutputStream
              s12 = new PipedOutputStream();s1;OutputStream s3 // VIOLATION
                 = new PipedOutputStream()) {}
         try (s1; s2; OutputStream stream3 =

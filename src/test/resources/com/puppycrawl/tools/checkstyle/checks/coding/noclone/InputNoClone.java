@@ -6,17 +6,17 @@ public class InputNoClone
         super.equals(new String());
         super.clone();
     }
-    
+
     public Object clone() throws CloneNotSupportedException
     {
         return super.clone();
     }
-    
+
     public void method() throws CloneNotSupportedException
     {
         super.clone();
     }
-    
+
     {
         super.clone();
     }
@@ -70,19 +70,19 @@ class MyClassWithGenericSuperMethod
     {
 
     }
-    
+
     /**
      * Not a valid clone override. Should not get flagged.
      * @param o some object
      * @return a cloned Object?
      */
     public static Object clone(Object o) {
-	return null;
+        return null;
     }
 }
 
 class AnotherClass {
-    
+
     /**
      * Not a valid clone override. Should not get flagged.
      * @param t some type
@@ -90,7 +90,7 @@ class AnotherClass {
      * @return a cloned type?
      */
     public <T> T clone(T t) {
-	return null;
+        return null;
     }
 }
 

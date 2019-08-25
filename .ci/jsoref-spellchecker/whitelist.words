@@ -31,7 +31,6 @@ alot
 ambig
 Amessages
 androidx
-ANNOS
 annotationlocation
 annotationonsameline
 annotationusestyle
@@ -336,6 +335,7 @@ doccheck
 Dockter
 doclet
 DOCTYPE
+documentationcomments
 Don''t
 donotignoreexceptions
 Dorekit
@@ -603,6 +603,7 @@ interfacememberimpliedmodifier
 interfacetypeparametername
 invalidformat
 invalidinherit
+invalidjavadocposition
 ioe
 ioffset
 IPv
@@ -610,6 +611,7 @@ isindex
 isrutf
 isset
 issuecomment
+issuehunt
 itemvalue
 ith
 itr
@@ -895,6 +897,7 @@ NONGROUP
 NONJAVA
 nonjavadoc
 nonnull
+nonrequiredjavadoc
 nonvalidating
 noparentfile
 noscript
@@ -910,6 +913,7 @@ nowrap
 npath
 npathcomplexity
 npe
+npm
 nts
 nullanalysis
 NULLCHECK
@@ -946,6 +950,7 @@ orm
 Osgi
 oss
 osx
+otechie
 outertypefilename
 outertypenumber
 outter
@@ -982,6 +987,7 @@ parsetreetablepresentation
 Passembly
 pathcomplexity
 pathelement
+patreon
 Paulicke
 paypal
 pdf
@@ -1203,6 +1209,7 @@ Superinterface
 supertype
 suppressioncommentfilter
 suppressionfilter
+suppressionsinglefilter
 suppressionsloader
 suppressionsstringprinter
 suppressionxpathfilter
@@ -1240,6 +1247,7 @@ thetaphi
 throwable
 throwscount
 Thymeleaf
+tidelift
 tmp
 toc
 todo

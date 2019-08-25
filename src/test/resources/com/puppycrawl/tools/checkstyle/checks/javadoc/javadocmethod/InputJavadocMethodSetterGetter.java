@@ -36,7 +36,7 @@ public class InputJavadocMethodSetterGetter
 
     public int getCost2()
     {
-    	mNumber = 4;
+            mNumber = 4;
         return 666;
     }
 
@@ -49,7 +49,7 @@ public class InputJavadocMethodSetterGetter
     {
         return false;
     }
-    
+
     private void firePropertyChanged(){}
 
     Object setObject(Object object) {

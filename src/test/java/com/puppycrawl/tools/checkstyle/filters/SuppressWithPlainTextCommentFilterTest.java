@@ -33,6 +33,7 @@ import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -289,6 +290,38 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     }
 
     @Test
+    public void testInvalidMessageFormatInSqlFile() throws Exception {
+        final DefaultConfiguration filterCfg =
+            createModuleConfig(SuppressWithPlainTextCommentFilter.class);
+        filterCfg.addAttribute("onCommentFormat", "CSON (\\w+)");
+        filterCfg.addAttribute("messageFormat", "e[l");
+
+        final DefaultConfiguration checkCfg = createModuleConfig(RegexpSinglelineCheck.class);
+        checkCfg.addAttribute("format", "^.*COUNT\\(\\*\\).*$");
+
+        final String[] suppressed = CommonUtil.EMPTY_STRING_ARRAY;
+
+        final String[] violationMessages = {
+            "2: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
+                    "^.*COUNT\\(\\*\\).*$"),
+        };
+
+        try {
+            verifySuppressed(
+                "InputSuppressWithPlainTextCommentFilterWithCustomOnComment.sql",
+                removeSuppressed(violationMessages, suppressed),
+                filterCfg, checkCfg
+            );
+            fail("CheckstyleException is expected");
+        }
+        catch (CheckstyleException ex) {
+            final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
+            assertEquals("Invalid exception message",
+                "unable to parse expanded comment e[l", cause.getMessage());
+        }
+    }
+
+    @Test
     public void testAcceptNullLocalizedMessage() {
         final SuppressWithPlainTextCommentFilter filter = new SuppressWithPlainTextCommentFilter();
         final AuditEvent auditEvent = new AuditEvent(this);
@@ -296,10 +329,17 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
         Assert.assertNull("File name should not be null", auditEvent.getFileName());
     }
 
+    /**
+     * Our goal is 100% test coverage, for this we use white-box testing.
+     * So we need access to the implementation details. For this reason, it is necessary
+     * to use reflection to gain access to the inner type {@code Suppression} here.
+     */
     @Test
-    public void testEqualsAndHashCodeOfTagClass() {
+    public void testEqualsAndHashCodeOfSuppressionClass() throws ClassNotFoundException {
+        final Class<?> suppressionClass = Whitebox.getInnerClassType(
+                SuppressWithPlainTextCommentFilter.class, "Suppression");
         EqualsVerifier
-                .forClass(SuppressWithPlainTextCommentFilter.Suppression.class).usingGetClass()
+                .forClass(suppressionClass).usingGetClass()
                 .verify();
     }
 
@@ -455,6 +495,40 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
             "InputSuppressWithPlainTextCommentFilterCustomMessageFormat.java",
             removeSuppressed(violationMessages, suppressed),
             filterCfg, fileTabCheckCfg, regexpCheckCfg
+        );
+    }
+
+    @Test
+    public void testFilterWithIdAndCustomMessageFormat() throws Exception {
+        final DefaultConfiguration filterCfg =
+            createModuleConfig(SuppressWithPlainTextCommentFilter.class);
+        filterCfg.addAttribute("offCommentFormat", "CHECKSTYLE stop (\\w+) (\\w+)");
+        filterCfg.addAttribute("onCommentFormat", "CHECKSTYLE resume (\\w+) (\\w+)");
+        filterCfg.addAttribute("checkFormat", "$1");
+        filterCfg.addAttribute("messageFormat", "$2");
+
+        final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
+        regexpCheckCfg.addAttribute("id", "warning");
+        regexpCheckCfg.addAttribute("format", "^.*COUNT\\(\\*\\).*$");
+
+        final String[] suppressedViolationMessages = {
+            "2: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
+                "^.*COUNT\\(\\*\\).*$"),
+        };
+
+        final String[] expectedViolationMessages = {
+            "2: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
+                "^.*COUNT\\(\\*\\).*$"),
+            "5: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
+                "^.*COUNT\\(\\*\\).*$"),
+            "8: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
+                "^.*COUNT\\(\\*\\).*$"),
+        };
+
+        verifySuppressed(
+            "InputSuppressWithPlainTextCommentFilterCustomMessageFormat.sql",
+            removeSuppressed(expectedViolationMessages, suppressedViolationMessages),
+            filterCfg, regexpCheckCfg
         );
     }
 

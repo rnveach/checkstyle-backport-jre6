@@ -7,6 +7,8 @@
 <suppressions>
     <!-- can't split long messages between lines -->
     <suppress checks="RegexpSingleline" files="google_checks\.xml" lines="42,83"/>
+    <!-- don't validate generated files -->
+    <suppress checks="RegexpSingleline" files="releasenotes\.xml"/>
 
     <suppress checks="FileLength"
               files="TokenTypes.java|IndentationCheckTest.java"
@@ -31,9 +33,6 @@
                       |NestedIfDepth|MethodLength"
               files="[\\/]XdocsPagesTest\.java"/>
 
-    <suppress checks="JavadocPackage" files=".*[\\/]src[\\/](test|it)[\\/]"/>
-    <!-- we do not need javadocs in all classes except for *Support classes -->
-    <suppress checks="JavadocMethod" files=".*[\\/]src[\\/](test|it)[\\/].*(?&lt;!Support)\.java"/>
     <!-- till https://github.com/checkstyle/checkstyle/issues/6336 -->
     <suppress checks="JavadocMethod" files=".*AbstractIndentationTestSupport\.java"/>
     <suppress checks="JavadocMethod" files=".*AbstractModuleTestSupport\.java"/>
@@ -105,8 +104,8 @@
     <suppress id="ImportControlTest" files="[\\/]powermock[\\/]"
               message=".* - org\.(powermock|mockito).*" />
 
-    <suppress id="noSourceforgeNetLinks" files="[\\/]google_style.xml" lines="31"/>
     <suppress id="noSourceforgeNetLinks" files="[\\/]releasenotes.xml"/>
+    <suppress id="noSourceforgeIoLinks" files="[\\/]google_style.xml" lines="31"/>
     <suppress id="noSourceforgeIoLinks" files="[\\/]sun_style.xml" lines="31"/>
     <suppress id="noSourceforgeIoLinks" files="[\\/]index.xml.vm"/>
 

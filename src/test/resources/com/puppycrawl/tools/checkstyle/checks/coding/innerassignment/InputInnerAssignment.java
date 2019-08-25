@@ -97,7 +97,7 @@ public class InputInnerAssignment
     // Taken from JDK7 java.lang.Package src code.
     private static Manifest loadManifest(String fn) {
         try (FileInputStream fis = new FileInputStream(fn);
-	     JarInputStream jis = new JarInputStream(fis, false))
+             JarInputStream jis = new JarInputStream(fis, false))
         {
             return jis.getManifest();
         } catch (IOException e)
@@ -110,5 +110,23 @@ public class InputInnerAssignment
         public ChildParent getParent() {
             return this;
         }
+    }
+
+    void method() throws IOException {
+        Integer line;
+        FileInputStream file = null;
+        while (!((line = file.read()) != null)) {}
+        while ((line = file.read()) != null && line < 3) {}
+        while ((line = file.read()) != null && line < 3 && line > 5) {}
+        while ((line = file.read()) != null || line < 3) {}
+        while ((line = file.read()) != null || line < 3 || line > 5) {}
+        while ((line = file.read()) != null & line < 3) {}
+        while ((line = file.read()) != null & line < 3 & line > 5) {}
+        while ((line = file.read()) != null | line < 3) {}
+        while ((line = file.read()) != null | line < 3 | line > 5) {}
+        while (line < 3 && (line = file.read()) != null) {}
+        while (line < 3 || (line = file.read()) != null) {}
+        while (line < 3 & (line = file.read()) != null) {}
+        while (line < 3 | (line = file.read()) != null) {}
     }
 }

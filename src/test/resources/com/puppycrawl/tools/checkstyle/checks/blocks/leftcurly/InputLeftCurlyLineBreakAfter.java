@@ -37,7 +37,7 @@ class InputLeftCurlyLineBreakAfter
         }
 
         synchronized (this) { do { x = 2; } while (x == 2); }
-        
+
         synchronized (this) {
             do {} while (x == 2);
         }
@@ -45,7 +45,7 @@ class InputLeftCurlyLineBreakAfter
         for (int k = 0; k < 1; k++) { String innerBlockVariable = ""; }
 
         for (int k = 0; k < 1; k++) {}
-		return a;
+                return a;
     }
 
     static { int x = 1; }
@@ -59,7 +59,7 @@ class InputLeftCurlyLineBreakAfter
 
 class Absent_CustomFieldSerializer1 {
 
-    public static void serialize() {} 
+    public static void serialize() {}
 }
 
 class Absent_CustomFieldSerializer2

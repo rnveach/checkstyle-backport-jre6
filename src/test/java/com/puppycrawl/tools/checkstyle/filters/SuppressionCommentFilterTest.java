@@ -22,6 +22,8 @@ package com.puppycrawl.tools.checkstyle.filters;
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -30,7 +32,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
@@ -301,20 +302,50 @@ public class SuppressionCommentFilterTest
 
     @Test
     public void testEqualsAndHashCodeOfTagClass() {
-        EqualsVerifier.forClass(SuppressionCommentFilter.Tag.class)
+        final Object tag = getTagsAfterExecutionOnDefaultFilter("//CHECKSTYLE:OFF").get(0);
+        EqualsVerifier.forClass(tag.getClass())
                 .usingGetClass().verify();
     }
 
     @Test
     public void testToStringOfTagClass() {
-        final SuppressionCommentFilter.Tag tag = new SuppressionCommentFilter.Tag(
-                0, 1, "text",
-                SuppressionCommentFilter.TagType.OFF, new SuppressionCommentFilter()
-        );
-
+        final Object tag = getTagsAfterExecutionOnDefaultFilter("//CHECKSTYLE:OFF").get(0);
         assertEquals("Invalid toString result",
-            "Tag[text='text', line=0, column=1, type=OFF,"
+            "Tag[text='CHECKSTYLE:OFF', line=1, column=0, type=OFF,"
                     + " tagCheckRegexp=.*, tagMessageRegexp=null]", tag.toString());
+    }
+
+    @Test
+    public void testToStringOfTagClassWithMessage() {
+        final SuppressionCommentFilter filter = new SuppressionCommentFilter();
+        filter.setMessageFormat(".*");
+        final Object tag =
+                getTagsAfterExecution(filter, "filename", "//CHECKSTYLE:ON").get(0);
+        assertEquals("Invalid toString result",
+            "Tag[text='CHECKSTYLE:ON', line=1, column=0, type=ON,"
+                + " tagCheckRegexp=.*, tagMessageRegexp=.*]", tag.toString());
+    }
+
+    @Test
+    public void testCompareToOfTagClass() {
+        final List<Comparable<Object>> tags1 =
+                getTagsAfterExecutionOnDefaultFilter("//CHECKSTYLE:OFF", " //CHECKSTYLE:ON");
+        final Comparable<Object> tag1 = tags1.get(0);
+        final Comparable<Object> tag2 = tags1.get(1);
+
+        final List<Comparable<Object>> tags2 =
+                getTagsAfterExecutionOnDefaultFilter(" //CHECKSTYLE:OFF");
+        final Comparable<Object> tag3 = tags2.get(0);
+
+        final List<Comparable<Object>> tags3 =
+                getTagsAfterExecutionOnDefaultFilter("//CHECKSTYLE:ON");
+        final Comparable<Object> tag4 = tags3.get(0);
+
+        assertTrue("Invalid comparing result", tag1.compareTo(tag2) < 0);
+        assertTrue("Invalid comparing result", tag2.compareTo(tag1) > 0);
+        assertTrue("Invalid comparing result", tag1.compareTo(tag3) < 0);
+        assertTrue("Invalid comparing result", tag3.compareTo(tag1) > 0);
+        assertEquals("Invalid comparing result", 0, tag1.compareTo(tag4));
     }
 
     @Test
@@ -356,9 +387,22 @@ public class SuppressionCommentFilterTest
     @Test
     public void testAcceptNullLocalizedMessage() {
         final SuppressionCommentFilter filter = new SuppressionCommentFilter();
-        final TreeWalkerAuditEvent auditEvent = new TreeWalkerAuditEvent(null, null, null, null);
-        Assert.assertTrue("Filter should accept audit event", filter.accept(auditEvent));
-        Assert.assertNull("File name should not be null", auditEvent.getFileName());
+        final FileContents contents =
+                new FileContents("filename", "//CHECKSTYLE:OFF: ConstantNameCheck", "line2");
+        contents.reportSingleLineComment(1, 0);
+        final TreeWalkerAuditEvent auditEvent =
+                new TreeWalkerAuditEvent(contents, null, null, null);
+        assertTrue("Filter should accept audit event", filter.accept(auditEvent));
+        assertNull("File name should not be null", auditEvent.getFileName());
+    }
+
+    @Test
+    public void testAcceptNullFileContents() {
+        final SuppressionCommentFilter filter = new SuppressionCommentFilter();
+        final FileContents contents = null;
+        final TreeWalkerAuditEvent auditEvent = new TreeWalkerAuditEvent(contents, null,
+                new LocalizedMessage(1, null, null, null, null, Object.class, null), null);
+        assertTrue("Filter should accept audit event", filter.accept(auditEvent));
     }
 
     @Test
@@ -389,6 +433,50 @@ public class SuppressionCommentFilterTest
             "15:18: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "ID", "^[a-z][a-zA-Z0-9]*$"),
+            "18:17: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "DEF", "^[a-z][a-zA-Z0-9]*$"),
+            "21:17: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "XYZ", "^[a-z][a-zA-Z0-9]*$"),
+            };
+
+        verifySuppressed(filterConfig, getPath("InputSuppressionCommentFilterSuppressById.java"),
+                expectedViolationMessages, suppressedViolationMessages);
+    }
+
+    @Test
+    public void testSuppressByIdAndMessage() throws Exception {
+        final DefaultConfiguration filterConfig =
+            createModuleConfig(SuppressionCommentFilter.class);
+        filterConfig.addAttribute("offCommentFormat", "CSOFF (\\w+) \\(allow (\\w+)\\)");
+        filterConfig.addAttribute("onCommentFormat", "CSON (\\w+)");
+        filterConfig.addAttribute("checkFormat", "$1");
+        filterConfig.addAttribute("messageFormat", "$2");
+        final String[] suppressedViolationMessages = {
+            "18:17: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "DEF", "^[a-z][a-zA-Z0-9]*$"),
+            };
+        final String[] expectedViolationMessages = {
+            "6:17: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
+            "9:30: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "abc", "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"),
+            "12:9: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "line_length", "^[a-z][a-zA-Z0-9]*$"),
+            "15:18: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "ID", "^[a-z][a-zA-Z0-9]*$"),
+            "18:17: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "DEF", "^[a-z][a-zA-Z0-9]*$"),
+            "21:17: "
+                + getCheckMessage(AbstractNameCheck.class,
+                    MSG_INVALID_PATTERN, "XYZ", "^[a-z][a-zA-Z0-9]*$"),
             };
 
         verifySuppressed(filterConfig, getPath("InputSuppressionCommentFilterSuppressById.java"),
@@ -410,21 +498,40 @@ public class SuppressionCommentFilterTest
     @Test
     public void testTagsAreClearedEachRun() {
         final SuppressionCommentFilter suppressionCommentFilter = new SuppressionCommentFilter();
-        final FileContents contents =
-                new FileContents("filename", "//CHECKSTYLE:OFF", "line2");
-        contents.reportSingleLineComment(1, 0);
-        final TreeWalkerAuditEvent dummyEvent = new TreeWalkerAuditEvent(contents, "filename",
-                new LocalizedMessage(1, null, null, null, null, Object.class, null), null);
-        suppressionCommentFilter.accept(dummyEvent);
-        final FileContents contents2 =
-                new FileContents("filename2", "some line", "//CHECKSTYLE:OFF");
-        contents2.reportSingleLineComment(2, 0);
-        final TreeWalkerAuditEvent dummyEvent2 = new TreeWalkerAuditEvent(contents2, "filename",
-                new LocalizedMessage(1, null, null, null, null, Object.class, null), null);
-        suppressionCommentFilter.accept(dummyEvent2);
-        final List<SuppressionCommentFilter.Tag> tags =
-                Whitebox.getInternalState(suppressionCommentFilter, "tags");
-        assertEquals("Invalid tags size", 1, tags.size());
+        final List<?> tags1 = getTagsAfterExecution(suppressionCommentFilter,
+                "filename1", "//CHECKSTYLE:OFF", "line2");
+        assertEquals("Invalid tags size", 1, tags1.size());
+        final List<?> tags2 = getTagsAfterExecution(suppressionCommentFilter,
+                "filename2", "No comments in this file");
+        assertEquals("Invalid tags size", 0, tags2.size());
+    }
+
+    private static List<Comparable<Object>> getTagsAfterExecutionOnDefaultFilter(String... lines) {
+        return getTagsAfterExecution(new SuppressionCommentFilter(), "filename", lines);
+    }
+
+    /**
+     * Calls the filter with a minimal set of inputs and returns a list of
+     * {@link SuppressionCommentFilter} internal type {@code Tag}.
+     * Our goal is 100% test coverage, for this we use white-box testing.
+     * So we need access to the implementation details. For this reason,
+     * it is necessary to use reflection to gain access to the inner field here.
+     *
+     * @return {@code Tag} list
+     */
+    private static List<Comparable<Object>> getTagsAfterExecution(SuppressionCommentFilter filter,
+            String filename, String... lines) {
+        final FileContents contents = new FileContents(filename, lines);
+        for (int lineNo = 0; lineNo < lines.length; lineNo++) {
+            final int colNo = lines[lineNo].indexOf("//");
+            if (colNo >= 0) {
+                contents.reportSingleLineComment(lineNo + 1, colNo);
+            }
+        }
+        final TreeWalkerAuditEvent dummyEvent = new TreeWalkerAuditEvent(contents, filename,
+                new LocalizedMessage(1, null, null, null, null, Object.class, ""), null);
+        filter.accept(dummyEvent);
+        return Whitebox.getInternalState(filter, "tags");
     }
 
 }
