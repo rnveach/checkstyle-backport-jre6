@@ -154,6 +154,11 @@
   <module name="FileLength">
     <property name="fileExtensions" value="java"/>
   </module>
+  <module name="LineLength">
+    <property name="fileExtensions" value="java"/>
+    <property name="max" value="100"/>
+    <property name="ignorePattern" value="^ *\* *([^ ]+|\{@code .*|&lt;a href=&quot;[^&quot;]+&quot;&gt;)$"/>
+  </module>
 
   <!-- Whitespace -->
   <module name="FileTabCharacter">
@@ -361,6 +366,7 @@
     <module name="SuperClone"/>
     <module name="SuperFinalize"/>
     <module name="UnnecessaryParentheses"/>
+    <module name="UnnecessarySemicolonAfterTypeMemberDeclaration"/>
     <module name="UnnecessarySemicolonInEnumeration"/>
     <module name="UnnecessarySemicolonInTryWithResources"/>
     <module name="VariableDeclarationUsageDistance"/>
@@ -457,6 +463,14 @@
     <!-- Javadoc Comments -->
     <module name="AtclauseOrder"/>
     <module name="InvalidJavadocPosition"/>
+    <module name="JavadocBlockTagLocation">
+      <!-- default tags -->
+      <property name="tags" value="author, deprecated, exception, hidden, param, provides"/>
+      <property name="tags" value="return, see, serial, serialData, serialField, since, throws"/>
+      <property name="tags" value="uses, version"/>
+      <!-- additional tags used in the project -->
+      <property name="tags" value="noinspection"/>
+    </module>
     <module name="JavadocMethod">
       <property name="allowUndeclaredRTE" value="true"/>
       <property name="allowThrowsTagsForSubclasses" value="true"/>
@@ -617,10 +631,6 @@
     <module name="AnonInnerLength"/>
     <module name="ExecutableStatementCount">
         <property name="max" value="30"/>
-    </module>
-    <module name="LineLength">
-      <property name="max" value="100"/>
-      <property name="ignorePattern" value="^ *\* *([^ ]+|\{@code .*|&lt;a href=&quot;[^&quot;]+&quot;&gt;)$"/>
     </module>
     <module name="MethodCount">
       <property name="maxTotal" value="34"/>

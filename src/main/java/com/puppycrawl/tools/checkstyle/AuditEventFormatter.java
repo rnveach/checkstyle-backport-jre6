@@ -27,9 +27,9 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 public interface AuditEventFormatter {
 
     /**
-     * Formats an error message.
+     * Formats an event message.
      * @param event audit event.
-     * @return string representation of error message.
+     * @return string representation of event message.
      */
     String format(AuditEvent event);
 

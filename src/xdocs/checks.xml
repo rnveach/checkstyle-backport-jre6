@@ -371,6 +371,10 @@
           Checks that Javadocs are located at the correct position.</td>
       </tr>
       <tr>
+        <td><a href="config_javadoc.html#JavadocBlockTagLocation">JavadocBlockTagLocation</a></td>
+        <td>Checks that a javadoc block tag appears only at the beginning of a line.</td>
+      </tr>
+      <tr>
         <td><a href="config_javadoc.html#JavadocMethod">JavadocMethod</a></td>
         <td>Checks the Javadoc of a method or constructor.</td>
       </tr>
@@ -837,6 +841,11 @@
           UnnecessarySemicolonInTryWithResources</a>
         </td>
         <td>Checks if unnecessary semicolon is used in last resource declaration.</td>
+      </tr>
+      <tr>
+        <td><a href="config_coding.html#UnnecessarySemicolonAfterTypeMemberDeclaration">
+          UnnecessarySemicolonAfterTypeMemberDeclaration</a></td>
+        <td>Checks if unnecessary semicolon is used after type member declaration.</td>
       </tr>
       <tr>
         <td><a href="config_imports.html#UnusedImports">UnusedImports</a></td>

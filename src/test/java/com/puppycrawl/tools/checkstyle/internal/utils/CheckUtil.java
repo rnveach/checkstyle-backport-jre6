@@ -180,16 +180,25 @@ public final class CheckUtil {
             final Class<?> cls = clsInfo.load();
 
             if (ModuleReflectionUtil.isCheckstyleModule(cls)
-                    // added by backport
-                    && !cls.getName().endsWith("Stub")
-                    && !cls.getCanonicalName()
-                    .startsWith("com.puppycrawl.tools.checkstyle.internal.testmodules")
-                    && !cls.getCanonicalName()
-                    .startsWith("com.puppycrawl.tools.checkstyle.packageobjectfactory")) {
+                    && CheckUtil.isFromAllowedPackages(cls)) {
                 result.add(cls);
             }
         }
         return result;
+    }
+
+    /**
+     * Checks that class is from allowed packages.
+     *
+     * @param cls class to check
+     * @return true if class is from allowed packages, false otherwise
+     */
+    private static boolean isFromAllowedPackages(Class<?> cls) {
+        final String canonicalName = cls.getCanonicalName();
+        return !canonicalName.startsWith("com.puppycrawl.tools.checkstyle.packageobjectfactory")
+            && !canonicalName.startsWith("com.puppycrawl.tools.checkstyle.internal.testmodules")
+            // added by backport
+            && !cls.getName().endsWith("Stub");
     }
 
     /**

@@ -101,6 +101,7 @@ public class XdocsPagesTest {
             "TreeWalker",
             "name=\"Checker\"",
             "name=\"Header\"",
+            "name=\"LineLength\"",
             "name=\"Translation\"",
             "name=\"SeverityMatchFilter\"",
             "name=\"SuppressWithPlainTextCommentFilter\"",
@@ -148,7 +149,8 @@ public class XdocsPagesTest {
             "JavadocMethod.minLineCount",
             "JavadocMethod.allowMissingJavadoc",
             "JavadocMethod.allowMissingPropertyJavadoc",
-            "JavadocMethod.ignoreMethodNamesRegex"
+            "JavadocMethod.ignoreMethodNamesRegex",
+            "MissingDeprecated.skipNoJavadoc"
     );
 
     private static final Set<String> SUN_MODULES = Collections.unmodifiableSet(
@@ -497,8 +499,8 @@ public class XdocsPagesTest {
                 validatePropertySection(fileName, sectionName, null, instance);
                 subSectionPos++;
             }
-            if (subSectionPos == 4 && !"Error Messages".equals(subSectionName)) {
-                validateErrorSection(fileName, sectionName, null, instance);
+            if (subSectionPos == 4 && !"Violation Messages".equals(subSectionName)) {
+                validateViolationSection(fileName, sectionName, null, instance);
                 subSectionPos++;
             }
 
@@ -514,7 +516,7 @@ public class XdocsPagesTest {
                     validateUsageExample(fileName, sectionName, subSection);
                     break;
                 case 4:
-                    validateErrorSection(fileName, sectionName, subSection, instance);
+                    validateViolationSection(fileName, sectionName, subSection, instance);
                     break;
                 case 5:
                     validatePackageSection(fileName, sectionName, subSection, instance);
@@ -566,7 +568,7 @@ public class XdocsPagesTest {
                 result = "Example of Usage";
                 break;
             case 4:
-                result = "Error Messages";
+                result = "Violation Messages";
                 break;
             case 5:
                 result = "Package";
@@ -832,6 +834,7 @@ public class XdocsPagesTest {
                 || "SuppressWithPlainTextCommentFilter".equals(sectionName))
                     && ("checkFormat".equals(propertyName)
                         || "messageFormat".equals(propertyName)
+                        || "idFormat".equals(propertyName)
                         || "influenceFormat".equals(propertyName))
                 || ("RegexpMultiline".equals(sectionName)
                     || "RegexpSingleline".equals(sectionName)
@@ -1049,10 +1052,9 @@ public class XdocsPagesTest {
                 }
                 else {
                     result = Arrays.toString((int[]) value).replace("[", "").replace("]", "");
-
-                    if (result.isEmpty()) {
-                        result = "{}";
-                    }
+                }
+                if (result.isEmpty()) {
+                    result = "{}";
                 }
             }
             else if (fieldClass == double[].class) {
@@ -1063,38 +1065,40 @@ public class XdocsPagesTest {
                 }
             }
             else if (fieldClass == String[].class) {
-                if (value instanceof Collection) {
-                    final Collection<?> collection = (Collection<?>) value;
-                    final String[] newArray = new String[collection.size()];
-                    final Iterator<?> iterator = collection.iterator();
-                    int index = 0;
-
-                    while (iterator.hasNext()) {
-                        final Object next = iterator.next();
-                        newArray[index] = (String) next;
-                        index++;
-                    }
-
-                    value = newArray;
-                }
-
-                if (value != null && Array.getLength(value) > 0) {
-                    if (Array.get(value, 0) instanceof Number) {
-                        final String[] newArray = new String[Array.getLength(value)];
-
-                        for (int i = 0; i < newArray.length; i++) {
-                            newArray[i] = TokenUtil.getTokenName(((Number) Array.get(value, i))
-                                    .intValue());
-                        }
-
-                        value = newArray;
-                    }
-
-                    result = Arrays.toString((Object[]) value).replace("[", "")
-                            .replace("]", "");
+                if (value == null) {
+                    result = "";
                 }
                 else {
+                    final List<String> valuesStream = new ArrayList<String>();
+                    if (value instanceof Collection) {
+                        final Collection<?> collection = (Collection<?>) value;
+
+                        for (Object o : collection) {
+                            valuesStream.add(o.toString());
+                        }
+                    }
+                    else {
+                        final Object[] array = (Object[]) value;
+
+                        for (Object o : array) {
+                            valuesStream.add(o.toString());
+                        }
+                    }
+
+                    Collections.sort(valuesStream);
+
+                    boolean first = true;
                     result = "";
+
+                    for (String s : valuesStream) {
+                        if (first) {
+                            first = false;
+                        }
+                        else {
+                            result += ", ";
+                        }
+                        result += s;
+                    }
                 }
 
                 if (result.isEmpty()) {
@@ -1250,8 +1254,9 @@ public class XdocsPagesTest {
         return result;
     }
 
-    private static void validateErrorSection(String fileName, String sectionName, Node subSection,
-            Object instance) throws Exception {
+    private static void validateViolationSection(String fileName, String sectionName,
+                                                 Node subSection,
+                                                 Object instance) throws Exception {
         final Class<?> clss = instance.getClass();
         final Set<Field> fields = CheckUtil.getCheckMessages(clss);
         final Set<String> list = new TreeSet<String>();

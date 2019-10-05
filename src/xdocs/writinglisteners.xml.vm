@@ -21,7 +21,7 @@
         A Checkstyle listener monitors the progress of a <code>Checker</code> during the audit
         of files. The <code>Checker</code> notifies its attached listeners of
         significant events such as the start of the audit of a file and
-        the logging of a Check error, and the listeners respond
+        the logging of a Check violation, and the listeners respond
         appropriately.  Any number of listeners can be attached to a
         <code> Checker</code>. An audit always adds one of
         the distribution listeners, <a
@@ -39,7 +39,7 @@
         Checkstyle users, but you may find a need for a custom
         listener. For example, a user has requested verbose output of
         progress information during a Checkstyle run. Another user would
-        like to filter error events. This document explains how to write
+        like to filter violation events. This document explains how to write
         listeners for such tasks and how to integrate them in a Checker
         module. It also describes two custom listeners that are inspired
         by ANT listeners: a listener that is a wrapper for the Jakarta
@@ -53,7 +53,7 @@
         interface. During an audit, a <code>Checker</code>
         informs its attached <code>AuditListeners</code> of
         six kinds of events: audit started/ended, file started/ended,
-        and logging of an error/exception.
+        and logging of an error(violation)/exception.
       </p>
 
       <p>
@@ -61,10 +61,10 @@
         href="apidocs/com/puppycrawl/tools/checkstyle/api/AuditEvent.html">AuditEvent</a>.
         A file-related <code>AuditEvent</code> contains the
         name of that file. An <code>AuditEvent</code> for
-        error logging has a message, a severity level, a message source
+        violation logging has a message, a severity level, a message source
         such as the name of a <code>Check</code>, and file
-        line and column numbers that may be relevant to the error. The
-        notification of an exception to a <code>AuditListener</code> includes an error
+        line and column numbers that may be relevant to the violation. The
+        notification of an exception to a <code>AuditListener</code> includes a violation
         <code>AuditEvent</code> and the details of the exception. Here is a UML diagram for
         classes <code>AuditListener</code> and <code>AuditEvent</code>.
       </p>
@@ -88,8 +88,8 @@
       <p>
         The custom listener that we demonstrate here is a verbose
         listener that simply prints each event notification to an output
-        stream, and reports the number of errors per audited file and
-        the total number of errors. The default output stream is <code>System.out</code>.
+        stream, and reports the number of violations per audited file and
+        the total number of violations. The default output stream is <code>System.out</code>.
         In order to enable the specification of output to a file through property
         <code>file</code>, the class extends <code>AutomaticBean</code> and defines method
         <code>setFile(String)</code>.

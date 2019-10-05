@@ -41,7 +41,7 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Path;
  * <p>Detects if keys in properties files are in correct order.</p>
  * <p>
  *   Rationale: Sorted properties make it easy for people to find required properties by name
- *   in file. It makes merges more easy. While there are no errors at runtime.
+ *   in file. It makes merges more easy. While there are no problems at runtime.
  *   This check is valuable only on files with string resources where order of lines
  *   does not matter at all, but this can be improved.
  *   E.g.: checkstyle/src/main/resources/com/puppycrawl/tools/checkstyle/messages.properties
@@ -55,8 +55,8 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Path;
  * <p>Known limitation: The key should not contain a newline.
  * The string compare will work, but not the line number reporting.</p>
  * <ul>
- *   <li>Property {@code fileExtensions} - file type extension of the files to check.
- *   Default value is .properties.</li>
+ *   <li>Property {@code fileExtensions} - Specify file type extension of the files to check.
+ *   Default value is {@code .properties}.</li>
  * </ul>
  * <p>To configure the check:</p>
  * <pre>&lt;module name="OrderedProperties"/&gt;</pre>
@@ -77,6 +77,7 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Path;
  *   On line 6 you have "key." The dot is on position 46 which is higher than nothing.
  *   key.png will reported as violation because "png" comes before "sub".</li>
  * </ul>
+ *
  * @since 8.22
  */
 @StatelessCheck

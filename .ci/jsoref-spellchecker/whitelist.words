@@ -365,6 +365,7 @@ edb
 edef
 edf
 edu
+Eghj
 ej
 ejb
 elasticsearch
@@ -625,6 +626,7 @@ Jakub
 jarchitect
 javac
 javadoc
+javadocblocktaglocation
 javadocdetailnodeparser
 javadocmethod
 javadocpackage
@@ -665,6 +667,7 @@ jdt
 jedit
 jenkins
 Jenkinsfile
+jep
 jetbrains
 JFile
 JFrame
@@ -1293,6 +1296,7 @@ uniqueproperties
 Unitless
 unlzma
 unnecessaryparentheses
+unnecessarysemicolonaftertypememberdeclaration
 unnecessarysemicoloninenumeration
 unnecessarysemicolonintrywithresources
 Unproxyable

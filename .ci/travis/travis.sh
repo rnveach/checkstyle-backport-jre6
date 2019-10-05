@@ -219,8 +219,9 @@ no-error-test-sbe)
   mvn -e clean install -Pno-validations
   mkdir -p .ci-temp/
   cd .ci-temp/
-  git clone https://github.com/real-logic/simple-binary-encoding.git
+  git clone https://github.com/checkstyle/simple-binary-encoding.git
   cd simple-binary-encoding
+  git checkout issue_2116
   sed -i'' \
     "s/'com.puppycrawl.tools:checkstyle:.*'/'com.puppycrawl.tools:checkstyle:$CS_POM_VERSION'/" \
     build.gradle
@@ -275,6 +276,23 @@ no-exception-test-guava-with-google-checks)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
       --config ../../src/main/resources/google_checks.xml --checkstyleVersion $CS_POM_VERSION
+  ;;
+
+no-exception-test-guava-with-sun-checks)
+  CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
+                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+  echo CS_version: $CS_POM_VERSION
+  git clone https://github.com/checkstyle/contribution
+  cd contribution/checkstyle-tester
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#guava|/guava|/' projects-to-test-on.properties
+  cd ../../
+  mvn -e clean install -Pno-validations
+  sed -i.'' 's/value=\"error\"/value=\"ignore\"/' src/main/resources/sun_checks.xml
+  cd contribution/checkstyle-tester
+  export MAVEN_OPTS="-Xmx2048m"
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
+      --config ../../src/main/resources/sun_checks.xml --checkstyleVersion $CS_POM_VERSION
   ;;
 
 no-exception-test-hibernate)

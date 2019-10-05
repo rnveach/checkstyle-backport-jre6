@@ -45,10 +45,7 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
     private static final String EOL = System7.lineSeparator();
     private static final String USAGE = String.format(Locale.ROOT,
           "Usage: java com.puppycrawl.tools.checkstyle.JavadocPropertiesGenerator [-hV]%n"
-          + "                                                                       "
-          + "--destfile=<outputFile>%n"
-          + "                                                                       "
-          + "<inputFile>%n"
+          + "       --destfile=<outputFile> <inputFile>%n"
           + "      <inputFile>   The input file.%n"
           + "      --destfile=<outputFile>%n"
           + "                    The output file.%n"

@@ -13,7 +13,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.23</version>
+  <version>8.24</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -170,10 +170,10 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <projectVersion>${project.version}</projectVersion>
     <antlr4.version>4.5.3</antlr4.version>
-    <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
-    <maven.spotbugs.plugin.version>3.1.11</maven.spotbugs.plugin.version>
+    <maven.site.plugin.version>3.8.2</maven.site.plugin.version>
+    <maven.spotbugs.plugin.version>3.1.12.2</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
-    <pmd.version>6.14.0</pmd.version>
+    <pmd.version>6.17.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.4</maven.jacoco.plugin.version>
     <powermock.version>2.0.2</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
@@ -184,7 +184,7 @@
     </maven.sevntu-checkstyle-check.checkstyle.version>
     <maven.versions.plugin.version>2.7</maven.versions.plugin.version>
     <java.version>1.6</java.version>
-    <pitest.plugin.version>1.4.8</pitest.plugin.version>
+    <pitest.plugin.version>1.4.9</pitest.plugin.version>
     <pitest.plugin.timeout.factor>10</pitest.plugin.timeout.factor>
     <pitest.plugin.timeout.constant>50000</pitest.plugin.timeout.constant>
     <pitest.plugin.threads>4</pitest.plugin.threads>
@@ -204,7 +204,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>3.9.6</version>
+      <version>4.0.3</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -219,7 +219,7 @@
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
-      <version>1.9.3</version>
+      <version>1.9.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -288,7 +288,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.26</version>
+      <version>1.7.28</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -368,7 +368,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.1.1</version>
           <configuration>
             <source>${java.version}</source>
             <failOnError>true</failOnError>
@@ -386,7 +386,7 @@
           <artifactId>maven-pmd-plugin</artifactId>
           <version>${maven.pmd.plugin.version}</version>
           <configuration>
-            <analysisCache>false</analysisCache>
+            <analysisCache>true</analysisCache>
             <targetJdk>${java.version}</targetJdk>
             <minimumTokens>20</minimumTokens>
             <skipEmptyReport>false</skipEmptyReport>
@@ -1286,6 +1286,7 @@
         <excludes>
           <!-- system-out is ok there, that is CLI -->
           <exclude>**/Main.class</exclude>
+          <exclude>**/MainTest.class</exclude>
           <exclude>**/Main$CliOptions.class</exclude>
           <exclude>**/JavadocPropertiesGenerator.class</exclude>
           <!-- generated classes, unfortunately use problematic api -->
@@ -2714,7 +2715,7 @@
                 <param>com.puppycrawl.tools.checkstyle.MainTest</param>
               </targetTests>
               <coverageThreshold>100</coverageThreshold>
-              <mutationThreshold>99</mutationThreshold>
+              <mutationThreshold>98</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>

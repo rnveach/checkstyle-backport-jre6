@@ -23,10 +23,10 @@
     </section>
 
     <section name="ArrayTypeStyle">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="ArrayTypeStyle_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
-          Checks the style of array type definitions.  Some like Java style:
+          Checks the style of array type definitions. Some like Java style:
           <code>public static void main(String[] args)</code> and some like
           C style: <code>public static void main(String args[])</code>.
         </p>
@@ -52,7 +52,7 @@
           <tr>
             <td>javaStyle</td>
             <td>
-              Controls whether to enforce Java style (true) or C style (false).
+              Control whether to enforce Java style (true) or C style (false).
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
@@ -129,7 +129,7 @@ public class MyClass {
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="ArrayTypeStyle_Error_Messages">
+      <subsection name="Violation Messages" id="ArrayTypeStyle_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22array.type.style%22">
@@ -156,15 +156,15 @@ public class MyClass {
     </section>
 
     <section name="AvoidEscapedUnicodeCharacters">
+      <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="AvoidEscapedUnicodeCharacters_Description">
-        <p>Since Checkstyle 5.8</p>
         <p>
           Restrict using
-            <a href = "https://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.3">
-          Unicode escapes</a> (e.g. \u221e).
+          <a href = "https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.3">
+          Unicode escapes</a> (such as \u221e).
           It is possible to allow using escapes for
           <a href="https://en.wiktionary.org/wiki/Appendix:Control_characters">
-              non-printable(control) characters</a>.
+              non-printable, control characters</a>.
           Also, this check can be configured to allow using escapes
           if trail comment is present. By the option it is possible to
           allow using escapes if literal contains only them.
@@ -182,30 +182,30 @@ public class MyClass {
           </tr>
           <tr>
             <td>allowEscapesForControlCharacters</td>
-            <td>Allow use escapes for non-printable(control) characters.</td>
+            <td>Allow use escapes for non-printable, control characters.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>allowByTailComment</td>
             <td>Allow use escapes if trail comment is present.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>allowIfAllCharactersEscaped</td>
             <td>Allow if all characters in literal are escaped.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>allowNonPrintableEscapes</td>
-            <td>Allow non-printable escapes.</td>
+            <td>Allow use escapes for non-printable, whitespace characters.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>5.8</td>
           </tr>
         </table>
@@ -216,8 +216,8 @@ public class MyClass {
           Examples of using Unicode:
         </p>
         <source>
-String unitAbbrev = "μs"; //Best: perfectly clear even without a comment.
-String unitAbbrev = "\u03bcs"; //Poor: the reader has no idea what this is.
+String unitAbbrev = "μs";      // Best: perfectly clear even without a comment.
+String unitAbbrev = "\u03bcs"; // Poor: the reader has no idea what this is.
         </source>
         <p>
           An example of how to configure the check is:
@@ -226,14 +226,14 @@ String unitAbbrev = "\u03bcs"; //Poor: the reader has no idea what this is.
 &lt;module name=&quot;AvoidEscapedUnicodeCharacters&quot;/&gt;
         </source>
         <p>
-          An example of non-printable(control) characters.
+          An example of non-printable, control characters.
         </p>
         <source>
 return '\ufeff' + content; // byte order mark
         </source>
         <p>
           An example of how to configure the check to allow using escapes
-          for non-printable(control) characters:
+          for non-printable, control characters:
         </p>
         <source>
 &lt;module name="AvoidEscapedUnicodeCharacters"&gt;
@@ -271,7 +271,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
         <p>
-          An example of how to configure the check to allow non-printable escapes:
+          An example of how to configure the check to allow using escapes
+          for non-printable, whitespace characters:
         </p>
         <source>
 &lt;module name="AvoidEscapedUnicodeCharacters"&gt;
@@ -293,7 +294,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="AvoidEscapedUnicodeCharacters_Error_Messages">
+      <subsection name="Violation Messages" id="AvoidEscapedUnicodeCharacters_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22forbid.escaped.unicode.char%22">
@@ -320,8 +321,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
     </section>
 
     <section name="CommentsIndentation">
+      <p>Since Checkstyle 6.10</p>
       <subsection name="Description" id="CommentsIndentation_Description">
-        <p>Since Checkstyle 6.10</p>
         <p>
           Controls the indentation between comments and surrounding code.
           Comments are indented at the same level as the surrounding code.
@@ -363,7 +364,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 4     int a = 0;
 5   }
 6
-7     /////////////////////////////// violation (should have the same indentation level as line 9)
+7     ///////////////////////////// violation (should have the same indentation level as line 9)
 8
 9   public void foo8() {}
         </source>
@@ -485,7 +486,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 9   public void foo43() {
 10    try {
 11      int a;
-12     // Why do we catch exception here? - violation (should have the same indentation as line 11)
+12     // Why do we catch exception here? - violation (not the same indentation as line 11)
 13     } catch (Exception e) { ... }
 14  }
         </source>
@@ -542,7 +543,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="CommentsIndentation_Error_Messages">
+      <subsection name="Violation Messages" id="CommentsIndentation_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Findentation+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22comments.indentation.block%22">
@@ -573,8 +574,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
     </section>
 
     <section name="DescendantToken">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="DescendantToken_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks for restricted tokens beneath other tokens.
         </p>
@@ -600,47 +601,47 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           </tr>
           <tr>
             <td>limitedTokens</td>
-            <td>set of tokens with limited occurrences as descendants</td>
+            <td>Specify set of tokens with limited occurrences as descendants.</td>
             <td>
              subset of tokens
              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html">TokenTypes</a>
             </td>
-            <td/>
+            <td><code>{}</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>minimumDepth</td>
-            <td>the minimum depth for descendant counts</td>
+            <td>Specify the minimum depth for descendant counts.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>0</td>
+            <td><code>0</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>maximumDepth</td>
-            <td>the maximum depth for descendant counts</td>
+            <td>Specify the maximum depth for descendant counts.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>java.lang.Integer.MAX_VALUE</td>
+            <td><code>java.lang.Integer.MAX_VALUE</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>minimumNumber</td>
-            <td>a minimum count for descendants</td>
+            <td>Specify a minimum count for descendants.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>0</td>
+            <td><code>0</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>maximumNumber</td>
-            <td>a maximum count for descendants</td>
+            <td>Specify a maximum count for descendants.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>java.lang.Integer.MAX_VALUE</td>
+            <td><code>java.lang.Integer.MAX_VALUE</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>sumTokenCounts</td>
             <td>
-              whether the number of tokens found should be calculated
-              from the sum of the individual token counts
+              Control whether the number of tokens found should be calculated
+              from the sum of the individual token counts.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -648,16 +649,16 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           </tr>
           <tr>
             <td>minimumMessage</td>
-            <td>error message when the minimum count is not reached</td>
+            <td>Define the violation message when the minimum count is not reached.</td>
             <td><a href="property_types.html#string">String</a></td>
-            <td>null</td>
+            <td><code>null</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>maximumMessage</td>
-            <td>error message when the maximum count is exceeded</td>
+            <td>Define the violation message when the maximum count is exceeded.</td>
             <td><a href="property_types.html#string">String</a></td>
-            <td>null</td>
+            <td><code>null</code></td>
             <td>3.2</td>
           </tr>
         </table>
@@ -665,7 +666,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 
       <subsection name="Examples" id="DescendantToken_Examples">
 
-        <p>Switch with no default:</p>
+        <p>
+          To configure the check to produce a violation on a switch statement
+          with no default case:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="LITERAL_SWITCH"/&gt;
@@ -676,7 +680,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </source>
 
         <p>
-          The condition in <code>for</code> performs no check:
+          To configure the check to produce a violation on a
+          condition in <code>for</code> which performs no check:
         </p>
         <source>
 &lt;module name="DescendantToken"&gt;
@@ -687,7 +692,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </source>
 
         <p>
-          Comparing <code>this</code> with <code>null</code> (i.e. <code>this ==
+          To configure the check to produce a violation on
+          comparing <code>this</code> with <code>null</code> (i.e. <code>this ==
           null</code> and <code>this != null</code>):
         </p>
         <source>
@@ -700,7 +706,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>String literal equality check:</p>
+        <p>
+          To configure the check to produce a violation on a <code>String</code>
+          literal equality check:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="EQUAL,NOT_EQUAL"/&gt;
@@ -711,8 +720,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </source>
 
         <p>
-          Assert statement may have side effects (formatted for browser
-          display):
+          To configure the check to produce a violation on an assert statement
+          that may have side effects (formatted for browser display):
         </p>
         <source>
 &lt;module name="DescendantToken"&gt;
@@ -726,7 +735,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </source>
 
         <p>
-          The initialiser in <code>for</code> performs no setup (where a <code>while</code>
+          To configure the check to produce a violation on an initializer in
+          <code>for</code> performs no setup (where a <code>while</code>
           statement could be used instead):
         </p>
         <source>
@@ -738,7 +748,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </source>
 
         <p>
-          A switch within a switch:
+          To configure the check to produce a violation on a switch that is
+          nested in another switch:
         </p>
         <source>
 &lt;module name="DescendantToken"&gt;
@@ -749,7 +760,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>A return statement from within a catch or finally block:</p>
+        <p>
+          To configure the check to produce a violation on a return statement
+          from within a catch or finally block:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="LITERAL_FINALLY,LITERAL_CATCH"/&gt;
@@ -758,7 +772,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>A try statement within a catch or finally block:</p>
+        <p>
+          To configure the check to produce a violation on a try statement
+          within a catch or finally block:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="LITERAL_CATCH,LITERAL_FINALLY"/&gt;
@@ -767,7 +784,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>Too many cases within a switch:</p>
+        <p>To configure the check to produce a violation on a switch with too many cases:</p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="LITERAL_SWITCH"/&gt;
@@ -777,7 +794,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>Too many local variables within a method:</p>
+        <p>
+          To configure the check to produce a violation on a method with
+          too many local variables:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="METHOD_DEF"/&gt;
@@ -787,7 +807,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>Too many returns from within a method:</p>
+        <p>
+          To configure the check to produce a violation on a method
+          with too many returns:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="METHOD_DEF"/&gt;
@@ -796,7 +819,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>Too many fields within an interface:</p>
+        <p>
+          To configure the check to produce a violation on an interface
+          with too many fields:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="INTERFACE_DEF"/&gt;
@@ -806,7 +832,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>Limits the number of exceptions a method can throw:</p>
+        <p>
+          To configure the check to produce a violation on a method
+          which throws too many exceptions:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="LITERAL_THROWS"/&gt;
@@ -815,7 +844,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>Limits the number of expressions in a method:</p>
+        <p>
+          To configure the check to produce a violation on a method
+          with too many expressions:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="METHOD_DEF"/&gt;
@@ -824,7 +856,9 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>Disallows empty statements:</p>
+        <p>
+          To configure the check to produce a violation on an empty statement:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="EMPTY_STAT"/&gt;
@@ -836,7 +870,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
 
-        <p>Too many fields within a class:</p>
+        <p>
+          To configure the check to produce a violation on a class
+          with too many fields:
+        </p>
         <source>
 &lt;module name="DescendantToken"&gt;
   &lt;property name="tokens" value="CLASS_DEF"/&gt;
@@ -856,7 +893,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="DescendantToken_Error_Messages">
+      <subsection name="Violation Messages" id="DescendantToken_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22descendant.token.max%22">
@@ -895,10 +932,10 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
     </section>
 
     <section name="FinalParameters">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="FinalParameters_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Check that parameters for methods, constructors, and catch blocks are
+          Check that parameters for methods, constructors, catch and for-each blocks are
           final. Interface, abstract, and native methods are not checked: the final
           keyword does not make sense for interface, abstract, and native method
           parameters as there is no code that could modify the parameter.
@@ -923,7 +960,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           </tr>
           <tr>
             <td>ignorePrimitiveTypes</td>
-            <td>ignore primitive types as parameters</td>
+            <td>Ignore primitive types as parameters.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>6.2</td>
@@ -996,7 +1033,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="FinalParameters_Error_Messages">
+      <subsection name="Violation Messages" id="FinalParameters_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22final.parameter%22">
@@ -1023,8 +1060,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
     </section>
 
     <section name="Indentation">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="Indentation_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           Checks correct indentation of Java code.
         </p>
@@ -1033,8 +1070,8 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           The idea behind this is that while pretty printers are
           sometimes convenient for bulk reformats of legacy code, they often
           either aren't configurable enough or just can't anticipate how
-          format should be done.  Sometimes this is personal preference, other
-          times it is practical experience.  In any case, this check should
+          format should be done. Sometimes this is personal preference, other
+          times it is practical experience. In any case, this check should
           just ensure that a minimal set of indentation rules is followed.
         </p>
       </subsection>
@@ -1050,53 +1087,57 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           </tr>
           <tr>
             <td>basicOffset</td>
-            <td>how far new indentation level should be indented when on the next line</td>
+            <td>
+              Specify how far new indentation level should be indented when on the next line.
+            </td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>4</td>
+            <td><code>4</code></td>
             <td>3.1</td>
           </tr>
           <tr>
             <td>braceAdjustment</td>
-            <td>how far a braces should be indented when on the next line</td>
+            <td>Specify how far a braces should be indented when on the next line.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>0</td>
+            <td><code>0</code></td>
             <td>3.1</td>
           </tr>
           <tr>
             <td>caseIndent</td>
-            <td>how far a case label should be indented when on next line</td>
+            <td>Specify how far a case label should be indented when on next line.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>4</td>
+            <td><code>4</code></td>
             <td>3.1</td>
           </tr>
           <tr>
             <td>throwsIndent</td>
-            <td>how far a throws clause should be indented when on next line</td>
+            <td>Specify how far a throws clause should be indented when on next line.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>4</td>
+            <td><code>4</code></td>
             <td>5.7</td>
           </tr>
           <tr>
             <td>arrayInitIndent</td>
-            <td>how far an array initialisation should be indented when on next line</td>
+            <td>Specify how far an array initialisation should be indented when on next line.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>4</td>
+            <td><code>4</code></td>
             <td>5.8</td>
           </tr>
           <tr>
             <td>lineWrappingIndentation</td>
-            <td>how far continuation line should be indented when line-wrapping is present</td>
+            <td>
+              Specify how far continuation line should be indented when line-wrapping is present.
+            </td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>4</td>
+            <td><code>4</code></td>
             <td>5.9</td>
           </tr>
           <tr>
             <td>forceStrictCondition</td>
-            <td>force strict indent level in line wrapping case. If value is true, line wrap indent
+            <td>Force strict indent level in line wrapping case. If value is true, line wrap indent
                 have to be same as lineWrappingIndentation parameter. If value is false, line wrap
                 indent could be bigger on any value user would like.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>6.3</td>
           </tr>
         </table>
@@ -1157,7 +1198,7 @@ void foo(String aFooString,
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="Indentation_Error_Messages">
+      <subsection name="Violation Messages" id="Indentation_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Findentation+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22indentation.child.error%22">
@@ -1196,8 +1237,8 @@ void foo(String aFooString,
     </section>
 
     <section name="NewlineAtEndOfFile">
+      <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="NewlineAtEndOfFile_Description">
-        <p>Since Checkstyle 3.1</p>
         <p>
           Checks whether files end with a line separator.
         </p>
@@ -1206,9 +1247,25 @@ void foo(String aFooString,
           Rationale: Any source files and text files in general should
           end with a line separator to let other easily add new content
           at the end of file and "diff" command does not show previous lines as changed.
-          <br/>
+        </p>
+        <p>
           Example (line 36 should not be in diff):
-          <img src="https://cloud.githubusercontent.com/assets/812984/13894408/afd965b8-ed24-11e5-8bfd-e9edf56a6fe6.png" alt="example of diff"/>
+        </p>
+        <source>
+@@ -32,4 +32,5 @@ ForbidWildcardAsReturnTypeCheck.returnTypeClassNamesIgnoreRegex
+PublicReferenceToPrivateTypeCheck.name = Public Reference To Private Type
+
+StaticMethodCandidateCheck.name = Static Method Candidate
+-StaticMethodCandidateCheck.desc = Checks whether private methods should be declared as static.
+\ No newline at end of file
++StaticMethodCandidateCheck.desc = Checks whether private methods should be declared as static.
++StaticMethodCandidateCheck.skippedMethods = Method names to skip during the check.
+        </source>
+        <p>
+          It can also trick the VCS to report the wrong owner for such lines.
+          An engineer who has added nothing but a newline character becomes
+          the last known author for the entire line. As a result, a mate can ask
+          him a question to which he will not give the correct answer.
         </p>
         <p>
           Old Rationale: CVS source control management
@@ -1223,6 +1280,16 @@ void foo(String aFooString,
         </p>
       </subsection>
 
+      <subsection name="Notes" id="NewlineAtEndOfFile_Notes">
+        <p>
+          This will check against the platform-specific default line separator.
+        </p>
+        <p>
+          It is also possible to enforce the use of a specific line-separator
+          across platforms, with the <code>lineSeparator</code> property.
+        </p>
+      </subsection>
+
       <subsection name="Properties" id="NewlineAtEndOfFile_Properties">
         <table>
           <tr>
@@ -1234,16 +1301,16 @@ void foo(String aFooString,
           </tr>
           <tr>
             <td>lineSeparator</td>
-            <td>type of line separator</td>
+            <td>Specify the type of line separator.</td>
             <td><a href="property_types.html#lineSeparator">Line Separator Policy</a></td>
-            <td>lf_cr_crlf</td>
+            <td><code>lf_cr_crlf</code></td>
             <td>3.1</td>
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>file type extension of the files to check.</td>
+            <td>Specify the file type extension of the files to check.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>all files</td>
+            <td><code>all files</code></td>
             <td>3.1</td>
           </tr>
 
@@ -1290,7 +1357,7 @@ void foo(String aFooString,
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="NewlineAtEndOfFile_Error_Messages">
+      <subsection name="Violation Messages" id="NewlineAtEndOfFile_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22noNewlineAtEOF%22">
@@ -1328,7 +1395,7 @@ void foo(String aFooString,
         </p>
         <p>
           Rationale: Sorted properties make it easy for people to find required properties by name
-          in file. It makes merges more easy. While there are no errors at runtime.
+          in file. It makes merges more easy. While there are no problems at runtime.
           This check is valuable only on files with string resources where order of lines
           does not matter at all, but this can be improved.
           E.g.: checkstyle/src/main/resources/com/puppycrawl/tools/checkstyle/messages.properties
@@ -1356,9 +1423,9 @@ void foo(String aFooString,
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>file type extension of the files to check.</td>
+            <td>Specify file type extension of the files to check.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>.properties</td>
+            <td><code>.properties</code></td>
             <td>8.22</td>
           </tr>
         </table>
@@ -1408,7 +1475,7 @@ key.png =value - violation
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="OrderedProperties_Error_Messages">
+      <subsection name="Violation Messages" id="OrderedProperties_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22properties.notSorted.property%22">
@@ -1439,8 +1506,8 @@ key.png =value - violation
     </section>
 
     <section name="OuterTypeFilename">
+      <p>Since Checkstyle 5.3</p>
       <subsection name="Description" id="OuterTypeFilename_Description">
-        <p>Since Checkstyle 5.3</p>
         <p>
           Checks that the outer type name and the file name match. For example,
           the class <code>Foo</code> must be in a file named
@@ -1470,7 +1537,7 @@ key.png =value - violation
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="OuterTypeFilename_Error_Messages">
+      <subsection name="Violation Messages" id="OuterTypeFilename_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22type.file.mismatch%22">
@@ -1497,12 +1564,13 @@ key.png =value - violation
     </section>
 
     <section name="TodoComment">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="TodoComment_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           A check for <code>TODO:</code> comments. Actually
-          it is a generic <a
-          href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">regular
+          it is a generic
+          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Pattern.html">
+          regular
           expression</a> matcher on Java comments. To check for other
           patterns in Java comments, set the <code>format</code> property.
         </p>
@@ -1519,7 +1587,7 @@ key.png =value - violation
           </tr>
           <tr>
             <td>format</td>
-            <td>Pattern to match comments against</td>
+            <td>Specify pattern to match comments against.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"TODO:"</code></td>
             <td>3.0</td>
@@ -1567,7 +1635,7 @@ key.png =value - violation
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="TodoComment_Error_Messages">
+      <subsection name="Violation Messages" id="TodoComment_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22todo.match%22">
@@ -1594,15 +1662,15 @@ key.png =value - violation
     </section>
 
     <section name="TrailingComment">
+      <p>Since Checkstyle 3.4</p>
       <subsection name="Description" id="TrailingComment_Description">
-        <p>Since Checkstyle 3.4</p>
         <p>
           The check to ensure that requires that comments be the only thing on
-          a line.  For the case of <code>//</code> comments that means that the only thing
-          that should precede it is whitespace.  It doesn't check comments if
+          a line. For the case of <code>//</code> comments that means that the only thing
+          that should precede it is whitespace. It doesn't check comments if
           they do not end a line; for example, it accepts the following:
-          <code>Thread.sleep( 10 &lt;some comment here&gt; );</code> Format
-          property is intended to deal with the "} // while" example.
+          <code>Thread.sleep( 10 /*some comment here*/ );</code> Format
+          property is intended to deal with the <code>} // while</code> example.
         </p>
 
         <p>
@@ -1639,7 +1707,7 @@ d = e / f;        // Another comment for this line
           </li>
           <li> &quot;Endline comments also tend to be cryptic. The right side
           of the line doesn't offer much room and the desire to keep the
-          comment on one line means the comment must be short.  Work then goes
+          comment on one line means the comment must be short. Work then goes
           into making the line as short as possible instead of as clear as
           possible. The comment usually ends up as cryptic as
           possible....&quot;
@@ -1669,14 +1737,14 @@ d = e / f;        // Another comment for this line
           </tr>
           <tr>
             <td>format</td>
-            <td>pattern for strings allowed before the comment</td>
+            <td>Specify pattern for strings allowed before the comment.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^[\s});]*$"</code></td>
             <td>3.4</td>
           </tr>
           <tr>
             <td>legalComment</td>
-            <td>pattern for text allowed in trailing comments. (This
+            <td>Define pattern for text allowed in trailing comments. (This
                 pattern will not be applied to multiline comments and the text of the
                 comment will be trimmed before matching.)</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
@@ -1713,7 +1781,7 @@ d = e / f;        // Another comment for this line
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="TrailingComment_Error_Messages">
+      <subsection name="Violation Messages" id="TrailingComment_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22trailing.comments%22">
@@ -1740,15 +1808,16 @@ d = e / f;        // Another comment for this line
     </section>
 
     <section name="Translation">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="Translation_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           A <a href="config.html#Overview">FileSetCheck</a> that ensures
           the correct translation of code by checking property files for
           consistency regarding their keys. Two property files
           describing one and the same context are consistent if they
           contain the same keys. TranslationCheck also can check an existence of required
-          translations which must exist in project, if 'requiredTranslations' option is used.
+          translations which must exist in project, if <code>requiredTranslations</code>
+          option is used.
         </p>
 
         <p>
@@ -1775,8 +1844,25 @@ messages_de.properties: Key 'cancel' missing.
 messages.properties: Key 'hell' missing.
 messages.properties: Key 'ok' missing.
         </source>
+      </subsection>
+
+      <subsection name="Notes" id="Translation_Notes">
         <p>
-          <font color="red">Attention:</font> this Check could produce false-positives if it
+          Language code for the property <code>requiredTranslations</code> is composed of
+          the lowercase, two-letter codes as defined by
+          <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">ISO 639-1</a>.
+          Default value is empty String Set which means that only the existence
+          of default translation is checked. Note, if you specify language codes (or just
+          one language code) of required translations the check will also check for
+          existence of default translation files in project.
+          </p>
+        <p>
+          Attention: the check will perform the validation of ISO codes if the option
+          is used. So, if you specify, for example, "mm" for language code, TranslationCheck
+          will rise violation that the language code is incorrect.
+        </p>
+        <p>
+          Attention: this Check could produce false-positives if it
           is used with <a href="config.html#Checker">Checker</a> that use cache (property
           "cacheFile") This is known design problem, will be addressed at
           <a href="https://github.com/checkstyle/checkstyle/issues/3539">issue</a>.
@@ -1795,7 +1881,7 @@ messages.properties: Key 'ok' missing.
           <tr>
             <td>fileExtensions</td>
             <td>
-              File type extension to identify translation files. Setting
+              Specify file type extension to identify translation files. Setting
               this property is typically only required if your
               translation files are preprocessed and the original files
               do not have the extension <code>.properties</code>
@@ -1806,7 +1892,8 @@ messages.properties: Key 'ok' missing.
           </tr>
           <tr>
             <td>baseName</td>
-            <td><a href="https://docs.oracle.com/javase/7/docs/api/java/util/ResourceBundle.html">
+            <td>Specify
+              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ResourceBundle.html">
               Base name</a> of resource bundles which contain message resources. It helps
               the check to distinguish config and localization resources.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
@@ -1816,16 +1903,7 @@ messages.properties: Key 'ok' missing.
           <tr>
             <td>requiredTranslations</td>
             <td>
-              Allows to specify language codes of required translations which must exist in project.
-              Language code is composed of the lowercase, two-letter codes as defined by
-              <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">ISO 639-1</a>.
-              Default value is empty String Set which means that only the existence
-              of default translation is checked. Note, if you specify language codes (or just
-              one language code) of required translations the check will also check for
-              existence of default translation files in project.
-              ATTENTION: the check will perform the validation of ISO codes if the option
-              is used. So, if you specify, for example, "mm" for language code, TranslationCheck
-              will rise violation that the language code is incorrect.
+              Specify language codes of required translations which must exist in project.
             </td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>{}</code></td>
@@ -1877,8 +1955,6 @@ messages.properties: Key 'ok' missing.
 &lt;/module&gt;
         </source>
         <p>
-        </p>
-        <p>
           As we can see from the configuration, the TranslationCheck was configured to check
           an existence of 'es', 'fr' and 'de' translations. Lets assume that we have the resource
           bundle:
@@ -1907,7 +1983,7 @@ messages_home_fr_CA_UNIX.properties
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="Translation_Error_Messages">
+      <subsection name="Violation Messages" id="Translation_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22translation.missingKey%22">
@@ -1938,8 +2014,8 @@ messages_home_fr_CA_UNIX.properties
     </section>
 
     <section name="UncommentedMain">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="UncommentedMain_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks for uncommented main() methods.
         </p>
@@ -1965,7 +2041,7 @@ messages_home_fr_CA_UNIX.properties
           </tr>
           <tr>
             <td>excludedClasses</td>
-            <td>Pattern for qualified names of classes which are allowed
+            <td>Specify pattern for qualified names of classes which are allowed
             to have a main method.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^$" (empty)</code></td>
@@ -2002,7 +2078,7 @@ messages_home_fr_CA_UNIX.properties
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="UncommentedMain_Error_Messages">
+      <subsection name="Violation Messages" id="UncommentedMain_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22uncommented.main%22">
@@ -2029,14 +2105,14 @@ messages_home_fr_CA_UNIX.properties
     </section>
 
     <section name="UniqueProperties">
+      <p>Since Checkstyle 5.7</p>
       <subsection name="Description" id="UniqueProperties_Description">
-        <p>Since Checkstyle 5.7</p>
         <p>
-          Checks properties files for duplicated properties.
+          Checks properties files for duplicate property keys.
         </p>
         <p>
           Rationale: Multiple property keys usually appear after merge
-          or rebase of several branches. While there are no errors in
+          or rebase of several branches. While there are no problems in
           runtime, there can be a confusion due to having different values
           for the duplicated properties.
         </p>
@@ -2054,9 +2130,9 @@ messages_home_fr_CA_UNIX.properties
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>file type extension of the files to check.</td>
+            <td>Specify file type extension of the files to check.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
-            <td>.properties</td>
+            <td><code>.properties</code></td>
             <td>5.7</td>
           </tr>
         </table>
@@ -2082,7 +2158,7 @@ messages_home_fr_CA_UNIX.properties
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="UniqueProperties_Error_Messages">
+      <subsection name="Violation Messages" id="UniqueProperties_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22properties.duplicate.property%22">
@@ -2113,18 +2189,18 @@ messages_home_fr_CA_UNIX.properties
     </section>
 
     <section name="UpperEll">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="UpperEll_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks that long constants are defined with an upper ell. That
-          is <code>' L'</code> and not <code>'l'</code>. This is in accordance with the Java
-          Language Specification, <a
-          href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.10.1">
+          is <code>'L'</code> and not <code>'l'</code>. This is in accordance with the Java
+          Language Specification,
+          <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.10.1">
           Section 3.10.1</a>.
         </p>
 
         <p>
-          The lower-case ell <code>'l'</code> looks a lot like <code>1</code>.
+          Rationale: The lower-case ell <code>'l'</code> looks a lot like <code>1</code>.
         </p>
       </subsection>
 
@@ -2154,7 +2230,7 @@ messages_home_fr_CA_UNIX.properties
         </ul>
       </subsection>
 
-      <subsection name="Error Messages" id="UpperEll_Error_Messages">
+      <subsection name="Violation Messages" id="UpperEll_Violation_Messages">
         <ul>
           <li>
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22upperEll%22">

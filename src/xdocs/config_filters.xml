@@ -167,6 +167,13 @@
                   <td>3.5</td>
               </tr>
               <tr>
+                  <td>idFormat</td>
+                  <td>Specify check ID pattern to suppress.</td>
+                  <td><a href="property_types.html#regexp">Regular Expression</a></td>
+                  <td><code>null</code></td>
+                  <td>8.24</td>
+              </tr>
+              <tr>
                   <td>checkCPP</td>
                   <td>Control whether to check C++ style comments (<code>//</code>).</td>
                   <td><a href="property_types.html#boolean">Boolean</a></td>
@@ -368,7 +375,7 @@ HashSet hashSet;
 &lt;module name="SuppressionCommentFilter&quot;&gt;
   &lt;property name="offCommentFormat" value="CSOFF (\w+) \(\w+\)"/&gt;
   &lt;property name="onCommentFormat" value="CSON (\w+)"/&gt;
-  &lt;property name="checkFormat" value="$1"/&gt;
+  &lt;property name="idFormat" value="$1"/&gt;
 &lt;/module&gt;
           </source>
           <source>
@@ -425,7 +432,7 @@ public class UserService {
       <subsection name="Description" id="SuppressionFilter_Description">
           <p>
             Filter <code>SuppressionFilter</code> rejects
-            audit events for Check errors according to
+            audit events for Check violations according to
             a <a href="dtds/suppressions_1_2.dtd">suppressions XML
             document</a> in a file. If there is no configured
             suppressions file or the optional is set to true and
@@ -555,12 +562,12 @@ public class UserService {
           <p>
             The following suppressions XML document directs
             a <code>SuppressionFilter</code> to
-            reject <code>JavadocStyleCheck</code> errors for
+            reject <code>JavadocStyleCheck</code> violations for
             lines 82 and 108 to 122 of
             file <code>AbstractComplexityCheck.java</code>,
-            and <code>MagicNumberCheck</code> errors for line
+            and <code>MagicNumberCheck</code> violations for line
             221 of file <code>JavadocStyleCheck.java</code>,
-            and <code>'Missing a Javadoc comment'</code> errors
+            and <code>'Missing a Javadoc comment'</code> violations
             for all lines and files:
           </p>
           <source>
@@ -632,7 +639,7 @@ public class UserService {
   files=&quot;com[\\/]mycompany[\\/]app[\\/].*IT.java&quot;/&gt;
           </source>
           <p>
-            Suppress naming errors on variable named 'log' in all files:
+            Suppress naming violations on variable named 'log' in all files:
           </p>
           <source>
 &lt;suppress message=&quot;Name 'log' must match pattern&quot;/&gt;
@@ -742,12 +749,12 @@ public class UserService {
           <p>
             The following suppressions directs
             a <code>SuppressionSingleFilter</code> to
-            reject <code>JavadocStyleCheck</code> errors for
+            reject <code>JavadocStyleCheck</code> violations for
             lines 82 and 108 to 122 of
             file <code>AbstractComplexityCheck.java</code>,
-            and <code>MagicNumberCheck</code> errors for line
+            and <code>MagicNumberCheck</code> violations for line
             221 of file <code>JavadocStyleCheck.java</code>,
-            and <code>'Missing a Javadoc comment'</code> errors
+            and <code>'Missing a Javadoc comment'</code> violations
             for all lines and files:
           </p>
           <source>
@@ -840,7 +847,7 @@ public class UserService {
 &lt;/module&gt;
           </source>
           <p>
-            Suppress naming errors on variable named 'log' in all files:
+            Suppress naming violations on variable named 'log' in all files:
           </p>
           <source>
 &lt;module name=&quot;SuppressionSingleFilter&quot;&gt;
@@ -1103,7 +1110,7 @@ public class UserService {
         <p>
           The following suppressions XML document directs
           a <code>SuppressionXpathFilter</code> to
-          reject <code>CyclomaticComplexity</code> errors for
+          reject <code>CyclomaticComplexity</code> violations for
           all methods with name <i>sayHelloWorld</i> inside <i>FileOne</i>
           and <i>FileTwo</i> files:
         </p>
@@ -1372,8 +1379,8 @@ CLASS_DEF -> CLASS_DEF [1:0]
     </section>
 
     <section name="SuppressionXpathSingleFilter">
+      <p>Since Checkstyle 8.18</p>
       <subsection name="Description" id="SuppressionXpathSingleFilter_Description">
-        <p>Since Checkstyle 8.18</p>
         <p>
           Filter <code>SuppressionXpathSingleFilter</code> suppresses audit events for
           Checks violations in the specified file, class, checks, message, module id,
@@ -1406,15 +1413,15 @@ CLASS_DEF -> CLASS_DEF [1:0]
           </tr>
           <tr>
             <td>files</td>
-            <td>a Regular Expression matched against the file name associated
-                with an audit event</td>
+            <td>Define a Regular Expression matched against the file name associated
+                with an audit event.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>null</code></td>
             <td>8.18</td>
           </tr>
           <tr>
             <td>checks</td>
-            <td>a Regular Expression matched against the name of the check
+            <td>Define a Regular Expression matched against the name of the check
                 associated with an audit event.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>null</code></td>
@@ -1422,7 +1429,7 @@ CLASS_DEF -> CLASS_DEF [1:0]
           </tr>
           <tr>
             <td>message</td>
-            <td>a Regular Expression matched against the message of the check associated
+            <td>Define a Regular Expression matched against the message of the check associated
                 with an audit event.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>null</code></td>
@@ -1430,7 +1437,7 @@ CLASS_DEF -> CLASS_DEF [1:0]
           </tr>
           <tr>
             <td>id</td>
-            <td>a string matched against the ID of the check associated with an audit
+            <td>Define a string matched against the ID of the check associated with an audit
                 event.</td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
@@ -1438,7 +1445,7 @@ CLASS_DEF -> CLASS_DEF [1:0]
           </tr>
           <tr>
             <td>query</td>
-            <td>a string xpath query.</td>
+            <td>Define a string xpath query.</td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
             <td>8.18</td>
@@ -1688,7 +1695,7 @@ public class InputTest {
 &lt;module name="SuppressionXpathSingleFilter"&gt;
   &lt;property name="checks" value="IllegalThrows"/&gt;
   &lt;property name="query" value="//LITERAL_THROWS/IDENT[
-          ..[@text='RuntimeException'] and ./ancestor::METHOD_DEF[@text='throwsMethod']]"/&gt;
+      ..[@text='RuntimeException'] and ./ancestor::METHOD_DEF[@text='throwsMethod']]"/&gt;
 &lt;/module&gt;
         </pre>
         <p>Code Example:</p>
@@ -1930,6 +1937,13 @@ public static void foo() {
                     <td>5.0</td>
                 </tr>
                 <tr>
+                    <td>idFormat</td>
+                    <td>Specify check ID pattern to suppress.</td>
+                    <td><a href="property_types.html#regexp">Regular Expression</a></td>
+                    <td><code>null</code></td>
+                    <td>8.24</td>
+                </tr>
+                <tr>
                     <td>influenceFormat</td>
                     <td>Specify negative/zero/positive value that defines the number of
                         lines preceding/at/following the suppression comment.</td>
@@ -2076,14 +2090,14 @@ public static final int [] array; // @cs.suppress [ConstantName|NoWhitespaceAfte
 &lt;/module&gt;
             </source>
             <p>
-              Example of SuppressWithNearbyCommentFilter configuration (checkFormat which
+              Example of SuppressWithNearbyCommentFilter configuration (idFormat which
               is set to '$1' points that ID of the checks is in the first group of
               commentFormat regular expressions):
             </p>
             <source>
 &lt;module name=&quot;SuppressWithNearbyCommentFilter&quot;&gt;
   &lt;property name=&quot;commentFormat&quot; value=&quot;@cs-: (\w+) \(\w+\)"/&gt;
-  &lt;property name=&quot;checkFormat&quot; value=&quot;$1&quot;/&gt;
+  &lt;property name=&quot;idFormat&quot; value=&quot;$1&quot;/&gt;
   &lt;property name=&quot;influenceFormat&quot; value=&quot;0&quot;/&gt;
 &lt;/module&gt;
             </source>
@@ -2201,6 +2215,13 @@ public class UserService {
                       <td><a href="property_types.html#regexp">Regular Expression</a></td>
                       <td><code>null</code></td>
                       <td>8.6</td>
+                  </tr>
+                  <tr>
+                      <td>idFormat</td>
+                      <td>Specify check ID pattern to suppress.</td>
+                      <td><a href="property_types.html#regexp">Regular Expression</a></td>
+                      <td><code>null</code></td>
+                      <td>8.24</td>
                   </tr>
               </table>
           </subsection>
@@ -2384,7 +2405,7 @@ private int array1 [];
   &lt;module name="SuppressWithPlainTextCommentFilter&quot;&gt;
     &lt;property name="offCommentFormat" value="CSOFF (\w+) \(\w+\)"/&gt;
     &lt;property name="onCommentFormat" value="CSON (\w+)"/&gt;
-    &lt;property name="checkFormat" value="$1"/&gt;
+    &lt;property name="idFormat" value="$1"/&gt;
   &lt;/module&gt;
 
 &lt;/module&gt;

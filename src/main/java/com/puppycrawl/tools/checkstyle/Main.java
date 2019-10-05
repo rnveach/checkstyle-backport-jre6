@@ -140,7 +140,9 @@ public final class Main {
                 final LocalizedMessage errorCounterMessage = new LocalizedMessage(1,
                         Definitions.CHECKSTYLE_BUNDLE, ERROR_COUNTER,
                         new String[] {String.valueOf(errorCounter)}, null, Main.class, null);
-                System.out.println(errorCounterMessage.getMessage());
+                // print error count statistic to error output stream,
+                // output stream might be used by validation report content
+                System.err.println(errorCounterMessage.getMessage());
             }
             if (exitStatus != 0) {
                 System.exit(exitStatus);
@@ -332,7 +334,6 @@ public final class Main {
      *         when output file could not be found
      * @throws CheckstyleException
      *         when properties file could not be loaded
-     * @noinspection UseOfSystemOutOrSystemErr
      */
     private static int runCheckstyle(CliOptions options, List<File> filesToProcess)
             throws CheckstyleException, IOException {
@@ -382,7 +383,7 @@ public final class Main {
                     ((DefaultConfiguration) treeWalkerConfig).addChild(moduleConfig);
                 }
 
-                listener = new XpathFileGeneratorAuditListener(System.out,
+                listener = new XpathFileGeneratorAuditListener(getOutputStream(options.outputPath),
                         AutomaticBean.OutputStreamOptions.NONE);
             }
             else {
@@ -579,7 +580,7 @@ public final class Main {
      *              MismatchedQueryAndUpdateOfCollection, LocalCanBeFinal
      */
     @Command(name = "checkstyle", description = "Checkstyle verifies that the specified "
-            + "source code files adhere to the specified rules. By default errors are "
+            + "source code files adhere to the specified rules. By default violations are "
             + "reported to standard out in plain format. Checkstyle requires a configuration "
             + "XML file that configures the checks to apply.",
             mixinStandardHelpOptions = true)
@@ -627,13 +628,13 @@ public final class Main {
          *  Suppression: CanBeFinal - we use picocli and it use  reflection to manage such fields
          * @noinspection CanBeFinal
          */
-        @Option(names = "--tabWidth", description = "Sets the length of the tab character. "
+        @Option(names = {"-w", "--tabWidth"}, description = "Sets the length of the tab character. "
                 + "Used only with \"-s\" option. Default value is ${DEFAULT-VALUE}")
         private int tabWidth = CommonUtil.DEFAULT_TAB_WIDTH;
 
         /** Switch whether to generate suppressions file or not. */
         @Option(names = {"-g", "--generate-xpath-suppression"},
-                description = "Generates to output a suppression.xml to use to suppress all"
+                description = "Generates to output a suppression xml to use to suppress all"
                         + " violations from user's config")
         private boolean generateXpathSuppressionsFile;
 
@@ -687,7 +688,7 @@ public final class Main {
         private List<Pattern> excludeRegex = new ArrayList<Pattern>();
 
         /** Switch whether to execute ignored modules or not. */
-        @Option(names = "--executeIgnoredModules",
+        @Option(names = {"-E", "--executeIgnoredModules"},
                 description = "Allows ignored modules to be run.")
         private boolean executeIgnoredModules;
 

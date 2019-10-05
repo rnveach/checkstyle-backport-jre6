@@ -69,10 +69,6 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
      * The list of checks that are not yet compatible with this rule.
      */
     private static final String[] INCOMPATIBLE_CHECKS = {
-        // file filters
-        "BeforeExecutionExclusionFileFilter",
-        // filters
-        "SuppressionXpathSingleFilter",
         // javadoc
         "JavadocMethod",
         "JavadocPackage",
@@ -102,21 +98,6 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         "CyclomaticComplexity",
         "JavaNCSS",
         "NPathComplexity",
-        // miscellaneous
-        "ArrayTypeStyle",
-        "AvoidEscapedUnicodeCharacters",
-        "CommentsIndentation",
-        "DescendantToken",
-        "FinalParameters",
-        "Indentation",
-        "NewlineAtEndOfFile",
-        "OuterTypeFilename",
-        "TodoComment",
-        "TrailingComment",
-        "Translation",
-        "UncommentedMain",
-        "UniqueProperties",
-        "UpperEll",
         // modifier
         "AnonInnerLength",
         "ExecutableStatementCount",
@@ -480,24 +461,17 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         @Override
         public void visitToken(DetailAST ast) {
             if (JavadocUtil.isJavadocComment(ast)) {
-                final DetailAST node = getParent(ast);
+                final DetailAST parentNode = getParent(ast);
 
-                switch (node.getType()) {
+                switch (parentNode.getType()) {
                     case TokenTypes.CLASS_DEF:
                         visitClass(ast);
                         break;
                     case TokenTypes.METHOD_DEF:
-                        visitMethod(ast, node);
+                        visitMethod(ast, parentNode);
                         break;
                     case TokenTypes.VARIABLE_DEF:
-                        final String propertyName = node.findFirstToken(TokenTypes.IDENT).getText();
-                        final String propertyDoc = CHECK_PROPERTY_DOC.get(propertyName);
-
-                        if (propertyDoc != null) {
-                            Assert.assertEquals(checkName + "'s class field-level JavaDoc for "
-                                    + propertyName, makeFirstUpper(propertyDoc),
-                                    getJavaDocText(ast));
-                        }
+                        visitField(ast, parentNode);
                         break;
                     case TokenTypes.CTOR_DEF:
                     case TokenTypes.ENUM_DEF:
@@ -505,7 +479,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                         // ignore
                         break;
                     default:
-                        Assert.fail("Unknown token '" + TokenUtil.getTokenName(node.getType())
+                        Assert.fail("Unknown token '" + TokenUtil.getTokenName(parentNode.getType())
                                 + "': " + ast.getLineNo());
                         break;
                 }
@@ -524,8 +498,8 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
             return result;
         }
 
-        private static void visitClass(DetailAST ast) {
-            if (ScopeUtil.isInScope(ast, Scope.PUBLIC)) {
+        private static void visitClass(DetailAST node) {
+            if (ScopeUtil.isInScope(node, Scope.PUBLIC)) {
                 Assert.assertEquals(
                         checkName + "'s class-level JavaDoc",
                         CHECK_TEXT.get("Description")
@@ -533,19 +507,32 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                                 + (CHECK_TEXT.containsKey("Notes") ? CHECK_TEXT.get("Notes") : "")
                                 + (CHECK_TEXT.containsKey("Properties") ? CHECK_TEXT.get("Properties") : "")
                                 + CHECK_TEXT.get("Examples") + " @since "
-                                + CHECK_TEXT.get("since"), getJavaDocText(ast));
+                                + CHECK_TEXT.get("since"), getJavaDocText(node));
             }
         }
 
-        private static void visitMethod(DetailAST ast, DetailAST node) {
-            if (ScopeUtil.isInScope(ast, Scope.PUBLIC) && isSetterMethod(node)) {
-                final String propertyUpper = node.findFirstToken(TokenTypes.IDENT)
+        private static void visitField(DetailAST node, DetailAST parentNode) {
+            if (ScopeUtil.isInScope(parentNode, Scope.PUBLIC)) {
+                final String propertyName = parentNode.findFirstToken(TokenTypes.IDENT).getText();
+                final String propertyDoc = CHECK_PROPERTY_DOC.get(propertyName);
+
+                if (propertyDoc != null) {
+                    Assert.assertEquals(checkName + "'s class field-level JavaDoc for "
+                                    + propertyName, makeFirstUpper(propertyDoc),
+                            getJavaDocText(node));
+                }
+            }
+        }
+
+        private static void visitMethod(DetailAST node, DetailAST parentNode) {
+            if (ScopeUtil.isInScope(node, Scope.PUBLIC) && isSetterMethod(parentNode)) {
+                final String propertyUpper = parentNode.findFirstToken(TokenTypes.IDENT)
                         .getText().substring(3);
                 final String propertyName = makeFirstLower(propertyUpper);
                 final String propertyDoc = CHECK_PROPERTY_DOC.get(propertyName);
 
                 if (propertyDoc != null) {
-                    final String javaDoc = getJavaDocText(ast);
+                    final String javaDoc = getJavaDocText(node);
 
                     Assert.assertEquals(checkName + "'s class method-level JavaDoc for "
                             + propertyName,
