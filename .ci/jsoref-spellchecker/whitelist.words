@@ -1061,6 +1061,7 @@ RDz
 reactivex
 README
 Readonly
+rebased
 rebasing
 redundantimport
 redundantmodifier
@@ -1180,7 +1181,7 @@ ssl
 stackexchange
 stackoverflow
 stackoverflowerror
-Stacktrace
+stacktrace
 standalone
 staticvariablename
 Stdlib

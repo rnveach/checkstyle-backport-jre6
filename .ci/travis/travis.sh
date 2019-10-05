@@ -194,6 +194,30 @@ pr-description)
   .ci/travis/xtr_pr-description.sh
   ;;
 
+pr-age)
+  ## Travis merges the PR commit into origin/master
+  ## This command undoes that to work with the original branch
+  ## if it notices a merge commit
+  if git show --summary HEAD | grep ^Merge: ;
+  then
+    git reset --hard `git log -n 1 --no-merges --pretty=format:"%h"`
+  fi
+
+  PR_MASTER=`git merge-base origin/master HEAD`
+  COMMITS_SINCE_MASTER=`git rev-list --count $PR_MASTER..origin/master`
+  MAX_ALLOWED=10
+
+  echo "The PR is based on a master that is $COMMITS_SINCE_MASTER commit(s) old."
+  echo "The max allowed is $MAX_ALLOWED."
+
+  if (( $COMMITS_SINCE_MASTER > $MAX_ALLOWED ));
+  then
+    echo "This PR is too old and should be rebased on origin/master."
+    sleep 5s
+    false
+  fi
+  ;;
+
 check-chmod)
   .ci/travis/checkchmod.sh
   ;;
@@ -219,13 +243,12 @@ no-error-test-sbe)
   mvn -e clean install -Pno-validations
   mkdir -p .ci-temp/
   cd .ci-temp/
-  git clone https://github.com/checkstyle/simple-binary-encoding.git
+  git clone https://github.com/real-logic/simple-binary-encoding.git
   cd simple-binary-encoding
-  git checkout issue_2116
   sed -i'' \
     "s/'com.puppycrawl.tools:checkstyle:.*'/'com.puppycrawl.tools:checkstyle:$CS_POM_VERSION'/" \
     build.gradle
-  ./gradlew build
+  ./gradlew build --stacktrace
   ;;
 
 no-exception-test-checkstyle-sevntu-checkstyle)
@@ -453,6 +476,14 @@ verify-no-exception-configs)
     | grep -vE $MODULES_WITH_EXTERNAL_FILES | grep -v "^$" \
     | sort | uniq | sed "s/Check$//" > file.txt
   diff -u web.txt file.txt
+  ;;
+
+git-status)
+  if [ $(git status | grep "Changes not staged for commit" | wc -l) -gt 0 ]; then
+    echo "There are changes in files after clone, recheck .gitattributes file"
+    sleep 5s
+    false
+  fi
   ;;
 
 *)

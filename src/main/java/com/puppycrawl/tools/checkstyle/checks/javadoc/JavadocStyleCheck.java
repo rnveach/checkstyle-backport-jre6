@@ -70,7 +70,8 @@ public class JavadocStyleCheck
     private static final Set<String> SINGLE_TAGS =
         Collections.unmodifiableSet(Collections7.newSortedSet("br", "li", "dt", "dd", "hr", "img", "p", "td", "tr", "th"));
 
-    /** HTML tags that are allowed in java docs.
+    /**
+     * HTML tags that are allowed in java docs.
      * From https://www.w3schools.com/tags/default.asp
      * The forms and structure tags are not allowed
      */

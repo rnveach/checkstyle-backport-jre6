@@ -19,6 +19,8 @@
 
 package com.puppycrawl.tools.checkstyle.xpath;
 
+import java.util.List;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 import com.puppycrawl.tools.checkstyle.utils.XpathUtil;
@@ -55,6 +57,9 @@ public class ElementNode extends AbstractNode {
     /** Represents text of the DetailAST. */
     private final String text;
 
+    /** Represents index among siblings. */
+    private final int indexAmongSiblings;
+
     /** The text attribute node. */
     private AttributeNode attributeNode;
 
@@ -71,6 +76,7 @@ public class ElementNode extends AbstractNode {
         this.root = root;
         this.detailAst = detailAst;
         text = TokenUtil.getTokenName(detailAst.getType());
+        indexAmongSiblings = parent.getChildren().size();
         createTextAttribute();
         createChildren();
     }
@@ -179,13 +185,7 @@ public class ElementNode extends AbstractNode {
                 result = new Navigator.AncestorEnumeration(this, true);
                 break;
             case AxisInfo.ATTRIBUTE:
-                final AxisIterator iterator = SingleNodeIterator.makeIterator(attributeNode);
-                try {
-                    result = iterator;
-                }
-                finally {
-                    iterator.close();
-                }
+                result = SingleNodeIterator.makeIterator(attributeNode);
                 break;
             case AxisInfo.CHILD:
                 if (hasChildNodes()) {
@@ -214,6 +214,18 @@ public class ElementNode extends AbstractNode {
                 break;
             case AxisInfo.SELF:
                 result = SingleNodeIterator.makeIterator(this);
+                break;
+            case AxisInfo.FOLLOWING_SIBLING:
+                result = getFollowingSiblingsIterator();
+                break;
+            case AxisInfo.PRECEDING_SIBLING:
+                result = getPrecedingSiblingsIterator();
+                break;
+            case AxisInfo.FOLLOWING:
+                result = new FollowingEnumeration(this);
+                break;
+            case AxisInfo.PRECEDING:
+                result = new Navigator.PrecedingEnumeration(this, true);
                 break;
             default:
                 throw throwUnsupportedOperationException();
@@ -260,6 +272,56 @@ public class ElementNode extends AbstractNode {
     }
 
     /**
+     * Returns preceding sibling axis iterator.
+     * @return iterator
+     */
+    private AxisIterator getPrecedingSiblingsIterator() {
+        final AxisIterator result;
+        if (indexAmongSiblings == 0) {
+            result = EmptyIterator.OfNodes.THE_INSTANCE;
+        }
+        else {
+            result = new ArrayIterator.OfNodes(
+                    getPrecedingSiblings().toArray(EMPTY_ABSTRACT_NODE_ARRAY));
+        }
+        return result;
+    }
+
+    /**
+     * Returns following sibling axis iterator.
+     * @return iterator
+     */
+    private AxisIterator getFollowingSiblingsIterator() {
+        final AxisIterator result;
+        if (indexAmongSiblings == parent.getChildren().size() - 1) {
+            result = EmptyIterator.OfNodes.THE_INSTANCE;
+        }
+        else {
+            result = new ArrayIterator.OfNodes(
+                    getFollowingSiblings().toArray(EMPTY_ABSTRACT_NODE_ARRAY));
+        }
+        return result;
+    }
+
+    /**
+     * Returns following siblings of the current node.
+     * @return siblings
+     */
+    private List<AbstractNode> getFollowingSiblings() {
+        final List<AbstractNode> siblings = parent.getChildren();
+        return siblings.subList(indexAmongSiblings + 1, siblings.size());
+    }
+
+    /**
+     * Returns preceding siblings of the current node.
+     * @return siblings
+     */
+    private List<AbstractNode> getPrecedingSiblings() {
+        final List<AbstractNode> siblings = parent.getChildren();
+        return siblings.subList(0, indexAmongSiblings);
+    }
+
+    /**
      * Checks if token type supports {@code @text} attribute,
      * extracts its value, creates {@code AttributeNode} object and returns it.
      * Value can be accessed using {@code @text} attribute.
@@ -279,6 +341,59 @@ public class ElementNode extends AbstractNode {
      */
     private static UnsupportedOperationException throwUnsupportedOperationException() {
         return new UnsupportedOperationException("Operation is not supported");
+    }
+
+    /**
+     * Implementation of the following axis, in terms of the child and following-sibling axes.
+     */
+    private static final class FollowingEnumeration implements AxisIterator {
+        /** Following-sibling axis iterator. */
+        private AxisIterator siblingEnum;
+        /** Child axis iterator. */
+        private AxisIterator descendEnum;
+
+        /**
+         * Create an iterator over the "following" axis.
+         * @param start the initial context node.
+         */
+        /* default */ FollowingEnumeration(NodeInfo start) {
+            siblingEnum = start.iterateAxis(AxisInfo.FOLLOWING_SIBLING);
+        }
+
+        /**
+         * Get the next item in the sequence.
+         * @return the next Item. If there are no more nodes, return null.
+         */
+        @Override
+        public NodeInfo next() {
+            NodeInfo result = null;
+            if (descendEnum != null) {
+                result = descendEnum.next();
+            }
+
+            if (result == null) {
+                descendEnum = null;
+                result = siblingEnum.next();
+                if (result == null) {
+                    siblingEnum = null;
+                }
+                else {
+                    descendEnum = new Navigator.DescendantEnumeration(result, true, false);
+                    result = next();
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public void close() {
+            // no code
+        }
+
+        @Override
+        public int getProperties() {
+            return 0;
+        }
     }
 
 }

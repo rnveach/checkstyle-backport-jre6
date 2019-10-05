@@ -13,7 +13,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.24</version>
+  <version>8.25</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -204,7 +204,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.0.3</version>
+      <version>4.0.4</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -353,7 +353,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.6.0.1398</version>
+          <version>3.6.1.1688</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -785,10 +785,6 @@
                 </exclude>
                 <!-- Swing related classes -->
                 <exclude>com/puppycrawl/tools/checkstyle/gui/*.class</exclude>
-                <!-- Deprecated classes -->
-                <exclude>
-                  com/puppycrawl/tools/checkstyle/checks/naming/AbstractTypeParameterNameCheck.class
-                </exclude>
                 <!-- Suppressed till https://github.com/jacoco/jacoco/issues/660 -->
                 <exclude>
                   com/puppycrawl/tools/checkstyle/checks/annotation/AnnotationUseStyleCheck$1.class
@@ -830,10 +826,6 @@
                     <exclude>com.puppycrawl.tools.checkstyle.gui.ParseTreeTableModel*</exclude>
                     <exclude>com.puppycrawl.tools.checkstyle.gui.TreeTableCellRenderer*</exclude>
                     <exclude>com.puppycrawl.tools.checkstyle.gui.TreeTableModelAdapter*</exclude>
-                    <!-- This class is in deprecation phase -->
-                    <exclude>
-                      com.puppycrawl.tools.checkstyle.checks.naming.AbstractTypeParameterNameCheck
-                    </exclude>
                   </excludes>
                   <limits>
                     <limit>
@@ -2308,12 +2300,6 @@
               <excludedTestClasses>
                 <param>*.Input*</param>
               </excludedTestClasses>
-              <excludedClasses>
-                <!-- This class is in deprecation phase -->
-                <param>
-                  com.puppycrawl.tools.checkstyle.checks.naming.AbstractTypeParameterNameCheck
-                </param>
-              </excludedClasses>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>

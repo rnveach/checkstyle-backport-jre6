@@ -174,7 +174,7 @@ public final class JavaParser {
                 final DetailAST newCommentNode =
                          createCommentAstFromToken(tokenBefore);
 
-                currentSibling.addPreviousSibling(newCommentNode);
+                ((DetailAstImpl) currentSibling).addPreviousSibling(newCommentNode);
 
                 if (currentSibling == result) {
                     result = newCommentNode;
@@ -199,7 +199,7 @@ public final class JavaParser {
                 final DetailAST newCommentNode =
                         createCommentAstFromToken(tokenAfter);
 
-                currentSibling.addNextSibling(newCommentNode);
+                ((DetailAstImpl) currentSibling).addNextSibling(newCommentNode);
 
                 currentSibling = newCommentNode;
                 tokenAfter = tokenAfter.getHiddenAfter();

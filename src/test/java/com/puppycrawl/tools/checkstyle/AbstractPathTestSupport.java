@@ -25,12 +25,16 @@ import java.io.IOException;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 public abstract class AbstractPathTestSupport {
 
-    protected static final String LF_REGEX = "\\\\n";
+    // we are using positive lookahead here, to convert \r\n to \n
+    // and \\r\\n to \\n (for parse tree dump files),
+    // by replacing the full match with the empty string
+    private static final String CR_FOLLOWED_BY_LF_REGEX = "(?x)\\\\r(?=\\\\n)|\\r(?=\\n)";
 
-    protected static final String CRLF_REGEX = "\\\\r\\\\n";
+    private static final String EOL = System7.lineSeparator();
 
     /**
      * Returns the exact location for the package where the file is present.
@@ -64,15 +68,34 @@ public abstract class AbstractPathTestSupport {
         return "/" + getPackageLocation() + "/" + filename;
     }
 
-    /** Reads the contents of a file.
+    /**
+     * Reads the contents of a file.
+     *
      * @param filename the name of the file whose contents are to be read
      * @return contents of the file with all {@code \r\n} replaced by {@code \n}
      * @throws IOException if I/O exception occurs while reading
      */
     protected static String readFile(String filename) throws IOException {
-        return new String(Files7.readAllBytes(
-                Paths.get(filename)), StandardCharsets.UTF_8)
-                .replaceAll(CRLF_REGEX, LF_REGEX);
+        return toLfLineEnding(new String(Files7.readAllBytes(
+                Paths.get(filename)), StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Join given strings with {@link #EOL} delimiter and add EOL at the end.
+     * @param strings strings to join
+     * @return joined strings
+     */
+    public static String addEndOfLine(String... strings) {
+        final StringBuilder result = new StringBuilder();
+        for (String string : strings) {
+            result.append(string);
+            result.append(EOL);
+        }
+        return result.toString();
+    }
+
+    protected static String toLfLineEnding(String text) {
+        return text.replaceAll(CR_FOLLOWED_BY_LF_REGEX, "");
     }
 
 }

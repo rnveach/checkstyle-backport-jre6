@@ -42,9 +42,9 @@ no-error-orekit)
   checkout_from https://github.com/CS-SI/Orekit.git
   cd .ci-temp/Orekit
   # no CI is enforced in project, so to make our build stable we should
-  # checkout to latest release (annotated tag)
+  # checkout to latest release/development (annotated tag or hash)
   # git checkout $(git describe --abbrev=0 --tags)
-  git checkout 10.0
+  git checkout 3a9787ec3f166bd770f9c119cd7724f57
   mvn -e compile checkstyle:check -Dorekit.checkstyle.version=${CS_POM_VERSION}
   cd ../
   rm -rf Orekit
@@ -54,9 +54,8 @@ no-error-xwiki)
   CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
                      --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
   echo CS_version: ${CS_POM_VERSION}
-  checkout_from https://github.com/checkstyle/xwiki-commons.git
+  checkout_from https://github.com/xwiki/xwiki-commons.git
   cd .ci-temp/xwiki-commons
-  git checkout issue_2116
   mvn -f xwiki-commons-tools/xwiki-commons-tool-verification-resources/pom.xml \
     install -DskipTests -Dcheckstyle.version=${CS_POM_VERSION}
   mvn -e test-compile checkstyle:check@default -Dcheckstyle.version=${CS_POM_VERSION}
@@ -79,9 +78,8 @@ no-error-equalsverifier)
   CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
                      --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
   echo CS_version: ${CS_POM_VERSION}
-  checkout_from https://github.com/checkstyle/equalsverifier.git
+  checkout_from https://github.com/jqno/equalsverifier.git
   cd .ci-temp/equalsverifier
-  git checkout issue_2116
   mvn -e compile checkstyle:check -Dcheckstyle.version=${CS_POM_VERSION}
   cd ../
   rm -rf equalsverifier
@@ -133,7 +131,7 @@ no-error-sevntu-checks)
   checkout_from https://github.com/sevntu-checkstyle/sevntu.checkstyle.git
   cd .ci-temp/sevntu.checkstyle/sevntu-checks
   mvn -e -Pno-validations verify  -Dcheckstyle.skip=false -Dcheckstyle.version=${CS_POM_VERSION} \
-     -Dcheckstyle.configLocation=../../config/checkstyle_checks.xml
+     -Dcheckstyle.configLocation=../../../config/checkstyle_checks.xml
   cd ../../
   rm -rf sevntu.checkstyle
   ;;
@@ -157,7 +155,6 @@ no-exception-struts)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i'' 's/^guava/#guava/' projects-for-wercker.properties
   sed -i'' 's/#apache-struts/apache-struts/' projects-for-wercker.properties
   groovy ./launch.groovy --listOfProjects projects-for-wercker.properties \
@@ -173,9 +170,8 @@ no-exception-checkstyle-sevntu)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i'' 's/^guava/#guava/' projects-for-wercker.properties
-  sed -i'' 's/#checkstyle/checkstyle/' projects-for-wercker.properties
+  sed -i'' 's/#local-checkstyle/local-checkstyle/' projects-for-wercker.properties
   sed -i'' 's/#sevntu-checkstyle/sevntu-checkstyle/' projects-for-wercker.properties
   groovy ./launch.groovy --listOfProjects projects-for-wercker.properties \
       --config checks-nonjavadoc-error.xml --checkstyleVersion ${CS_POM_VERSION}
@@ -189,7 +185,6 @@ no-exception-guava)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i'' 's/^guava/#guava/' projects-for-wercker.properties
   sed -i'' 's/#guava/guava/' projects-for-wercker.properties
   groovy ./launch.groovy --listOfProjects projects-for-wercker.properties \
@@ -204,7 +199,6 @@ no-exception-hibernate-orm)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
   sed -i.'' 's/#hibernate-orm/hibernate-orm/' projects-to-test-on.properties
   groovy ./launch.groovy --listOfProjects projects-for-wercker.properties \
@@ -219,7 +213,6 @@ no-exception-spotbugs)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
   sed -i.'' 's/#spotbugs/spotbugs/' projects-to-test-on.properties
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
@@ -234,7 +227,6 @@ no-exception-spring-framework)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
   sed -i.'' 's/#spring-framework/spring-framework/' projects-to-test-on.properties
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
@@ -249,7 +241,6 @@ no-exception-hbase)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
   sed -i.'' 's/#Hbase/Hbase/' projects-to-test-on.properties
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
@@ -264,7 +255,6 @@ no-exception-Pmd-elasticsearch-lombok-ast)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
   sed -i.'' 's/#pmd/pmd/' projects-to-test-on.properties
   sed -i.'' 's/#elasticsearch/elasticsearch/' projects-to-test-on.properties
@@ -281,7 +271,6 @@ no-exception-alot-of-projects)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
   sed -i.'' 's/#RxJava/RxJava/' projects-to-test-on.properties
   sed -i.'' 's/#java-design-patterns/java-design-patterns/' projects-to-test-on.properties
@@ -304,7 +293,6 @@ no-warning-imports-guava)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   groovy ./launch.groovy --listOfProjects $PROJECTS --config $CONFIG \
       --checkstyleVersion ${CS_POM_VERSION}
   RESULT=`grep -A 5 "&#160;Warning</td>" $REPORT | cat`
@@ -329,7 +317,6 @@ no-warning-imports-java-design-patterns)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/checkstyle/contribution.git
   cd .ci-temp/contribution/checkstyle-tester
-  git checkout issue_2116
   groovy ./launch.groovy --listOfProjects $PROJECTS --config $CONFIG \
       --checkstyleVersion ${CS_POM_VERSION}
   RESULT=`grep -A 5 "&#160;Warning</td>" $REPORT | cat`

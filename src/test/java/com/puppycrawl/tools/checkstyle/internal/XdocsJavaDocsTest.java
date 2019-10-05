@@ -98,15 +98,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         "CyclomaticComplexity",
         "JavaNCSS",
         "NPathComplexity",
-        // modifier
-        "AnonInnerLength",
-        "ExecutableStatementCount",
-        "FileLength",
-        "LineLength",
-        "MethodCount",
-        "MethodLength",
-        "OuterTypeNumber",
-        "ParameterNumber",
+        // modifiers
         "ModifierOrder",
         "RedundantModifier",
         // regexp

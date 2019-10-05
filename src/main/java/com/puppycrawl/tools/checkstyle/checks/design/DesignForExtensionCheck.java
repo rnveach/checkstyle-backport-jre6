@@ -31,6 +31,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
+import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
@@ -291,21 +292,21 @@ public class DesignForExtensionCheck extends AbstractCheck {
      */
     private static boolean hasJavadocCommentOnToken(DetailAST methodDef, int tokenType) {
         final DetailAST token = methodDef.findFirstToken(tokenType);
-        return branchContains(token, TokenTypes.BLOCK_COMMENT_BEGIN);
+        return branchContainsJavadocComment(token);
     }
 
     /**
-     * Checks whether a specified token type exist under token.
+     * Checks whether a javadoc comment exists under the token.
      *
      * @param token tree token.
-     * @param tokenType token type.
-     * @return true if a tokenType exists under token.
+     * @return true if a javadoc comment exists under the token.
      */
-    private static boolean branchContains(DetailAST token, int tokenType) {
+    private static boolean branchContainsJavadocComment(DetailAST token) {
         boolean result = false;
         DetailAST curNode = token;
         while (curNode != null) {
-            if (curNode.getType() == tokenType) {
+            if (curNode.getType() == TokenTypes.BLOCK_COMMENT_BEGIN
+                    && JavadocUtil.isJavadocComment(curNode)) {
                 result = true;
                 break;
             }

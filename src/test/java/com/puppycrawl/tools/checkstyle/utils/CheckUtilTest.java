@@ -64,7 +64,7 @@ public class CheckUtilTest extends AbstractPathTestSupport {
 
     @Test
     public void testElseWithCurly() {
-        final DetailAST ast = new DetailAstImpl();
+        final DetailAstImpl ast = new DetailAstImpl();
         ast.setType(TokenTypes.ASSIGN);
         ast.setText("ASSIGN");
         assertFalse("Invalid elseIf check result 'ASSIGN' is not 'else if'",
@@ -142,7 +142,7 @@ public class CheckUtilTest extends AbstractPathTestSupport {
 
     @Test
     public void testGetAccessModifierFromModifiersTokenWrongTokenType() {
-        final DetailAST modifiers = new DetailAstImpl();
+        final DetailAstImpl modifiers = new DetailAstImpl();
         modifiers.setType(TokenTypes.METHOD_DEF);
 
         try {

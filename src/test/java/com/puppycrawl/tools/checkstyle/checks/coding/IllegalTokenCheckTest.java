@@ -25,7 +25,8 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
-import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
+import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 
 public class IllegalTokenCheckTest
@@ -80,20 +81,23 @@ public class IllegalTokenCheckTest
                 createModuleConfig(IllegalTokenCheck.class);
         checkConfig.addAttribute("tokens", "COMMENT_CONTENT");
 
+        final String path = getPath("InputIllegalTokens.java");
+        final String lineSeparator =
+                CheckUtil.getLineSeparatorForFile(path, StandardCharsets.UTF_8);
         final String[] expected = {
             "3:3: " + getCheckMessage(MSG_KEY,
                         JavadocUtil.escapeAllControlChars(
-                            "*" + System7.lineSeparator()
+                            "*" + lineSeparator
                             + " * Test for illegal tokens"
-                            + System7.lineSeparator() + " ")),
+                            + lineSeparator + " ")),
             "31:29: " + getCheckMessage(MSG_KEY,
                         JavadocUtil.escapeAllControlChars(
-                            " some comment href" + System7.lineSeparator())),
+                            " some comment href" + lineSeparator)),
             "35:28: " + getCheckMessage(MSG_KEY,
                         JavadocUtil.escapeAllControlChars(
-                            " some a href" + System7.lineSeparator())),
+                            " some a href" + lineSeparator)),
         };
-        verify(checkConfig, getPath("InputIllegalTokens.java"), expected);
+        verify(checkConfig, path, expected);
     }
 
     @Test

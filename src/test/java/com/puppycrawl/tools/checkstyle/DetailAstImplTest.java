@@ -202,7 +202,7 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAddPreviousSiblingNullParent() {
-        final DetailAST child = new DetailAstImpl();
+        final DetailAstImpl child = new DetailAstImpl();
         final DetailAST newSibling = new DetailAstImpl();
 
         child.addPreviousSibling(newSibling);
@@ -405,7 +405,7 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAddNextSiblingNullParent() {
-        final DetailAST child = new DetailAstImpl();
+        final DetailAstImpl child = new DetailAstImpl();
         final DetailAstImpl newSibling = new DetailAstImpl();
         final DetailAstImpl oldParent = new DetailAstImpl();
         oldParent.addChild(newSibling);
@@ -418,7 +418,7 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
 
     @Test
     public void testGetLineNo() {
-        final DetailAST root1 = new DetailAstImpl();
+        final DetailAstImpl root1 = new DetailAstImpl();
         root1.setLineNo(1);
         assertEquals("Invalid line number", 1, root1.getLineNo());
 
@@ -444,7 +444,7 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
 
     @Test
     public void testGetColumnNo() {
-        final DetailAST root1 = new DetailAstImpl();
+        final DetailAstImpl root1 = new DetailAstImpl();
         root1.setColumnNo(1);
         assertEquals("Invalid column number", 1, root1.getColumnNo());
 
@@ -527,7 +527,7 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
 
     @Test
     public void testToString() {
-        final DetailAST ast = new DetailAstImpl();
+        final DetailAstImpl ast = new DetailAstImpl();
         ast.setText("text");
         ast.setColumnNo(0);
         ast.setLineNo(0);

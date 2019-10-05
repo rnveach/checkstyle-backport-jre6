@@ -20,6 +20,8 @@
 package com.puppycrawl.tools.checkstyle;
 
 import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -29,6 +31,7 @@ import org.junit.Test;
 
 import antlr.NoViableAltException;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
@@ -71,14 +74,28 @@ public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
     }
 
     @Test
+    public void testPrintBranch() throws Exception {
+        final DetailAST ast = JavaParser.parseFile(
+            new File(getPath("InputAstTreeStringPrinterPrintBranch.java")),
+            JavaParser.Options.WITH_COMMENTS);
+        final String expected = addEndOfLine(
+            "CLASS_DEF -> CLASS_DEF [3:0]",
+            "|--MODIFIERS -> MODIFIERS [3:0]",
+            "|   `--LITERAL_PUBLIC -> public [3:0]");
+        final DetailAST nodeToPrint = ast.getNextSibling().getFirstChild().getFirstChild();
+        final String result = AstTreeStringPrinter.printBranch(nodeToPrint);
+        assertThat("Branches do not match", result, is(expected));
+    }
+
+    @Test
     public void testPrintAst() throws Exception {
         final FileText text = new FileText(
                 new File(getPath("InputAstTreeStringPrinterComments.java")).getAbsoluteFile(),
                 System.getProperty("file.encoding", StandardCharsets.UTF_8.name()));
-        final String actual = AstTreeStringPrinter.printAst(text,
-                JavaParser.Options.WITHOUT_COMMENTS);
-        final String expected = new String(Files7.readAllBytes(Paths.get(
-                getPath("ExpectedAstTreeStringPrinter.txt"))), StandardCharsets.UTF_8);
+        final String actual = toLfLineEnding(AstTreeStringPrinter.printAst(text,
+                JavaParser.Options.WITHOUT_COMMENTS));
+        final String expected = toLfLineEnding(new String(Files7.readAllBytes(Paths.get(
+                getPath("ExpectedAstTreeStringPrinter.txt"))), StandardCharsets.UTF_8));
 
         Assert.assertEquals("Print AST output is invalid", expected, actual);
     }

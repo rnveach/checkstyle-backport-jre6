@@ -219,7 +219,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * imports will be sorted in the groups
  * </li>
  * <li>
- * groups are separated by, at least, one blank line
+ * groups are separated by one blank line
  * </li>
  * </ul>
  * <pre>
@@ -247,7 +247,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * imports will be sorted in the groups
  * </li>
  * <li>
- * groups are separated by, at least, one blank line
+ * groups are separated by one blank line
  * </li>
  * </ul>
  * <p>
@@ -697,9 +697,11 @@ public class CustomImportOrderCheck extends AbstractCheck {
         return bestMatch.group;
     }
 
-    /** Tries to find better matching regular expression:
+    /**
+     * Tries to find better matching regular expression:
      * longer matching substring wins; in case of the same length,
      * lower position of matching substring wins.
+     *
      * @param importPath
      *      Full import identifier
      * @param group
@@ -935,7 +937,9 @@ public class CustomImportOrderCheck extends AbstractCheck {
         /** Import group for current best match. */
         private String group;
 
-        /** Constructor to initialize the fields.
+        /**
+         * Constructor to initialize the fields.
+         *
          * @param group
          *        Matched group.
          * @param length

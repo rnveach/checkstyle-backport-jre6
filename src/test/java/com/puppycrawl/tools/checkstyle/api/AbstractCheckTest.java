@@ -217,7 +217,8 @@ public class AbstractCheckTest extends AbstractModuleTestSupport {
             }
         };
         final String[] lines = {"test"};
-        final FileContents fileContents = new FileContents("fileName", lines);
+        final FileContents fileContents = new FileContents(
+                new FileText(new File("filename"), Arrays.asList(lines)));
         check.setFileContents(fileContents);
 
         assertSame("Invalid file contents", fileContents, check.getFileContents());
@@ -324,7 +325,7 @@ public class AbstractCheckTest extends AbstractModuleTestSupport {
         check.setFileContents(new FileContents(theText));
         check.clearMessages();
 
-        final DetailAST ast = new DetailAstImpl();
+        final DetailAstImpl ast = new DetailAstImpl();
         ast.setLineNo(1);
         ast.setColumnNo(4);
         check.visitToken(ast);

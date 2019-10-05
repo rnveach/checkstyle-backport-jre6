@@ -23,8 +23,8 @@
     </section>
 
     <section name="AnonInnerLength">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="AnonInnerLength_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Checks for long anonymous inner classes.
         </p>
@@ -33,7 +33,7 @@
           Rationale: If an anonymous inner class becomes very long it is hard
           to understand and to see the flow of the method where the class is
           defined. Therefore long anonymous inner classes should usually be
-          refactored into a named inner class.  See also Bloch, Effective
+          refactored into a named inner class. See also Bloch, Effective
           Java, p. 93.
         </p>
       </subsection>
@@ -49,9 +49,9 @@
           </tr>
           <tr>
             <td>max</td>
-            <td>maximum allowable number of lines</td>
+            <td>Specify the maximum number of lines allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>20</td>
+            <td><code>20</code></td>
             <td>3.2</td>
           </tr>
         </table>
@@ -59,7 +59,13 @@
 
       <subsection name="Examples" id="AnonInnerLength_Examples">
         <p>
-          To configure the check to accept files with up to 60 lines:
+          To configure the check to accept anonymous classes with up to 20 lines:
+        </p>
+        <source>
+&lt;module name="AnonInnerLength"/&gt;
+        </source>
+        <p>
+          To configure the check to accept anonymous classes with up to 60 lines:
         </p>
         <source>
 &lt;module name="AnonInnerLength"&gt;
@@ -104,8 +110,8 @@
     </section>
 
     <section name="ExecutableStatementCount">
+      <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="ExecutableStatementCount_Description">
-        <p>Since Checkstyle 3.2</p>
         <p>
           Restricts the number of executable statements to a specified limit.
         </p>
@@ -122,7 +128,7 @@
           </tr>
           <tr>
             <td>max</td>
-            <td>the maximum threshold allowed</td>
+            <td>Specify the maximum threshold allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>30</code></td>
             <td>3.2</td>
@@ -212,15 +218,15 @@
     </section>
 
     <section name="FileLength">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="FileLength_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           Checks for long source files.
         </p>
 
         <p>
           Rationale: If a source file becomes very long it is hard to
-          understand.  Therefore long classes should usually be refactored
+          understand. Therefore long classes should usually be refactored
           into several individual classes that focus on a specific task.
         </p>
       </subsection>
@@ -236,14 +242,14 @@
           </tr>
           <tr>
             <td>max</td>
-            <td>maximum allowable number of lines</td>
+            <td>Specify the maximum number of lines allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>2000</td>
+            <td><code>2000</code></td>
             <td>3.2</td>
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>file type extension of files to process</td>
+            <td>Specify the file type extension of files to process.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>all files</code></td>
             <td>5.0</td>
@@ -252,6 +258,12 @@
       </subsection>
 
       <subsection name="Examples" id="FileLength_Examples">
+        <p>
+          To configure the check:
+        </p>
+        <source>
+&lt;module name="FileLength"/&gt;
+        </source>
         <p>
           To configure the check to accept files with up to 1500 lines:
         </p>
@@ -302,8 +314,8 @@
     </section>
 
     <section name="LineLength">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="LineLength_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for long lines.
         </p>
@@ -327,29 +339,36 @@
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>file extensions that are accepted</td>
+            <td>Specify file extensions that are accepted.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>all files</code></td>
             <td>8.24</td>
           </tr>
           <tr>
             <td>ignorePattern</td>
-            <td>pattern for lines to ignore</td>
+            <td>Specify pattern for lines to ignore.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
-            <td>"^$" (empty)</td>
+            <td><code>"^$" (empty)</code></td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>max</td>
-            <td>maximum allowable line length</td>
+            <td>Specify the maximum line length allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>80</td>
+            <td><code>80</code></td>
             <td>3.0</td>
           </tr>
         </table>
       </subsection>
 
       <subsection name="Examples" id="LineLength_Examples">
+        <p>
+          To configure the check to accept lines up to 80 characters long:
+        </p>
+        <source>
+&lt;module name="LineLength"/&gt;
+        </source>
+
         <p>
           To configure the check to accept lines up to 120 characters long:
         </p>
@@ -360,8 +379,8 @@
         </source>
 
         <p>
-          To configure the check to ignore lines that begin with &quot; *
-          &quot;, followed by just one word, such as within a Javadoc comment:
+          To configure the check to ignore lines that begin with <code>&quot; * &quot;</code>code,
+          followed by just one word, such as within a Javadoc comment:
         </p>
         <source>
 &lt;module name="LineLength"&gt;
@@ -394,7 +413,7 @@
           <li>
             The calculation of the length of a line takes into account the
             number of expanded spaces for a tab character (<code>'\t'</code>). The default number
-            of spaces is <code>8</code>.  To specify a different number of spaces, the user can set
+            of spaces is <code>8</code>. To specify a different number of spaces, the user can set
             <a href="config.html#TreeWalker"><code>TreeWalker</code></a> property
             <code>tabWidth</code> which applies to all Checks, including <code>LineLength</code>;
             or can set property <code>tabWidth</code> for <code>LineLength</code> alone.
@@ -451,8 +470,8 @@
     </section>
 
     <section name="MethodCount">
+      <p>Since Checkstyle 5.3</p>
       <subsection name="Description" id="MethodCount_Description">
-        <p>Since Checkstyle 5.3</p>
         <p>
           Checks the number of methods declared in each type declaration by access modifier or
           total count.
@@ -474,7 +493,8 @@
           Methods defined in anonymous classes are not counted towards any totals.
           Counts only go towards the main type declaration parent, and are kept separate from it's
           children's inner types.
-          <source>
+        </p>
+        <source>
 public class ExampleClass {
   public enum Colors {
     RED, GREEN, YELLOW;
@@ -484,7 +504,7 @@ public class ExampleClass {
 
   public void example() { // counted towards ExampleClass
     Runnable r = (new Runnable() {
-      public void run() { ... } // NOT counted towards ExampleClass and won't produce any violations
+      public void run() { ... } // NOT counted towards ExampleClass, won't produce any violations
     });
   }
 
@@ -493,8 +513,7 @@ public class ExampleClass {
                                    // but counted towards InnerExampleClass
   }
 }
-          </source>
-        </p>
+        </source>
       </subsection>
 
       <subsection name="Properties" id="MethodCount_Properties">
@@ -508,37 +527,37 @@ public class ExampleClass {
           </tr>
           <tr>
             <td>maxTotal</td>
-            <td>maximum allowable number of methods at all scope levels</td>
+            <td>Specify the maximum number of methods allowed at all scope levels.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>100</td>
+            <td><code>100</code></td>
             <td>5.3</td>
           </tr>
           <tr>
             <td>maxPrivate</td>
-            <td>maximum allowable number of <code>private</code> methods</td>
+            <td>Specify the maximum number of <code>private</code> methods allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>100</td>
+            <td><code>100</code></td>
             <td>5.3</td>
           </tr>
           <tr>
             <td>maxPackage</td>
-            <td>maximum allowable number of <code>package</code> methods</td>
+            <td>Specify the maximum number of <code>package</code> methods allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>100</td>
+            <td><code>100</code></td>
             <td>5.3</td>
           </tr>
           <tr>
             <td>maxProtected</td>
-            <td>maximum allowable number of <code>protected</code> methods</td>
+            <td>Specify the maximum number of <code>protected</code> methods allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td>100</td>
             <td>5.3</td>
           </tr>
           <tr>
             <td>maxPublic</td>
-            <td>maximum allowable number of <code>public</code> methods</td>
+            <td>Specify the maximum number of <code>public</code> methods allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>100</td>
+            <td><code>100</code></td>
             <td>5.3</td>
           </tr>
 
@@ -659,8 +678,8 @@ public class ExampleClass {
     </section>
 
     <section name="MethodLength">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="MethodLength_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for long methods and constructors.
         </p>
@@ -683,16 +702,16 @@ public class ExampleClass {
           </tr>
           <tr>
             <td>max</td>
-            <td>maximum allowable number of lines</td>
+            <td>Specify the maximum number of lines allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>150</td>
+            <td><code>150</code></td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>countEmpty</td>
             <td>
-              whether to count empty lines and single line comments of the
-              form <code>//</code>
+              Control whether to count empty lines and single line comments of the
+              form <code>//</code>.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
@@ -796,8 +815,8 @@ public class ExampleClass {
     </section>
 
     <section name="OuterTypeNumber">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="OuterTypeNumber_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           Checks for the number of types declared at the <i>outer</i>
           (or <i>root</i>) level in a file.
@@ -820,9 +839,9 @@ public class ExampleClass {
           </tr>
           <tr>
             <td>max</td>
-            <td>maximum allowable number of outer types</td>
+            <td>Specify the maximum number of outer types allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>1</td>
+            <td><code>1</code></td>
             <td>5.0</td>
           </tr>
         </table>
@@ -883,8 +902,8 @@ public class ExampleClass {
     </section>
 
     <section name="ParameterNumber">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="ParameterNumber_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks the number of parameters of a method or constructor.
         </p>
@@ -901,16 +920,18 @@ public class ExampleClass {
           </tr>
           <tr>
             <td>max</td>
-            <td>maximum allowable number of parameters</td>
+            <td>Specify the maximum number of parameters allowed.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
-            <td>7</td>
+            <td><code>7</code></td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>ignoreOverriddenMethods</td>
-            <td>Ignore number of parameters for methods with @Override annotation</td>
+            <td>
+              Ignore number of parameters for methods with <code>@Override</code> annotation.
+            </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
-            <td>false</td>
+            <td><code>false</code></td>
             <td>6.2</td>
           </tr>
           <tr>
@@ -957,8 +978,8 @@ public class ExampleClass {
 &lt;/module&gt;
         </source>
           <p>
-              To configure the check to ignore number of parameters for methods with @Override
-              or @java.lang.Override annotation.
+              To configure the check to ignore number of parameters for methods with
+              <code>@Override</code> or <code>@java.lang.Override annotation</code>.
           </p>
           <p>
               Rationale: developer may need to override method with many parameters from
@@ -968,15 +989,15 @@ public class ExampleClass {
           <source>
 &lt;module name="ParameterNumber"&gt;
   &lt;property name="ignoreOverriddenMethods" value="true"/&gt;
-  &lt;property name="tokens" value="METHOD_DEF"/&gt;
 &lt;/module&gt;
           </source>
           <p>
-              Java code example
+              Java code example:
           </p>
           <source>
 @Override
-public void needsLotsOfParameters(int a, int b, int c, int d, int e, int f, int g, int h) {
+public void needsLotsOfParameters(int a,
+    int b, int c, int d, int e, int f, int g, int h) {
     ...
 }
           </source>
