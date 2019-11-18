@@ -39,12 +39,12 @@ test-fr)
 
 test-zh)
   mvn -e clean integration-test failsafe:verify \
-    -DargLine='-Duser.language=zh -Duser.country=ZH -Xms1024m -Xmx2048m'
+    -DargLine='-Duser.language=zh -Duser.country=CN -Xms1024m -Xmx2048m'
   ;;
 
-test-jp)
+test-ja)
   mvn -e clean integration-test failsafe:verify \
-    -DargLine='-Duser.language=jp -Duser.country=JP -Xms1024m -Xmx2048m'
+    -DargLine='-Duser.language=ja -Duser.country=JP -Xms1024m -Xmx2048m'
   ;;
 
 test-pt)
@@ -64,24 +64,20 @@ osx-assembly)
 
 osx-package)
   export JAVA_HOME=$(/usr/libexec/java_home)
-  mvn -e package -Dlinkcheck.skip=true
+  mvn -e package
   ;;
 
 osx-jdk12-package)
-  exclude1="!FileContentsTest#testGetJavadocBefore,!FileTextTest#testFindLine*,"
+  exclude1="!FileContentsTest#testGetJavadocBefore,"
   exclude2="!MainFrameModelPowerTest#testOpenFileWithUnknownParseMode,"
   exclude3="!TokenUtilTest#testTokenValueIncorrect2,"
   exclude4="!ImportControlLoaderPowerTest#testInputStreamThatFailsOnClose"
   export JAVA_HOME=$(/usr/libexec/java_home)
-  mvn -e package -Dlinkcheck.skip=true -Dtest=${exclude1}${exclude2}${exclude3}${exclude4}
+  mvn -e package -Dtest=*,${exclude1}${exclude2}${exclude3}${exclude4}
   ;;
 
 osx-jdk12-assembly)
-  exclude1="!FileContentsTest#testGetJavadocBefore,!FileTextTest#testFindLine*,"
-  exclude2="!MainFrameModelPowerTest#testOpenFileWithUnknownParseMode,"
-  exclude3="!TokenUtilTest#testTokenValueIncorrect2,"
-  export JAVA_HOME=$(/usr/libexec/java_home)
-  mvn -e package -Passembly -Dtest=${exclude1}${exclude2}${exclude3}
+  mvn -e package -Passembly
   ;;
 
 site)
@@ -109,15 +105,20 @@ javac8)
   done
   ;;
 
-jdk12)
-  # powermock doesn't support modifying final fields in JDK12
-  exclude1="\!FileContentsTest#testGetJavadocBefore,\!FileTextTest#testFindLine*,"
-  exclude2="\!MainFrameModelPowerTest#testOpenFileWithUnknownParseMode,"
-  exclude3="\!TokenUtilTest#testTokenValueIncorrect2,"
-  exclude4="\!ImportControlLoaderPowerTest#testInputStreamThatFailsOnClose"
+jdk12-assembly-site)
+  mvn -e package -Passembly
+  mvn -e site -Pno-validations
+  ;;
 
-  mvn -e package -Passembly -Dtest=$exclude1$exclude2$exclude3$exclude4
-  mvn -e site -Dlinkcheck.skip=true
+jdk12-verify-limited)
+  # powermock doesn't support modifying final fields in JDK12, so need jacoco skip
+  exclude1="!FileContentsTest#testGetJavadocBefore,"
+  exclude2="!MainFrameModelPowerTest#testOpenFileWithUnknownParseMode,"
+  exclude3="!TokenUtilTest#testTokenValueIncorrect2,"
+  exclude4="!ImportControlLoaderPowerTest#testInputStreamThatFailsOnClose"
+  # we skip pmd and spotbugs as they executed in special Travis build
+  mvn -e verify -Dtest=*,$exclude1$exclude2$exclude3$exclude4 -Djacoco.skip=true \
+    -Dpmd.skip=true -Dspotbugs.skip=true
   ;;
 
 nondex)

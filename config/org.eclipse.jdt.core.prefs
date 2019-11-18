@@ -57,6 +57,8 @@ org.eclipse.jdt.core.compiler.problem.overridingMethodWithoutSuperInvocation=ign
 org.eclipse.jdt.core.compiler.problem.overridingPackageDefaultMethod=error
 org.eclipse.jdt.core.compiler.problem.parameterAssignment=error
 org.eclipse.jdt.core.compiler.problem.possibleAccidentalBooleanAssignment=error
+# rawTypeReference=warning to allow us suppress it in code for old code
+org.eclipse.jdt.core.compiler.problem.rawTypeReference=warning
 org.eclipse.jdt.core.compiler.problem.redundantNullAnnotation=error
 org.eclipse.jdt.core.compiler.problem.redundantNullCheck=error
 org.eclipse.jdt.core.compiler.problem.redundantSpecificationOfTypeArguments=error
@@ -64,12 +66,15 @@ org.eclipse.jdt.core.compiler.problem.redundantSuperinterface=error
 org.eclipse.jdt.core.compiler.problem.reportMethodCanBeStatic=error
 org.eclipse.jdt.core.compiler.problem.staticAccessReceiver=error
 org.eclipse.jdt.core.compiler.problem.syntacticNullAnalysisForFields=enabled
+# uncheckedTypeOperation=warning to allow us suppress it in code for old code
+org.eclipse.jdt.core.compiler.problem.uncheckedTypeOperation=warning
 org.eclipse.jdt.core.compiler.problem.unclosedCloseable=error
 org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock=error
 org.eclipse.jdt.core.compiler.problem.unavoidableGenericTypeProblems=enabled
 org.eclipse.jdt.core.compiler.problem.unhandledWarningToken=error
 org.eclipse.jdt.core.compiler.problem.unlikelyCollectionMethodArgumentType=error
 org.eclipse.jdt.core.compiler.problem.unlikelyEqualsArgumentType=error
+org.eclipse.jdt.core.compiler.problem.unnecessaryElse=error
 org.eclipse.jdt.core.compiler.problem.unusedDeclaredThrownException=error
 org.eclipse.jdt.core.compiler.problem.unusedDeclaredThrownExceptionIncludeDocCommentReference=enabled
 org.eclipse.jdt.core.compiler.problem.unusedImport=error
@@ -90,6 +95,12 @@ org.eclipse.jdt.core.compiler.problem.varargsArgumentNeedCast=error
 org.eclipse.jdt.core.compiler.problem.specialParameterHidingField=error
 org.eclipse.jdt.core.compiler.problem.typeParameterHiding=error
 org.eclipse.jdt.core.compiler.problem.fieldHiding=error
+
+# Ignore section
+
+# We are not ready to refactor code to use non-null validation, we will try later on
+org.eclipse.jdt.core.compiler.annotation.missingNonNullByDefaultAnnotation=ignore
+org.eclipse.jdt.core.compiler.annotation.nullanalysis=ignore
 #We can not enforce this rule as we are library and we keep deprecated stuff for some time
 org.eclipse.jdt.core.compiler.problem.deprecation=ignore
 #we will not put all String values to resources, it does not make sense in our project
@@ -100,19 +111,18 @@ org.eclipse.jdt.core.compiler.problem.unusedDeclaredThrownExceptionExemptExcepti
 org.eclipse.jdt.core.compiler.problem.unusedDeclaredThrownExceptionWhenOverriding=disabled
 #We use checkstyle rule, special cases could be suppressed by configs out of code
 org.eclipse.jdt.core.compiler.problem.unusedExceptionParameter=ignore
-
-#
-#All below is disabled till - https://github.com/checkstyle/checkstyle/issues/5060
-#
-org.eclipse.jdt.core.compiler.annotation.missingNonNullByDefaultAnnotation=ignore
+#Requires us to box and unbox all conversions manually which seems unnecessary.
 org.eclipse.jdt.core.compiler.problem.autoboxing=ignore
-org.eclipse.jdt.core.compiler.problem.potentiallyUnclosedCloseable=ignore
+#Too much complaining about potential null code but tests and pitests don't show anything.
 org.eclipse.jdt.core.compiler.problem.potentialNullReference=ignore
-org.eclipse.jdt.core.compiler.problem.rawTypeReference=warning
+#Complains about any resource that leaves a method that isn't closed first.
+org.eclipse.jdt.core.compiler.problem.potentiallyUnclosedCloseable=ignore
+#Too many false positives for methods that should be static but would cause issues.
 org.eclipse.jdt.core.compiler.problem.reportMethodCanBePotentiallyStatic=ignore
+#Checkstyle doesn't mind synthetic methods.
 org.eclipse.jdt.core.compiler.problem.syntheticAccessEmulation=ignore
-org.eclipse.jdt.core.compiler.problem.uncheckedTypeOperation=warning
-org.eclipse.jdt.core.compiler.problem.unnecessaryElse=ignore
-org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck=ignore
+#We have another check that ensures fields have this when necessary.
+#This asks for this on all fields.
 org.eclipse.jdt.core.compiler.problem.unqualifiedFieldAccess=ignore
-org.eclipse.jdt.core.compiler.annotation.nullanalysis=ignore
+#IntelliJ requires the type casts while this wants it removed.
+org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck=ignore

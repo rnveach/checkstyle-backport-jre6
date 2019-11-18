@@ -34,7 +34,7 @@ case $1 in
 pitest-annotation|pitest-design \
 |pitest-metrics|pitest-modifier|pitest-naming \
 |pitest-sizes|pitest-whitespace \
-|pitest-api \
+|pitest-api|pitest-blocks \
 |pitest-packagenamesloader \
 |pitest-common-2|pitest-misc|pitest-xpath \
 |pitest-filters \
@@ -150,17 +150,6 @@ pitest-ant)
   checkPitestReport "${ignoredItems[@]}"
   ;;
 
-pitest-blocks)
-  mvn -e -P$1 clean test org.pitest:pitest-maven:mutationCoverage;
-  declare -a ignoredItems=(
-  "RightCurlyCheck.java.html:<td class='covered'><pre><span  class='survived'>                &#38;&#38; tokenAfterNextToken.getType() == TokenTypes.SEMI</span></pre></td></tr>"
-  "RightCurlyCheck.java.html:<td class='covered'><pre><span  class='survived'>            else if (tokenType == TokenTypes.LITERAL_CATCH) {</span></pre></td></tr>"
-  "RightCurlyCheck.java.html:<td class='covered'><pre><span  class='survived'>            if (tokenType == TokenTypes.LITERAL_IF) {</span></pre></td></tr>"
-  "RightCurlyCheck.java.html:<td class='covered'><pre><span  class='survived'>        return rcurly.getParent().getParent().getType() == TokenTypes.INSTANCE_INIT</span></pre></td></tr>"
-  );
-  checkPitestReport "${ignoredItems[@]}"
-  ;;
-
 pitest-indentation)
   mvn -e -P$1 clean test org.pitest:pitest-maven:mutationCoverage;
   declare -a ignoredItems=(
@@ -202,10 +191,11 @@ pitest-javadoc)
   "AbstractJavadocCheck.java.html:<td class='covered'><pre><span  class='survived'>        beginJavadocTree(root);</span></pre></td></tr>"
   "AbstractJavadocCheck.java.html:<td class='covered'><pre><span  class='survived'>        finishJavadocTree(root);</span></pre></td></tr>"
   "AbstractJavadocCheck.java.html:<td class='covered'><pre><span  class='survived'>        javadocTokens.clear();</span></pre></td></tr>"
-  "AbstractTypeAwareCheck.java.html:<td class='covered'><pre><span  class='survived'>        if (!currentClassName.isEmpty()) {</span></pre></td></tr>"
-  "AbstractTypeAwareCheck.java.html:<td class='covered'><pre><span  class='survived'>            if (dotIdx == -1) {</span></pre></td></tr>"
-  "AbstractTypeAwareCheck.java.html:<td class='covered'><pre><span  class='survived'>        imports.clear();</span></pre></td></tr>"
-  "AbstractTypeAwareCheck.java.html:<td class='covered'><pre><span  class='survived'>        typeParams.clear();</span></pre></td></tr>"
+  "JavadocMethodCheck.java.html:<td class='covered'><pre><span  class='survived'>        if (!currentClassName.isEmpty()) {</span></pre></td></tr>"
+  "JavadocMethodCheck.java.html:<td class='covered'><pre><span  class='survived'>            if (dotIdx == -1) {</span></pre></td></tr>"
+  "JavadocMethodCheck.java.html:<td class='covered'><pre><span  class='survived'>        imports.clear();</span></pre></td></tr>"
+  "JavadocMethodCheck.java.html:<td class='covered'><pre><span  class='survived'>        currentTypeParams.clear();</span></pre></td></tr>"
+  "JavadocMethodCheck.java.html:<td class='covered'><pre><span  class='survived'>            loadable = clazz != null;</span></pre></td></tr>"
   "ClassResolver.java.html:<td class='uncovered'><pre><span  class=''>        catch (final ClassNotFoundException ex) {</span></pre></td></tr>"
   "ClassResolver.java.html:<td class='uncovered'><pre><span  class='survived'>            throw new IllegalStateException(ex);</span></pre></td></tr>"
   "JavadocTagInfo.java.html:<td class='covered'><pre><span  class='survived'>            .collect(Collectors.toMap(JavadocTagInfo::getName, tagName -&#62; tagName)));</span></pre></td></tr>"

@@ -151,6 +151,8 @@ public class XdocsPagesTest {
             "JavadocMethod.allowMissingJavadoc",
             "JavadocMethod.allowMissingPropertyJavadoc",
             "JavadocMethod.ignoreMethodNamesRegex",
+            "JavadocMethod.logLoadErrors",
+            "JavadocMethod.suppressLoadErrors",
             "MissingDeprecated.skipNoJavadoc"
     );
 

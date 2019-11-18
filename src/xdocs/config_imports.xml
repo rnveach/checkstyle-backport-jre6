@@ -23,10 +23,10 @@
     </section>
 
     <section name="AvoidStarImport">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="AvoidStarImport_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Checks that there are no import statements that use the * notation.
+          Checks that there are no import statements that use the <code>*</code> notation.
         </p>
 
         <p>
@@ -34,6 +34,13 @@
           members from a class leads to tight coupling between packages
           or classes and might lead to problems when a new version of a
           library introduces name clashes.
+        </p>
+      </subsection>
+
+      <subsection name="Notes" id="AvoidStarImport_Notes">
+        <p>
+          Note that property <code>excludes</code> is not recursive,
+          subpackages of excluded packages are not automatically excluded.
         </p>
       </subsection>
 
@@ -49,9 +56,7 @@
           <tr>
             <td>excludes</td>
             <td>
-              packages where star imports are allowed. Note that this property
-              is not recursive, subpackages of excluded packages are not
-              automatically excluded.
+              Specify packages where star imports are allowed.
             </td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>{}</code></td>
@@ -60,7 +65,7 @@
           <tr>
             <td>allowClassImports</td>
             <td>
-              whether to allow starred class imports like
+              Control whether to allow starred class imports like
               <code>import java.util.*;</code>.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
@@ -70,8 +75,8 @@
           <tr>
             <td>allowStaticMemberImports</td>
             <td>
-              whether to allow starred static member imports like
-              <code>import static org.junit.Assert.*;</code>
+              Control whether to allow starred static member imports like
+              <code>import static org.junit.Assert.*;</code>.
             </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
@@ -82,16 +87,19 @@
 
       <subsection name="Examples" id="AvoidStarImport_Examples">
         <p>
-          An example how to configure the check so that star imports from
-          packages java.io and java.net as well as static members from class
-          from java.lang.Math are allowed:
+          To configure the check:
         </p>
-
+        <source>
+&lt;module name="AvoidStarImport"/&gt;
+        </source>
+        <p>
+          To configure the check so that star imports from packages
+          <code>java.io and java.net</code> as well as static members from class
+          <code>java.lang.Math</code> are allowed:
+        </p>
         <source>
 &lt;module name="AvoidStarImport"&gt;
   &lt;property name="excludes" value="java.io,java.net,java.lang.Math"/&gt;
-  &lt;property name="allowClassImports" value="false"/&gt;
-  &lt;property name="allowStaticMemberImports" value="false"/&gt;
 &lt;/module&gt;
         </source>
       </subsection>
@@ -136,8 +144,8 @@
     </section>
 
     <section name="AvoidStaticImport">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="AvoidStaticImport_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           Checks that there are no static import statements.
         </p>
@@ -147,6 +155,18 @@
           conflicts between class' members. It may lead to poor code
           readability since it may no longer be clear what class a
           member resides in (without looking at the import statement).
+        </p>
+      </subsection>
+
+      <subsection name="Notes" id="AvoidStaticImport_Notes">
+        <p>
+          If you exclude a starred import on a class this automatically
+          excludes each member individually.
+        </p>
+        <p>
+          For example: Excluding <code>java.lang.Math.*</code>. will allow the
+          import of each static member in the Math class
+          individually like <code>java.lang.Math.PI, java.lang.Math.cos, ...</code>.
         </p>
       </subsection>
 
@@ -162,18 +182,10 @@
           <tr>
             <td>excludes</td>
             <td>
-              Allows for certain classes via a star notation to be
+              Control whether to allow for certain classes via a star notation to be
               excluded such as <code>java.lang.Math.*</code> or specific static
               members to be excluded like <code>java.lang.System.out</code> for a variable or
-              <code>java.lang.Math.random</code> for a
-              method.
-              <br/>
-              If you exclude a starred import on a class this automatically
-              excludes each member individually.
-              <br/>
-              For example: Excluding <code>java.lang.Math.*</code>. will allow the
-              import of each static member in the Math class
-              individually like <code>java.lang.Math.PI</code>.
+              <code>java.lang.Math.random</code> for a method. See notes section for details.
             </td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>{}</code></td>
@@ -184,10 +196,15 @@
 
       <subsection name="Examples" id="AvoidStaticImport_Examples">
         <p>
-          An example of how to configure the check so that the <code>java.lang.System.out</code>
+          To configure the check:
+        </p>
+        <source>
+&lt;module name="AvoidStaticImport"/&gt;
+        </source>
+        <p>
+          To configure the check so that the <code>java.lang.System.out</code>
           member and all members from <code>java.lang.Math</code> are allowed:
         </p>
-
         <source>
 &lt;module name="AvoidStaticImport"&gt;
   &lt;property name="excludes" value="java.lang.System.out,java.lang.Math.*"/&gt;
@@ -603,15 +620,21 @@ import android.*;
     </section>
 
     <section name="IllegalImport">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="IllegalImport_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
-          Checks for imports from a set of illegal packages. By default, the
-          check rejects all <code>sun.*</code> packages since
-          programs that contain direct calls to the <code>sun.*</code> packages are <a
-          href="https://www.oracle.com/technetwork/java/faq-sun-packages-142232.html">"not
-          guaranteed to work on all Java-compatible platforms"</a>. To reject other packages,
-          set property <code> illegalPkgs</code> to a list of the illegal packages.
+          Checks for imports from a set of illegal packages.
+        </p>
+      </subsection>
+
+      <subsection name="Notes" id="IllegalImport_Notes">
+        <p>
+          Note: By default, the check rejects all <code>sun.*</code> packages since
+          programs that contain direct calls to the <code>sun.*</code> packages are
+          <a href="https://www.oracle.com/technetwork/java/faq-sun-packages-142232.html">
+          "not guaranteed to work on all Java-compatible platforms"</a>.
+          To reject other packages, set property <code>illegalPkgs</code> to
+          a list of the illegal packages.
         </p>
       </subsection>
 
@@ -626,28 +649,30 @@ import android.*;
           </tr>
           <tr>
             <td>illegalPkgs</td>
-            <td>Packages to reject, if <b>regexp</b> variable is not set, checks if import is the
-                part of package. If <b>regexp</b> variable is set, then list of packages will be
-                interpreted as regular expressions. Note, all properties for match will be
-                used.</td>
+            <td>Specify packages to reject, if <b>regexp</b> property is not set, checks if import
+              is the part of package. If <b>regexp</b> property is set, then list of packages will
+              be interpreted as regular expressions. Note, all properties for match will be used.
+            </td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>sun</code></td>
             <td>3.0</td>
           </tr>
           <tr>
             <td>illegalClasses</td>
-            <td>Class names to reject, if <b>regexp</b> variable is not set, checks if import
-                equals class name. If <b>regexp</b> variable is set, then list of class name will
-                be interpreted as regular expressions. Note, all properties for match will be
-                used.</td>
+            <td>Specify class names to reject, if <b>regexp</b> property is not set, checks if
+              import equals class name. If <b>regexp</b> property is set, then list of class names
+              will be interpreted as regular expressions. Note, all properties for match will be
+              used.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>{}</code></td>
             <td>7.8</td>
           </tr>
           <tr>
             <td>regexp</td>
-            <td>Whether the <b>illegalPkgs</b> and <b>illegalClasses</b> should be interpreted as
-                regular expressions</td>
+            <td>
+              Control whether the <code>illegalPkgs</code> and <code>illegalClasses</code>
+              should be interpreted as regular expressions.
+            </td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>7.8</td>
@@ -879,8 +904,8 @@ public class InputIllegalImport { }
     </section>
 
     <section name="ImportControl">
+      <p>Since Checkstyle 4.0</p>
       <subsection name="Description" id="ImportControl_Description">
-        <p>Since Checkstyle 4.0</p>
         <p>
           Controls what can be imported in each package and file. Useful for
           ensuring that application layering rules are not violated,
@@ -958,7 +983,7 @@ public class InputIllegalImport { }
           <tr>
             <td>file</td>
             <td>
-              The location of the file containing the import control configuration.
+              Specify the location of the file containing the import control configuration.
               It can be a regular file, URL or resource path. It will try loading
               the path as a URL first, then as a file, and finally as a resource.
             </td>
@@ -969,8 +994,8 @@ public class InputIllegalImport { }
           <tr>
             <td>path</td>
             <td>
-              Regular expression of file paths to which this check should apply. Files that
-              don't match the pattern will not be checked. The pattern will be matched against
+              Specify the regular expression of file paths to which this check should apply. Files
+              that don't match the pattern will not be checked. The pattern will be matched against
               the full absolute file path.
             </td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
@@ -1763,8 +1788,8 @@ public class InputEclipseStaticImportsOrder { }
     </section>
 
     <section name="RedundantImport">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="RedundantImport_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for redundant import statements. An import statement is
           considered redundant if:
@@ -1777,7 +1802,7 @@ public class InputEclipseStaticImportsOrder { }
           </li>
           <li>
             The class non-statically imported is from the <code>java.lang</code>
-            package, e.g.  importing <code>java.lang.String</code>.
+            package, e.g. importing <code>java.lang.String</code>.
           </li>
           <li>
             The class non-statically imported is from the same package as the current package.
@@ -1842,8 +1867,8 @@ public class InputEclipseStaticImportsOrder { }
     </section>
 
     <section name="UnusedImports">
+      <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="UnusedImports_Description">
-        <p>Since Checkstyle 3.0</p>
         <p>
           Checks for unused import statements. Checkstyle uses a simple but
           very reliable algorithm to report on unused import statements. An
@@ -1875,11 +1900,11 @@ public class InputEclipseStaticImportsOrder { }
             <b>Optionally:</b> it is referenced in Javadoc comments. This check
             is on by default, but it is considered bad practice to introduce
             a compile time dependency for documentation purposes only.
-            As an example, the import <code>java.util.Date</code> would be
+            As an example, the import <code>java.util.List</code> would be
             considered referenced with the Javadoc comment
-            <code>{@link Date}</code>. The alternative to avoid introducing a
+            <code>{@link List}</code>. The alternative to avoid introducing a
             compile time dependency would be to write the Javadoc comment as
-            <code>{@link java.util.Date}</code>.
+            <code>{@link java.util.List}</code>.
           </li>
         </ul>
         <p>
@@ -1911,7 +1936,7 @@ class FooBar {
           </tr>
           <tr>
             <td>processJavadoc</td>
-            <td>whether to process Javadoc</td>
+            <td>Control whether to process Javadoc comments.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
             <td>5.4</td>

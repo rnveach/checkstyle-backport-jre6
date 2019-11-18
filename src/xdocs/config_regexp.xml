@@ -23,8 +23,8 @@
     </section>
 
     <section name="Regexp">
+      <p>Since Checkstyle 4.0</p>
       <subsection name="Description" id="Regexp_Description">
-        <p>Since Checkstyle 4.0</p>
         <p>
           A check that makes sure that a specified pattern exists, exists less
           than a set number of times, or does not exist in the file.
@@ -59,7 +59,7 @@
           <b>Note:</b> Not all regular expression engines are created equal. Some provide extra
           functions that others do not and some elements of the syntax may vary.
           This check makes use of the
-          <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/package-summary.html">
+          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/package-summary.html">
           java.util.regex package</a>; please check its documentation for
           details of how to construct a regular expression to achieve a particular
           goal.
@@ -83,14 +83,14 @@
           </tr>
           <tr>
             <td>format</td>
-            <td>pattern</td>
+            <td>Specify the pattern to match against.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>"^$"</code> (empty)</td>
             <td>4.0</td>
           </tr>
           <tr>
             <td>message</td>
-            <td>message which is used to notify about violations,
+            <td>Specify message which is used to notify about violations,
               if empty then the default (hard-coded) message is used.</td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
@@ -98,14 +98,14 @@
           </tr>
           <tr>
             <td>illegalPattern</td>
-            <td>Controls whether the pattern is required or illegal.</td>
+            <td>Control whether the pattern is required or illegal.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>4.0</td>
           </tr>
           <tr>
             <td>duplicateLimit</td>
-            <td>Controls whether to check for duplicates of a required pattern,
+            <td>Control whether to check for duplicates of a required pattern,
               any negative value means no checking for duplicates, any positive
               value is used as the maximum number of allowed duplicates, if the
               limit is exceeded violations will be logged.</td>
@@ -115,14 +115,14 @@
           </tr>
           <tr>
             <td>errorLimit</td>
-            <td>Controls the maximum number of violations before the check will abort.</td>
+            <td>Specify the maximum number of violations before the check will abort.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>100</code></td>
             <td>4.0</td>
           </tr>
           <tr>
             <td>ignoreComments</td>
-            <td>Controls whether to ignore matches found within comments.</td>
+            <td>Control whether to ignore matches found within comments.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>4.0</td>
@@ -492,8 +492,8 @@ public static final int A_SETPOINT = 1;
     </section>
 
     <section name="RegexpMultiline">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="RegexpMultiline_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           A check for detecting that matches across multiple lines.
           Works with any file type.
@@ -516,50 +516,50 @@ public static final int A_SETPOINT = 1;
           </tr>
           <tr>
             <td>format</td>
-            <td>illegal pattern</td>
+            <td>Specify the format of the regular expression to match.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>&quot;$.&quot;</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>message</td>
-            <td>message which is used to notify about violations,
-            if empty then default(hard-coded) message is used.</td>
+            <td>Specify the message which is used to notify about violations,
+            if empty then default (hard-coded) message is used.</td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>ignoreCase</td>
-            <td>Controls whether to ignore case when searching.</td>
+            <td>Control whether to ignore case when searching.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>minimum</td>
-            <td>The minimum number of matches required in each file.</td>
+            <td>Specify the minimum number of matches required in each file.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>0</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>maximum</td>
-            <td>The maximum number of matches required in each file.</td>
+            <td>Specify the maximum number of matches required in each file.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>0</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>matchAcrossLines</td>
-            <td>Controls whether to match expressions across multiple lines.</td>
+            <td>Control whether to match expressions across multiple lines.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>8.25</td>
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>file type extension of files to process</td>
+            <td>Specify the file type extension of files to process.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>all files</code></td>
             <td>5.0</td>
@@ -657,8 +657,8 @@ void method() {
     </section>
 
     <section name="RegexpOnFilename">
+      <p>Since Checkstyle 6.15</p>
       <subsection name="Description" id="RegexpOnFilename_Description">
-        <p>Since Checkstyle 6.15</p>
         <p>
           Implementation of a check that looks for a file name and/or path match (or mis-match)
           against specified patterns. It can also be used to verify files match specific naming
@@ -710,21 +710,21 @@ void method() {
           </tr>
           <tr>
             <td>folderPattern</td>
-            <td>Regular expression to match the folder path against.</td>
+            <td>Specify the regular expression to match the folder path against.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>null</code></td>
             <td>6.15</td>
           </tr>
           <tr>
             <td>fileNamePattern</td>
-            <td>Regular expression to match the file name against.</td>
+            <td>Specify the regular expression to match the file name against.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>null</code></td>
             <td>6.15</td>
           </tr>
           <tr>
             <td>match</td>
-            <td>Whether to look for a match or mis-match on the file name, if the
+            <td>Control whether to look for a match or mis-match on the file name, if the
             fileNamePattern is supplied, otherwise it is applied on the folderPattern.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>true</code></td>
@@ -732,14 +732,14 @@ void method() {
           </tr>
           <tr>
             <td>ignoreFileNameExtensions</td>
-            <td>Whether to ignore the file extension for the file name match.</td>
+            <td>Control whether to ignore the file extension for the file name match.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>6.15</td>
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>File type extension of files to process. If this is specified, then
+            <td>Specify the file type extension of files to process. If this is specified, then
             only files that match these types are examined with the other patterns.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>all files</code></td>
@@ -795,9 +795,7 @@ void method() {
         </source>
         <p>
           To configure the check to only allow Java and XML files only in your source folder
-          and ignore any other folders:<br />
-          <b>Note:</b> 'folderPattern' must be specified if checkstyle is analyzing more than
-          the normal source folder, like the 'bin' folder where class files can be located.
+          and ignore any other folders:
         </p>
         <source>
 &lt;module name=&quot;RegexpOnFilename&quot;&gt;
@@ -806,6 +804,10 @@ void method() {
   &lt;property name=&quot;match&quot; value=&quot;false&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>
+          <b>Note:</b> 'folderPattern' must be specified if checkstyle is analyzing more than
+          the normal source folder, like the 'bin' folder where class files can be located.
+        </p>
         <p>
           To configure the check to only allow file names to be camel case:
         </p>
@@ -858,8 +860,8 @@ void method() {
     </section>
 
     <section name="RegexpSingleline">
+      <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="RegexpSingleline_Description">
-        <p>Since Checkstyle 5.0</p>
         <p>
           A check for detecting single lines that match a supplied
           regular expression. Works with any file type.
@@ -883,43 +885,43 @@ void method() {
           </tr>
           <tr>
             <td>format</td>
-            <td>illegal pattern</td>
+            <td>Specify the format of the regular expression to match.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>&quot;$.&quot;</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>message</td>
-            <td>message which is used to notify about violations,
-            if empty then default(hard-coded) message is used.</td>
+            <td>Specify the message which is used to notify about violations,
+            if empty then default (hard-coded) message is used.</td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>ignoreCase</td>
-            <td>Controls whether to ignore case when searching.</td>
+            <td>Control whether to ignore case when searching.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>minimum</td>
-            <td>The minimum number of matches required in each file.</td>
+            <td>Specify the minimum number of matches required in each file.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>0</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>maximum</td>
-            <td>The maximum number of matches required in each file.</td>
+            <td>Specify the maximum number of matches required in each file.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>0</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>fileExtensions</td>
-            <td>file type extension of files to process</td>
+            <td>Specify the file type extension of files to process.</td>
             <td><a href="property_types.html#stringSet">String Set</a></td>
             <td><code>all files</code></td>
             <td>5.0</td>
@@ -1013,11 +1015,15 @@ void method() {
     </section>
 
     <section name="RegexpSinglelineJava">
+      <p>Since Checkstyle 6.0</p>
       <subsection name="Description" id="RegexpSinglelineJava_Description">
-        <p>Since Checkstyle 6.0</p>
         <p>
-          This class is variation on <a
-          href="#RegexpSingleline">RegexpSingleline</a> for detecting
+          A check for detecting single lines that match a supplied
+          regular expression in Java files.
+        </p>
+        <p>
+          This class is variation on
+          <a href="config_regexp.html#RegexpSingleline">RegexpSingleline</a> for detecting
           single lines that match a supplied regular expression in Java files. It supports
           suppressing matches in Java comments.
         </p>
@@ -1034,43 +1040,43 @@ void method() {
           </tr>
           <tr>
             <td>format</td>
-            <td>illegal pattern</td>
+            <td>Specify the format of the regular expression to match.</td>
             <td><a href="property_types.html#regexp">Regular Expression</a></td>
             <td><code>&quot;$.&quot;</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>message</td>
-            <td>message which is used to notify about violations,
-            if empty then default(hard-coded) message is used.</td>
+            <td>Specify the message which is used to notify about violations,
+            if empty then default (hard-coded) message is used.</td>
             <td><a href="property_types.html#string">String</a></td>
             <td><code>null</code></td>
             <td>6.0</td>
           </tr>
           <tr>
             <td>ignoreCase</td>
-            <td>Controls whether to ignore case when searching.</td>
+            <td>Control whether to ignore case when searching.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>minimum</td>
-            <td>The minimum number of matches required in each file.</td>
+            <td>Specify the minimum number of matches required in each file.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>0</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>maximum</td>
-            <td>The maximum number of matches required in each file.</td>
+            <td>Specify the maximum number of matches required in each file.</td>
             <td><a href="property_types.html#integer">Integer</a></td>
             <td><code>0</code></td>
             <td>5.0</td>
           </tr>
           <tr>
             <td>ignoreComments</td>
-            <td>Controls whether to ignore text in comments when searching.</td>
+            <td>Control whether to ignore text in comments when searching.</td>
             <td><a href="property_types.html#boolean">Boolean</a></td>
             <td><code>false</code></td>
             <td>5.0</td>

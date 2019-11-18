@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
@@ -61,7 +60,6 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 /**
  * An implementation of a ANT task for calling checkstyle. See the documentation
  * of the task for usage.
- * @noinspection ClassLoaderInstantiation
  */
 public class CheckstyleAntTask extends Task {
 
@@ -399,14 +397,6 @@ public class CheckstyleAntTask extends Task {
 
             rootModule = (RootModule) factory.createModule(configuration.getName());
             rootModule.setModuleClassLoader(moduleClassLoader);
-
-            if (rootModule instanceof Checker) {
-                final ClassLoader loader = new AntClassLoader(getProject(),
-                        classpath);
-
-                ((Checker) rootModule).setClassLoader(loader);
-            }
-
             rootModule.configure(configuration);
         }
         catch (final CheckstyleException ex) {
@@ -420,7 +410,6 @@ public class CheckstyleAntTask extends Task {
      * Create the Properties object based on the arguments specified
      * to the ANT task.
      * @return the properties for property expansion expansion
-     * @throws BuildException if an error occurs
      */
     private Properties createOverridingProperties() {
         final Properties returnValue = new Properties();

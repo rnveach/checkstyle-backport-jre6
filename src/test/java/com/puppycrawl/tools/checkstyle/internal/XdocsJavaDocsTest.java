@@ -81,32 +81,6 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         "SingleLineJavadoc",
         "SummaryJavadoc",
         "WriteTag",
-        // header
-        "Header",
-        "RegexpHeader",
-        // imports
-        "AvoidStarImport",
-        "AvoidStaticImport",
-        "IllegalImport",
-        "ImportControl",
-        "RedundantImport",
-        "UnusedImports",
-        // metrics
-        "BooleanExpressionComplexity",
-        "ClassDataAbstractionCoupling",
-        "ClassFanOutComplexity",
-        "CyclomaticComplexity",
-        "JavaNCSS",
-        "NPathComplexity",
-        // modifiers
-        "ModifierOrder",
-        "RedundantModifier",
-        // regexp
-        "Regexp",
-        "RegexpMultiline",
-        "RegexpOnFilename",
-        "RegexpSingleline",
-        "RegexpSinglelineJava",
     };
 
     private static Checker checker;
@@ -372,6 +346,9 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
 
         if ("source".equals(name)) {
             result = "pre";
+        }
+        else if ("h4".equals(name)) {
+            result = "p";
         }
         else {
             result = name;
