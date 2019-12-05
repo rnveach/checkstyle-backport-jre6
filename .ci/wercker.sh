@@ -37,6 +37,9 @@ no-error-orekit)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/Hipparchus-Math/hipparchus.git
   cd .ci-temp/hipparchus
+  # checkout to version that Orekit expects
+  SHA_HIPPARCHUS="4c6c6fc45e859e""ae2d4eb091a3a3c0a7a458b8d9"
+  git checkout $SHA_HIPPARCHUS
   mvn install -DskipTests
   cd -
   checkout_from https://github.com/CS-SI/Orekit.git
@@ -44,7 +47,7 @@ no-error-orekit)
   # no CI is enforced in project, so to make our build stable we should
   # checkout to latest release/development (annotated tag or hash)
   # git checkout $(git describe --abbrev=0 --tags)
-  git checkout 3a9787ec3f166bd770f9c119cd7724f57
+  git checkout 973d1bd3e4532d2c1d3a7c28136e2713bd057542
   mvn -e compile checkstyle:check -Dorekit.checkstyle.version=${CS_POM_VERSION}
   cd ../
   rm -rf Orekit
@@ -91,7 +94,7 @@ no-error-hibernate-search)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/hibernate/hibernate-search.git
   cd .ci-temp/hibernate-search
-  mvn -e clean install -DskipTests=true -Dtest.elasticsearch.host.provided=true \
+  mvn -e clean install -DskipTests=true -Dtest.elasticsearch.run.skip=true \
      -Dcheckstyle.skip=true -Dforbiddenapis.skip=true \
      -Dpuppycrawl.checkstyle.version=${CS_POM_VERSION}
   mvn -e checkstyle:check  -Dpuppycrawl.checkstyle.version=${CS_POM_VERSION}

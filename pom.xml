@@ -13,7 +13,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.26</version>
+  <version>8.27</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -44,6 +44,13 @@
       <name>Richard Veach</name>
       <roles>
         <role>project admin, developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pbludov</id>
+      <name>Pavel Bludov</name>
+      <roles>
+        <role>developer</role>
       </roles>
     </developer>
     <developer>
@@ -173,14 +180,14 @@
     <maven.site.plugin.version>3.8.2</maven.site.plugin.version>
     <maven.spotbugs.plugin.version>3.1.12.2</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
-    <pmd.version>6.18.0</pmd.version>
+    <pmd.version>6.19.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
     <powermock.version>2.0.4</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
     <maven.checkstyle.plugin.version>3.1.0</maven.checkstyle.plugin.version>
-    <maven.sevntu.checkstyle.plugin.version>1.35.0</maven.sevntu.checkstyle.plugin.version>
+    <maven.sevntu.checkstyle.plugin.version>1.36.0</maven.sevntu.checkstyle.plugin.version>
     <maven.sevntu-checkstyle-check.checkstyle.version>
-      8.18
+      8.26
     </maven.sevntu-checkstyle-check.checkstyle.version>
     <maven.versions.plugin.version>2.7</maven.versions.plugin.version>
     <java.version>1.6</java.version>
@@ -204,7 +211,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.0.4</version>
+      <version>4.1.1</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -288,7 +295,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.28</version>
+      <version>1.7.29</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -332,7 +339,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.1</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
@@ -955,7 +962,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version>
+        <version>3.0.0-M3</version>
         <executions>
           <execution>
             <id>enforce-versions</id>
@@ -1148,7 +1155,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.2</version>
+        <version>3.2.0</version>
         <configuration>
           <archive>
             <manifest>
@@ -2070,6 +2077,10 @@
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.checks.imports.*</param>
               </targetTests>
+              <excludedMethods>
+                <!-- unkilled in generated code https://github.com/hcoles/pitest/issues/255 -->
+                <param>loadUri</param>
+              </excludedMethods>
               <excludedTestClasses>
                 <param>*.Input*</param>
               </excludedTestClasses>
@@ -2923,6 +2934,10 @@
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.utils.*</param>
               </targetClasses>
+              <excludedMethods>
+                <!-- unkilled in generated code https://github.com/hcoles/pitest/issues/255 -->
+                <param>isFileExists</param>
+              </excludedMethods>
               <targetTests>
                 <param>com.puppycrawl.tools.checkstyle.utils.*</param>
                 <!-- 12% mutation in CommonUtil,

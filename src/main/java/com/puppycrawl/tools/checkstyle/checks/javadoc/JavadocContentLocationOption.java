@@ -17,35 +17,40 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.puppycrawl.tools.checkstyle.checks.coding;
-
-import com.puppycrawl.tools.checkstyle.StatelessCheck;
+package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 /**
- * <p>
- * Checks that an overriding {@code clone()} method invokes {@code super.clone()}.
- * Does not check native methods, as they have no possible java defined implementation.
- * </p>
- * <p>
- * Reference:
- * <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#clone%28%29">
- * Object.clone()</a>.
- * </p>
- * <p>
- * To configure the check:
- * </p>
- * <pre>
- * &lt;module name=&quot;SuperClone&quot;/&gt;
- * </pre>
- *
- * @since 3.2
+ * Represents the locations for the javadoc content.
  */
-@StatelessCheck
-public class SuperCloneCheck extends AbstractSuperCheck {
+public enum JavadocContentLocationOption {
 
-    @Override
-    protected String getMethodName() {
-        return "clone";
-    }
+    /**
+     * Represents a policy for the location of content starting from
+     * the same line as {@code /**}.
+     * Example:
+     * <pre>
+     * &#47;** Summary text.
+     *   * More details.
+     *   *&#47;
+     * public void method();
+     * </pre>
+     * This style is also known as "scala" style.
+     */
+    FIRST_LINE,
+
+    /**
+     * Represents a policy for the location of content starting from
+     * the next line after {@code /**}.
+     * Example:
+     * <pre>
+     * &#47;**
+     *  * Summary text.
+     *  * More details.
+     *  *&#47;
+     * public void method();
+     * </pre>
+     * This style is common to java projects.
+     */
+    SECOND_LINE,
 
 }

@@ -134,6 +134,7 @@ blockcommentstyle
 blockquote
 blog
 blogspot
+Bludov
 bluej
 bluejcheckstyle
 BNOT
@@ -627,6 +628,7 @@ jarchitect
 javac
 javadoc
 javadocblocktaglocation
+javadoccontentlocation
 javadocdetailnodeparser
 javadocmethod
 javadocpackage
@@ -994,6 +996,7 @@ pathelement
 patreon
 Paulicke
 paypal
+pbludov
 pdf
 Peclipse
 perl
