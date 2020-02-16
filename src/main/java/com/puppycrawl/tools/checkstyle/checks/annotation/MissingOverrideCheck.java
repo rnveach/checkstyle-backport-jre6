@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -33,8 +33,8 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * <p>
- * Verifies that the &#64;Override annotation is present
- * when the &#64;inheritDoc javadoc tag is present.
+ * Verifies that the {@code @Override} annotation is present
+ * when the {@code @inheritDoc} javadoc tag is present.
  * </p>
  * <p>
  * Rationale: The &#64;Override annotation helps

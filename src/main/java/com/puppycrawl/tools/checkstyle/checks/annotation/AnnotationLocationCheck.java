@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * <p>
- * Check location of annotation on language elements.
+ * Checks location of annotation on language elements.
  * By default, Check enforce to locate annotations immediately after
  * documentation block and before target element, annotation should be located
  * on separate line from target element. This check also verifies that the annotations

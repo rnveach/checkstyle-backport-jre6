@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -794,23 +794,31 @@ public final class Main {
                     final String msg = "Could not find config XML file '%s'.";
                     result.add(String.format(Locale.ROOT, msg, configurationFile));
                 }
-
-                // validate optional parameters
-                if (propertiesFile != null && !propertiesFile.exists()) {
-                    result.add(String.format(Locale.ROOT,
-                            "Could not find file '%s'.", propertiesFile));
-                }
-                if (checkerThreadsNumber < 1) {
-                    result.add("Checker threads number must be greater than zero");
-                }
-                if (treeWalkerThreadsNumber < 1) {
-                    result.add("TreeWalker threads number must be greater than zero");
-                }
+                result.addAll(validateOptionalCliParametersIfConfigDefined());
             }
             else {
                 result.add("Must specify a config XML file.");
             }
 
+            return result;
+        }
+
+        /**
+         * Validates optional command line parameters that might be used with config file.
+         * @return list of violations
+         */
+        private List<String> validateOptionalCliParametersIfConfigDefined() {
+            final List<String> result = new ArrayList<String>();
+            if (propertiesFile != null && !propertiesFile.exists()) {
+                result.add(String.format(Locale.ROOT,
+                        "Could not find file '%s'.", propertiesFile));
+            }
+            if (checkerThreadsNumber < 1) {
+                result.add("Checker threads number must be greater than zero");
+            }
+            if (treeWalkerThreadsNumber < 1) {
+                result.add("TreeWalker threads number must be greater than zero");
+            }
             return result;
         }
     }

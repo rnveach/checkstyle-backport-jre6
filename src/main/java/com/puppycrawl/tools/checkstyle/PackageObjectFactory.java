@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,6 @@
 package com.puppycrawl.tools.checkstyle;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -382,9 +381,7 @@ public class PackageObjectFactory implements ModuleFactory {
 
         if (clazz != null) {
             try {
-                final Constructor<?> declaredConstructor = clazz.getDeclaredConstructor();
-                declaredConstructor.setAccessible(true);
-                instance = declaredConstructor.newInstance();
+                instance = clazz.getDeclaredConstructor().newInstance();
             }
             catch (final Exception ex) {
                 throw new CheckstyleException("Unable to instantiate " + className, ex);
@@ -492,6 +489,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.coding.ArrayTrailingCommaCheck");
         NAME_TO_FULL_MODULE_NAME.put("AvoidInlineConditionalsCheck",
                 BASE_PACKAGE + ".checks.coding.AvoidInlineConditionalsCheck");
+        NAME_TO_FULL_MODULE_NAME.put("AvoidNoArgumentSuperConstructorCallCheck",
+                BASE_PACKAGE + ".checks.coding.AvoidNoArgumentSuperConstructorCallCheck");
         NAME_TO_FULL_MODULE_NAME.put("CovariantEqualsCheck",
                 BASE_PACKAGE + ".checks.coding.CovariantEqualsCheck");
         NAME_TO_FULL_MODULE_NAME.put("DeclarationOrderCheck",
@@ -546,6 +545,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.coding.NestedTryDepthCheck");
         NAME_TO_FULL_MODULE_NAME.put("NoCloneCheck",
                 BASE_PACKAGE + ".checks.coding.NoCloneCheck");
+        NAME_TO_FULL_MODULE_NAME.put("NoEnumTrailingCommaCheck",
+                BASE_PACKAGE + ".checks.coding.NoEnumTrailingCommaCheck");
         NAME_TO_FULL_MODULE_NAME.put("NoFinalizerCheck",
                 BASE_PACKAGE + ".checks.coding.NoFinalizerCheck");
         NAME_TO_FULL_MODULE_NAME.put("OneStatementPerLineCheck",

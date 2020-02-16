@@ -26,7 +26,7 @@
       <p>Since Checkstyle 3.1</p>
       <subsection name="Description" id="AvoidNestedBlocks_Description">
         <p>
-          Finds nested blocks, i.e. blocks that are used freely in the code.
+          Finds nested blocks (blocks that are used freely in the code).
         </p>
 
         <p>
@@ -941,10 +941,10 @@ allowedFuture.addCallback(result -> {
       <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="RightCurly_Description">
         <p>
-          Checks the placement of right curly braces (<code>'}'</code>)
-          for if-else, try-catch-finally blocks, while-loops, for-loops,
+          Checks the placement of right curly braces (<code>'}'</code>) for code blocks.
+          This check supports if-else, try-catch-finally blocks, while-loops, for-loops,
           method definitions, class definitions, constructor definitions,
-          instance, static initialization blocks and annotation definitions.
+          instance, static initialization blocks, annotation definitions and enum definitions.
           For right curly brace of expression blocks please follow issue
           <a href="https://github.com/checkstyle/checkstyle/issues/5945">#5945</a>.
         </p>
@@ -1011,8 +1011,10 @@ allowedFuture.addCallback(result -> {
                   INSTANCE_INIT</a>,
               <a
                href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
-                  ANNOTATION_DEF</a>.</td>
-
+                  ANNOTATION_DEF</a>,
+              <a
+               href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                  ENUM_DEF</a>.</td>
               <td><a
                href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_TRY">
                   LITERAL_TRY</a>,

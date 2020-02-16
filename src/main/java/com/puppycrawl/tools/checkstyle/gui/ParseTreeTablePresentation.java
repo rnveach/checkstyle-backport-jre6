@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -351,16 +351,26 @@ public class ParseTreeTablePresentation {
     /**
      * Gets Javadoc (DetailNode) tree of specified block comments.
      * @param blockComment Javadoc comment as a block comment
-     * @return DetailNode tree
+     * @return root of DetailNode tree
      */
     private DetailNode getJavadocTree(DetailAST blockComment) {
-        DetailNode javadocTree = blockCommentToJavadocTree.get(blockComment);
-        if (javadocTree == null) {
-            javadocTree = new JavadocDetailNodeParser().parseJavadocAsDetailNode(blockComment)
-                    .getTree();
-            blockCommentToJavadocTree.put(blockComment, javadocTree);
+        DetailNode result = blockCommentToJavadocTree.get(blockComment);
+
+        if (result == null) {
+            result = ParseTreeTablePresentation.parseJavadocTree(blockComment);
+            blockCommentToJavadocTree.put(blockComment, result);
         }
-        return javadocTree;
+
+        return result;
+    }
+
+    /**
+     * Parses Javadoc (DetailNode) tree of specified block comments.
+     * @param blockComment Javadoc comment as a block comment
+     * @return root of DetailNode tree
+     */
+    private static DetailNode parseJavadocTree(DetailAST blockComment) {
+        return new JavadocDetailNodeParser().parseJavadocAsDetailNode(blockComment).getTree();
     }
 
 }

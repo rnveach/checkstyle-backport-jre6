@@ -20,6 +20,34 @@ function checkout_from {
 
 case $1 in
 
+sonarqube)
+  # token could be generated at https://sonarcloud.io/account/security/
+  # executon on local:
+  # SONAR_TOKEN=xxxxxx PR=xxxxxx WERCKER_GIT_BRANCH=xxxxxx ./.ci/travis/travis.sh sonarqube
+  if [[ $PR && $PR =~ ^([0-9]*)$ ]]; then
+      SONAR_PR_VARIABLES="-Dsonar.pullrequest.key=$PR"
+      SONAR_PR_VARIABLES+=" -Dsonar.pullrequest.branch=$WERCKER_GIT_BRANCH"
+      SONAR_PR_VARIABLES+=" -Dsonar.pullrequest.base=master"
+      echo "SONAR_PR_VARIABLES: "$SONAR_PR_VARIABLES
+  fi
+  if [[ -z $SONAR_TOKEN ]]; then echo "SONAR_TOKEN is not set"; sleep 5s; exit 1; fi
+  export MAVEN_OPTS='-Xmx2000m'
+  mvn -e -Pno-validations clean package sonar:sonar $SONAR_PR_VARIABLES \
+       -Dsonar.host.url=https://sonarcloud.io \
+       -Dsonar.login=$SONAR_TOKEN \
+       -Dsonar.projectKey=org.checkstyle:checkstyle \
+       -Dsonar.organization=checkstyle
+  echo "report-task.txt:"
+  cat target/sonar/report-task.txt
+  echo "Verification of sonar gate status"
+  checkout_from https://github.com/viesure/blog-sonar-build-breaker.git
+  sed -i'' "s|our.sonar.server|sonarcloud.io|" \
+    .ci-temp/blog-sonar-build-breaker/sonar_break_build.sh
+  export SONAR_API_TOKEN=$SONAR_TOKEN
+  .ci-temp/blog-sonar-build-breaker/sonar_break_build.sh
+  ;;
+
+
 no-error-pgjdbc)
   CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
                      --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
@@ -42,12 +70,12 @@ no-error-orekit)
   git checkout $SHA_HIPPARCHUS
   mvn install -DskipTests
   cd -
-  checkout_from https://github.com/checkstyle/Orekit.git
+  checkout_from https://github.com/CS-SI/Orekit.git
   cd .ci-temp/Orekit
   # no CI is enforced in project, so to make our build stable we should
-  # checkout to latest release/development (annotated tag or hash)
+  # checkout to latest release/development (annotated tag or hash) or sha that have fix we need
   # git checkout $(git describe --abbrev=0 --tags)
-  git checkout cs7329-javadocmethod
+  git checkout "a7e67ce73803c67a""ad90e0b28ed77a7781dc28a9"
   mvn -e compile checkstyle:check -Dorekit.checkstyle.version=${CS_POM_VERSION}
   cd ../
   rm -rf Orekit
@@ -57,9 +85,8 @@ no-error-xwiki)
   CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
                      --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
   echo CS_version: ${CS_POM_VERSION}
-  checkout_from https://github.com/checkstyle/xwiki-commons.git
+  checkout_from https://github.com/xwiki/xwiki-commons.git
   cd .ci-temp/xwiki-commons
-  git checkout cs7329-remove-deprecated-properties
   mvn -f xwiki-commons-tools/xwiki-commons-tool-verification-resources/pom.xml \
     install -DskipTests -Dcheckstyle.version=${CS_POM_VERSION}
   mvn -e test-compile checkstyle:check@default -Dcheckstyle.version=${CS_POM_VERSION}

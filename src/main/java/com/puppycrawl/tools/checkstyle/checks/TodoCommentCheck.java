@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 /**
  * <p>
- * A check for {@code TODO:} comments. Actually it is a generic
+ * Checks for {@code TODO:} comments. Actually it is a generic
  * <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Pattern.html">
  * regular expression</a> matcher on Java comments. To check for other patterns
  * in Java comments, set the {@code format} property.

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -57,7 +57,8 @@ public class MethodCallHandler extends AbstractExpressionHandler {
             // we should increase indentation only if this is the first
             // chained method call which was moved to the next line
             else {
-                indentLevel = new IndentLevel(container.getIndent(), getBasicOffset());
+                indentLevel = new IndentLevel(container.getIndent(),
+                    getIndentCheck().getLineWrappingIndentation());
             }
         }
         else if (getMainAst().getFirstChild().getType() == TokenTypes.LITERAL_NEW) {

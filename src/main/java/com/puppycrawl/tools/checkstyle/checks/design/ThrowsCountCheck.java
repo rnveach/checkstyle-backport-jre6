@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,7 +26,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 /**
  * <p>
- * Restricts throws statements to a specified count (4 by default).
+ * Restricts throws statements to a specified count.
  * Methods with "Override" or "java.lang.Override" annotation are skipped
  * from validation as current class cannot change signature of these methods.
  * </p>

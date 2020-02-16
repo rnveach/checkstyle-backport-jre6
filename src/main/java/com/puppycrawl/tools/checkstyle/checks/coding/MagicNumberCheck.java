@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -431,7 +431,7 @@ public class MagicNumberCheck extends AbstractCheck {
                     final DetailAST paramAST = methodDefAST.findFirstToken(TokenTypes.PARAMETERS);
                     // we are in a 'public int hashCode()' method! The compiler will ensure
                     // the method returns an 'int' and is public.
-                    inHashCodeMethod = paramAST.getChildCount() == 0;
+                    inHashCodeMethod = !paramAST.hasChildren();
                 }
             }
         }

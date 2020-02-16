@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -48,6 +48,11 @@ public class FallThroughTest extends AbstractGoogleModuleTestSupport {
             "369:11: " + msg,
             "372:11: " + msg,
             "374:41: " + msg,
+            "440:15: " + msg,
+            "442:15: " + msg,
+            "444:15: " + msg,
+            "446:15: " + msg,
+            "448:15: " + msg,
         };
 
         final Configuration checkConfig = getModuleConfig("FallThrough");

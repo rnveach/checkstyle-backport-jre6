@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,8 +26,8 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 
 /**
  * <p>
- * Checks that local final variable names conform to a format specified
- * by the format property. A catch parameter and resources in try statements
+ * Checks that local final variable names conform to a specified pattern.
+ *  A catch parameter and resources in try statements
  * are considered to be a local, final variables.
  * </p>
  * <ul>

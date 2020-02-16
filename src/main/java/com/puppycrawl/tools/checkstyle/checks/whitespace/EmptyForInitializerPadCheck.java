@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * <p>
- * Checks the padding of an empty for initializer; that is whether white
+ * Checks the padding of an empty for initializer; that is whether a white
  * space is required at an empty for initializer, or such white space is
  * forbidden.  No check occurs if there is a line wrap at the initializer, as in
  * </p>
@@ -108,7 +108,7 @@ public class EmptyForInitializerPadCheck
 
     @Override
     public void visitToken(DetailAST ast) {
-        if (ast.getChildCount() == 0) {
+        if (!ast.hasChildren()) {
             //empty for initializer. test pad before semi.
             final DetailAST semi = ast.getNextSibling();
             final int semiLineIdx = semi.getLineNo() - 1;

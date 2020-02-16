@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -63,9 +63,20 @@ public final class BlockCommentPosition {
      * @return true if node is before package
      */
     public static boolean isOnPackage(DetailAST blockComment) {
-        final DetailAST nextSibling = blockComment.getNextSibling();
-        return isOnTokenWithAnnotation(blockComment, TokenTypes.PACKAGE_DEF)
-                || nextSibling != null && nextSibling.getType() == TokenTypes.PACKAGE_DEF;
+        boolean result = isOnTokenWithAnnotation(blockComment, TokenTypes.PACKAGE_DEF);
+
+        if (!result) {
+            DetailAST nextSibling = blockComment.getNextSibling();
+
+            while (nextSibling != null
+                    && nextSibling.getType() == TokenTypes.SINGLE_LINE_COMMENT) {
+                nextSibling = nextSibling.getNextSibling();
+            }
+
+            result = nextSibling != null && nextSibling.getType() == TokenTypes.PACKAGE_DEF;
+        }
+
+        return result;
     }
 
     /**
@@ -158,15 +169,21 @@ public final class BlockCommentPosition {
      * @return true if node is before enum constant
      */
     public static boolean isOnEnumConstant(DetailAST blockComment) {
-        final boolean isOnPlainConst = blockComment.getParent() != null
-                && blockComment.getParent().getType() == TokenTypes.ENUM_CONSTANT_DEF
-                && getPrevSiblingSkipComments(blockComment).getType() == TokenTypes.ANNOTATIONS
-                && getPrevSiblingSkipComments(blockComment).getChildCount() == 0;
-        final boolean isOnConstWithAnnotation = !isOnPlainConst && blockComment.getParent() != null
-                && blockComment.getParent().getType() == TokenTypes.ANNOTATION
-                && blockComment.getParent().getParent().getParent().getType()
-                    == TokenTypes.ENUM_CONSTANT_DEF;
-        return isOnPlainConst || isOnConstWithAnnotation;
+        final DetailAST parent = blockComment.getParent();
+        boolean result = false;
+        if (parent != null) {
+            if (parent.getType() == TokenTypes.ENUM_CONSTANT_DEF) {
+                final DetailAST prevSibling = getPrevSiblingSkipComments(blockComment);
+                if (prevSibling.getType() == TokenTypes.ANNOTATIONS && !prevSibling.hasChildren()) {
+                    result = true;
+                }
+            }
+            else if (parent.getType() == TokenTypes.ANNOTATION
+                    && parent.getParent().getParent().getType() == TokenTypes.ENUM_CONSTANT_DEF) {
+                result = true;
+            }
+        }
+        return result;
     }
 
     /**
@@ -191,7 +208,7 @@ public final class BlockCommentPosition {
             int parentTokenType, int nextTokenType) {
         return blockComment.getParent() != null
                 && blockComment.getParent().getType() == parentTokenType
-                && getPrevSiblingSkipComments(blockComment).getChildCount() == 0
+                && !getPrevSiblingSkipComments(blockComment).hasChildren()
                 && getNextSiblingSkipComments(blockComment).getType() == nextTokenType;
     }
 
@@ -240,7 +257,7 @@ public final class BlockCommentPosition {
                     || parent.getType() == TokenTypes.TYPE_PARAMETERS)
                 && parent.getParent().getType() == memberType
                 // previous parent sibling is always TokenTypes.MODIFIERS
-                && parent.getPreviousSibling().getChildCount() == 0
+                && !parent.getPreviousSibling().hasChildren()
                 && parent.getParent().getParent().getType() == TokenTypes.OBJBLOCK;
     }
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -96,12 +96,11 @@ public class CodeSelectorPresentation {
     private void findSelectionPositions(DetailAST ast) {
         selectionStart = lines2position.get(ast.getLineNo()) + ast.getColumnNo();
 
-        if (ast.getChildCount() == 0
-                && TokenUtil.getTokenName(ast.getType()).equals(ast.getText())) {
-            selectionEnd = selectionStart;
+        if (ast.hasChildren() || !TokenUtil.getTokenName(ast.getType()).equals(ast.getText())) {
+            selectionEnd = findLastPosition(ast);
         }
         else {
-            selectionEnd = findLastPosition(ast);
+            selectionEnd = selectionStart;
         }
     }
 
@@ -123,12 +122,12 @@ public class CodeSelectorPresentation {
      */
     private int findLastPosition(final DetailAST astNode) {
         final int lastPosition;
-        if (astNode.getChildCount() == 0) {
-            lastPosition = lines2position.get(astNode.getLineNo()) + astNode.getColumnNo()
-                    + astNode.getText().length();
+        if (astNode.hasChildren()) {
+            lastPosition = findLastPosition(astNode.getLastChild());
         }
         else {
-            lastPosition = findLastPosition(astNode.getLastChild());
+            lastPosition = lines2position.get(astNode.getLineNo()) + astNode.getColumnNo()
+                    + astNode.getText().length();
         }
         return lastPosition;
     }

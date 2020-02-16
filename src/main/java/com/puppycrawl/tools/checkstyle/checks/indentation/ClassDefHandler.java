@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -68,7 +68,10 @@ public class ClassDefHandler extends BlockParentHandler {
     @Override
     public void checkIndentation() {
         final DetailAST modifiers = getMainAst().findFirstToken(TokenTypes.MODIFIERS);
-        if (modifiers.getChildCount() == 0) {
+        if (modifiers.hasChildren()) {
+            checkModifiers();
+        }
+        else {
             if (getMainAst().getType() != TokenTypes.ANNOTATION_DEF) {
                 final DetailAST ident = getMainAst().findFirstToken(TokenTypes.IDENT);
                 final int lineStart = getLineStart(ident);
@@ -76,9 +79,6 @@ public class ClassDefHandler extends BlockParentHandler {
                     logError(ident, "ident", lineStart);
                 }
             }
-        }
-        else {
-            checkModifiers();
         }
         if (getMainAst().getType() == TokenTypes.ANNOTATION_DEF) {
             final DetailAST atAst = getMainAst().findFirstToken(TokenTypes.AT);

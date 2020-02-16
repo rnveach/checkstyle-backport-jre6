@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -214,8 +214,8 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
                     // This ensures we pick up the correct file based on its name and the
                     // number of children it has.
                     return !"file".equals(expected.getNodeName())
-                            || expected.getAttributes().getNamedItem("name").getNodeValue()
-                                    .equals(actual.getAttributes().getNamedItem("name").getNodeValue())
+                            || XmlUtil.getNameAttributeOfNode(expected)
+                                .equals(XmlUtil.getNameAttributeOfNode(actual))
                             && XmlUtil.getChildrenElements(expected).size() == XmlUtil
                                     .getChildrenElements(actual).size();
                 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -19,10 +19,14 @@
 
 package com.google.checkstyle.test.chapter4formatting.rule4841indentation;
 
+import static com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck.MSG_CHILD_ERROR;
+import static com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck.MSG_ERROR;
+
 import org.junit.Test;
 
 import com.google.checkstyle.test.base.AbstractIndentationTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class IndentationTest extends AbstractIndentationTestSupport {
@@ -104,6 +108,33 @@ public class IndentationTest extends AbstractIndentationTestSupport {
 
         final Configuration checkConfig = getModuleConfig("Indentation");
         final String filePath = getPath("InputIndentationCorrectWhileDoWhileAndParameter.java");
+
+        final Integer[] warnList = getLinesWithWarn(filePath);
+        verify(checkConfig, filePath, expected, warnList);
+    }
+
+    @Test
+    public void testCorrectChained() throws Exception {
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        final Configuration checkConfig = getModuleConfig("Indentation");
+        final String filePath = getPath("ClassWithChainedMethodsCorrect.java");
+
+        final Integer[] warnList = getLinesWithWarn(filePath);
+        verify(checkConfig, filePath, expected, warnList);
+    }
+
+    @Test
+    public void testWarnChained() throws Exception {
+        final String[] expected = {
+            "18: " + getCheckMessage(IndentationCheck.class, MSG_CHILD_ERROR, "method call", 4, 8),
+            "23: " + getCheckMessage(IndentationCheck.class, MSG_ERROR, ".", 4, 8),
+            "24: " + getCheckMessage(IndentationCheck.class, MSG_ERROR, ".", 4, 8),
+            "27: " + getCheckMessage(IndentationCheck.class, MSG_ERROR, "new", 4, 8),
+        };
+
+        final Configuration checkConfig = getModuleConfig("Indentation");
+        final String filePath = getPath("ClassWithChainedMethods.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
         verify(checkConfig, filePath, expected, warnList);

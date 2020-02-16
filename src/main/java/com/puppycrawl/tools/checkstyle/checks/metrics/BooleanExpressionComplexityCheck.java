@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -30,8 +30,8 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 
 /**
  * <p>
- * Restrict the number of {@code &amp;&amp;}, {@code ||}, {@code &amp;}, {@code |} and
- * {@code ^} in an expression.
+ * Restricts the number of boolean operators ({@code &amp;&amp;}, {@code ||},
+ * {@code &amp;}, {@code |} and {@code ^}) in an expression.
  * </p>
  * <p>
  * Rationale: Too many conditions leads to code that is difficult to read

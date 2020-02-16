@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * <p>
- * Checks the policy on the padding of parentheses; i.e. whether a space is required
+ * Checks the policy on the padding of parentheses; that is whether a space is required
  * after a left parenthesis and before a right parenthesis, or such spaces are
  * forbidden. No check occurs at the right parenthesis after an empty for
  * iterator, at the left parenthesis before an empty for initialization, or at
@@ -328,7 +328,7 @@ public class ParenPadCheck extends AbstractParenPadCheck {
         if (parent.findFirstToken(TokenTypes.FOR_EACH_CLAUSE) == null) {
             final DetailAST forIterator =
                 parent.findFirstToken(TokenTypes.FOR_ITERATOR);
-            result = forIterator.getChildCount() == 0;
+            result = !forIterator.hasChildren();
         }
         return result;
     }
@@ -345,7 +345,7 @@ public class ParenPadCheck extends AbstractParenPadCheck {
         if (parent.findFirstToken(TokenTypes.FOR_EACH_CLAUSE) == null) {
             final DetailAST forIterator =
                     parent.findFirstToken(TokenTypes.FOR_INIT);
-            result = forIterator.getChildCount() == 0;
+            result = !forIterator.hasChildren();
         }
         return result;
     }

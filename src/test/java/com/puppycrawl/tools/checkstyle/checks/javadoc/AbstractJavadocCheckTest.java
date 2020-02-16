@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -451,7 +451,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
         verify(checkConfig, getPath("InputAbstractJavadocNonTightHtmlTags2.java"), expected);
     }
 
-    private static class TempCheck extends AbstractJavadocCheck {
+    public static class TempCheck extends AbstractJavadocCheck {
 
         @Override
         public int[] getDefaultJavadocTokens() {
@@ -465,7 +465,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
 
     }
 
-    private static class JavadocCatchCheck extends AbstractJavadocCheck {
+    public static class JavadocCatchCheck extends AbstractJavadocCheck {
 
         private static int javadocsNumber;
 
@@ -489,7 +489,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
 
     }
 
-    private static class RequiredTokenIsNotInDefaultsJavadocCheck extends AbstractJavadocCheck {
+    public static class RequiredTokenIsNotInDefaultsJavadocCheck extends AbstractJavadocCheck {
 
         @Override
         public int[] getRequiredJavadocTokens() {
@@ -513,7 +513,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
 
     }
 
-    private static class TokenIsNotInAcceptablesJavadocCheck extends AbstractJavadocCheck {
+    public static class TokenIsNotInAcceptablesJavadocCheck extends AbstractJavadocCheck {
 
         @Override
         public int[] getRequiredJavadocTokens() {
@@ -537,7 +537,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
 
     }
 
-    private static class JavadocVisitLeaveCheck extends AbstractJavadocCheck {
+    public static class JavadocVisitLeaveCheck extends AbstractJavadocCheck {
 
         private static int visitCount;
         private static int leaveCount;

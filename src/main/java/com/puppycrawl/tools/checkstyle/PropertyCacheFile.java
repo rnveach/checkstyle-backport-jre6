@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -150,13 +150,12 @@ public final class PropertyCacheFile {
         if (directory != null) {
             Files7.createDirectories(directory);
         }
-        OutputStream out = null;
+        final OutputStream out = Files7.newOutputStream(path);
         try {
-            out = Files7.newOutputStream(path);
             details.store(out, null);
         }
         finally {
-            flushAndCloseOutStream(out);
+            out.close();
         }
     }
 
@@ -166,18 +165,6 @@ public final class PropertyCacheFile {
     public void reset() {
         details.clear();
         details.setProperty(CONFIG_HASH_KEY, configHash);
-    }
-
-    /**
-     * Flushes and closes output stream.
-     * @param stream the output stream
-     * @throws IOException  when there is a problems with file flush and close
-     */
-    private static void flushAndCloseOutStream(OutputStream stream) throws IOException {
-        if (stream != null) {
-            stream.flush();
-            stream.close();
-        }
     }
 
     /**
@@ -260,7 +247,7 @@ public final class PropertyCacheFile {
             oos.writeObject(object);
         }
         finally {
-            flushAndCloseOutStream(oos);
+            oos.close();
         }
     }
 

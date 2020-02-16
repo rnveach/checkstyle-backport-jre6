@@ -161,7 +161,7 @@ public class MyClass {
       <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="AvoidEscapedUnicodeCharacters_Description">
         <p>
-          Restrict using
+          Restricts using
           <a href = "https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.3">
           Unicode escapes</a> (such as \u221e).
           It is possible to allow using escapes for
@@ -943,7 +943,7 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
       <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="FinalParameters_Description">
         <p>
-          Check that parameters for methods, constructors, catch and for-each blocks are
+          Checks that parameters for methods, constructors, catch and for-each blocks are
           final. Interface, abstract, and native methods are not checked: the final
           keyword does not make sense for interface, abstract, and native method
           parameters as there is no code that could modify the parameter.
@@ -1084,6 +1084,30 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
           times it is practical experience. In any case, this check should
           just ensure that a minimal set of indentation rules is followed.
         </p>
+        <p>
+          Basic offset indentation is used for indentation inside code blocks.
+          For any lines that span more than 1, line wrapping indentation is used for those
+          lines after the first.
+          Brace adjustment, case, and throws indentations are all used only if those specific
+          identifiers start the line. If, for example, a brace is used in the middle of the line,
+          its indentation will not take effect.
+          All indentations have an accumulative/recursive effect when they are triggered. If
+          during a line wrapping, another code block is found and it doesn't end on that same
+          line, then the subsequent lines afterwards, in that new code block, are increased on
+          top of the line wrap and any indentations above it.
+        </p>
+        <p>Example:</p>
+        <source>
+if ((condition1 &amp;&amp; condition2)
+        || (condition3 &amp;&amp; condition4)    // line wrap with bigger indentation
+        ||!(condition5 &amp;&amp; condition6)) { // line wrap with bigger indentation
+  field.doSomething()                    // basic offset
+      .doSomething()                     // line wrap
+      .doSomething( c -> {               // line wrap
+        return c.doSome();               // basic offset
+      });
+}
+        </source>
       </subsection>
 
       <subsection name="Properties" id="Indentation_Properties">
@@ -1157,12 +1181,44 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 
       <subsection name="Examples" id="Indentation_Examples">
         <p>
-          To configure the check:
+          To configure the check for default behavior:
         </p>
         <source>
 &lt;module name=&quot;Indentation&quot;/&gt;
         </source>
-
+        <p>
+          Example of Compliant code for default configuration
+          (in comment name of property that controls indentations):
+        </p>
+        <source>
+class Test {
+    String field;               // basicOffset
+    int[] arr = {               // basicOffset
+        5,                      // arrayInitIndent
+        6 };                    // arrayInitIndent
+    void bar() throws Exception // basicOffset
+    {                           // braceAdjustment
+        foo();                  // basicOffset
+    }                           // braceAdjustment
+    void foo() {                // basicOffset
+        if ((cond1 &amp;&amp; cond2)    // basicOffset
+                  || (cond3 &amp;&amp; cond4)    // lineWrappingIndentation, forceStrictCondition
+                  ||!(cond5 &amp;&amp; cond6)) { // lineWrappingIndentation, forceStrictCondition
+            field.doSomething()          // basicOffset
+                .doSomething()           // lineWrappingIndentation and forceStrictCondition
+                .doSomething( c -> {     // lineWrappingIndentation and forceStrictCondition
+                    return c.doSome();   // basicOffset
+                });
+        }
+    }
+    void fooCase()                // basicOffset
+        throws Exception {        // throwsIndent
+        switch (field) {          // basicOffset
+            case "value" : bar(); // caseIndent
+        }
+    }
+}
+        </source>
         <p>
           To configure the check to enforce the indentation style recommended by
           Oracle:
@@ -1174,6 +1230,17 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
         <p>
+          Example of Compliant code for default configuration
+          (in comment name of property that controls indentation):
+        </p>
+        <source>
+void fooCase() {          // basicOffset
+    switch (field) {      // basicOffset
+    case "value" : bar(); // caseIndent
+    }
+}
+        </source>
+        <p>
           To configure the Check to enforce strict condition in line-wrapping validation.
         </p>
         <source>
@@ -1182,18 +1249,49 @@ String unitAbbrev = "\u03bc\u03bc\u03bc";
 &lt;/module&gt;
         </source>
         <p>
-          Such config doesn't allow next cases:
+          Such config doesn't allow next cases
+          even code is aligned further to the right for better reading:
         </p>
         <source>
 void foo(String aFooString,
-        int aFooInt) {} // indent:8 ; expected: 4; warn, because 8 != 4
+        int aFooInt) { // indent:8 ; expected: 4; violation, because 8 != 4
+    if (cond1
+        || cond2) {
+        field.doSomething()
+            .doSomething();
+    }
+    if ((cond1 &amp;&amp; cond2)
+              || (cond3 &amp;&amp; cond4)    // violation
+              ||!(cond5 &amp;&amp; cond6)) { // violation
+        field.doSomething()
+             .doSomething()          // violation
+             .doSomething( c -> {    // violation
+                 return c.doSome();
+            });
+    }
+}
         </source>
         <p>
           But if forceStrictCondition = false, this code is valid:
         </p>
         <source>
 void foo(String aFooString,
-        int aFooInt) {} // indent:8 ; expected: > 4; ok, because 8 > 4
+        int aFooInt) { // indent:8 ; expected: > 4; ok, because 8 > 4
+    if (cond1
+        || cond2) {
+        field.doSomething()
+            .doSomething();
+    }
+    if ((cond1 &amp;&amp; cond2)
+              || (cond3 &amp;&amp; cond4)
+              ||!(cond5 &amp;&amp; cond6)) {
+        field.doSomething()
+             .doSomething()
+             .doSomething( c -> {
+                 return c.doSome();
+            });
+    }
+}
         </source>
       </subsection>
 
@@ -1583,7 +1681,7 @@ key.png =value - violation
       <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="TodoComment_Description">
         <p>
-          A check for <code>TODO:</code> comments. Actually
+          Checks for <code>TODO:</code> comments. Actually
           it is a generic
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Pattern.html">
           regular
@@ -1831,8 +1929,7 @@ d = e / f;        // Another comment for this line
       <p>Since Checkstyle 3.0</p>
       <subsection name="Description" id="Translation_Description">
         <p>
-          A <a href="config.html#Overview">FileSetCheck</a> that ensures
-          the correct translation of code by checking property files for
+          Ensures the correct translation of code by checking property files for
           consistency regarding their keys. Two property files
           describing one and the same context are consistent if they
           contain the same keys. TranslationCheck also can check an existence of required
@@ -2039,15 +2136,15 @@ messages_home_fr_CA_UNIX.properties
       <p>Since Checkstyle 3.2</p>
       <subsection name="Description" id="UncommentedMain_Description">
         <p>
-          Checks for uncommented main() methods.
+          Detects uncommented <code>main</code> methods.
         </p>
 
         <p>
-          Rationale: A main() method is often used for debugging
+          Rationale: A <code>main</code> method is often used for debugging
           purposes. When debugging is finished, developers often forget
           to remove the method, which changes the API and increases the
           size of the resulting class or JAR file. With the exception of
-          the real program entry points, all main() methods should be
+          the real program entry points, all <code>main</code> methods should be
           removed or commented out of the sources.
         </p>
       </subsection>
@@ -2065,7 +2162,7 @@ messages_home_fr_CA_UNIX.properties
             <tr>
               <td>excludedClasses</td>
               <td>Specify pattern for qualified names of classes which are allowed
-              to have a main method.</td>
+              to have a <code>main</code> method.</td>
               <td><a href="property_types.html#regexp">Regular Expression</a></td>
               <td><code>"^$" (empty)</code></td>
               <td>3.2</td>
@@ -2132,7 +2229,7 @@ messages_home_fr_CA_UNIX.properties
       <p>Since Checkstyle 5.7</p>
       <subsection name="Description" id="UniqueProperties_Description">
         <p>
-          Checks properties files for duplicate property keys.
+          Detects duplicated keys in properties files.
         </p>
         <p>
           Rationale: Multiple property keys usually appear after merge

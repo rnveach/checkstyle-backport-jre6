@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -94,6 +94,15 @@ public class InvalidJavadocPositionCheckTest extends AbstractModuleTestSupport {
             "1:1: " + getCheckMessage(MSG_KEY),
         };
         verify(checkConfig, getPath("package-info.java"), expected);
+    }
+
+    @Test
+    public void testPackageInfoComment() throws Exception {
+        final Configuration checkConfig = createModuleConfig(InvalidJavadocPositionCheck.class);
+        final String[] expected = {
+            "1:1: " + getCheckMessage(MSG_KEY),
+        };
+        verify(checkConfig, getPath("comment/package-info.java"), expected);
     }
 
 }

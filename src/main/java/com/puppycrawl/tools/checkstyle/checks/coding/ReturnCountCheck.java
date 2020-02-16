@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -30,8 +30,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 /**
  * <p>
- * Restricts the number of return statements in methods, constructors and lambda expressions
- * (2 by default). Ignores specified methods ({@code equals()} by default).
+ * Restricts the number of return statements in methods, constructors and lambda expressions.
+ * Ignores specified methods ({@code equals} by default).
  * </p>
  * <p>
  * <b>max</b> property will only check returns in methods and lambdas that

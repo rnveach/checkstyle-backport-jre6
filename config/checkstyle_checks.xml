@@ -266,6 +266,7 @@
       <property name="tokens" value="LITERAL_IF"/>
       <property name="tokens" value="LITERAL_TRY"/>
       <property name="tokens" value="ANNOTATION_DEF"/>
+      <property name="tokens" value="ENUM_DEF"/>
       <property name="option" value="alone"/>
     </module>
     <module name="RightCurly">
@@ -297,6 +298,7 @@
     <!-- Coding -->
     <module name="ArrayTrailingComma"/>
     <module name="AvoidInlineConditionals"/>
+    <module name="AvoidNoArgumentSuperConstructorCall"/>
     <module name="CovariantEquals"/>
     <module name="DeclarationOrder"/>
     <module name="DefaultComesLast"/>
@@ -371,6 +373,11 @@
       <property name="severity" value="ignore"/>
     </module>
     <module name="NoClone"/>
+    <module name="NoEnumTrailingComma">
+      <!-- This Check is conflicting with our vision of code
+           to be same as ArrayTrailingComma requires it -->
+      <property name="severity" value="ignore"/>
+    </module>
     <module name="NoFinalizer"/>
     <module name="OneStatementPerLine"/>
     <module name="OverloadMethodsDeclarationOrder"/>

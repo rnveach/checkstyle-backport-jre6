@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 /**
  * <p>
  * Checks the padding of an empty for iterator; that is whether a white
- * space is required at an empty for iterator, or such white spaces are
+ * space is required at an empty for iterator, or such white space is
  * forbidden. No check occurs if there is a line wrap at the iterator, as in
  * </p>
  * <pre>
@@ -108,7 +108,7 @@ public class EmptyForIteratorPadCheck
 
     @Override
     public void visitToken(DetailAST ast) {
-        if (ast.getChildCount() == 0) {
+        if (!ast.hasChildren()) {
             //empty for iterator. test pad after semi.
             final DetailAST semi = ast.getPreviousSibling();
             final String line = getLines()[semi.getLineNo() - 1];

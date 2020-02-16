@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,10 +31,10 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * <p>
- * Checks the placement of right curly braces (<code>'}'</code>)
- * for if-else, try-catch-finally blocks, while-loops, for-loops,
+ * Checks the placement of right curly braces ({@code '}'}) for code blocks. This check supports
+ * if-else, try-catch-finally blocks, while-loops, for-loops,
  * method definitions, class definitions, constructor definitions,
- * instance, static initialization blocks and annotation definitions.
+ * instance, static initialization blocks, annotation definitions and enum definitions.
  * For right curly brace of expression blocks please follow issue
  * <a href="https://github.com/checkstyle/checkstyle/issues/5945">#5945</a>.
  * </p>
@@ -143,6 +143,7 @@ public class RightCurlyCheck extends AbstractCheck {
             TokenTypes.STATIC_INIT,
             TokenTypes.INSTANCE_INIT,
             TokenTypes.ANNOTATION_DEF,
+            TokenTypes.ENUM_DEF,
         };
     }
 
@@ -337,6 +338,15 @@ public class RightCurlyCheck extends AbstractCheck {
      */
     private static final class Details {
 
+        /**
+         * Token types that identify tokens that will never have SLIST in their AST.
+         */
+        private static final int[] TOKENS_WITH_NO_CHILD_SLIST = {
+            TokenTypes.CLASS_DEF,
+            TokenTypes.ENUM_DEF,
+            TokenTypes.ANNOTATION_DEF,
+        };
+
         /** Right curly. */
         private final DetailAST rcurly;
         /** Left curly. */
@@ -455,7 +465,7 @@ public class RightCurlyCheck extends AbstractCheck {
 
         /**
          * Collects validation details for CLASS_DEF, METHOD DEF, CTOR_DEF, STATIC_INIT,
-         * INSTANCE_INIT and ANNOTATION_DEF.
+         * INSTANCE_INIT, ANNOTATION_DEF and ENUM_DEF.
          * @param ast a {@code DetailAST} value
          * @return an object containing all details to make a validation
          */
@@ -463,7 +473,7 @@ public class RightCurlyCheck extends AbstractCheck {
             DetailAST rcurly = null;
             final DetailAST lcurly;
             final int tokenType = ast.getType();
-            if (tokenType == TokenTypes.CLASS_DEF || tokenType == TokenTypes.ANNOTATION_DEF) {
+            if (isTokenWithNoChildSlist(tokenType)) {
                 final DetailAST child = ast.getLastChild();
                 lcurly = child.getFirstChild();
                 rcurly = child.getLastChild();
@@ -476,6 +486,23 @@ public class RightCurlyCheck extends AbstractCheck {
                 }
             }
             return new Details(lcurly, rcurly, getNextToken(ast), true);
+        }
+
+        /**
+         * Tests whether the provided tokenType will never have a SLIST as child in its AST.
+         * Like CLASS_DEF, ANNOTATION_DEF etc.
+         * @param tokenType the tokenType to test against.
+         * @return weather provided tokenType is definition token.
+         */
+        private static boolean isTokenWithNoChildSlist(int tokenType) {
+            boolean result = false;
+            for (int token : TOKENS_WITH_NO_CHILD_SLIST) {
+                if (token == tokenType) {
+                    result = true;
+                    break;
+                }
+            }
+            return result;
         }
 
         /**

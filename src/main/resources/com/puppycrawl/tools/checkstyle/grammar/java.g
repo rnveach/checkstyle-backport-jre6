@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2014  Oliver Burn
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -16,6 +16,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
+
 header {
 package com.puppycrawl.tools.checkstyle.grammar;
 
@@ -256,6 +257,14 @@ typeSpec[boolean addImagNode]
     | builtInTypeSpec[addImagNode]
     ;
 
+// A type specification for a variable length parameter is a type name with
+// possible brackets afterwards that can end with annotations.
+variableLengthParameterTypeSpec
+    :   (classOrInterfaceType[false] | builtInType)
+        ({LA(1) == AT}? annotations | )
+        (lb:LBRACK^ {#lb.setType(ARRAY_DECLARATOR);} RBRACK ({LA(1) == AT}? annotations | ))*
+    ;
+
 // A class type specification is a class type with either:
 // - possible brackets afterwards
 //   (which would make it an array type).
@@ -386,8 +395,8 @@ builtInTypeSpec[boolean addImagNode]
 // A type name. which is either a (possibly qualified and parameterized)
 // class name or a primitive (builtin) type
 type
-    :    classOrInterfaceType[false]
-    |    builtInType
+    :    ({LA(1) == AT}? annotations | )
+         (classOrInterfaceType[false] | builtInType)
     ;
 
 /** A declaration is the creation of a reference or primitive-type variable
@@ -892,9 +901,11 @@ variableDeclarator![AST mods, AST t]
         {#variableDeclarator = #(#[VARIABLE_DEF,"VARIABLE_DEF"], mods, #(#[TYPE,"TYPE"],d), id, v);}
     ;
 
-declaratorBrackets[AST typ]
-    :    {#declaratorBrackets=typ;}
-        (lb:LBRACK^ {#lb.setType(ARRAY_DECLARATOR);} RBRACK)*
+declaratorBrackets![AST typ]
+    :    ({LA(1) == AT}? an:annotations | ) lb:LBRACK {#lb.setType(ARRAY_DECLARATOR);} rb:RBRACK
+         db:declaratorBrackets[#(lb, typ, an, rb)]
+        {#declaratorBrackets = #db;}
+    |   {#declaratorBrackets = typ;}
     ;
 
 varInitializer
@@ -968,7 +979,7 @@ parameterDeclarationList
     ;
 
 variableLengthParameterDeclaration!
-    :    pm:parameterModifier t:typeSpec[false] td:ELLIPSIS IDENT
+    :    pm:parameterModifier t:variableLengthParameterTypeSpec td:ELLIPSIS IDENT
         pd:declaratorBrackets[#t]
         {#variableLengthParameterDeclaration = #(#[PARAMETER_DEF,"PARAMETER_DEF"],
                                                 pm, #([TYPE,"TYPE"],pd), td, IDENT);}
@@ -1591,6 +1602,7 @@ newArrayDeclarator
                 warnWhenFollowAmbig = false;
             }
         :
+            ({LA(1) == AT}? annotations | )
             lb:LBRACK^ {#lb.setType(ARRAY_DECLARATOR);}
                 (expression)?
             RBRACK

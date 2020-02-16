@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -103,8 +103,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
 
             for (int position = 0; position < sources.getLength(); position++) {
                 final Node section = sources.item(position);
-                final String sectionName = section.getAttributes().getNamedItem("name")
-                        .getNodeValue();
+                final String sectionName = XmlUtil.getNameAttributeOfNode(section);
 
                 if ("Content".equals(sectionName) || "Overview".equals(sectionName)) {
                     continue;
@@ -150,8 +149,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                 continue;
             }
 
-            final String subSectionName = subSection.getAttributes().getNamedItem("name")
-                    .getNodeValue();
+            final String subSectionName = XmlUtil.getNameAttributeOfNode(subSection);
 
             examineCheckSubSection(subSection, subSectionName);
         }
@@ -294,7 +292,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         }
 
         if (sanitize) {
-            result.append(sanitizeXml(node.getTextContent()));
+            result.append(XmlUtil.sanitizeXml(node.getTextContent()));
         }
         else {
             result.append(getNodeText(node));
@@ -389,12 +387,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         return result.toString();
     }
 
-    private static String sanitizeXml(String nodeValue) {
-        return nodeValue.replaceAll("^[\\r\\n\\s]+", "").replaceAll("[\\r\\n\\s]+$", "")
-                .replace("<", "&lt;").replace(">", "&gt;");
-    }
-
-    private static class JavaDocCapture extends AbstractCheck {
+    public static class JavaDocCapture extends AbstractCheck {
         private static final Pattern SETTER_PATTERN = Pattern.compile("^set[A-Z].*");
 
         @Override

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,8 +31,8 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * <p>
- * This check allows you to specify what warnings that
- * &#64;SuppressWarnings is not allowed to suppress.
+ * Allows to specify what warnings that
+ * {@code @SuppressWarnings} is not allowed to suppress.
  * You can also specify a list of TokenTypes that
  * the configured warning(s) cannot be suppressed on.
  * </p>

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,7 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 
 /**
  * <p>
- * A check for detecting that matches across multiple lines. Works with any file type.
+ * Checks that a specified pattern matches across multiple lines in any file type.
  * </p>
  * <p>
  * Rationale: This check can be used to when the regular expression can be span multiple lines.

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -343,7 +343,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
      * Leaves ternary operator (?:) and return tokens.
      */
     private void leaveUnitaryOperator() {
-        if (!afterValues.pop()) {
+        if (Boolean.FALSE.equals(afterValues.pop())) {
             final Values valuePair = popValue();
             BigInteger basicRangeValue = valuePair.getRangeValue();
             BigInteger expressionValue = valuePair.getExpressionValue();

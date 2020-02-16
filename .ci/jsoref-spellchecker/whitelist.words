@@ -91,6 +91,7 @@ avgt
 avoidescapedunicodecharacters
 avoidinlineconditionals
 avoidnestedblocks
+avoidnoargumentsuperconstructorcall
 avoidstarimport
 avoidstaticimport
 awt
@@ -599,6 +600,7 @@ innerassignment
 Innerclass
 INNERR
 innertypelast
+inplace
 instanceof
 Intelli
 intellij
@@ -721,6 +723,7 @@ JToggle
 JTool
 jtree
 junit
+junitpioneer
 jvm
 jxr
 kailasam
@@ -892,6 +895,7 @@ nocstylearray
 nodeps
 NODESET
 noembed
+noenumtrailingcomma
 noerr
 nofinalizer
 NOI
@@ -1050,6 +1054,7 @@ pubconstr
 pubifc
 PUBLI
 pubpub
+pullrequest
 puppycrawl
 pw
 pwd
@@ -1197,6 +1202,7 @@ standalone
 staticvariablename
 Stdlib
 stdout
+stedolan
 stefanbirkner
 stemp
 stevewall
@@ -1260,6 +1266,7 @@ tfoot
 thead
 thesummaryfragment
 thetaphi
+thr
 throwable
 throwscount
 Thymeleaf
@@ -1341,6 +1348,7 @@ verticalwhitespace
 Vetrenko
 Veyor
 Vfs
+viesure
 viewcvs
 visibilitymodifier
 visualstudio

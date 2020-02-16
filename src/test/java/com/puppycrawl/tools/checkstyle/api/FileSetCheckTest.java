@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -58,7 +58,7 @@ public class FileSetCheckTest
                 "FileContent should be available during finishProcessing() call");
     }
 
-    private static class TestFileSetCheck extends AbstractFileSetCheck {
+    public static class TestFileSetCheck extends AbstractFileSetCheck {
 
         private static boolean destroyed;
         private static boolean fileContentAvailable;

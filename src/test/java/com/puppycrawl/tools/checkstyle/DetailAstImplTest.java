@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle;
 
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -135,6 +136,20 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
         assertNull(firstLevelA.getPreviousSibling(), "Previous sibling should be null");
         assertNull(secondLevelA.getPreviousSibling(), "Previous sibling should be null");
         assertEquals(firstLevelA, firstLevelB.getPreviousSibling(), "Invalid previous sibling");
+    }
+
+    @Test
+    public void testHasChildren() {
+        final DetailAstImpl root = new DetailAstImpl();
+        final DetailAstImpl child = new DetailAstImpl();
+        root.setFirstChild(child);
+
+        assertWithMessage("Root node should have children")
+                .that(root.hasChildren())
+                .isTrue();
+        assertWithMessage("Child node should have no children")
+                .that(child.hasChildren())
+                .isFalse();
     }
 
     @Test

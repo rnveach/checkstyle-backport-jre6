@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -561,11 +561,8 @@ public class CustomImportOrderCheck extends AbstractCheck {
             final String fullImportIdent = importObject.getImportFullPath();
 
             if (importGroup.equals(currentGroup)) {
-                if (isSeparatedByExtraEmptyLine(previousImportObjectFromCurrentGroup,
-                                                importObject)) {
-                    log(importObject.getStartLineNumber(), MSG_SEPARATED_IN_GROUP,
-                            fullImportIdent);
-                }
+                validateExtraEmptyLine(previousImportObjectFromCurrentGroup,
+                        importObject, fullImportIdent);
                 if (isAlphabeticalOrderBroken(previousImportFromCurrentGroup, fullImportIdent)) {
                     log(importObject.getStartLineNumber(), MSG_LEX,
                             fullImportIdent, previousImportFromCurrentGroup);
@@ -580,10 +577,8 @@ public class CustomImportOrderCheck extends AbstractCheck {
                 if (customImportOrderRules.size() > currentGroupNumber + 1) {
                     final String nextGroup = getNextImportGroup(currentGroupNumber + 1);
                     if (importGroup.equals(nextGroup)) {
-                        if (isEmptyLineMissed(previousImportObjectFromCurrentGroup, importObject)) {
-                            log(importObject.getStartLineNumber(), MSG_LINE_SEPARATOR,
-                                    fullImportIdent);
-                        }
+                        validateMissedEmptyLine(previousImportObjectFromCurrentGroup,
+                                importObject, fullImportIdent);
                         currentGroup = nextGroup;
                         currentGroupNumber = customImportOrderRules.indexOf(nextGroup);
                         previousImportFromCurrentGroup = fullImportIdent;
@@ -599,6 +594,32 @@ public class CustomImportOrderCheck extends AbstractCheck {
                             importGroup, currentGroup, fullImportIdent);
                 }
             }
+        }
+    }
+
+    /**
+     * Log violation if empty line is missed.
+     * @param previousImport previous import from current group.
+     * @param importObject current import.
+     * @param fullImportIdent full import identifier.
+     */
+    private void validateMissedEmptyLine(ImportDetails previousImport,
+                                         ImportDetails importObject, String fullImportIdent) {
+        if (isEmptyLineMissed(previousImport, importObject)) {
+            log(importObject.getStartLineNumber(), MSG_LINE_SEPARATOR, fullImportIdent);
+        }
+    }
+
+    /**
+     * Log violation if extra empty line is present.
+     * @param previousImport previous import from current group.
+     * @param importObject current import.
+     * @param fullImportIdent full import identifier.
+     */
+    private void validateExtraEmptyLine(ImportDetails previousImport,
+                                        ImportDetails importObject, String fullImportIdent) {
+        if (isSeparatedByExtraEmptyLine(previousImport, importObject)) {
+            log(importObject.getStartLineNumber(), MSG_SEPARATED_IN_GROUP, fullImportIdent);
         }
     }
 

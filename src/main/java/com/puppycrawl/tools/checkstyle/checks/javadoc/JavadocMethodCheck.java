@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -746,7 +746,7 @@ public class JavadocMethodCheck extends AbstractCheck {
      * on any deep level.
      * @param root    DetailAST
      * @param astType value of TokenType
-     * @return {@link Optional} of {@link DetailAST} node which matches the predicate.
+     * @return {@link List} of {@link DetailAST} nodes which matches the predicate.
      */
     public static List<DetailAST> findTokensInAstByType(DetailAST root, int astType) {
         final List<DetailAST> result = new ArrayList<DetailAST>();

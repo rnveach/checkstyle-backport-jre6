@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -519,7 +519,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         verify(checkerConfig, filePath, expected);
     }
 
-    private static class BadJavaDocCheck extends AbstractCheck {
+    public static class BadJavaDocCheck extends AbstractCheck {
 
         @Override
         public int[] getDefaultTokens() {
@@ -538,7 +538,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    private static class VerifyInitCheck extends AbstractCheck {
+    public static class VerifyInitCheck extends AbstractCheck {
 
         private static boolean initWasCalled;
 
@@ -569,7 +569,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    private static class VerifyDestroyCheck extends AbstractCheck {
+    public static class VerifyDestroyCheck extends AbstractCheck {
 
         private static boolean destroyWasCalled;
 
@@ -604,7 +604,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    private static class VerifyDestroyCommentCheck extends VerifyDestroyCheck {
+    public static class VerifyDestroyCommentCheck extends VerifyDestroyCheck {
 
         @Override
         public boolean isCommentNodesRequired() {
@@ -613,7 +613,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     }
 
-    private static class RequiredTokenIsEmptyIntArray extends AbstractCheck {
+    public static class RequiredTokenIsEmptyIntArray extends AbstractCheck {
 
         @Override
         public int[] getRequiredTokens() {

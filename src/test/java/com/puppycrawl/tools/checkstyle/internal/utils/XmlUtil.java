@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -97,6 +98,29 @@ public final class XmlUtil {
         return firstChildElement;
     }
 
+    /**
+     * Returns the {@code Node} that has an id attribute with the given value.
+     * The id should be unique within the Xml Document.
+     *
+     * @param id the unique {@code id} value for a node.
+     * @return the matching node or {@code null} if none matches.
+     */
+    public static Node findChildElementById(Node node, String id) {
+        Node childElement = null;
+        for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
+            final NamedNodeMap attributes = child.getAttributes();
+            if (attributes != null) {
+                final Node attribute = attributes.getNamedItem("id");
+                if (attribute != null && id.equals(attribute.getNodeValue())) {
+                    childElement = child;
+                    break;
+                }
+            }
+        }
+
+        return childElement;
+    }
+
     public static Set<Node> findChildElementsByTag(Node node, String tag) {
         final Set<Node> result = new LinkedHashSet<Node>();
 
@@ -110,6 +134,35 @@ public final class XmlUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Returns the value of the "name" attribute for the given node.
+     *
+     * @param node to retrieve the name
+     * @return the value of the attribute "name"
+     */
+    public static String getNameAttributeOfNode(Node node) {
+        return node.getAttributes().getNamedItem("name").getNodeValue();
+    }
+
+    /**
+     * <p>Sanitizes the given string for safe use in XML documents.</p>
+     * <ul>
+     * <li>Removes all whitespaces at the beginning and at the end of the string;</li>
+     * <li>Replaces repeated whitespaces in the middle of the string with a single space;</li>
+     * <li>Replaces XML entities with escaped values.</li>
+     * </ul>
+     *
+     * @param rawXml the text to sanitize
+     * @return the sanitized text
+     */
+    public static String sanitizeXml(String rawXml) {
+        return rawXml
+                .replaceAll("(^\\s+|\\s+$)", "")
+                .replaceAll("\\s+", " ")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
     }
 
 }

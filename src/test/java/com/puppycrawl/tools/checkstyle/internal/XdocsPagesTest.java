@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.internal;
 
+import static com.google.common.truth.Truth.assertWithMessage;
 import static com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets.UTF_8;
 import static java.lang.Integer.parseInt;
 import static org.hamcrest.CoreMatchers.describedAs;
@@ -45,14 +46,17 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -254,6 +258,66 @@ public class XdocsPagesTest {
     }
 
     @Test
+    public void testAllChecksPageInSyncWithChecksSummaries() throws Exception {
+        final Pattern endOfSentence = Pattern.compile("(.*?\\.)\\s", Pattern.DOTALL);
+        final Map<String, String> summaries = readSummaries();
+
+        for (Path path : XdocUtil.getXdocsConfigFilePaths(XdocUtil.getXdocsFilePaths())) {
+            final String fileName = path.getFileName().toString();
+            if ("config_reporting.xml".equals(fileName)
+                    || "config_filefilters.xml".equals(fileName)
+                    || "config_filters.xml".equals(fileName)) {
+                continue;
+            }
+
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
+            final Document document = XmlUtil.getRawXml(fileName, input, input);
+            final NodeList sources = document.getElementsByTagName("subsection");
+
+            for (int position = 0; position < sources.getLength(); position++) {
+                final Node section = sources.item(position);
+                final String sectionName = XmlUtil.getNameAttributeOfNode(section);
+                if (!"Description".equals(sectionName)) {
+                    continue;
+                }
+
+                final String checkName = XmlUtil.getNameAttributeOfNode(section.getParentNode());
+                final Matcher matcher = endOfSentence.matcher(section.getTextContent());
+                assertWithMessage(
+                    "The first sentence of the \"Description\" subsection for the check "
+                        + checkName + " in the file \"" + fileName + "\" should end with a period")
+                    .that(matcher.find());
+                final String firstSentence = XmlUtil.sanitizeXml(matcher.group(1));
+                assertWithMessage("The summary for check " + checkName
+                        + " in the file \"" + AVAILABLE_CHECKS_PATH + "\""
+                        + " should match the first sentence of the \"Description\" subsection"
+                        + " for this check in the file \"" + fileName + "\"")
+                    .that(summaries.get(checkName))
+                    .isEqualTo(firstSentence);
+            }
+        }
+    }
+
+    private static Map<String, String> readSummaries() throws Exception {
+        final String fileName = AVAILABLE_CHECKS_PATH.getFileName().toString();
+        final String input = new String(Files7.readAllBytes(AVAILABLE_CHECKS_PATH), UTF_8);
+        final Document document = XmlUtil.getRawXml(fileName, input, input);
+        final NodeList rows = document.getElementsByTagName("tr");
+        final Map<String, String> result = new HashMap<String, String>();
+
+        for (int position = 0; position < rows.getLength(); position++) {
+            final Node row = rows.item(position);
+            final Iterator<Node> cells = XmlUtil.findChildElementsByTag(row, "td").iterator();
+            final String name = XmlUtil.sanitizeXml(cells.next().getTextContent());
+            final String summary = XmlUtil.sanitizeXml(cells.next().getTextContent());
+
+            result.put(name, summary);
+        }
+
+        return result;
+    }
+
+    @Test
     public void testAllSubSections() throws Exception {
         for (Path path : XdocUtil.getXdocsFilePaths()) {
             final String input = new String(Files7.readAllBytes(path), UTF_8);
@@ -281,8 +345,7 @@ public class XdocsPagesTest {
                     sectionName = "Sun";
                 }
                 else {
-                    sectionName = subSection.getParentNode().getAttributes()
-                            .getNamedItem("name").getTextContent();
+                    sectionName = XmlUtil.getNameAttributeOfNode(subSection.getParentNode());
                 }
 
                 final String nameString = name.getNodeValue();
@@ -422,8 +485,7 @@ public class XdocsPagesTest {
 
             for (int position = 0; position < sources.getLength(); position++) {
                 final Node section = sources.item(position);
-                final String sectionName = section.getAttributes().getNamedItem("name")
-                        .getNodeValue();
+                final String sectionName = XmlUtil.getNameAttributeOfNode(section);
 
                 if ("Content".equals(sectionName) || "Overview".equals(sectionName)) {
                     assertNull(lastSectionName,
@@ -464,8 +526,7 @@ public class XdocsPagesTest {
 
         for (int position = 0; position < sources.getLength(); position++) {
             final Node section = sources.item(position);
-            final String sectionName = section.getAttributes().getNamedItem("name")
-                    .getNodeValue();
+            final String sectionName = XmlUtil.getNameAttributeOfNode(section);
 
             if (!"Checker".equals(sectionName) && !"TreeWalker".equals(sectionName)) {
                 continue;
@@ -493,8 +554,7 @@ public class XdocsPagesTest {
                 continue;
             }
 
-            final String subSectionName = subSection.getAttributes().getNamedItem("name")
-                    .getNodeValue();
+            final String subSectionName = XmlUtil.getNameAttributeOfNode(subSection);
 
             // can be in different orders, and completely optional
             if ("Notes".equals(subSectionName)
@@ -517,6 +577,9 @@ public class XdocsPagesTest {
                     fileName + " section '" + sectionName + "' should be in order");
 
             switch (subSectionPos) {
+                case 0:
+                    validateDescriptionSection(fileName, sectionName, subSection);
+                    break;
                 case 1:
                     validatePropertySection(fileName, sectionName, subSection, instance);
                     break;
@@ -532,7 +595,6 @@ public class XdocsPagesTest {
                 case 6:
                     validateParentSection(fileName, sectionName, subSection);
                     break;
-                case 0:
                 case 2:
                 default:
                     break;
@@ -590,6 +652,26 @@ public class XdocsPagesTest {
         }
 
         return result;
+    }
+
+    private static void validateDescriptionSection(String fileName, String sectionName,
+            Node subSection) {
+        // Till https://github.com/checkstyle/checkstyle/issues/5777
+        if ("config_filters.xml".equals(fileName) && "SuppressionXpathFilter".equals(sectionName)) {
+            validateListOfSuppressionXpathFilterIncompatibleChecks(subSection);
+        }
+    }
+
+    private static void validateListOfSuppressionXpathFilterIncompatibleChecks(Node subSection) {
+        assertWithMessage(
+            "Incompatible check list should match XpathRegressionTest.INCOMPATIBLE_CHECK_NAMES")
+            .that(getListById(subSection, "SuppressionXpathFilter_IncompatibleChecks"))
+            .isEqualTo(XpathRegressionTest.INCOMPATIBLE_CHECK_NAMES);
+
+        assertWithMessage(
+            "Javadoc check list should match XpathRegressionTest.INCOMPATIBLE_JAVADOC_CHECK_NAMES")
+            .that(getListById(subSection, "SuppressionXpathFilter_JavadocChecks"))
+            .isEqualTo(XpathRegressionTest.INCOMPATIBLE_JAVADOC_CHECK_NAMES);
     }
 
     private static void validatePropertySection(String fileName, String sectionName,
@@ -1267,6 +1349,19 @@ public class XdocsPagesTest {
         return result;
     }
 
+    private static Set<String> getListById(Node subSection, String id) {
+        Set<String> result = null;
+        final Node node = XmlUtil.findChildElementById(subSection, id);
+        if (node != null) {
+            result = new HashSet<String>();
+
+            for (Node child : XmlUtil.getChildrenElements(node)) {
+                result.add(child.getTextContent());
+            }
+        }
+        return result;
+    }
+
     private static void validateViolationSection(String fileName, String sectionName,
                                                  Node subSection,
                                                  Object instance) throws Exception {
@@ -1589,7 +1684,7 @@ public class XdocsPagesTest {
             final String expectedUrl;
 
             if (position == 1) {
-                actualUrl = anchor.getAttributes().getNamedItem("name").getTextContent();
+                actualUrl = XmlUtil.getNameAttributeOfNode(anchor);
                 expectedUrl = ruleNumber;
             }
             else {

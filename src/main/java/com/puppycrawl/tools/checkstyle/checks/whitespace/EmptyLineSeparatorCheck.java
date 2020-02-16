@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -499,7 +499,7 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
     private void processPackage(DetailAST ast, DetailAST nextToken) {
         if (ast.getLineNo() > 1 && !hasEmptyLineBefore(ast)) {
             if (getFileContents().getFileName().endsWith("package-info.java")) {
-                if (ast.getFirstChild().getChildCount() == 0 && !isPrecededByJavadoc(ast)) {
+                if (!ast.getFirstChild().hasChildren() && !isPrecededByJavadoc(ast)) {
                     log(ast.getLineNo(), MSG_SHOULD_BE_SEPARATED, ast.getText());
                 }
             }

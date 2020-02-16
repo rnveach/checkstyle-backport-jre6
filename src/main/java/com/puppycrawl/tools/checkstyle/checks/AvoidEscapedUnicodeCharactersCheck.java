@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2019 the original author or authors.
+// Copyright (C) 2001-2020 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -33,10 +33,10 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * <p>
- * Restrict using <a href =
- * "https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.3">
- * Unicode escapes</a> (such as &#92;u221e).
- * It is possible to allow using escapes for
+ * Restricts using
+ * <a href = "https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.3">
+ * Unicode escapes</a>
+ * (such as &#92;u221e). It is possible to allow using escapes for
  * <a href="https://en.wiktionary.org/wiki/Appendix:Control_characters">
  * non-printable, control characters</a>.
  * Also, this check can be configured to allow using escapes

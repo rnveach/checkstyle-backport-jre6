@@ -12,7 +12,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.28</version>
+  <version>8.29</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -357,7 +357,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.6.1.1688</version>
+          <version>3.7.0.1746</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1007,23 +1007,23 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>1.6</version>
+                  <version>1.8</version>
                 </requireJavaVersion>
                 <requireMavenVersion>
                   <version>3.0.1</version>
                 </requireMavenVersion>
-                <!-- we can not use this as it require
-                compilation on 1.6 only, due to dependency to 'tools'
+                <!-- we can not use this as it require same version for all dependencies -->
+                <!--
                 <enforceBytecodeVersion>
-                  <maxJdkVersion>1.6</maxJdkVersion>
+                  <maxJdkVersion>1.8</maxJdkVersion>
                 </enforceBytecodeVersion>
                 -->
               </rules>
             </configuration>
           </execution>
         </executions>
-        <!-- we can not use this as it require
-        compilation on 1.6 only, due to dependency to 'tool'
+        <!-- if we activate enforceBytecodeVersion rule, this dependency become required -->
+        <!--
         <dependencies>
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
@@ -1526,19 +1526,19 @@
               http://www.mojohaus.org/sonar-maven-plugin/sonar-maven-plugin
             </excludedLink>
             <!-- Excluded due to Maven Codehaus Plugin's issue #4:
-                 https://github.com/mojohaus/mojohaus.github.io/issues/4-->
+                 https://github.com/mojohaus/mojohaus.github.io/issues/4 -->
             <excludedLink>http://mojo.codehaus.org/antlr-maven-plugin</excludedLink>
             <!-- Excluded due to Maven JDepend Plugin's issue #2:
-                 https://github.com/mojohaus/jdepend-maven-plugin/issues/2-->
+                 https://github.com/mojohaus/jdepend-maven-plugin/issues/2 -->
             <excludedLink>http://mojo.codehaus.org/jdepend-maven-plugin</excludedLink>
             <!-- Excluded due to Maven Taglist Plugin's issue #3:
-                 https://github.com/mojohaus/taglist-maven-plugin/issues/3-->
+                 https://github.com/mojohaus/taglist-maven-plugin/issues/3 -->
             <excludedLink>http://mojo.codehaus.org/taglist-maven-plugin</excludedLink>
             <!-- Excluded due to Maven ANTLR4 Plugin's issue #978:
-                 https://github.com/antlr/antlr4/issues/978-->
+                 https://github.com/antlr/antlr4/issues/978 -->
             <excludedLink>http://www.antlr.org/antlr4-maven-plugin</excludedLink>
             <!-- Excluded due to Maven Release Plugin's issue #919:
-                 https://issues.apache.org/jira/browse/MRELEASE-919-->
+                 https://issues.apache.org/jira/browse/MRELEASE-919 -->
             <excludedLink>http://maven.apache.org/plugins/maven-release-plugin/</excludedLink>
             <!-- permanent java.net.UnknownHostException :-->
             <excludedLink>http://jacoco-maven-plugin/</excludedLink>
@@ -1548,7 +1548,7 @@
             </excludedLink>
 
             <!-- Excluded due to linkcheck's issue #22:
-                 https://issues.apache.org/jira/browse/MLINKCHECK-22-->
+                 https://issues.apache.org/jira/browse/MLINKCHECK-22 -->
             <excludedLink>https://twitter.com/checkstyle_java/</excludedLink>
             <!-- linkcheck plugin can not resolve &amps; inside url -->
             <excludedLink>https://flattr.com/submit/</excludedLink>
@@ -1617,7 +1617,7 @@
   <profiles>
 
     <profile>
-      <!-- To be used during development. Run the command-->
+      <!-- To be used during development. Run the command -->
       <!-- mvn -Pno-validations site -->
       <id>no-validations</id>
       <properties>
@@ -1636,7 +1636,7 @@
     </profile>
 
     <profile>
-      <!-- To be used during development. Run the command-->
+      <!-- To be used during development. Run the command -->
       <!-- mvn -Passembly package -->
       <id>assembly</id>
       <properties>
@@ -1808,6 +1808,15 @@
                 <!-- needed for SuppressWarningsFilter -->
                 <param>com.puppycrawl.tools.checkstyle.filters.SuppressWarningsFilterTest</param>
               </targetTests>
+              <excludedMethods>
+                <!-- destroy method was added in case module had to free up resources
+                before ending, but currently it does ThreadLocal cleanup,
+                to satisfy sonar violation. But right now checkstyle is not multi threading tool.
+                Ones we start multi-threading implementation we should remove this exclude.
+                If we remove this destroy we would have to remove all of them as they are chained
+                together, so we just exclude it from pitest check. -->
+                <param>destroy</param>
+              </excludedMethods>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2175,6 +2184,15 @@
               <excludedTestClasses>
                 <param>*.Input*</param>
               </excludedTestClasses>
+              <excludedMethods>
+                <!-- destroy method was added in case module had to free up resources
+                before ending, but currently it does ThreadLocal cleanup,
+                to satisfy sonar violation. But right now checkstyle is not multi threading tool.
+                Ones we start multi-threading implementation we should remove this exclude.
+                If we remove this destroy we would have to remove all of them as they are chained
+                together, so we just exclude it from pitest check. -->
+                <param>destroy</param>
+              </excludedMethods>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>97</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
@@ -2659,11 +2677,11 @@
                 <param>com.puppycrawl.tools.checkstyle.ConfigurationLoaderTest</param>
               </targetTests>
               <excludedMethods>
-                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605-->
+                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605 -->
                 <param>setFeaturesBySystemProperty</param>
               </excludedMethods>
               <avoidCallsTo>
-                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605-->
+                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605 -->
                 <avoidCallsTo>
                   com.puppycrawl.tools.checkstyle.XmlLoader$LoadExternalDtdFeatureProvider
                 </avoidCallsTo>
@@ -2787,8 +2805,10 @@
                 <param>*.Input*</param>
               </excludedTestClasses>
               <excludedMethods>
-                <!-- destroy in TreeWalker was added in case module had to free up resources
-                before ending, but currently it does nothing, so we cannot check it.
+                <!-- destroy method was added in case module had to free up resources
+                before ending, but currently it does ThreadLocal cleanup,
+                to satisfy sonar violation. But right now checkstyle is not multi threading tool.
+                Ones we start multi-threading implementation we should remove this exclude.
                 If we remove this destroy we would have to remove all of them as they are chained
                 together, so we just exclude it from pitest check. -->
                 <param>destroy</param>
@@ -2846,6 +2866,15 @@
               <excludedTestClasses>
                 <param>*.Input*</param>
               </excludedTestClasses>
+              <excludedMethods>
+                <!-- destroy method was added in case module had to free up resources
+                before ending, but currently it does ThreadLocal cleanup,
+                to satisfy sonar violation. But right now checkstyle is not multi threading tool.
+                Ones we start multi-threading implementation we should remove this exclude.
+                If we remove this destroy we would have to remove all of them as they are chained
+                together, so we just exclude it from pitest check. -->
+                <param>destroy</param>
+              </excludedMethods>
               <coverageThreshold>100</coverageThreshold>
               <mutationThreshold>100</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
