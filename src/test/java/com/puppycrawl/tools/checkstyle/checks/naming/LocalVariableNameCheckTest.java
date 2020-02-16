@@ -20,7 +20,7 @@
 package com.puppycrawl.tools.checkstyle.checks.naming;
 
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.Test;
 
@@ -42,8 +42,8 @@ public class LocalVariableNameCheckTest
         final LocalVariableNameCheck localVariableNameCheck = new LocalVariableNameCheck();
         final int[] expected = {TokenTypes.VARIABLE_DEF};
 
-        assertArrayEquals("Default acceptable tokens are invalid",
-                expected, localVariableNameCheck.getAcceptableTokens());
+        assertArrayEquals(expected, localVariableNameCheck.getAcceptableTokens(),
+                "Default acceptable tokens are invalid");
     }
 
     @Test

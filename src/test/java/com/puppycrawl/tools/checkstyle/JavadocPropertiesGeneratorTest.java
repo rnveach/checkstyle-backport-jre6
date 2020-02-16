@@ -19,9 +19,9 @@
 
 package com.puppycrawl.tools.checkstyle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,13 +44,13 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
     private static final String EOL = System7.lineSeparator();
     private static final String USAGE = String.format(Locale.ROOT,
-          "Usage: java com.puppycrawl.tools.checkstyle.JavadocPropertiesGenerator [-hV]%n"
-          + "       --destfile=<outputFile> <inputFile>%n"
-          + "      <inputFile>   The input file.%n"
-          + "      --destfile=<outputFile>%n"
-          + "                    The output file.%n"
-          + "  -h, --help        Show this help message and exit.%n"
-          + "  -V, --version     Print version information and exit.%n");
+            "Usage: java com.puppycrawl.tools.checkstyle.JavadocPropertiesGenerator [-hV]%n"
+                    + "       --destfile=<outputFile> <inputFile>%n"
+                    + "      <inputFile>   The input file.%n"
+                    + "      --destfile=<outputFile>%n"
+                    + "                    The output file.%n"
+                    + "  -h, --help        Show this help message and exit.%n"
+                    + "  -V, --version     Print version information and exit.%n");
     private static final File DESTFILE = new File("target/tokentypes.properties");
 
     @Rule
@@ -68,6 +68,7 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
      * The path is formed base on the non-compilable resources location.
      * This implementation uses 'src/test/resources-noncompilable/com/puppycrawl/tools/checkstyle/'
      * as a non-compilable resource location.
+     *
      * @param filename file name.
      * @return canonical path for the file with the given file name.
      * @throws IOException if I/O exception occurs while forming the path.
@@ -79,19 +80,20 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertTrue("Constructor is not private", TestUtil.isUtilsClassHasPrivateConstructor(
-            JavadocPropertiesGenerator.class, false));
+        assertTrue(TestUtil.isUtilsClassHasPrivateConstructor(
+            JavadocPropertiesGenerator.class, false), "Constructor is not private");
     }
 
     @Test
-    public void testNonExistentArgument() throws Exception {
+    public void testNonExistentArgument()
+            throws Exception {
         JavadocPropertiesGenerator.main("--nonexistent-argument");
 
         final String expected = String.format(Locale.ROOT, "Missing required options "
                 + "[--destfile=<outputFile>, params[0]=<inputFile>]%n")
                 + USAGE;
-        assertEquals("Unexpected error log", expected, systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
+        assertEquals(expected, systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
@@ -100,8 +102,8 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
         final String expected = String.format(Locale.ROOT,
                 "Missing required option '--destfile=<outputFile>'%n") + USAGE;
-        assertEquals("Unexpected error log", expected, systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
+        assertEquals(expected, systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
@@ -110,16 +112,16 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
         final String expected = String.format(Locale.ROOT,
                 "Missing required parameter: <inputFile>%n") + USAGE;
-        assertEquals("Unexpected error log", expected, systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
+        assertEquals(expected, systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
     public void testNotClass() throws Exception {
         JavadocPropertiesGenerator.main("--destfile", DESTFILE.getAbsolutePath(),
             getPath("InputJavadocPropertiesGeneratorNotClass.java"));
-        assertEquals("Unexpected error log", "", systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
@@ -130,22 +132,21 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
             fail("Exception was expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Invalid error message",
-                "Failed to write javadoc properties of 'NotExistent.java' to '"
+            assertEquals(
+                    "Failed to write javadoc properties of 'NotExistent.java' to '"
                     + DESTFILE.getAbsolutePath() + "'",
-                ex.getMessage());
+                ex.getMessage(), "Invalid error message");
 
             final Throwable cause = ex.getCause();
-            assertTrue("Invalid error message", cause instanceof FileNotFoundException);
-            assertTrue("Invalid error message", cause.getMessage().contains("NotExistent.java"));
+            assertTrue(cause instanceof FileNotFoundException, "Invalid error message");
+            assertTrue(cause.getMessage().contains("NotExistent.java"), "Invalid error message");
         }
-        assertEquals("Unexpected error log", "", systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
     public void testInvalidDestinationSpecified() throws Exception {
-
         try {
             // Passing a folder name will cause the FileNotFoundException.
             JavadocPropertiesGenerator.main("--destfile", "..",
@@ -155,14 +156,14 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
         catch (CheckstyleException ex) {
             final String expectedError = "Failed to write javadoc properties of '"
                 + getPath("InputJavadocPropertiesGeneratorCorrect.java") + "' to '..'";
-            assertEquals("Invalid error message", expectedError, ex.getMessage());
+            assertEquals(expectedError, ex.getMessage(), "Invalid error message");
 
             final Throwable cause = ex.getCause();
-            assertTrue("Invalid error message", cause instanceof FileNotFoundException);
-            assertTrue("Invalid error message", cause.getMessage().contains(".."));
+            assertTrue(cause instanceof FileNotFoundException, "Invalid error message");
+            assertTrue(cause.getMessage().contains(".."), "Invalid error message");
         }
-        assertEquals("Unexpected error log", "", systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
@@ -177,35 +178,37 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorCorrect.java"),
             "--destfile", DESTFILE.getAbsolutePath());
-        assertEquals("Unexpected error log", "", systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
         final String fileContent = FileUtils.readFileToString(DESTFILE, StandardCharsets.UTF_8);
-        assertEquals("File content is not expected", expectedContent, fileContent);
+        assertEquals(expectedContent, fileContent, "File content is not expected");
     }
 
     @Test
     public void testEmptyJavadoc() throws Exception {
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorEmptyJavadoc.java"),
             "--destfile", DESTFILE.getAbsolutePath());
-        assertEquals("Unexpected error log", "", systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
-        assertEquals("File '" + DESTFILE + "' must be empty", 0, FileUtils.sizeOf(DESTFILE));
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
+        final long size = FileUtils.sizeOf(DESTFILE);
+        assertEquals(0L, size, "File '" + DESTFILE + "' must be empty");
     }
 
     @Test
     public void testNotConstants() throws Exception {
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorNotConstants.java"),
             "--destfile", DESTFILE.getAbsolutePath());
-        assertEquals("Unexpected error log", "", systemErr.getLog());
-        assertEquals("Unexpected output log", "", systemOut.getLog());
-        assertEquals("File '" + DESTFILE + "' must be empty", 0, FileUtils.sizeOf(DESTFILE));
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
+        final long size = FileUtils.sizeOf(DESTFILE);
+        assertEquals(0L, size, "File '" + DESTFILE + "' must be empty");
     }
 
     @Test
     public void testHelp() throws Exception {
         JavadocPropertiesGenerator.main("-h");
-        assertEquals("Unexpected error log", "", systemErr.getLog());
-        assertEquals("Unexpected output log", USAGE, systemOut.getLog());
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals(USAGE, systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
@@ -217,10 +220,12 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
             fail("Exception was expected");
         }
         catch (IllegalArgumentException ex) {
-            assertTrue("Invalid error message", ex.getMessage().contains(
-                "mismatched input '<EOF>' expecting JAVADOC_INLINE_TAG_END"));
+            assertTrue(ex.getMessage()
+                            .contains("mismatched input '<EOF>' expecting JAVADOC_INLINE_TAG_END"),
+                    "Invalid error message");
         }
-        assertEquals("File '" + DESTFILE + "' must be empty", 0, FileUtils.sizeOf(DESTFILE));
+        final long size = FileUtils.sizeOf(DESTFILE);
+        assertEquals(0L, size, "File '" + DESTFILE + "' must be empty");
     }
 
     @Test
@@ -232,10 +237,11 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
             fail("Exception was expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Invalid error message", "Unsupported inline tag LINK_LITERAL",
-                ex.getMessage());
+            assertEquals("Unsupported inline tag LINK_LITERAL",
+                ex.getMessage(), "Invalid error message");
         }
-        assertEquals("File '" + DESTFILE + "' must be empty", 0, FileUtils.sizeOf(DESTFILE));
+        final long size = FileUtils.sizeOf(DESTFILE);
+        assertEquals(0L, size, "File '" + DESTFILE + "' must be empty");
     }
 
     @Test
@@ -247,13 +253,13 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
             fail("Exception was expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid error message",
-                ex.getMessage().contains("InputJavadocPropertiesGeneratorParseError.java"));
+            assertTrue(ex.getMessage().contains("InputJavadocPropertiesGeneratorParseError.java"),
+                    "Invalid error message");
 
             final Throwable cause = ex.getCause().getCause();
-            assertTrue("Invalid error message", cause instanceof MismatchedTokenException);
-            assertTrue("Invalid error message",
-                cause.getMessage().contains("expecting RCURLY, found '!'"));
+            assertTrue(cause instanceof MismatchedTokenException, "Invalid error message");
+            assertTrue(cause.getMessage().contains("expecting RCURLY, found '!'"),
+                    "Invalid error message");
         }
     }
 

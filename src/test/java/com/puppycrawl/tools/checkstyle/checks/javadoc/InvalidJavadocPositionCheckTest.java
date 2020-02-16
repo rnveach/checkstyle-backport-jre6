@@ -20,7 +20,7 @@
 package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.InvalidJavadocPositionCheck.MSG_KEY;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class InvalidJavadocPositionCheckTest extends AbstractModuleTestSupport {
         final InvalidJavadocPositionCheck check = new InvalidJavadocPositionCheck();
         final int[] actual = check.getAcceptableTokens();
 
-        assertArrayEquals("Acceptable tokens differs from expected", expected, actual);
+        assertArrayEquals(expected, actual, "Acceptable tokens differs from expected");
     }
 
     @Test
@@ -54,7 +54,7 @@ public class InvalidJavadocPositionCheckTest extends AbstractModuleTestSupport {
         final InvalidJavadocPositionCheck check = new InvalidJavadocPositionCheck();
         final int[] actual = check.getRequiredTokens();
 
-        assertArrayEquals("Required tokens differ from expected", expected, actual);
+        assertArrayEquals(expected, actual, "Required tokens differ from expected");
     }
 
     @Test

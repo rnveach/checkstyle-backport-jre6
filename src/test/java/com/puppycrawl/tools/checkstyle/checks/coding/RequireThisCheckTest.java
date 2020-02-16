@@ -21,13 +21,15 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import static com.puppycrawl.tools.checkstyle.checks.coding.RequireThisCheck.MSG_METHOD;
 import static com.puppycrawl.tools.checkstyle.checks.coding.RequireThisCheck.MSG_VARIABLE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.SortedSet;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import antlr.CommonHiddenStreamToken;
@@ -182,9 +184,9 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTokensNotNull() {
         final RequireThisCheck check = new RequireThisCheck();
-        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
-        Assert.assertNotNull("Acceptable tokens should not be null", check.getDefaultTokens());
-        Assert.assertNotNull("Acceptable tokens should not be null", check.getRequiredTokens());
+        assertNotNull(check.getAcceptableTokens(), "Acceptable tokens should not be null");
+        assertNotNull(check.getDefaultTokens(), "Acceptable tokens should not be null");
+        assertNotNull(check.getRequiredTokens(), "Acceptable tokens should not be null");
     }
 
     @Test
@@ -211,7 +213,7 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
         check.visitToken(ast);
         final SortedSet<LocalizedMessage> messages = check.getMessages();
 
-        Assert.assertEquals("No exception messages expected", 0, messages.size());
+        assertEquals(0, messages.size(), "No exception messages expected");
     }
 
     @Test
@@ -263,6 +265,7 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
             "374:25: " + getCheckMessage(MSG_METHOD, "getAction", ""),
             "376:20: " + getCheckMessage(MSG_METHOD, "processAction", ""),
             "384:16: " + getCheckMessage(MSG_METHOD, "processAction", ""),
+            "490:22: " + getCheckMessage(MSG_VARIABLE, "add", ""),
         };
         verify(checkConfig, getPath("InputRequireThisValidateOnlyOverlappingFalse.java"), expected);
     }
@@ -411,10 +414,11 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
         constructor.setAccessible(true);
         final Object o = constructor.newInstance(null, ident);
 
-        Assert.assertEquals("expected ident token", ident,
-                TestUtil.getClassDeclaredMethod(cls, "getFrameNameIdent").invoke(o));
-        Assert.assertEquals("expected catch frame type", "CATCH_FRAME",
-                TestUtil.getClassDeclaredMethod(cls, "getType").invoke(o).toString());
+        final Object actual = TestUtil.getClassDeclaredMethod(cls, "getFrameNameIdent").invoke(o);
+        assertEquals(ident, actual, "expected ident token");
+        assertEquals("CATCH_FRAME",
+            TestUtil.getClassDeclaredMethod(cls, "getType").invoke(o).toString(),
+                "expected catch frame type");
     }
 
     /**
@@ -438,15 +442,17 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
                 }
             });
 
-        Assert.assertTrue("Ast should contain CLASS_DEF", classDef.isPresent());
-        Assert.assertTrue("State is not cleared on beginTree",
-                TestUtil.isStatefulFieldClearedDuringBeginTree(check, classDef.get(), "current",
-                    new Predicate<Object>() {
-                        @Override
-                        public boolean test(Object current) {
-                            return ((Collection<?>) current).isEmpty();
-                        }
-                    }));
+        assertTrue(classDef.isPresent(), "Ast should contain CLASS_DEF");
+        assertTrue(
+            TestUtil.isStatefulFieldClearedDuringBeginTree(check, classDef.get(),
+                "current",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object current) {
+                        return ((Collection<?>) current).isEmpty();
+                    }
+                }),
+                "State is not cleared on beginTree");
     }
 
 }

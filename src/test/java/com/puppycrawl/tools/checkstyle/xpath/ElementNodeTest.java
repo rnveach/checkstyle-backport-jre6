@@ -20,9 +20,9 @@
 package com.puppycrawl.tools.checkstyle.xpath;
 
 import static com.puppycrawl.tools.checkstyle.internal.utils.XpathUtil.getXpathItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -62,45 +62,45 @@ public class ElementNodeTest extends AbstractPathTestSupport {
     public void testGetParent() throws Exception {
         final String xpath = "//OBJBLOCK";
         final List<NodeInfo> nodes = getXpathItems(xpath, rootNode);
-        assertEquals("Invalid number of nodes", 1, nodes.size());
+        assertEquals(1, nodes.size(), "Invalid number of nodes");
         final AbstractNode parent = (AbstractNode) nodes.get(0).getParent();
-        assertEquals("Invalid token type", TokenTypes.CLASS_DEF, parent.getTokenType());
+        assertEquals(TokenTypes.CLASS_DEF, parent.getTokenType(), "Invalid token type");
     }
 
     @Test
     public void testRootOfElementNode() throws Exception {
         final String xpath = "//OBJBLOCK";
         final List<NodeInfo> nodes = getXpathItems(xpath, rootNode);
-        assertEquals("Invalid number of nodes", 1, nodes.size());
+        assertEquals(1, nodes.size(), "Invalid number of nodes");
         final AbstractNode root = (AbstractNode) nodes.get(0).getRoot();
-        assertEquals("Invalid token type", TokenTypes.EOF, root.getTokenType());
-        assertTrue("Should return true, because selected node is RootNode",
-                root instanceof RootNode);
+        assertEquals(TokenTypes.EOF, root.getTokenType(), "Invalid token type");
+        assertTrue(root instanceof RootNode,
+                "Should return true, because selected node is RootNode");
     }
 
     @Test
     public void testGetNodeByValueNumInt() throws Exception {
         final String xPath = "//NUM_INT[@text = 123]";
         final List<NodeInfo> nodes = getXpathItems(xPath, rootNode);
-        assertEquals("Invalid number of nodes", 1, nodes.size());
-        assertEquals("Invalid token type", TokenTypes.NUM_INT,
-                ((AbstractNode) nodes.get(0)).getTokenType());
+        assertEquals(1, nodes.size(), "Invalid number of nodes");
+        final int tokenType = ((AbstractNode) nodes.get(0)).getTokenType();
+        assertEquals(TokenTypes.NUM_INT, tokenType, "Invalid token type");
     }
 
     @Test
     public void testGetNodeByValueStringLiteral() throws Exception {
         final String xPath = "//STRING_LITERAL[@text = 'HelloWorld']";
         final List<NodeInfo> nodes = getXpathItems(xPath, rootNode);
-        assertEquals("Invalid number of nodes", 2, nodes.size());
-        assertEquals("Invalid token type", TokenTypes.STRING_LITERAL,
-                ((AbstractNode) nodes.get(0)).getTokenType());
+        assertEquals(2, nodes.size(), "Invalid number of nodes");
+        final int tokenType = ((AbstractNode) nodes.get(0)).getTokenType();
+        assertEquals(TokenTypes.STRING_LITERAL, tokenType, "Invalid token type");
     }
 
     @Test
     public void testGetNodeByValueWithSameTokenText() throws Exception {
         final String xPath = "//MODIFIERS[@text = 'MODIFIERS']";
         final List<NodeInfo> nodes = getXpathItems(xPath, rootNode);
-        assertEquals("Invalid number of nodes", 0, nodes.size());
+        assertEquals(0, nodes.size(), "Invalid number of nodes");
     }
 
     @Test
@@ -111,8 +111,8 @@ public class ElementNodeTest extends AbstractPathTestSupport {
 
         final ElementNode elementNode = new ElementNode(rootNode, rootNode, detailAST);
 
-        assertEquals("Invalid text attribute", "HelloWorld",
-                elementNode.getAttributeValue(null, "text"));
+        assertEquals("HelloWorld", elementNode.getAttributeValue(null, "text"),
+                "Invalid text attribute");
     }
 
     @Test
@@ -123,7 +123,7 @@ public class ElementNodeTest extends AbstractPathTestSupport {
 
         final ElementNode elementNode = new ElementNode(rootNode, rootNode, detailAST);
 
-        assertNull("Must be null", elementNode.getAttributeValue(null, "text"));
+        assertNull(elementNode.getAttributeValue(null, "text"), "Must be null");
     }
 
     @Test
@@ -134,7 +134,7 @@ public class ElementNodeTest extends AbstractPathTestSupport {
 
         final ElementNode elementNode = new ElementNode(rootNode, rootNode, detailAST);
 
-        assertNull("Must be null", elementNode.getAttributeValue(null, "somename"));
+        assertNull(elementNode.getAttributeValue(null, "somename"), "Must be null");
     }
 
     @Test
@@ -144,14 +144,14 @@ public class ElementNodeTest extends AbstractPathTestSupport {
         final ElementNode elementNode = new ElementNode(rootNode, rootNode, detailAST);
         final AxisIterator iterator = elementNode.iterateAxis(AxisInfo.CHILD);
         try {
-            assertTrue("Invalid iterator", iterator instanceof EmptyIterator);
+            assertTrue(iterator instanceof EmptyIterator, "Invalid iterator");
         }
         finally {
             iterator.close();
         }
         final AxisIterator iterator2 = elementNode.iterateAxis(AxisInfo.DESCENDANT);
         try {
-            assertTrue("Invalid iterator", iterator2 instanceof EmptyIterator);
+            assertTrue(iterator2 instanceof EmptyIterator, "Invalid iterator");
         }
         finally {
             iterator2.close();
@@ -168,14 +168,14 @@ public class ElementNodeTest extends AbstractPathTestSupport {
         final ElementNode elementNode = new ElementNode(rootNode, rootNode, detailAST);
         final AxisIterator iterator = elementNode.iterateAxis(AxisInfo.CHILD);
         try {
-            assertTrue("Invalid iterator", iterator instanceof ArrayIterator);
+            assertTrue(iterator instanceof ArrayIterator, "Invalid iterator");
         }
         finally {
             iterator.close();
         }
         final AxisIterator iterator2 = elementNode.iterateAxis(AxisInfo.DESCENDANT);
         try {
-            assertTrue("Invalid iterator", iterator2 instanceof Navigator.DescendantEnumeration);
+            assertTrue(iterator2 instanceof Navigator.DescendantEnumeration, "Invalid iterator");
         }
         finally {
             iterator2.close();
@@ -195,17 +195,17 @@ public class ElementNodeTest extends AbstractPathTestSupport {
         final AbstractNode elementNode = parentNode.getChildren().get(0);
         final AxisIterator iterator = elementNode.iterateAxis(AxisInfo.FOLLOWING_SIBLING);
         try {
-            assertTrue("Invalid iterator", iterator instanceof EmptyIterator);
+            assertTrue(iterator instanceof EmptyIterator, "Invalid iterator");
         }
         finally {
             iterator.close();
         }
         final AxisIterator iterator2 = elementNode.iterateAxis(AxisInfo.PRECEDING_SIBLING);
         try {
-            assertTrue("Invalid iterator", iterator2 instanceof EmptyIterator);
+            assertTrue(iterator2 instanceof EmptyIterator, "Invalid iterator");
         }
         finally {
-            iterator.close();
+            iterator2.close();
         }
     }
 }

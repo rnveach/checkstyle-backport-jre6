@@ -20,8 +20,8 @@
 package com.puppycrawl.tools.checkstyle.utils;
 
 import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
@@ -36,21 +36,19 @@ public class FilterUtilTest {
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertTrue("Constructor is not private",
-                isUtilsClassHasPrivateConstructor(FilterUtil.class, true));
+        assertTrue(isUtilsClassHasPrivateConstructor(FilterUtil.class, true),
+                "Constructor is not private");
     }
 
     @Test
     public void testExistingFile() throws Exception {
-        final File file = temporaryFolder.newFile();
-        assertTrue("Suppression file exists",
-                FilterUtil.isFileExists(file.getPath()));
+        final File file = File.createTempFile("junit", null, temporaryFolder.newFolder());
+        assertTrue(FilterUtil.isFileExists(file.getPath()), "Suppression file exists");
     }
 
     @Test
     public void testNonExistentFile() {
-        assertFalse("Suppression file does not exist",
-                FilterUtil.isFileExists("non-existent.xml"));
+        assertFalse(FilterUtil.isFileExists("non-existent.xml"), "Suppression file does not exist");
     }
 
 }

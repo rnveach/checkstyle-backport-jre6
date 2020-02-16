@@ -21,7 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks;
 
 import static com.puppycrawl.tools.checkstyle.checks.OrderedPropertiesCheck.MSG_IO_EXCEPTION_KEY;
 import static com.puppycrawl.tools.checkstyle.checks.OrderedPropertiesCheck.MSG_KEY;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -130,16 +130,14 @@ public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
         final FileText fileText = new FileText(file, Collections.<String>emptyList());
         final SortedSet<LocalizedMessage> messages =
                 check.process(file, fileText);
-        assertEquals("Wrong messages count: " + messages.size(),
-                1, messages.size());
+        assertEquals(1, messages.size(), "Wrong messages count: " + messages.size());
         final LocalizedMessage message = messages.iterator().next();
         final String retrievedMessage = messages.iterator().next().getKey();
-        assertEquals("Message key '" + retrievedMessage
-                        + "' is not valid", "unable.open.cause",
-                retrievedMessage);
-        assertEquals("Message '" + message.getMessage()
-                        + "' is not valid", message.getMessage(),
-                getCheckMessage(MSG_IO_EXCEPTION_KEY, fileName, getFileNotFoundDetail(file)));
+        assertEquals("unable.open.cause", retrievedMessage,
+                "Message key '" + retrievedMessage + "' is not valid");
+        assertEquals(message.getMessage(),
+                getCheckMessage(MSG_IO_EXCEPTION_KEY, fileName, getFileNotFoundDetail(file)),
+                "Message '" + message.getMessage() + "' is not valid");
     }
 
     /**
@@ -164,15 +162,14 @@ public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
         final FileText fileText = new FileText(file, Collections.<String>emptyList());
         final SortedSet<LocalizedMessage> messages = check.process(file, fileText);
 
-        assertEquals("Wrong messages count: " + messages.size(),
-                1, messages.size());
+        assertEquals(1, messages.size(), "Wrong messages count: " + messages.size());
     }
 
     @Test
     public void testFileExtension() {
 
         final OrderedPropertiesCheck check = new OrderedPropertiesCheck();
-        assertEquals("File extension should be set", ".properties", check.getFileExtensions()[0]);
+        assertEquals(".properties", check.getFileExtensions()[0], "File extension should be set");
     }
 
     /**

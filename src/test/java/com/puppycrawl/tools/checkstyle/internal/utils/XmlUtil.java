@@ -19,6 +19,8 @@
 
 package com.puppycrawl.tools.checkstyle.internal.utils;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.LinkedHashSet;
@@ -28,7 +30,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -61,11 +62,11 @@ public final class XmlUtil {
             rawXml = builder.parse(new InputSource(new StringReader(code)));
         }
         catch (IOException ex) {
-            Assert.fail(fileName + " has invalid xml (" + ex.getMessage() + "): "
+            fail(fileName + " has invalid xml (" + ex.getMessage() + "): "
                     + unserializedSource);
         }
         catch (SAXException ex) {
-            Assert.fail(fileName + " has invalid xml (" + ex.getMessage() + "): "
+            fail(fileName + " has invalid xml (" + ex.getMessage() + "): "
                     + unserializedSource);
         }
 

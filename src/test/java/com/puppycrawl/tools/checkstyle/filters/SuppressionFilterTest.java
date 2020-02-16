@@ -19,10 +19,10 @@
 
 package com.puppycrawl.tools.checkstyle.filters;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,8 +60,8 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
         final AuditEvent ev = new AuditEvent(this, "ATest.java", null);
 
-        assertTrue("Audit event should be excepted when there are no suppressions",
-            filter.accept(ev));
+        assertTrue(filter.accept(ev),
+                "Audit event should be excepted when there are no suppressions");
     }
 
     @Test
@@ -74,8 +74,8 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
                 SeverityLevel.ERROR, null, getClass(), null);
         final AuditEvent ev = new AuditEvent(this, "ATest.java", message);
 
-        assertFalse("Audit event should be rejected when there is a matching suppression",
-            filter.accept(ev));
+        assertFalse(filter.accept(ev),
+                "Audit event should be rejected when there is a matching suppression");
     }
 
     @Test
@@ -85,7 +85,7 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
         final SuppressionFilter filter = createSuppressionFilter(fileName, optional);
 
         final AuditEvent ev = new AuditEvent(this, "AnyJava.java", null);
-        assertTrue("Audit event on null file should be excepted, but was not", filter.accept(ev));
+        assertTrue(filter.accept(ev), "Audit event on null file should be excepted, but was not");
     }
 
     @Test
@@ -97,8 +97,7 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
             fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Invalid error message",
-                "Unable to find: " + fileName, ex.getMessage());
+            assertEquals("Unable to find: " + fileName, ex.getMessage(), "Invalid error message");
         }
     }
 
@@ -111,9 +110,9 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
             fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Invalid error message",
-                "Unable to parse " + fileName + " - invalid files or checks or message format",
-                ex.getMessage());
+            assertEquals(
+                    "Unable to parse " + fileName + " - invalid files or checks or message format",
+                ex.getMessage(), "Invalid error message");
         }
     }
 
@@ -125,8 +124,7 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
         final AuditEvent ev = new AuditEvent(this, "AnyFile.java", null);
 
-        assertTrue("Suppression file with true optional was not accepted",
-            filter.accept(ev));
+        assertTrue(filter.accept(ev), "Suppression file with true optional was not accepted");
     }
 
     @Test
@@ -137,8 +135,7 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
         final AuditEvent ev = new AuditEvent(this, "AnyFile.java", null);
 
-        assertTrue("Should except event when suppression file does not exist",
-            filter.accept(ev));
+        assertTrue(filter.accept(ev), "Should except event when suppression file does not exist");
     }
 
     @Test
@@ -150,8 +147,8 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
         final AuditEvent ev = new AuditEvent(this, "AnyFile.java", null);
 
-        assertTrue("Should except event when suppression file url does not exist",
-            filter.accept(ev));
+        assertTrue(filter.accept(ev),
+                "Should except event when suppression file url does not exist");
     }
 
     @Test
@@ -160,10 +157,10 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
         filterConfig.addAttribute("file", getPath("InputSuppressionFilterNone.xml"));
 
         final DefaultConfiguration checkerConfig = createRootConfig(filterConfig);
-        final File cacheFile = temporaryFolder.newFile();
+        final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
         checkerConfig.addAttribute("cacheFile", cacheFile.getPath());
 
-        final String filePath = temporaryFolder.newFile("file.java").getPath();
+        final String filePath = File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkerConfig, filePath, expected);
@@ -198,10 +195,11 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
             firstFilterConfig.addAttribute("file", urlForTest);
 
             final DefaultConfiguration firstCheckerConfig = createRootConfig(firstFilterConfig);
-            final File cacheFile = temporaryFolder.newFile();
+            final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
             firstCheckerConfig.addAttribute("cacheFile", cacheFile.getPath());
 
-            final String pathToEmptyFile = temporaryFolder.newFile("file.java").getPath();
+            final String pathToEmptyFile =
+                    File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
             final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
             verify(firstCheckerConfig, pathToEmptyFile, expected);

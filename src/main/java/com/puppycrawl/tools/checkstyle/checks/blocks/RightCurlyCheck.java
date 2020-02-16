@@ -34,7 +34,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * Checks the placement of right curly braces (<code>'}'</code>)
  * for if-else, try-catch-finally blocks, while-loops, for-loops,
  * method definitions, class definitions, constructor definitions,
- * instance and static initialization blocks.
+ * instance, static initialization blocks and annotation definitions.
  * For right curly brace of expression blocks please follow issue
  * <a href="https://github.com/checkstyle/checkstyle/issues/5945">#5945</a>.
  * </p>
@@ -142,6 +142,7 @@ public class RightCurlyCheck extends AbstractCheck {
             TokenTypes.LITERAL_DO,
             TokenTypes.STATIC_INIT,
             TokenTypes.INSTANCE_INIT,
+            TokenTypes.ANNOTATION_DEF,
         };
     }
 
@@ -246,7 +247,7 @@ public class RightCurlyCheck extends AbstractCheck {
     private static boolean shouldBeAloneOnLineWithNotAloneOption(Details details,
                                                                  String targetSrcLine) {
         return shouldBeAloneOnLineWithAloneOption(details, targetSrcLine)
-                && !isSingleLineBlock(details);
+                && !isBlockAloneOnSingleLine(details);
     }
 
     /**
@@ -286,15 +287,14 @@ public class RightCurlyCheck extends AbstractCheck {
         return rcurly.getParent().getParent().getType() == TokenTypes.INSTANCE_INIT
                 && details.nextToken.getType() == TokenTypes.RCURLY
                 && rcurly.getLineNo() != Details.getNextToken(tokenAfterNextToken).getLineNo();
-
     }
 
     /**
-     * Checks whether block has a single-line format.
+     * Checks whether block has a single-line format and is alone on a line.
      * @param details for validation.
-     * @return true if block has single-line format.
+     * @return true if block has single-line format and is alone on a line.
      */
-    private static boolean isSingleLineBlock(Details details) {
+    private static boolean isBlockAloneOnSingleLine(Details details) {
         final DetailAST rcurly = details.rcurly;
         final DetailAST lcurly = details.lcurly;
         DetailAST nextToken = details.nextToken;
@@ -306,7 +306,17 @@ public class RightCurlyCheck extends AbstractCheck {
             nextToken = Details.getNextToken(doWhileSemi);
         }
         return rcurly.getLineNo() == lcurly.getLineNo()
-                && rcurly.getLineNo() != nextToken.getLineNo();
+                && (rcurly.getLineNo() != nextToken.getLineNo()
+                || isRightcurlyFollowedBySemicolon(details));
+    }
+
+    /**
+     * Checks whether the right curly is followed by a semicolon.
+     * @param details details for validation.
+     * @return true if the right curly is followed by a semicolon.
+     */
+    private static boolean isRightcurlyFollowedBySemicolon(Details details) {
+        return details.nextToken.getType() == TokenTypes.SEMI;
     }
 
     /**
@@ -444,8 +454,8 @@ public class RightCurlyCheck extends AbstractCheck {
         }
 
         /**
-         * Collects validation details for CLASS_DEF, METHOD DEF, CTOR_DEF, STATIC_INIT, and
-         * INSTANCE_INIT.
+         * Collects validation details for CLASS_DEF, METHOD DEF, CTOR_DEF, STATIC_INIT,
+         * INSTANCE_INIT and ANNOTATION_DEF.
          * @param ast a {@code DetailAST} value
          * @return an object containing all details to make a validation
          */
@@ -453,7 +463,7 @@ public class RightCurlyCheck extends AbstractCheck {
             DetailAST rcurly = null;
             final DetailAST lcurly;
             final int tokenType = ast.getType();
-            if (tokenType == TokenTypes.CLASS_DEF) {
+            if (tokenType == TokenTypes.CLASS_DEF || tokenType == TokenTypes.ANNOTATION_DEF) {
                 final DetailAST child = ast.getLastChild();
                 lcurly = child.getFirstChild();
                 rcurly = child.getLastChild();

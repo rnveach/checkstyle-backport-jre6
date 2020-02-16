@@ -114,6 +114,17 @@
     <property name="fileExtensions" value="xml, vm"/>
     <property name="message" value="Line should not be longer than 100 symbols"/>
   </module>
+  <!--
+   Links to .dtd files should start with "/", "http://" or "https://",
+   otherwise they will be broken after archiving the documentation.
+   See https://github.com/checkstyle/checkstyle/issues/7340 for details.
+  -->
+  <module name="RegexpSingleline">
+    <property name="format" value="href=&quot;(?!\/|https?:\/\/).*?\.dtd&quot;"/>
+    <property name="fileExtensions" value="xml, vm"/>
+    <property name="message"
+      value="Relative links to DTD files are prohibited. Please use absolute path or uri instead."/>
+  </module>
   <module name="RegexpSingleline">
     <property name="id" value="noSourceforgeNetLinks"/>
     <property name="format" value="checkstyle\.sourceforge\.net"/>
@@ -254,6 +265,7 @@
       <property name="tokens" value="LITERAL_FINALLY"/>
       <property name="tokens" value="LITERAL_IF"/>
       <property name="tokens" value="LITERAL_TRY"/>
+      <property name="tokens" value="ANNOTATION_DEF"/>
       <property name="option" value="alone"/>
     </module>
     <module name="RightCurly">
@@ -265,6 +277,8 @@
     <module name="DesignForExtension">
       <property name="ignoredAnnotations"
                 value="Override, Test, Before, After, BeforeClass, AfterClass"/>
+      <property name="ignoredAnnotations"
+                value="BeforeAll, AfterAll, BeforeEach, AfterEach"/>
     </module>
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
@@ -275,7 +289,10 @@
     <module name="ThrowsCount">
       <property name="max" value="2"/>
     </module>
-    <module name="VisibilityModifier"/>
+    <module name="VisibilityModifier">
+      <property name="ignoreAnnotationCanonicalNames"
+                value="org.junit.Rule, org.junit.jupiter.api.io.TempDir"/>
+    </module>
 
     <!-- Coding -->
     <module name="ArrayTrailingComma"/>
@@ -349,6 +366,10 @@
       <property name="max" value="3"/>
     </module>
     <module name="NestedTryDepth"/>
+    <module name="NoArrayTrailingComma">
+      <!-- This Check is conflicting with ArrayTrailingComma -->
+      <property name="severity" value="ignore"/>
+    </module>
     <module name="NoClone"/>
     <module name="NoFinalizer"/>
     <module name="OneStatementPerLine"/>
@@ -434,8 +455,10 @@
     <module name="AvoidStaticImport"/>
     <module name="CustomImportOrder">
       <property name="customImportOrderRules"
-                value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS"/>
-      <property name="specialImportsRegExp" value="^org\."/>
+                value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE"/>
+      <property name="standardPackageRegExp" value="^java\."/>
+      <property name="specialImportsRegExp" value="^javax\."/>
+      <property name="thirdPartyPackageRegExp" value="^org\."/>
       <property name="sortImportsInGroupAlphabetically" value="true"/>
       <property name="separateLineBetweenGroups" value="true"/>
     </module>
@@ -473,8 +496,6 @@
     </module>
     <module name="JavadocContentLocation"/>
     <module name="JavadocMethod">
-      <property name="allowUndeclaredRTE" value="true"/>
-      <property name="allowThrowsTagsForSubclasses" value="true"/>
       <property name="validateThrows" value="true"/>
     </module>
     <module name="JavadocParagraph"/>

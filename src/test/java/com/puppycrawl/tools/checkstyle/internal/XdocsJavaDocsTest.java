@@ -20,7 +20,9 @@
 package com.puppycrawl.tools.checkstyle.internal;
 
 import static com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -361,8 +362,8 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
             if ("a".equals(nodeName) && "href".equals(attrName)) {
                 String value = attribute.getNodeValue();
 
-                assertNotEquals("links starting with '#' aren't supported: " + value,
-                        '#', value.charAt(0));
+                assertNotEquals('#', value.charAt(0),
+                        "links starting with '#' aren't supported: " + value);
 
                 if (value.contains("://")) {
                     attrValue = value;
@@ -439,7 +440,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                         // ignore
                         break;
                     default:
-                        Assert.fail("Unknown token '" + TokenUtil.getTokenName(parentNode.getType())
+                        fail("Unknown token '" + TokenUtil.getTokenName(parentNode.getType())
                                 + "': " + ast.getLineNo());
                         break;
                 }
@@ -460,14 +461,13 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
 
         private static void visitClass(DetailAST node) {
             if (ScopeUtil.isInScope(node, Scope.PUBLIC)) {
-                Assert.assertEquals(
-                        checkName + "'s class-level JavaDoc",
-                        CHECK_TEXT.get("Description")
-                                + (CHECK_TEXT.containsKey("Rule Description") ? CHECK_TEXT.get("Rule Description") : "")
-                                + (CHECK_TEXT.containsKey("Notes") ? CHECK_TEXT.get("Notes") : "")
-                                + (CHECK_TEXT.containsKey("Properties") ? CHECK_TEXT.get("Properties") : "")
-                                + CHECK_TEXT.get("Examples") + " @since "
-                                + CHECK_TEXT.get("since"), getJavaDocText(node));
+                assertEquals(CHECK_TEXT.get("Description")
+                        + (CHECK_TEXT.containsKey("Rule Description") ? CHECK_TEXT.get("Rule Description") : "")
+                        + (CHECK_TEXT.containsKey("Notes") ? CHECK_TEXT.get("Notes") : "")
+                        + (CHECK_TEXT.containsKey("Properties") ? CHECK_TEXT.get("Properties") : "")
+                        + CHECK_TEXT.get("Examples") + " @since "
+                        + CHECK_TEXT.get("since"), getJavaDocText(node),
+                        checkName + "'s class-level JavaDoc");
             }
         }
 
@@ -477,9 +477,8 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                 final String propertyDoc = CHECK_PROPERTY_DOC.get(propertyName);
 
                 if (propertyDoc != null) {
-                    Assert.assertEquals(checkName + "'s class field-level JavaDoc for "
-                                    + propertyName, makeFirstUpper(propertyDoc),
-                            getJavaDocText(node));
+                    assertEquals(makeFirstUpper(propertyDoc), getJavaDocText(node),
+                            checkName + "'s class field-level JavaDoc for " + propertyName);
                 }
             }
         }
@@ -494,10 +493,9 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                 if (propertyDoc != null) {
                     final String javaDoc = getJavaDocText(node);
 
-                    Assert.assertEquals(checkName + "'s class method-level JavaDoc for "
-                            + propertyName,
-                            "Setter to " + makeFirstLower(propertyDoc),
-                            javaDoc.substring(0, javaDoc.indexOf(" @param")));
+                    assertEquals("Setter to " + makeFirstLower(propertyDoc),
+                            javaDoc.substring(0, javaDoc.indexOf(" @param")),
+                            checkName + "'s class method-level JavaDoc for " + propertyName);
                 }
             }
         }
@@ -542,7 +540,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                         .replace("\r", "");
             }
             catch (ParserConfigurationException ex) {
-                Assert.fail("Exception: " + ex.getClass() + " - " + ex.getMessage());
+                fail("Exception: " + ex.getClass() + " - " + ex.getMessage());
             }
 
             return result;

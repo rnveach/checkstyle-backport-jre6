@@ -20,7 +20,7 @@
 package com.puppycrawl.tools.checkstyle.checks.whitespace;
 
 import static com.puppycrawl.tools.checkstyle.checks.whitespace.SingleSpaceSeparatorCheck.MSG_KEY;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.Test;
 
@@ -47,8 +47,8 @@ public class SingleSpaceSeparatorCheckTest extends AbstractModuleTestSupport {
     public void testGetAcceptableTokens() {
         final SingleSpaceSeparatorCheck check = new SingleSpaceSeparatorCheck();
 
-        assertArrayEquals("Invalid acceptable tokens",
-            CommonUtil.EMPTY_INT_ARRAY, check.getAcceptableTokens());
+        assertArrayEquals(CommonUtil.EMPTY_INT_ARRAY, check.getAcceptableTokens(),
+                "Invalid acceptable tokens");
     }
 
     @Test

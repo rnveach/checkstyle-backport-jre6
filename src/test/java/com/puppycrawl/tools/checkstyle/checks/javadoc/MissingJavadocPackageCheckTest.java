@@ -20,8 +20,8 @@
 package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocPackageCheck.MSG_PKG_JAVADOC_MISSING;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -110,6 +110,31 @@ public class MissingJavadocPackageCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testPackageJavadocMissingWithAnnotationAndBlockComment() throws Exception {
+        final DefaultConfiguration config = createModuleConfig(MissingJavadocPackageCheck.class);
+        final String[] expected = {
+            "6: " + getCheckMessage(MSG_PKG_JAVADOC_MISSING),
+        };
+        verify(config, getPath("nojavadoc/annotation/blockcomment/package-info.java"), expected);
+    }
+
+    @Test
+    public void testPackageJavadocMissingDetachedJavadoc() throws Exception {
+        final DefaultConfiguration config = createModuleConfig(MissingJavadocPackageCheck.class);
+        final String[] expected = {
+            "5: " + getCheckMessage(MSG_PKG_JAVADOC_MISSING),
+        };
+        verify(config, getPath("nojavadoc/detached/package-info.java"), expected);
+    }
+
+    @Test
+    public void testPackageJavadocPresentWithHeader() throws Exception {
+        final DefaultConfiguration config = createModuleConfig(MissingJavadocPackageCheck.class);
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+        verify(config, getPath("header/package-info.java"), expected);
+    }
+
+    @Test
     public void testPackageJavadocMissingWithBlankLines() throws Exception {
         final DefaultConfiguration config = createModuleConfig(MissingJavadocPackageCheck.class);
         final String[] expected = {
@@ -124,11 +149,11 @@ public class MissingJavadocPackageCheckTest extends AbstractModuleTestSupport {
         final int[] expected = {
             TokenTypes.PACKAGE_DEF,
         };
-        Assert.assertArrayEquals("Acceptable required tokens are invalid",
-            expected, check.getAcceptableTokens());
-        Assert.assertArrayEquals("Default required tokens are invalid",
-            expected, check.getDefaultTokens());
-        Assert.assertArrayEquals("Required required tokens are invalid",
-            expected, check.getRequiredTokens());
+        assertArrayEquals(expected, check.getAcceptableTokens(),
+                "Acceptable required tokens are invalid");
+        assertArrayEquals(expected, check.getDefaultTokens(),
+                "Default required tokens are invalid");
+        assertArrayEquals(expected, check.getRequiredTokens(),
+                "Required required tokens are invalid");
     }
 }

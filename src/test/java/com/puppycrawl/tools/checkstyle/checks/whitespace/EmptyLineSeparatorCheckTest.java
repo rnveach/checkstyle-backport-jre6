@@ -23,7 +23,7 @@ import static com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparat
 import static com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck.MSG_MULTIPLE_LINES_AFTER;
 import static com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck.MSG_MULTIPLE_LINES_INSIDE;
 import static com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck.MSG_SHOULD_BE_SEPARATED;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.Test;
 
@@ -43,9 +43,8 @@ public class EmptyLineSeparatorCheckTest
     @Test
     public void testGetRequiredTokens() {
         final EmptyLineSeparatorCheck checkObj = new EmptyLineSeparatorCheck();
-        assertArrayEquals(
-            "EmptyLineSeparatorCheck#getRequiredTokens should return empty array by default",
-            CommonUtil.EMPTY_INT_ARRAY, checkObj.getRequiredTokens());
+        assertArrayEquals(CommonUtil.EMPTY_INT_ARRAY, checkObj.getRequiredTokens(),
+                "EmptyLineSeparatorCheck#getRequiredTokens should return empty array by default");
     }
 
     @Test
@@ -148,6 +147,69 @@ public class EmptyLineSeparatorCheckTest
     }
 
     @Test
+    public void testBlockCommentNotSeparatedFromPackage() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = {
+            "12: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "/*"),
+        };
+        verify(checkConfig,
+            getPath("InputEmptyLineSeparatorBlockCommentUnderPackage.java"),
+            expected);
+    }
+
+    @Test
+    public void testSingleCommentNotSeparatedFromPackage() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = {
+            "12: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "//"),
+        };
+        verify(checkConfig,
+            getPath("InputEmptyLineSeparatorSingleCommentUnderPackage.java"),
+            expected);
+    }
+
+    @Test
+    public void testClassDefinitionNotSeparatedFromPackage() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = {
+            "12: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "CLASS_DEF"),
+        };
+        verify(checkConfig,
+            getPath("InputEmptyLineSeparatorModifierUnderPackage.java"),
+            expected);
+    }
+
+    @Test
+    public void testClassDefinitionAndCommentNotSeparatedFromPackage() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = {
+            "12: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "//"),
+            "13: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "CLASS_DEF"),
+        };
+        final String testFile =
+            "InputEmptyLineSeparatorClassDefinitionAndCommentNotSeparatedFromPackage.java";
+        verify(checkConfig, getPath(testFile), expected);
+    }
+
+    @Test
+    public void testBlockCommentSeparatedFromPackage() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+        verify(checkConfig,
+            getPath("InputEmptyLineSeparatorBlockCommentSeparatedFromPackage.java"),
+            expected);
+    }
+
+    @Test
+    public void testSingleCommentSeparatedFromPackage() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+        verify(checkConfig,
+            getPath("InputEmptyLineSeparatorSingleCommentSeparatedFromPackage.java"),
+            expected);
+    }
+
+    @Test
     public void testGetAcceptableTokens() {
         final EmptyLineSeparatorCheck emptyLineSeparatorCheckObj = new EmptyLineSeparatorCheck();
         final int[] actual = emptyLineSeparatorCheckObj.getAcceptableTokens();
@@ -164,7 +226,7 @@ public class EmptyLineSeparatorCheckTest
             TokenTypes.CTOR_DEF,
             TokenTypes.VARIABLE_DEF,
         };
-        assertArrayEquals("Default acceptable tokens are invalid", expected, actual);
+        assertArrayEquals(expected, actual, "Default acceptable tokens are invalid");
     }
 
     @Test

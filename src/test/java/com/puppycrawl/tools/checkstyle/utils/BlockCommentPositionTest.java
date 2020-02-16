@@ -19,8 +19,8 @@
 
 package com.puppycrawl.tools.checkstyle.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -39,8 +39,8 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
 
     @Test
     public void testPrivateConstr() throws Exception {
-        assertTrue("Constructor is not private",
-                TestUtil.isUtilsClassHasPrivateConstructor(BlockCommentPosition.class, true));
+        assertTrue(TestUtil.isUtilsClassHasPrivateConstructor(BlockCommentPosition.class, true),
+                "Constructor is not private");
     }
 
     @Test
@@ -132,7 +132,7 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
             final DetailAST ast = JavaParser.parseFile(new File(getPath(metadata.getFileName())),
                 JavaParser.Options.WITH_COMMENTS);
             final int matches = getJavadocsCount(ast, metadata.getAssertion());
-            assertEquals("Invalid javadoc count", metadata.getMatchesNum(), matches);
+            assertEquals(metadata.getMatchesNum(), matches, "Invalid javadoc count");
         }
     }
 

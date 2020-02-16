@@ -553,6 +553,7 @@ public class SuppressWithNearbyCommentFilter
          * @param influenceFormat raw influence format
          * @param text            text of the suppression
          * @return parsed influence
+         * @throws IllegalArgumentException when unbale to parse int in format
          */
         private static int parseInfluence(String format, String influenceFormat, String text) {
             try {

@@ -20,12 +20,12 @@
 package com.puppycrawl.tools.checkstyle.checks.sizes;
 
 import static com.puppycrawl.tools.checkstyle.checks.sizes.ExecutableStatementCountCheck.MSG_KEY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Collection;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import antlr.CommonHiddenStreamToken;
@@ -52,14 +52,15 @@ public class ExecutableStatementCountCheckTest
         final DetailAstImpl ast = new DetailAstImpl();
         ast.setType(TokenTypes.STATIC_INIT);
         final ExecutableStatementCountCheck check = new ExecutableStatementCountCheck();
-        Assert.assertTrue("Stateful field is not cleared after beginTree",
+        assertTrue(
                 TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "contextStack",
                     new Predicate<Object>() {
                         @Override
                         public boolean test(Object contextStack) {
                             return ((Collection<Context>) contextStack).isEmpty();
                         }
-                    }));
+                    }),
+                "Stateful field is not cleared after beginTree");
     }
 
     @Test
@@ -163,7 +164,7 @@ public class ExecutableStatementCountCheckTest
             fail("exception expected");
         }
         catch (IllegalStateException ex) {
-            assertEquals("Invalid exception message", "ENUM[0x-1]", ex.getMessage());
+            assertEquals("ENUM[0x-1]", ex.getMessage(), "Invalid exception message");
         }
     }
 
@@ -179,7 +180,7 @@ public class ExecutableStatementCountCheckTest
             fail("exception expected");
         }
         catch (IllegalStateException ex) {
-            assertEquals("Invalid exception message", "ENUM[0x-1]", ex.getMessage());
+            assertEquals("ENUM[0x-1]", ex.getMessage(), "Invalid exception message");
         }
     }
 

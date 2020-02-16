@@ -67,25 +67,17 @@ osx-package)
   mvn -e package
   ;;
 
-osx-jdk12-package)
-  exclude1="!FileContentsTest#testGetJavadocBefore,"
-  exclude2="!MainFrameModelPowerTest#testOpenFileWithUnknownParseMode,"
-  exclude3="!TokenUtilTest#testTokenValueIncorrect2,"
-  exclude4="!ImportControlLoaderPowerTest#testInputStreamThatFailsOnClose"
+osx-jdk13-package)
   export JAVA_HOME=$(/usr/libexec/java_home)
-  mvn -e package -Dtest=*,${exclude1}${exclude2}${exclude3}${exclude4}
+  mvn -e package
   ;;
 
-osx-jdk12-assembly)
+osx-jdk13-assembly)
   mvn -e package -Passembly
   ;;
 
 site)
   mvn -e clean site -Pno-validations
-  ;;
-
-javac9)
-  javac $(grep -Rl --include='*.java' ': Compilable with Java9' src/test/resources-noncompilable)
   ;;
 
 javac8)
@@ -105,12 +97,40 @@ javac8)
   done
   ;;
 
-jdk12-assembly-site)
+javac9)
+  files=($(grep -Rl --include='*.java' ': Compilable with Java9' \
+        src/test/resources-noncompilable || true))
+  if [[  ${#files[@]} -eq 0 ]]; then
+    echo "No Java9 files to process"
+  else
+      mkdir -p target
+      for file in "${files[@]}"
+      do
+        javac --release 9 -d target "${file}"
+      done
+  fi
+  ;;
+
+javac13)
+  files=($(grep -Rl --include='*.java' ': Compilable with Java13' \
+        src/test/resources-noncompilable || true))
+  if [[  ${#files[@]} -eq 0 ]]; then
+    echo "No Java13 files to process"
+  else
+      mkdir -p target
+      for file in "${files[@]}"
+      do
+        javac --release 13 --enable-preview -d target "${file}"
+      done
+  fi
+  ;;
+
+jdk13-assembly-site)
   mvn -e package -Passembly
   mvn -e site -Pno-validations
   ;;
 
-jdk12-verify-limited)
+jdk13-verify-limited)
   # we skip pmd and spotbugs as they executed in special Travis build
   mvn -e verify -Dpmd.skip=true -Dspotbugs.skip=true
   ;;
@@ -458,19 +478,52 @@ check-missing-pitests)
   ;;
 
 verify-no-exception-configs)
+  mkdir -p .ci-temp
   wget -q \
+    --directory-prefix .ci-temp \
+    --no-clobber \
     https://raw.githubusercontent.com/checkstyle/contribution/master/checkstyle-tester/checks-nonjavadoc-error.xml
   wget -q \
+    --directory-prefix .ci-temp \
+    --no-clobber \
     https://raw.githubusercontent.com/checkstyle/contribution/master/checkstyle-tester/checks-only-javadoc-error.xml
   MODULES_WITH_EXTERNAL_FILES="Filter|ImportControl"
   xmlstarlet sel --net --template -m .//module -v "@name" \
-    -n checks-nonjavadoc-error.xml -n checks-only-javadoc-error.xml \
+    -n .ci-temp/checks-nonjavadoc-error.xml -n .ci-temp/checks-only-javadoc-error.xml \
     | grep -vE $MODULES_WITH_EXTERNAL_FILES | grep -v "^$" \
-    | sort | uniq | sed "s/Check$//" > web.txt
+    | sort | uniq | sed "s/Check$//" > .ci-temp/web.txt
   xmlstarlet sel --net --template -m .//module -v "@name" -n config/checkstyle_checks.xml \
     | grep -vE $MODULES_WITH_EXTERNAL_FILES | grep -v "^$" \
-    | sort | uniq | sed "s/Check$//" > file.txt
-  diff -u web.txt file.txt
+    | sort | uniq | sed "s/Check$//" > .ci-temp/file.txt
+  DIFF_TEXT=$(diff -u .ci-temp/web.txt .ci-temp/file.txt | cat)
+  if [[ $DIFF_TEXT != "" ]]; then
+    if [[ $TRAVIS_PULL_REQUEST =~ ^([0-9]+)$ ]]; then
+      LINK_PR=https://api.github.com/repos/checkstyle/checkstyle/pulls/$TRAVIS_PULL_REQUEST
+      REGEXP="https://github.com/checkstyle/contribution/pull/"
+      PR_DESC=$(curl -s -H "Authorization: token $READ_ONLY_TOKEN" $LINK_PR \
+                  | jq '.body' | grep $REGEXP | cat )
+      echo 'PR Description grepped:'${PR_DESC:0:180}
+      if [[ -z $PR_DESC ]]; then
+        echo 'You introduce new Check'
+        diff -u .ci-temp/web.txt .ci-temp/file.txt | cat
+        echo 'Please create PR to repository https://github.com/checkstyle/contribution'
+        echo 'and add your new Check '
+        echo '   to file checkstyle-tester/checks-nonjavadoc-error.xml'
+        echo 'or to file checkstyle-tester/checks-only-javadoc-error.xml'
+        echo 'PR for contribution repository will be merged right after this PR.'
+        sleep 5s
+        false;
+      fi
+    else
+      diff -u .ci-temp/web.txt .ci-temp/file.txt
+      echo 'file config/checkstyle_checks.xml contains Check that is not present at:'
+      echo 'https://github.com/checkstyle/contribution/checkstyle-tester/checks-nonjavadoc-error.xml'
+      echo 'https://github.com/checkstyle/contribution/checkstyle-tester/checks-nonjavadoc-error.xml'
+      echo 'Please add new Check to one of such files to let Check participate in auto testing'
+      sleep 5s
+      false;
+    fi
+  fi
   ;;
 
 git-status)
@@ -478,6 +531,43 @@ git-status)
     echo "There are changes in files after clone, recheck .gitattributes file"
     sleep 5s
     false
+  fi
+  ;;
+
+check-since-version)
+  ## Travis merges the PR commit into origin/master
+  ## This identifies the PR's original commit
+  ## if it notices a merge commit
+  HEAD=`git rev-parse HEAD`
+  if git show --summary HEAD | grep ^Merge: ; then
+      echo "Merge detected."
+      HEAD=`git log -n 1 --no-merges --pretty=format:"%H"`
+  fi
+  ## Identify previous commit to know how much to examine
+  ## Script assumes we are only working with 1 commit if we are in master
+  ## Otherwise, it looks for the common ancestor with master
+  COMMIT=`git rev-parse $HEAD`
+  echo "PR commit: $COMMIT"
+
+  HEAD_NEW_FILES=$(git show $COMMIT | cat | grep -A 1 "\-\-\- /dev/null" | cat)
+  echo "New files in commit: $HEAD_NEW_FILES"
+  MODULE_REG=".*(Check|Filter).java"
+  REGEXP="b/src/main/java/com/puppycrawl/tools/checkstyle/(checks|filters|filefilters)/$MODULE_REG"
+  NEW_CHECK_FILE=$(git show $COMMIT | cat | grep -A 1 "\-\-\- /dev/null" | cat | \
+    grep -E "$REGEXP" | \
+    cat | sed "s/+++ b\///")
+  echo "New Check file: $NEW_CHECK_FILE"
+
+  if [ -f "$NEW_CHECK_FILE" ]; then
+    echo "New Check detected: $NEW_CHECK_FILE"
+    CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
+                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+    CS_RELEASE_VERSION=$(echo $CS_POM_VERSION | cut -d '-' -f 1)
+    echo "CS Release version: $CS_RELEASE_VERSION"
+    echo "Grep for @since $CS_RELEASE_VERSION"
+    grep "* @since $CS_RELEASE_VERSION" $NEW_CHECK_FILE
+  else
+    echo "No new Check, all is good."
   fi
   ;;
 

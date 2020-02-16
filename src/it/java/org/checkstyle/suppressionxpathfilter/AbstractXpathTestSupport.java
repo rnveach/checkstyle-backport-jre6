@@ -19,9 +19,10 @@
 
 package org.checkstyle.suppressionxpathfilter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Locale;
@@ -29,8 +30,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.checkstyle.base.AbstractCheckstyleModuleTestSupport;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.After;
+import org.junit.Before;
 
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.JavaParser;
@@ -54,10 +55,45 @@ public abstract class AbstractXpathTestSupport extends AbstractCheckstyleModuleT
     private static final Pattern LINE_COLUMN_NUMBER_REGEX =
             Pattern.compile("([0-9]+):([0-9]+):");
 
-    @Rule
-    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
+    /**
+     * <p>
+     * The temporary folder to hold intermediate files.
+     * </p>
+     * <p>
+     * Till https://github.com/junit-team/junit5/issues/1786
+     * we need to create and clean it manually.
+     * Once this issue will be resolved, it should be annotated with &#64;TempDir
+     * and methods setupTemporaryFolder and removeTemporaryFolder should be dropped.
+     * </p>
+     */
+    private Path temporaryFolder;
 
     protected abstract String getCheckName();
+
+    /**
+     * <p>
+     * Creates temporary folder for intermediate files.
+     * </p>
+     *
+     * @throws IOException if an IO error occurs
+     */
+    @Before
+    public void setupTemporaryFolder() throws IOException {
+        temporaryFolder = Files7.createTempDirectory("xpath-test");
+    }
+
+    /**
+     * Removes temporary folder with intermediate files.
+     */
+    @After
+    public void removeTemporaryFolder() {
+        final Path directory = temporaryFolder;
+        final File[] files = directory.getFile().listFiles();
+        for (File file : files) {
+            Files7.delete(new Path(file));
+        }
+        Files7.delete(temporaryFolder);
+    }
 
     @Override
     protected String getPackageLocation() {
@@ -82,16 +118,16 @@ public abstract class AbstractXpathTestSupport extends AbstractCheckstyleModuleT
 
     private static void verifyXpathQueries(List<String> generatedXpathQueries,
                                            List<String> expectedXpathQueries) {
-        assertEquals("Generated queries do not match expected ones", expectedXpathQueries,
-                generatedXpathQueries);
+        assertEquals(expectedXpathQueries,
+                generatedXpathQueries, "Generated queries do not match expected ones");
     }
 
     private String createSuppressionsXpathConfigFile(String checkName,
                                                      List<String> xpathQueries)
             throws Exception {
-
-        final File suppressionsXpathConfigFile = temporaryFolder.newFile();
-        final Writer bw = Files7.newBufferedWriter(new Path(suppressionsXpathConfigFile),
+        final Path suppressionsXpathConfigPath =
+                Files7.createTempFile(temporaryFolder, "", "");
+        final Writer bw = Files7.newBufferedWriter(suppressionsXpathConfigPath,
                 StandardCharsets.UTF_8);
         try {
             bw.write("<?xml version=\"1.0\"?>\n");
@@ -114,7 +150,7 @@ public abstract class AbstractXpathTestSupport extends AbstractCheckstyleModuleT
             bw.close();
         }
 
-        return suppressionsXpathConfigFile.getPath();
+        return suppressionsXpathConfigPath.toString();
     }
 
     private DefaultConfiguration createSuppressionXpathFilter(String checkName,

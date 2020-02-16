@@ -291,6 +291,7 @@ Daniil
 daniilyar
 Darguments
 Datasource
+daveho
 davidwalsh
 Dcheckstyle
 dcm
@@ -305,6 +306,7 @@ defaultcomeslast
 delims
 DENORMALIZER
 Depedency
+dependabot
 Deque
 DEREF
 descendanttoken
@@ -396,6 +398,7 @@ equalsavoidnull
 equalshashcode
 equalsverifier
 erial
+ERRORLEVEL
 errorprone
 esac
 Eslint
@@ -617,6 +620,7 @@ issuehunt
 itemvalue
 ith
 itr
+itsallcode
 ivanov
 ivanovjr
 IVersion
@@ -676,6 +680,7 @@ JFrame
 jgit
 jgrasp
 jguru
+jhu
 jira
 jitpack
 jjva
@@ -879,6 +884,7 @@ nlow
 NMTOKEN
 noarch
 noarg
+noarraytrailingcomma
 noauto
 nobr
 noclone
@@ -941,6 +947,7 @@ onetoplevelclass
 onevariableperline
 oo
 OOL
+oopsla
 opencollective
 openjdk
 operatorwrap
@@ -1230,6 +1237,8 @@ suppresswithplaintextcommentfilter
 svg
 svn
 sxpath
+sys
+sysextensions
 sysprop
 systemout
 systemtests
@@ -1245,7 +1254,6 @@ technotes
 tected
 Testik
 testmodules
-TEXCEPTION
 textlevel
 Tfo
 tfoot
@@ -1428,7 +1436,7 @@ xterm
 xtr
 xwiki
 XXXX
-XXXXXX
+xxxxxx
 xxxxxxxxxx
 XXXXXXXXXXXXXXXXXXXXXXXXXXXX
 xy

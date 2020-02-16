@@ -19,10 +19,10 @@
 
 package com.puppycrawl.tools.checkstyle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,8 +61,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
         final Set<String> packageNames = PackageNamesLoader
                 .getPackageNames(Thread.currentThread()
                         .getContextClassLoader());
-        assertEquals("pkgNames.length.", 0,
-                packageNames.size());
+        assertEquals(0, packageNames.size(), "pkgNames.length.");
     }
 
     @Test
@@ -70,7 +69,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
         final Set<String> actualPackageNames = PackageNamesLoader
                 .getPackageNames(new TestUrlsClassLoader(Collections7.<URL>emptyEnumeration()));
 
-        assertEquals("Invalid package names length.", 0, actualPackageNames.size());
+        assertEquals(0, actualPackageNames.size(), "Invalid package names length.");
     }
 
     @Test
@@ -101,11 +100,11 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
             "com.puppycrawl.tools.checkstyle.filters",
         };
 
-        assertEquals("Invalid package names length.", expectedPackageNames.length,
-            actualPackageNames.size());
+        assertEquals(expectedPackageNames.length,
+            actualPackageNames.size(), "Invalid package names length.");
         final Set<String> checkstylePackagesSet =
                 new HashSet<String>(Arrays.asList(expectedPackageNames));
-        assertEquals("Invalid names set.", checkstylePackagesSet, actualPackageNames);
+        assertEquals(checkstylePackagesSet, actualPackageNames, "Invalid names set.");
     }
 
     @Test
@@ -119,11 +118,11 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
             "coding.",
         };
 
-        assertEquals("Invalid package names length.", expectedPackageNames.length,
-            actualPackageNames.size());
+        assertEquals(expectedPackageNames.length,
+            actualPackageNames.size(), "Invalid package names length.");
         final Set<String> checkstylePackagesSet =
                 new HashSet<String>(Arrays.asList(expectedPackageNames));
-        assertEquals("Invalid names set.", checkstylePackagesSet, actualPackageNames);
+        assertEquals(checkstylePackagesSet, actualPackageNames, "Invalid names set.");
     }
 
     @Test
@@ -138,11 +137,11 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
             "coding.",
         };
 
-        assertEquals("Invalid package names length.", expectedPackageNames.length,
-            actualPackageNames.size());
+        assertEquals(expectedPackageNames.length, actualPackageNames.size(),
+                "Invalid package names length.");
         final Set<String> checkstylePackagesSet =
                 new HashSet<String>(Arrays.asList(expectedPackageNames));
-        assertEquals("Invalid names set.", checkstylePackagesSet, actualPackageNames);
+        assertEquals(checkstylePackagesSet, actualPackageNames, "Invalid names set.");
     }
 
     @Test
@@ -155,7 +154,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid exception cause class", ex.getCause() instanceof SAXException);
+            assertTrue(ex.getCause() instanceof SAXException, "Invalid exception cause class");
         }
     }
 
@@ -186,9 +185,9 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid exception cause class", ex.getCause() instanceof IOException);
-            assertNotEquals("Invalid exception message",
-                    "unable to get package file resources", ex.getMessage());
+            assertTrue(ex.getCause() instanceof IOException, "Invalid exception cause class");
+            assertNotEquals("unable to get package file resources", ex.getMessage(),
+                    "Invalid exception message");
         }
     }
 
@@ -199,9 +198,9 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid exception cause class", ex.getCause() instanceof IOException);
-            assertEquals("Invalid exception message",
-                    "unable to get package file resources", ex.getMessage());
+            assertTrue(ex.getCause() instanceof IOException, "Invalid exception cause class");
+            assertEquals("unable to get package file resources", ex.getMessage(),
+                    "Invalid exception message");
         }
     }
 

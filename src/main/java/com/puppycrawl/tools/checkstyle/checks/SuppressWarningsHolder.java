@@ -162,7 +162,7 @@ public class SuppressWarningsHolder
 
     /**
      * Returns the alias for the source name of a check. If an alias has been
-     * explicitly registered via {@link #registerAlias(String, String)}, that
+     * explicitly registered via {@link #setAliasList(String...)}, that
      * alias is returned; otherwise, the default alias is used.
      * @param sourceName the source name of the check (generally the class
      *        name)
@@ -190,6 +190,7 @@ public class SuppressWarningsHolder
      * Setter to specify aliases for check names that can be used in code
      * within {@code SuppressWarnings}.
      * @param aliasList the list of comma-separated alias assignments
+     * @throws IllegalArgumentException when alias item does not have '='
      */
     public void setAliasList(String... aliasList) {
         for (String sourceAlias : aliasList) {

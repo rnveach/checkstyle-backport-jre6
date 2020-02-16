@@ -6,7 +6,7 @@
 
 <suppressions>
     <!-- can't split long messages between lines -->
-    <suppress checks="RegexpSingleline" files="google_checks\.xml" lines="48,85"/>
+    <suppress checks="RegexpSingleline" files="google_checks\.xml" lines="56,113"/>
     <!-- don't validate generated files -->
     <suppress checks="RegexpSingleline" files="releasenotes\.xml"/>
 
@@ -130,4 +130,5 @@
     <!-- can relax more on this package -->
     <suppress message="Missing a Javadoc" files="[\\/]jre6[\\/]"/>
     <suppress checks="JavadocPackage|WriteTag|DesignForExtension|ReturnCount|ParameterName|AvoidInlineConditionals|MagicNumber" files="[\\/]jre6[\\/]"/>
+    <suppress id="ImportControlTest" files="[\\/]src[\\/]test[\\/]java[\\/]org[\\/]junit"/>
 </suppressions>

@@ -23,10 +23,10 @@ import static com.puppycrawl.tools.checkstyle.checks.TranslationCheck.MSG_KEY;
 import static com.puppycrawl.tools.checkstyle.checks.TranslationCheck.MSG_KEY_MISSING_TRANSLATION_FILE;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -111,7 +111,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
 
     @Test
     public void testDifferentPaths() throws Exception {
-        final File file = temporaryFolder.newFile("messages_test_de.properties");
+        final File file = new File(temporaryFolder.newFolder(), "messages_test_de.properties");
         final Writer writer = Files7.newBufferedWriter(new Path(file), StandardCharsets.UTF_8);
         try {
             final String content = "hello=Hello\ncancel=Cancel";
@@ -158,8 +158,8 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
         final Field field = check.getClass().getDeclaredField("filesToProcess");
         field.setAccessible(true);
 
-        assertTrue("Stateful field is not cleared on beginProcessing",
-            ((Collection<File>) field.get(check)).isEmpty());
+        assertTrue(((Collection<File>) field.get(check)).isEmpty(),
+                "Stateful field is not cleared on beginProcessing");
     }
 
     @Test
@@ -249,14 +249,14 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
 
         final Set<String> keys = Whitebox.invokeMethod(check, "getTranslationKeys",
                 new File(".no.such.file"));
-        assertTrue("Translation keys should be empty when File is not found", keys.isEmpty());
+        assertTrue(keys.isEmpty(), "Translation keys should be empty when File is not found");
 
-        assertEquals("expected number of errors to fire", 1, dispatcher.savedErrors.size());
+        assertEquals(1, dispatcher.savedErrors.size(), "expected number of errors to fire");
         final LocalizedMessage localizedMessage = new LocalizedMessage(1,
                 Definitions.CHECKSTYLE_BUNDLE, "general.fileNotFound",
                 null, null, getClass(), null);
-        assertEquals("Invalid message", localizedMessage.getMessage(),
-                dispatcher.savedErrors.iterator().next().getMessage());
+        assertEquals(localizedMessage.getMessage(),
+                dispatcher.savedErrors.iterator().next().getMessage(), "Invalid message");
     }
 
     @Test
@@ -273,12 +273,12 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
         final Exception exception = new IOException("test exception");
         Whitebox.invokeMethod(check, "logException", exception, new File(""));
 
-        assertEquals("expected number of errors to fire", 1, dispatcher.savedErrors.size());
+        assertEquals(1, dispatcher.savedErrors.size(), "expected number of errors to fire");
         final LocalizedMessage localizedMessage = new LocalizedMessage(1,
                 Definitions.CHECKSTYLE_BUNDLE, "general.exception",
                 new String[] {exception.getMessage()}, null, getClass(), null);
-        assertEquals("Invalid message", localizedMessage.getMessage(),
-                dispatcher.savedErrors.iterator().next().getMessage());
+        assertEquals(localizedMessage.getMessage(),
+                dispatcher.savedErrors.iterator().next().getMessage(), "Invalid message");
     }
 
     @Test

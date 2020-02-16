@@ -605,6 +605,10 @@ import android.*;
             <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fimports+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22custom.import.order.nonGroup.import%22">
             custom.import.order.nonGroup.import</a>
           </li>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fimports+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22custom.import.order.separated.internally%22">
+            custom.import.order.separated.internally</a>
+          </li>
         </ul>
         <p>
           All messages can be customized if the default message doesn't suit you.
@@ -637,7 +641,7 @@ import android.*;
         <p>
           Note: By default, the check rejects all <code>sun.*</code> packages since
           programs that contain direct calls to the <code>sun.*</code> packages are
-          <a href="https://www.oracle.com/technetwork/java/faq-sun-packages-142232.html">
+          <a href="https://www.oracle.com/java/technologies/faq-sun-packages.html">
           "not guaranteed to work on all Java-compatible platforms"</a>.
           To reject other packages, set property <code>illegalPkgs</code> to
           a list of the illegal packages.
@@ -961,7 +965,7 @@ public class InputIllegalImport { }
 
         <p>
           The DTD for a import control XML document is at <a
-          href="dtds/import_control_1_4.dtd">
+          href="/dtds/import_control_1_4.dtd">
           https://checkstyle.org/dtds/import_control_1_4.dtd</a>. It
           contains documentation on each of the elements and attributes.
         </p>

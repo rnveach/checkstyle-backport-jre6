@@ -19,9 +19,10 @@
 
 package com.puppycrawl.tools.checkstyle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -43,6 +44,7 @@ import com.puppycrawl.tools.checkstyle.checks.coding.NestedForDepthCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck;
 import com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck;
 import com.puppycrawl.tools.checkstyle.internal.utils.CloseAndFlushTestByteArrayOutputStream;
+import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class XpathFileGeneratorAuditListenerTest {
@@ -96,7 +98,7 @@ public class XpathFileGeneratorAuditListenerTest {
         listener.auditStarted(null);
         listener.auditFinished(null);
         final String actual = out.toString();
-        assertTrue("Output should be empty", actual.isEmpty());
+        assertTrue(actual.isEmpty(), "Output should be empty");
     }
 
     @Test
@@ -108,7 +110,7 @@ public class XpathFileGeneratorAuditListenerTest {
         listener.fileStarted(ev);
         listener.auditFinished(null);
         final String actual = out.toString();
-        assertTrue("Output should be empty", actual.isEmpty());
+        assertTrue(actual.isEmpty(), "Output should be empty");
     }
 
     @Test
@@ -120,7 +122,7 @@ public class XpathFileGeneratorAuditListenerTest {
         listener.fileFinished(ev);
         listener.auditFinished(null);
         final String actual = out.toString();
-        assertTrue("Output should be empty", actual.isEmpty());
+        assertTrue(actual.isEmpty(), "Output should be empty");
     }
 
     @Test
@@ -139,9 +141,8 @@ public class XpathFileGeneratorAuditListenerTest {
             fail("Exception is excepted");
         }
         catch (UnsupportedOperationException ex) {
-            assertEquals("Invalid exception message",
-                    "Operation is not supported",
-                    ex.getMessage());
+            assertEquals("Operation is not supported",
+                    ex.getMessage(), "Invalid exception message");
         }
     }
 
@@ -236,7 +237,7 @@ public class XpathFileGeneratorAuditListenerTest {
         listener.auditStarted(null);
         listener.auditFinished(null);
 
-        assertEquals("Invalid close count", 1, outStream.getCloseCount());
+        assertEquals(1, outStream.getCloseCount(), "Invalid close count");
     }
 
     @Test
@@ -248,7 +249,7 @@ public class XpathFileGeneratorAuditListenerTest {
         listener.auditStarted(null);
         listener.auditFinished(null);
 
-        assertEquals("Invalid close count", 0, outStream.getCloseCount());
+        assertEquals(0, outStream.getCloseCount(), "Invalid close count");
     }
 
     private AuditEvent createAuditEvent(String fileName, int lineNumber, int columnNumber,
@@ -306,11 +307,15 @@ public class XpathFileGeneratorAuditListenerTest {
 
         listener.auditFinished(null);
 
-        assertEquals("expected number of flushes", 1, out.flushCount);
-        assertEquals("expected number of closes", 1, out.closeCount);
+        assertWithMessage("Output stream flush count")
+                .that(out.flushCount)
+                .isEqualTo(TestUtil.adjustFlushCountForOutputStreamClose(1));
+        assertWithMessage("Output stream close count")
+                .that(out.closeCount)
+                .isEqualTo(1);
 
         final String actual = out.toString();
-        assertEquals("Invalid suppressions file content", expected, actual);
+        assertEquals(expected, actual, "Invalid suppressions file content");
     }
 
     private static class TestByteArrayOutputStream extends ByteArrayOutputStream {

@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
 
   <!-- This parent is requirements for deploy of artifacts to maven central -->
   <parent>
-    <artifactId>oss-parent</artifactId>
     <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
     <version>9</version>
   </parent>
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.27</version>
+  <version>8.28</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -171,6 +170,13 @@
     <system>travis</system>
     <url>https://travis-ci.org/checkstyle/checkstyle</url>
   </ciManagement>
+  <distributionManagement>
+    <repository>
+      <id>internal.repo</id>
+      <name>Temporary Staging Repository</name>
+      <url>file://${cs.maven.directory}</url>
+    </repository>
+  </distributionManagement>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -180,12 +186,12 @@
     <maven.site.plugin.version>3.8.2</maven.site.plugin.version>
     <maven.spotbugs.plugin.version>3.1.12.2</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
-    <pmd.version>6.19.0</pmd.version>
+    <pmd.version>6.20.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
     <powermock.version>2.0.4</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
     <maven.checkstyle.plugin.version>3.1.0</maven.checkstyle.plugin.version>
-    <maven.sevntu.checkstyle.plugin.version>1.36.0</maven.sevntu.checkstyle.plugin.version>
+    <maven.sevntu.checkstyle.plugin.version>1.37.0</maven.sevntu.checkstyle.plugin.version>
     <maven.sevntu-checkstyle-check.checkstyle.version>
       8.26
     </maven.sevntu-checkstyle-check.checkstyle.version>
@@ -198,20 +204,11 @@
     <sonar.test.exclusions>**/test/resources/**/*,**/it/resources/**/*</sonar.test.exclusions>
   </properties>
 
-  <!-- that repositories are required for testing plugin's snapshot version -->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>nexus-codehaus-snapshot</id>
-      <name>Codehaus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/codehaus-snapshots/</url>
-    </pluginRepository>
-  </pluginRepositories>
-
   <dependencies>
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.1.1</version>
+      <version>4.1.4</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -248,6 +245,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.30</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- till https://github.com/checkstyle/checkstyle/issues/7368 -->
+    <dependency>
       <groupId>com.github.stefanbirkner</groupId>
       <artifactId>system-rules</artifactId>
       <version>1.19.0</version>
@@ -274,6 +278,7 @@
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- till https://github.com/checkstyle/checkstyle/issues/7368 -->
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
@@ -295,15 +300,15 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.29</version>
+      <version>1.7.30</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jacoco</groupId>
       <artifactId>org.jacoco.agent</artifactId>
       <version>${maven.jacoco.plugin.version}</version>
-      <scope>test</scope>
       <classifier>runtime</classifier>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
@@ -317,14 +322,6 @@
       </exclusions>
     </dependency>
   </dependencies>
-
-  <distributionManagement>
-    <repository>
-      <id>internal.repo</id>
-      <name>Temporary Staging Repository</name>
-      <url>file://${cs.maven.directory}</url>
-    </repository>
-  </distributionManagement>
 
   <build>
     <pluginManagement>
@@ -529,7 +526,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>tidy-maven-plugin</artifactId>
-                    <versionRange>1.0-beta-1</versionRange>
+                    <versionRange>1.1.0</versionRange>
                     <goals>
                       <goal>check</goal>
                     </goals>
@@ -601,14 +598,10 @@
         <version>3.1.0</version>
       </plugin>
 
-      <!-- It brakes linkcheck plugin report.
-           It works when linkcheck.forceSite=false, but
-           at this case linkcheck report is full of false-positives
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>tidy-maven-plugin</artifactId>
-        <version>1.0-beta-1</version>
+        <version>1.1.0</version>
         <executions>
           <execution>
             <id>validate</id>
@@ -618,7 +611,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin> -->
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -792,10 +785,6 @@
                 </exclude>
                 <!-- Swing related classes -->
                 <exclude>com/puppycrawl/tools/checkstyle/gui/*.class</exclude>
-                <!-- Suppressed till https://github.com/jacoco/jacoco/issues/660 -->
-                <exclude>
-                  com/puppycrawl/tools/checkstyle/checks/annotation/AnnotationUseStyleCheck$1.class
-                </exclude>
               </excludes>
             </configuration>
           </execution>
@@ -820,6 +809,12 @@
                     <exclude>com.puppycrawl.tools.checkstyle.grammar.javadoc.JavadocLexer</exclude>
                     <exclude>
                       com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.JavadocParserErrorStrategy
+                    </exclude>
+                    <exclude>
+                      com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck
+                    </exclude>
+                    <exclude>
+                      com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck.RegularClass
                     </exclude>
                     <!-- Swing related classes -->
                     <exclude>com.puppycrawl.tools.checkstyle.gui.BaseCellEditor*</exclude>
@@ -940,6 +935,46 @@
                       <counter>BRANCH</counter>
                       <value>COVEREDRATIO</value>
                       <minimum>1.00</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+                <rule>
+                  <element>CLASS</element>
+                  <includes>
+                    <include>
+                      com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck
+                    </include>
+                  </includes>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.98</minimum>
+                    </limit>
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.94</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+                <rule>
+                  <element>CLASS</element>
+                  <includes>
+                    <include>
+                      com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck.RegularClass
+                    </include>
+                  </includes>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.70</minimum>
+                    </limit>
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.00</minimum>
                     </limit>
                   </limits>
                 </rule>
@@ -1269,42 +1304,43 @@
           </catalogs>
         </configuration>
       </plugin>
+
       <plugin>
-      <groupId>de.thetaphi</groupId>
-      <artifactId>forbiddenapis</artifactId>
-      <version>2.7</version>
-      <configuration>
-        <targetVersion>${java.version}</targetVersion>
-        <failOnUnsupportedJava>false</failOnUnsupportedJava>
-        <bundledSignatures>
-          <bundledSignature>jdk-unsafe</bundledSignature>
-          <bundledSignature>jdk-deprecated</bundledSignature>
-          <bundledSignature>jdk-system-out</bundledSignature>
-          <bundledSignature>jdk-non-portable</bundledSignature>
-        </bundledSignatures>
-        <excludes>
-          <!-- system-out is ok there, that is CLI -->
-          <exclude>**/Main.class</exclude>
-          <exclude>**/MainTest.class</exclude>
-          <exclude>**/Main$CliOptions.class</exclude>
-          <exclude>**/JavadocPropertiesGenerator.class</exclude>
-          <!-- generated classes, unfortunately use problematic api -->
-          <exclude>**/GeneratedJavaLexer.class</exclude>
-          <exclude>**/JavadocParser.class</exclude>
-          <exclude>**/Input*</exclude>
-          <!-- tests need forbidden apis to test the main code fully -->
-          <exclude>**/XpathFileGeneratorAuditListenerTest.class</exclude>
-        </excludes>
-      </configuration>
-      <executions>
-        <execution>
-          <goals>
-            <goal>check</goal>
-            <goal>testCheck</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
+        <groupId>de.thetaphi</groupId>
+        <artifactId>forbiddenapis</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <targetVersion>${java.version}</targetVersion>
+          <failOnUnsupportedJava>false</failOnUnsupportedJava>
+          <bundledSignatures>
+            <bundledSignature>jdk-unsafe</bundledSignature>
+            <bundledSignature>jdk-deprecated</bundledSignature>
+            <bundledSignature>jdk-system-out</bundledSignature>
+            <bundledSignature>jdk-non-portable</bundledSignature>
+          </bundledSignatures>
+          <excludes>
+            <!-- system-out is ok there, that is CLI -->
+            <exclude>**/Main.class</exclude>
+            <exclude>**/MainTest.class</exclude>
+            <exclude>**/Main$CliOptions.class</exclude>
+            <exclude>**/JavadocPropertiesGenerator.class</exclude>
+            <!-- generated classes, unfortunately use problematic api -->
+            <exclude>**/GeneratedJavaLexer.class</exclude>
+            <exclude>**/JavadocParser.class</exclude>
+            <exclude>**/Input*</exclude>
+            <!-- tests need forbidden apis to test the main code fully -->
+            <exclude>**/XpathFileGeneratorAuditListenerTest.class</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+              <goal>testCheck</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>edu.illinois</groupId>
         <artifactId>nondex-maven-plugin</artifactId>
@@ -1415,6 +1451,21 @@
       </plugin>
 
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>${maven.versions.plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependency-updates-report</report>
+              <report>plugin-updates-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <!-- this report should be created last -->
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-linkcheck-plugin</artifactId>
         <version>1.2</version>
@@ -1422,7 +1473,7 @@
           <httpMethod>GET</httpMethod>
           <timeout>6000</timeout>
           <httpFollowRedirect>false</httpFollowRedirect>
-          <forceSite>true</forceSite>
+          <forceSite>false</forceSite>
           <!-- To resolve redirection violation, to find new target url, use:
               URL=https://www.cs.....
               curl -s -I $URL -L | awk '/Location: (.*)/ {print $2}' | tail -n 1
@@ -1447,12 +1498,16 @@
           <excludedLinks>
             <excludedLink>reports/google-style/guava</excludedLink>
             <excludedLink>reports/javadoc/openjdk8</excludedLink>
+            <!-- posting to the mailing list "checkstyle-announce" is private -->
+            <excludedLink>privilege of admins</excludedLink>
+            <!-- this page is not yet created when linkcheck executed -->
+            <excludedLink>project-info.html</excludedLink>
+            <!-- this page is not yet created when linkcheck executed -->
+            <excludedLink>project-reports.html</excludedLink>
             <!-- redirects to US page, it is better to stay international -->
             <excludedLink>https://paypal.com/</excludedLink>
             <!-- temporal suppress till plugin update link in his source -->
             <excludedLink>http://www.mojohaus.org/exec-maven-plugin</excludedLink>
-            <!-- temporal suppress till javadoc tool starts generating links to https -->
-            <excludedLink>http://docs.oracle.com/javase</excludedLink>
             <!-- SSL -->
             <excludedLink>https://travis-ci.org/</excludedLink>
             <excludedLink>https://travis-ci.org/checkstyle/checkstyle</excludedLink>
@@ -1462,124 +1517,68 @@
                  now github reject all requests "429 Too Many Requests"
                  https://codeship.com/projects/124310/builds/12027213  -->
             <excludedLink>https://github.com/*</excludedLink>
+            <!-- redirects to US page, it is better to stay international -->
+            <excludedLink>https://help.github.com/*</excludedLink>
             <excludedLink>http://search.maven.org/*</excludedLink>
             <!-- codehaus does not exists anymore -->
             <excludedLink>http://sonar-plugins.codehaus.org/maven-report</excludedLink>
             <excludedLink>
               http://www.mojohaus.org/sonar-maven-plugin/sonar-maven-plugin
             </excludedLink>
-            <!-- SSLHandshakeException but page is opening -->
-            <excludedLink>http://www.sickboy.cz/checkstyle/</excludedLink>
-            <!-- Excluded due to Maven Enforcer Plugin's issue #234:
-                 https://issues.apache.org/jira/browse/MENFORCER-234-->
-            <excludedLink>http://maven.apache.org/enforcer/maven-enforcer-plugin</excludedLink>
             <!-- Excluded due to Maven Codehaus Plugin's issue #4:
                  https://github.com/mojohaus/mojohaus.github.io/issues/4-->
             <excludedLink>http://mojo.codehaus.org/antlr-maven-plugin</excludedLink>
-            <!-- Excluded due to Maven Build Helper Plugin's issue #3:
-                 https://github.com/mojohaus/build-helper-maven-plugin/issues/3-->
-            <excludedLink>http://mojo.codehaus.org/build-helper-maven-plugin</excludedLink>
             <!-- Excluded due to Maven JDepend Plugin's issue #2:
                  https://github.com/mojohaus/jdepend-maven-plugin/issues/2-->
             <excludedLink>http://mojo.codehaus.org/jdepend-maven-plugin</excludedLink>
             <!-- Excluded due to Maven Taglist Plugin's issue #3:
                  https://github.com/mojohaus/taglist-maven-plugin/issues/3-->
             <excludedLink>http://mojo.codehaus.org/taglist-maven-plugin</excludedLink>
-            <!-- Excluded due to Maven XML Plugin's issue #1:
-                 https://github.com/mojohaus/xml-maven-plugin/issues/1-->
-            <excludedLink>http://mojo.codehaus.org/xml-maven-plugin</excludedLink>
             <!-- Excluded due to Maven ANTLR4 Plugin's issue #978:
                  https://github.com/antlr/antlr4/issues/978-->
             <excludedLink>http://www.antlr.org/antlr4-maven-plugin</excludedLink>
             <!-- Excluded due to Maven Release Plugin's issue #919:
                  https://issues.apache.org/jira/browse/MRELEASE-919-->
             <excludedLink>http://maven.apache.org/plugins/maven-release-plugin/</excludedLink>
-            <!-- http://pmd.sourceforge.net/ link should be updated in pmd plugin -->
-            <excludedLink>http://pmd.sourceforge.net/</excludedLink>
+            <!-- permanent java.net.UnknownHostException :-->
+            <excludedLink>http://jacoco-maven-plugin/</excludedLink>
             <!-- Excluded till https://issues.sonatype.org/browse/NEXUS-9643 -->
             <excludedLink>
               http://www.sonatype.com/public-parent/nexus-maven-plugins/nexus-staging/nexus-staging-maven-plugin/
-            </excludedLink>
-            <!-- This link exists, but it has too much content and github has problems
-                 with rendering it quickly,
-                 so to avoid occasional "Read timed out" we exclude it -->
-            <excludedLink>https://github.com/checkstyle/checkstyle/issues/1555</excludedLink>
-            <!-- Excluded, because the link is generated by sonar's maven report plugin and we
-            can not correct the link while it will not be changed in effective pom.xml of the plugin
-            by sonar's developers.
-            It is not allowed to open issue against sonar's maven report plugin
-            at sonar's issue tracker: http://jira.codehaus.org/browse/MSONAR
-            Sonar's mailing lists: http://www.mojohaus.org/sonar-maven-plugin/mail-lists.html-->
-            <excludedLink>
-              https://sonarcloud.io/project/index/com.puppycrawl.tools:checkstyle
             </excludedLink>
 
             <!-- Excluded due to linkcheck's issue #22:
                  https://issues.apache.org/jira/browse/MLINKCHECK-22-->
             <excludedLink>https://twitter.com/checkstyle_java/</excludedLink>
-            <!-- Excluded due to linkcheck's issue #23:
-                 https://issues.apache.org/jira/browse/MLINKCHECK-23-->
-            <excludedLink>http://www.kclee.com/clemens/java/javancss</excludedLink>
-            <!-- It is not a strict link, no need to validate,
-                 github gives "429 Too Many Requests" for it -->
-            <excludedLink>https://github.com/search*</excludedLink>
-            <!-- till https://github.com/apache/maven-plugins/pull/81 -->
-            <excludedLink>http://git-scm.com*</excludedLink>
-            <!-- links works but not in linkcheck -->
-            <excludedLink>
-              https://marketplace.visualstudio.com/items?itemName=shengchen.vscode-checkstyle
-            </excludedLink>
-
-            <!-- reason described at https://github.com/checkstyle/checkstyle/issues/3080 -->
-            <excludedLink>https://www.scm-manager.org/</excludedLink>
             <!-- linkcheck plugin can not resolve &amps; inside url -->
             <excludedLink>https://flattr.com/submit/</excludedLink>
+            <!-- 403 forbidden for linkcheck, works in the browser -->
+            <excludedLink>https://button.flattr.com/flattr-badge-large.png</excludedLink>
             <!-- Too unstable sites to keep validate them -->
             <excludedLink>http://tide.olympe.in/*</excludedLink>
             <excludedLink>http://dl.acm.org/*</excludedLink>
-            <!-- permanent SSLHandshakeException -->
-            <excludedLink>https://www.codacy.com/</excludedLink>
-            <!-- permanent SSLHandshakeException
-                 https://issues.apache.org/jira/browse/MLINKCHECK-28 -->
-            <excludedLink>https://sourceforge.net/p/checkstyle/news/feed</excludedLink>
-            <!-- permanent SSLHandshakeException
-                 https://issues.apache.org/jira/browse/MLINKCHECK-28 -->
-            <excludedLink>https://sourceforge.net/projects/checkstyle/</excludedLink>
-            <!-- permanent SSLHandshakeException
-                 https://issues.apache.org/jira/browse/MLINKCHECK-28 -->
-            <excludedLink>
-              https://sourceforge.net/projects/checkstyle/files/checkstyle/
-            </excludedLink>
-            <!-- permanent SSLHandshakeException -->
-            <excludedLink>https://vim.sourceforge.io/</excludedLink>
-            <excludedLink>https://vim.sourceforge.io/scripts/script.php?script_id=448</excludedLink>
-            <!-- permanent SSLException -->
-            <excludedLink>https://button.flattr.com/flattr-badge-large.png</excludedLink>
             <!-- permanent SSLException -->
             <excludedLink>https://git-scm.com</excludedLink>
             <!-- I do not know how to resolve this "302 Found" response -->
             <excludedLink>https://plus.google.com/+CheckstyleJava</excludedLink>
-            <!-- it permanently gives 404, but image is opening in browser without problems -->
+            <!-- 302 redirect to
+             https://marketplace.atlassian.com/apps/1214095/checkstyles-for-bitbucket-server/version-history
+             this link does not looks like permanent, it is better to keep the existing link -->
             <excludedLink>
-              https://www.ej-technologies.com/images/product_banners/jprofiler_medium.png
+              https://marketplace.atlassian.com/apps/1214095/checkstyles-for-bitbucket-server
             </excludedLink>
-            <!-- permanent SSLHandshakeException -->
-            <excludedLink>
-              https://www.ej-technologies.com/products/jprofiler/overview.html
-            </excludedLink>
-            <!-- permanent java.net.SocketException : Connection reset -->
-            <excludedLink>https://www.jarchitect.com</excludedLink>
-            <!-- permanent: avax.net.ssl.SSLException : Received fatal alert: internal_error -->
-            <excludedLink>https://salt.bountysource.com/teams/checkstyle</excludedLink>
-            <excludedLink>https://www.bountysource.com/teams/checkstyle/issues</excludedLink>
-            <!--  javax.net.ssl.SSLHandshakeException : Received fatal alert: handshake_failure -->
-            <excludedLink>https://eclipse.org</excludedLink>
-            <!-- avax.net.ssl.SSLHandshakeException : Received fatal alert: handshake_failure -->
-            <excludedLink>https://plugins.jetbrains.com/plugin/4594-qaplug</excludedLink>
-            <!-- avax.net.ssl.SSLHandshakeException : Received fatal alert: handshake_failure -->
-            <excludedLink>https://www.scala-sbt.org/</excludedLink>
+            <!-- 403 forbidden -->
+            <excludedLink>https://oss.sonatype.org/content/repositories/snapshots/</excludedLink>
             <!-- link is valid but permanent "SocketTimeoutException : Read timed out" -->
             <excludedLink>https://wiki.jenkins.io/display/JENKINS/Checkstyle+Plugin</excludedLink>
+            <!-- 403 forbidden for linkcheck, works in the browser -->
+            <excludedLink>https://gradle.org</excludedLink>
+            <!-- 403 forbidden for linkcheck, works in the browser -->
+            <excludedLink>
+              https://docs.gradle.org/current/userguide/checkstyle_plugin.html
+            </excludedLink>
+            <!-- ConnectTimeoutException -->
+            <excludedLink>https://www.w3.org/TR/*</excludedLink>
           </excludedLinks>
         </configuration>
       </plugin>
@@ -2177,7 +2176,7 @@
                 <param>*.Input*</param>
               </excludedTestClasses>
               <coverageThreshold>100</coverageThreshold>
-              <mutationThreshold>98</mutationThreshold>
+              <mutationThreshold>97</mutationThreshold>
               <timeoutFactor>${pitest.plugin.timeout.factor}</timeoutFactor>
               <timeoutConstant>${pitest.plugin.timeout.constant}</timeoutConstant>
               <threads>${pitest.plugin.threads}</threads>
@@ -3023,7 +3022,7 @@
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>org.eclipse.jdt.annotation</artifactId>
-            <version>2.2.300</version>
+            <version>2.2.400</version>
         </dependency>
       </dependencies>
       <build>

@@ -254,8 +254,8 @@ String b = (a==null || a.length()&lt;1) ? null : a.substring(1);
         </p>
 
         <p>
-          Inspired by <a href="https://cs.nyu.edu/~lharris/papers/findbugsPaper.pdf">
-          Finding Bugs is Easy, chapter '2.3.1 Bad Covariant Definition of Equals (Eq)'</a>:
+          Inspired by <a href="https://www.cs.jhu.edu/~daveho/pubs/oopsla2004.pdf">
+          Finding Bugs is Easy, chapter '4.5 Bad Covariant Definition of Equals (Eq)'</a>:
         </p>
 
         <p>
@@ -3431,6 +3431,89 @@ for (String line: lines) {
       </subsection>
     </section>
 
+    <section name="NoArrayTrailingComma">
+      <p>Since Checkstyle 8.28</p>
+       <subsection name="Description" id="NoArrayTrailingComma_Description">
+         <p>
+           Checks that array initialization do not contain a trailing comma.
+           Rationale: JLS allows trailing commas in arrays and enumerations, but does not allow
+           them in other locations. To unify the coding style, the use of trailing commas should
+           be prohibited.
+         </p>
+         <source>
+int[] foo = new int[] {
+  1,
+  2
+};
+         </source>
+         <p>
+          The check demands that there should not be any comma after the last element of an array.
+         </p>
+         <source>
+String[] foo = new String[] {
+  "FOO",
+  "BAR", //violation
+}
+         </source>
+       </subsection>
+       <subsection name="Examples" id="NoArrayTrailingComma_Examples">
+         <p>
+           To configure the check:
+         </p>
+         <source>
+&lt;module name=&quot;ArrayTrailingComma&quot;/&gt;
+         </source>
+         <p>
+           Which results in the following violations:
+         </p>
+         <source>
+String[] foo1 = {
+  "FOO", // OK
+  "BAR", // violation
+};
+String[] foo2 = { "FOO", "BAR", }; // violation
+String[] foo3 = {
+  "FOO", // OK
+  "BAR" // OK
+};
+String[] foo4 = { "FOO", "BAR" }; // OK
+         </source>
+       </subsection>
+       <subsection name="Example of Usage" id="NoArrayTrailingComma_Example_of_Usage">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+NoArrayTrailingComma">
+            Checkstyle Style</a>
+          </li>
+        </ul>
+      </subsection>
+
+      <subsection name="Violation Messages" id="NoArrayTrailingComma_Violation_Messages">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fcoding+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22no.array.trailing.comma%22">
+            no.array.trailing.comma</a>
+          </li>
+        </ul>
+        <p>
+          All messages can be customized if the default message doesn't suit you.
+          Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
+        </p>
+      </subsection>
+
+      <subsection name="Package" id="NoArrayTrailingComma_Package">
+        <p>
+          com.puppycrawl.tools.checkstyle.checks.coding
+        </p>
+      </subsection>
+
+      <subsection name="Parent Module" id="NoArrayTrailingComma_Parent_Module">
+        <p>
+          <a href="config.html#TreeWalker">TreeWalker</a>
+        </p>
+      </subsection>
+    </section>
+
     <section name="NoClone">
       <p>Since Checkstyle 5.0</p>
       <subsection name="Description" id="NoClone_Description">
@@ -3683,7 +3766,7 @@ System.out.println(s2 instanceof Square); //true
             <tr>
               <td>treatTryResourcesAsStatement</td>
               <td>Enable resources processing.</td>
-              <td><a href="property_types.html#Boolean">Boolean</a></td>
+              <td><a href="property_types.html#boolean">Boolean</a></td>
               <td><code>false</code></td>
               <td>8.23</td>
             </tr>
@@ -4548,7 +4631,7 @@ return !valid();
 
         <p>
           The idea for this Check has been shamelessly stolen from the
-          equivalent <a href="http://pmd.sourceforge.net">PMD</a> rule.
+          equivalent <a href="https://pmd.github.io/">PMD</a> rule.
         </p>
       </subsection>
 
@@ -4736,7 +4819,7 @@ if (&quot;something&quot;.equals(x))
 
         <p>
           References:
-          <a href="https://www.oracle.com/technetwork/java/javamail/finalization-137655.html">
+          <a href="https://www.oracle.com/technical-resources/articles/javase/finalization.html">
           How to Handle Java Finalization's Memory-Retention Issues</a>;
           <a href="https://javarevisited.blogspot.com/2012/03/finalize-method-in-java-tutorial.html">
           10 points on finalize method in Java</a>.

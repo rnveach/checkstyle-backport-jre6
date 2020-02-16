@@ -23,10 +23,10 @@ import static com.puppycrawl.tools.checkstyle.checks.regexp.MultilineDetector.MS
 import static com.puppycrawl.tools.checkstyle.checks.regexp.MultilineDetector.MSG_REGEXP_EXCEEDED;
 import static com.puppycrawl.tools.checkstyle.checks.regexp.MultilineDetector.MSG_REGEXP_MINIMUM;
 import static com.puppycrawl.tools.checkstyle.checks.regexp.MultilineDetector.MSG_STACKOVERFLOW;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -114,7 +114,7 @@ public class RegexpMultilineCheckTest extends AbstractModuleTestSupport {
             "3: " + getCheckMessage(MSG_REGEXP_EXCEEDED, "\\r"),
         };
 
-        final File file = temporaryFolder.newFile();
+        final File file = File.createTempFile("junit", null, temporaryFolder.newFolder());
         Files7.write(new Path(file),
             "first line \r\n second line \n\r third line".getBytes(StandardCharsets.UTF_8));
 
@@ -130,7 +130,7 @@ public class RegexpMultilineCheckTest extends AbstractModuleTestSupport {
             "3: " + getCheckMessage(MSG_REGEXP_EXCEEDED, "\\r"),
         };
 
-        final File file = temporaryFolder.newFile();
+        final File file = File.createTempFile("junit", null, temporaryFolder.newFolder());
         Files7.write(new Path(file),
                 "first line \r\n second line \n\r third line".getBytes(StandardCharsets.UTF_8));
 
@@ -152,14 +152,13 @@ public class RegexpMultilineCheckTest extends AbstractModuleTestSupport {
 
         final MultilineDetector detector =
                 new MultilineDetector(detectorOptions);
-        final File file = temporaryFolder.newFile();
+        final File file = File.createTempFile("junit", null, temporaryFolder.newFolder());
         Files7.write(new Path(file),
                 "first line \r\n second line \n\r third line".getBytes(StandardCharsets.UTF_8));
 
         detector.processLines(new FileText(file, StandardCharsets.UTF_8.name()));
         detector.processLines(new FileText(file, StandardCharsets.UTF_8.name()));
-        Assert.assertEquals("Logged unexpected amount of issues",
-                2, reporter.getLogCount());
+        assertEquals(2, reporter.getLogCount(), "Logged unexpected amount of issues");
     }
 
     @Test
@@ -199,7 +198,7 @@ public class RegexpMultilineCheckTest extends AbstractModuleTestSupport {
             "1: " + getCheckMessage(MSG_STACKOVERFLOW),
         };
 
-        final File file = temporaryFolder.newFile();
+        final File file = File.createTempFile("junit", null, temporaryFolder.newFolder());
         Files7.write(new Path(file), makeLargeXyString().toString().getBytes(StandardCharsets.UTF_8));
 
         verify(checkConfig, file.getPath(), expected);
@@ -214,7 +213,7 @@ public class RegexpMultilineCheckTest extends AbstractModuleTestSupport {
             "1: " + getCheckMessage(MSG_REGEXP_MINIMUM, "5", "\\r"),
         };
 
-        final File file = temporaryFolder.newFile();
+        final File file = File.createTempFile("junit", null, temporaryFolder.newFolder());
         Files7.write(new Path(file), "".getBytes(StandardCharsets.UTF_8));
 
         verify(checkConfig, file.getPath(), expected);
@@ -230,7 +229,7 @@ public class RegexpMultilineCheckTest extends AbstractModuleTestSupport {
             "1: some message",
         };
 
-        final File file = temporaryFolder.newFile();
+        final File file = File.createTempFile("junit", null, temporaryFolder.newFolder());
         Files7.write(new Path(file), "".getBytes(StandardCharsets.UTF_8));
 
         verify(checkConfig, file.getPath(), expected);

@@ -22,12 +22,12 @@ package com.puppycrawl.tools.checkstyle.api;
 import static com.puppycrawl.tools.checkstyle.utils.CommonUtil.EMPTY_OBJECT_ARRAY;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,23 +104,23 @@ public class LocalizedMessageTest {
     public void testGetSeverityLevel() {
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
 
-        assertEquals("Invalid severity level", SeverityLevel.ERROR,
-                localizedMessage.getSeverityLevel());
+        assertEquals(SeverityLevel.ERROR,
+                localizedMessage.getSeverityLevel(), "Invalid severity level");
     }
 
     @Test
     public void testGetModuleId() {
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
 
-        assertEquals("Invalid module id", "module", localizedMessage.getModuleId());
+        assertEquals("module", localizedMessage.getModuleId(), "Invalid module id");
     }
 
     @Test
     public void testGetSourceName() {
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
 
-        assertEquals("Invalid source name", "com.puppycrawl.tools.checkstyle.api.LocalizedMessage",
-                localizedMessage.getSourceName());
+        assertEquals("com.puppycrawl.tools.checkstyle.api.LocalizedMessage",
+                localizedMessage.getSourceName(), "Invalid source name");
     }
 
     @Test
@@ -128,7 +128,7 @@ public class LocalizedMessageTest {
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
         LocalizedMessage.setLocale(Locale.ENGLISH);
 
-        assertEquals("Invalid message", "Empty statement.", localizedMessage.getMessage());
+        assertEquals("Empty statement.", localizedMessage.getMessage(), "Invalid message");
     }
 
     @Test
@@ -138,7 +138,7 @@ public class LocalizedMessageTest {
                 "com.puppycrawl.tools.checkstyle.checks.coding.messages",
                 Locale.ENGLISH, "java.class",
                 Thread.currentThread().getContextClassLoader(), true);
-        assertNull("Bundle should be null when reload is true and URL is null", bundle);
+        assertNull(bundle, "Bundle should be null when reload is true and URL is null");
     }
 
     /**
@@ -183,9 +183,9 @@ public class LocalizedMessageTest {
                 "com.puppycrawl.tools.checkstyle.checks.coding.messages", Locale.ENGLISH,
                 "java.class", new TestUrlsClassLoader(url), true);
 
-        assertNotNull("Bundle should not be null when stream is not null", bundle);
-        assertFalse("connection should not be using caches", urlConnection.getUseCaches());
-        assertTrue("connection should be closed", closed.get());
+        assertNotNull(bundle, "Bundle should not be null when stream is not null");
+        assertFalse(urlConnection.getUseCaches(), "connection should not be using caches");
+        assertTrue(closed.get(), "connection should be closed");
     }
 
     /**
@@ -230,9 +230,9 @@ public class LocalizedMessageTest {
                 "com.puppycrawl.tools.checkstyle.checks.coding.messages", Locale.ENGLISH,
                 "java.class", new TestUrlsClassLoader(url), false);
 
-        assertNotNull("Bundle should not be null when stream is not null", bundle);
-        assertTrue("connection should not be using caches", urlConnection.getUseCaches());
-        assertTrue("connection should be closed", closed.get());
+        assertNotNull(bundle, "Bundle should not be null when stream is not null");
+        assertTrue(urlConnection.getUseCaches(), "connection should not be using caches");
+        assertTrue(closed.get(), "connection should be closed");
     }
 
     @Test
@@ -249,7 +249,7 @@ public class LocalizedMessageTest {
                 "com.puppycrawl.tools.checkstyle.checks.coding.messages",
                 Locale.ENGLISH, "java.class",
                 new TestUrlsClassLoader(url), true);
-        assertNull("Bundle should be null when stream is null", bundle);
+        assertNull(bundle, "Bundle should be null when stream is null");
     }
 
     @Test
@@ -257,7 +257,7 @@ public class LocalizedMessageTest {
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
         LocalizedMessage.setLocale(Locale.FRENCH);
 
-        assertEquals("Invalid message", "Instruction vide.", localizedMessage.getMessage());
+        assertEquals("Instruction vide.", localizedMessage.getMessage(), "Invalid message");
     }
 
     @Test
@@ -266,7 +266,7 @@ public class LocalizedMessageTest {
         LocalizedMessage.setLocale(Locale.US);
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
 
-        assertEquals("Invalid message", "Empty statement.", localizedMessage.getMessage());
+        assertEquals("Empty statement.", localizedMessage.getMessage(), "Invalid message");
     }
 
     @Test
@@ -275,7 +275,7 @@ public class LocalizedMessageTest {
         LocalizedMessage.setLocale(Locale.ROOT);
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
 
-        assertEquals("Invalid message", "Empty statement.", localizedMessage.getMessage());
+        assertEquals("Empty statement.", localizedMessage.getMessage(), "Invalid message");
     }
 
     @Test
@@ -284,7 +284,7 @@ public class LocalizedMessageTest {
         LocalizedMessage.setLocale(Locale.US);
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
 
-        assertEquals("Invalid message key", "empty.statement", localizedMessage.getKey());
+        assertEquals("empty.statement", localizedMessage.getKey(), "Invalid message key");
     }
 
     @Test
@@ -293,16 +293,16 @@ public class LocalizedMessageTest {
         LocalizedMessage.setLocale(Locale.ROOT);
         final LocalizedMessage localizedMessage = createSampleLocalizedMessage();
 
-        assertEquals("Invalid message", "Empty statement.", localizedMessage.getMessage());
+        assertEquals("Empty statement.", localizedMessage.getMessage(), "Invalid message");
 
         final Map<String, ResourceBundle> bundleCache =
                 Whitebox.getInternalState(LocalizedMessage.class, "BUNDLE_CACHE");
 
-        assertEquals("Invalid bundle cache size", 1, bundleCache.size());
+        assertEquals(1, bundleCache.size(), "Invalid bundle cache size");
 
         LocalizedMessage.setLocale(Locale.CHINA);
 
-        assertEquals("Invalid bundle cache size", 0, bundleCache.size());
+        assertEquals(0, bundleCache.size(), "Invalid bundle cache size");
     }
 
     @Test
@@ -314,8 +314,8 @@ public class LocalizedMessageTest {
                 "messages.properties", "key", EMPTY_OBJECT_ARRAY, SeverityLevel.ERROR, null,
                 getClass(), null);
 
-        assertEquals("Invalid token type", TokenTypes.CLASS_DEF, localizedMessage1.getTokenType());
-        assertEquals("Invalid token type", TokenTypes.OBJBLOCK, localizedMessage2.getTokenType());
+        assertEquals(TokenTypes.CLASS_DEF, localizedMessage1.getTokenType(), "Invalid token type");
+        assertEquals(TokenTypes.OBJBLOCK, localizedMessage2.getTokenType(), "Invalid token type");
     }
 
     @Test
@@ -324,7 +324,7 @@ public class LocalizedMessageTest {
                 TokenTypes.CLASS_DEF, "messages.properties", "key", null, SeverityLevel.ERROR,
                 null, getClass(), null);
 
-        assertEquals("Invalid column char index", 123, localizedMessage1.getColumnCharIndex());
+        assertEquals(123, localizedMessage1.getColumnCharIndex(), "Invalid column char index");
     }
 
     @Test
@@ -333,9 +333,9 @@ public class LocalizedMessageTest {
         final LocalizedMessage message2 = createSampleLocalizedMessageWithId("module2");
         final LocalizedMessage messageNull = createSampleLocalizedMessageWithId(null);
 
-        assertTrue("Invalid comparing result", message1.compareTo(messageNull) > 0);
-        assertTrue("Invalid comparing result", messageNull.compareTo(message1) < 0);
-        assertTrue("Invalid comparing result", message1.compareTo(message2) < 0);
+        assertTrue(message1.compareTo(messageNull) > 0, "Invalid comparing result");
+        assertTrue(messageNull.compareTo(message1) < 0, "Invalid comparing result");
+        assertTrue(message1.compareTo(message2) < 0, "Invalid comparing result");
     }
 
     @Test
@@ -344,9 +344,10 @@ public class LocalizedMessageTest {
         final LocalizedMessage message1a = createSampleLocalizedMessageWithLine(1);
         final LocalizedMessage message2 = createSampleLocalizedMessageWithLine(2);
 
-        assertTrue("Invalid comparing result", message1.compareTo(message2) < 0);
-        assertTrue("Invalid comparing result", message2.compareTo(message1) > 0);
-        assertEquals("Invalid comparing result", 0, message1.compareTo(message1a));
+        assertTrue(message1.compareTo(message2) < 0, "Invalid comparing result");
+        assertTrue(message2.compareTo(message1) > 0, "Invalid comparing result");
+        final int actual = message1.compareTo(message1a);
+        assertEquals(0, actual, "Invalid comparing result");
     }
 
     @Test
@@ -355,9 +356,10 @@ public class LocalizedMessageTest {
         final LocalizedMessage message1a = createSampleLocalizedMessageWithColumn(1);
         final LocalizedMessage message2 = createSampleLocalizedMessageWithColumn(2);
 
-        assertTrue("Invalid comparing result", message1.compareTo(message2) < 0);
-        assertTrue("Invalid comparing result", message2.compareTo(message1) > 0);
-        assertEquals("Invalid comparing result", 0, message1.compareTo(message1a));
+        assertTrue(message1.compareTo(message2) < 0, "Invalid comparing result");
+        assertTrue(message2.compareTo(message1) > 0, "Invalid comparing result");
+        final int actual = message1.compareTo(message1a);
+        assertEquals(0, actual, "Invalid comparing result");
     }
 
     private static LocalizedMessage createSampleLocalizedMessage() {

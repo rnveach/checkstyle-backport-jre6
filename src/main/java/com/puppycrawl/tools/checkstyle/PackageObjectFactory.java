@@ -129,6 +129,7 @@ public class PackageObjectFactory implements ModuleFactory {
      * @param moduleClassLoader class loader used to load Checkstyle
      *          core and custom modules
      * @param moduleLoadOption loading option
+     * @throws IllegalArgumentException if moduleClassLoader is null or packageNames contains null
      */
     public PackageObjectFactory(Set<String> packageNames, ClassLoader moduleClassLoader,
             ModuleLoadOption moduleLoadOption) {
@@ -150,6 +151,7 @@ public class PackageObjectFactory implements ModuleFactory {
      * @param packageName The package name to use
      * @param moduleClassLoader class loader used to load Checkstyle
      *          core and custom modules
+     * @throws IllegalArgumentException if moduleClassLoader is null or packageNames is null
      */
     public PackageObjectFactory(String packageName, ClassLoader moduleClassLoader) {
         if (moduleClassLoader == null) {
@@ -579,6 +581,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.coding.UnnecessarySemicolonInTryWithResourcesCheck");
         NAME_TO_FULL_MODULE_NAME.put("VariableDeclarationUsageDistanceCheck",
                 BASE_PACKAGE + ".checks.coding.VariableDeclarationUsageDistanceCheck");
+        NAME_TO_FULL_MODULE_NAME.put("NoArrayTrailingCommaCheck",
+                BASE_PACKAGE + ".checks.coding.NoArrayTrailingCommaCheck");
     }
 
     /**

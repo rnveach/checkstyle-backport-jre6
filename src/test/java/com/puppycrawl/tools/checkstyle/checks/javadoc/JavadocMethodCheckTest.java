@@ -25,12 +25,10 @@ import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck.
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck.MSG_RETURN_EXPECTED;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck.MSG_UNUSED_TAG;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck.MSG_UNUSED_TAG_GENERAL;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -57,8 +55,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
 
         final int[] actual = javadocMethodCheck.getAcceptableTokens();
         final int[] expected = {
-            TokenTypes.PACKAGE_DEF,
-            TokenTypes.IMPORT,
             TokenTypes.CLASS_DEF,
             TokenTypes.ENUM_DEF,
             TokenTypes.INTERFACE_DEF,
@@ -67,15 +63,7 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             TokenTypes.ANNOTATION_FIELD_DEF,
         };
 
-        assertArrayEquals("Default acceptable tokens are invalid", expected, actual);
-    }
-
-    @Test
-    public void testLogLoadErrors() throws Exception {
-        final DefaultConfiguration config = createModuleConfig(JavadocMethodCheck.class);
-        config.addAttribute("logLoadErrors", "true");
-        config.addAttribute("allowUndeclaredRTE", "true");
-        verify(config, getPath("InputJavadocMethodLoadErrors.java"), CommonUtil.EMPTY_STRING_ARRAY);
+        assertArrayEquals(expected, actual, "Default acceptable tokens are invalid");
     }
 
     @Test
@@ -95,6 +83,21 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testExtraThrows() throws Exception {
+        final DefaultConfiguration config = createModuleConfig(JavadocMethodCheck.class);
+        config.addAttribute("validateThrows", "true");
+        final String[] expected = {
+            "41:56: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "IllegalStateException"),
+            "56:23: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "IllegalArgumentException"),
+            "68:23: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "IllegalArgumentException"),
+            "80:23: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws",
+                    "java.lang.IllegalArgumentException"),
+            "119:23: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "FileNotFoundException"),
+        };
+        verify(config, getPath("InputJavadocMethodExtraThrows.java"), expected);
+    }
+
+    @Test
     public void testTags() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
         checkConfig.addAttribute("validateThrows", "true");
@@ -104,7 +107,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "33: " + getCheckMessage(MSG_RETURN_EXPECTED),
             "40:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
             "49:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
-            "53:9: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "WrongException"),
             "55:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
             "55:27: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "NullPointerException"),
             "60:22: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "aOne"),
@@ -115,10 +117,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "78:8: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "Unneeded"),
             "79: " + getCheckMessage(MSG_UNUSED_TAG_GENERAL),
             "87:8: " + getCheckMessage(MSG_DUPLICATE_TAG, "@return"),
-            "178:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "ThreadDeath"),
-            "179:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "ArrayStoreException"),
-            "236:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "java.io.FileNotFoundException"),
-            "254:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "java.io.FileNotFoundException"),
             "256:28: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "IOException"),
             "262:8: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "aParam"),
             "305: " + getCheckMessage(MSG_RETURN_EXPECTED),
@@ -133,7 +131,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTagsWithResolver() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
-        checkConfig.addAttribute("allowUndeclaredRTE", "true");
         checkConfig.addAttribute("validateThrows", "true");
         final String[] expected = {
             "18:9: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "unused"),
@@ -141,7 +138,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "33: " + getCheckMessage(MSG_RETURN_EXPECTED),
             "40:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
             "49:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
-            "53:9: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "WrongException"),
             "55:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
             "55:27: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "NullPointerException"),
             "60:22: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "aOne"),
@@ -152,8 +148,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "78:8: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "Unneeded"),
             "79: " + getCheckMessage(MSG_UNUSED_TAG_GENERAL),
             "87:8: " + getCheckMessage(MSG_DUPLICATE_TAG, "@return"),
-            "236:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "java.io.FileNotFoundException"),
-            "254:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "java.io.FileNotFoundException"),
             "256:28: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "IOException"),
             "262:8: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "aParam"),
             "305: " + getCheckMessage(MSG_RETURN_EXPECTED),
@@ -217,7 +211,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testScopeAnonInnerWithResolver() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
-        checkConfig.addAttribute("allowUndeclaredRTE", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputJavadocMethodScopeAnonInner.java"), expected);
     }
@@ -225,7 +218,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTagsWithSubclassesAllowed() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
-        checkConfig.addAttribute("allowThrowsTagsForSubclasses", "true");
         checkConfig.addAttribute("validateThrows", "true");
         final String[] expected = {
             "18:9: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "unused"),
@@ -233,7 +225,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "33: " + getCheckMessage(MSG_RETURN_EXPECTED),
             "40:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
             "49:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
-            "53:9: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "WrongException"),
             "55:16: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "Exception"),
             "55:27: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "NullPointerException"),
             "60:22: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "aOne"),
@@ -244,8 +235,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             "78:8: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "Unneeded"),
             "79: " + getCheckMessage(MSG_UNUSED_TAG_GENERAL),
             "87:8: " + getCheckMessage(MSG_DUPLICATE_TAG, "@return"),
-            "178:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "ThreadDeath"),
-            "179:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "ArrayStoreException"),
             "256:28: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "IOException"),
             "262:8: " + getCheckMessage(MSG_UNUSED_TAG, "@param", "aParam"),
             "305: " + getCheckMessage(MSG_RETURN_EXPECTED),
@@ -296,7 +285,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     public void testAllowMissingJavadocTags() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
         checkConfig.addAttribute("allowMissingParamTags", "true");
-        checkConfig.addAttribute("allowMissingThrowsTags", "true");
         checkConfig.addAttribute("allowMissingReturnTag", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputJavadocMethodMissingJavadocTags.java"), expected);
@@ -308,7 +296,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
         final String[] expected = {
             "10: " + getCheckMessage(MSG_RETURN_EXPECTED),
             "20:26: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "number"),
-            "30:42: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "ThreadDeath"),
             "51: " + getCheckMessage(MSG_RETURN_EXPECTED),
             "61: " + getCheckMessage(MSG_RETURN_EXPECTED),
             "72: " + getCheckMessage(MSG_RETURN_EXPECTED),
@@ -376,8 +363,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     @Test
     public void test11684083() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
-        checkConfig.addAttribute("allowThrowsTagsForSubclasses", "true");
-        checkConfig.addAttribute("allowUndeclaredRTE", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputJavadocMethod_03.java"), expected);
     }
@@ -385,13 +370,10 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testGenerics1() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
-        checkConfig.addAttribute("allowThrowsTagsForSubclasses", "true");
-        checkConfig.addAttribute("allowUndeclaredRTE", "true");
         checkConfig.addAttribute("validateThrows", "true");
         final String[] expected = {
             "17:34: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "RE"),
             "33:13: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "<NPE>"),
-            "40:12: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "E"),
             "43:38: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "RuntimeException"),
             "44:13: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "java.lang.RuntimeException"),
         };
@@ -401,12 +383,10 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testGenerics2() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
-        checkConfig.addAttribute("allowThrowsTagsForSubclasses", "true");
         checkConfig.addAttribute("validateThrows", "true");
         final String[] expected = {
             "17:34: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "RE"),
             "33:13: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "<NPE>"),
-            "40:12: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "E"),
             "43:38: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "RuntimeException"),
             "44:13: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "java.lang.RuntimeException"),
         };
@@ -418,10 +398,8 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
         checkConfig.addAttribute("validateThrows", "true");
         final String[] expected = {
-            "8:8: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "RE"),
             "17:34: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "RE"),
             "33:13: " + getCheckMessage(MSG_EXPECTED_TAG, "@param", "<NPE>"),
-            "40:12: " + getCheckMessage(MSG_UNUSED_TAG, "@throws", "E"),
             "43:38: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "RuntimeException"),
             "44:13: " + getCheckMessage(MSG_EXPECTED_TAG, "@throws", "java.lang.RuntimeException"),
         };
@@ -431,8 +409,6 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     @Test
     public void test1379666() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
-        checkConfig.addAttribute("allowThrowsTagsForSubclasses", "true");
-        checkConfig.addAttribute("allowUndeclaredRTE", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputJavadocMethod_1379666.java"), expected);
     }
@@ -498,27 +474,15 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testIsSubclassWithNulls() throws Exception {
-        final JavadocMethodCheck check = new JavadocMethodCheck();
-        final Method method = check.getClass()
-                .getDeclaredMethod("isSubclass", Class.class, Class.class);
-        method.setAccessible(true);
-        assertFalse("Should return false if at least one of the params is null",
-            (Boolean) method.invoke(check, null, null));
-    }
-
-    @Test
     public void testGetRequiredTokens() {
         final int[] expected = {
-            TokenTypes.PACKAGE_DEF,
-            TokenTypes.IMPORT,
             TokenTypes.CLASS_DEF,
             TokenTypes.INTERFACE_DEF,
             TokenTypes.ENUM_DEF,
         };
         final JavadocMethodCheck check = new JavadocMethodCheck();
         final int[] actual = check.getRequiredTokens();
-        assertArrayEquals("Required tokens differ from expected", expected, actual);
+        assertArrayEquals(expected, actual, "Required tokens differ from expected");
     }
 
     @Test
@@ -530,7 +494,7 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
         final Object token = tokenConstructor.newInstance("blablabla", 1, 1);
         final Method toString = token.getClass().getDeclaredMethod("toString");
         final String result = (String) toString.invoke(token);
-        assertEquals("Invalid toString result", "Token[blablabla(1x1)]", result);
+        assertEquals("Token[blablabla(1x1)]", result, "Invalid toString result");
     }
 
     @Test
@@ -550,10 +514,10 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
             fail("Exception is expected");
         }
         catch (InvocationTargetException ex) {
-            assertTrue("Invalid exception class, expected: IllegalArgumentException.class",
-                ex.getCause() instanceof IllegalArgumentException);
-            assertEquals("Invalid exception message",
-                "ClassInfo's name should be non-null", ex.getCause().getMessage());
+            assertTrue(ex.getCause() instanceof IllegalArgumentException,
+                    "Invalid exception class, expected: IllegalArgumentException.class");
+            assertEquals("ClassInfo's name should be non-null", ex.getCause().getMessage(),
+                    "Invalid exception message");
         }
 
         final Constructor<?> tokenConstructor = tokenType.getDeclaredConstructor(String.class,
@@ -568,18 +532,9 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
         toString.setAccessible(true);
         final String result = (String) toString.invoke(regularClass);
         final String expected = "RegularClass[name=Token[blablabla(1x1)], in class='sur', check="
-                + methodCheck.hashCode() + "," + " loadable=true, class=null]";
+                + methodCheck.hashCode() + "]";
 
-        assertEquals("Invalid toString result", expected, result);
-
-        final Method setClazz = regularClass.getClass().getDeclaredMethod("setClazz", Class.class);
-        setClazz.setAccessible(true);
-        final Class<?> arg = null;
-        setClazz.invoke(regularClass, arg);
-
-        final Method getClazz = regularClass.getClass().getDeclaredMethod("getClazz");
-        getClazz.setAccessible(true);
-        assertNull("Expected null", getClazz.invoke(regularClass));
+        assertEquals(expected, result, "Invalid toString result");
     }
 
     @Test
@@ -605,7 +560,7 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
                 "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck$ClassAlias");
         final Class<?> abstractTypeInfoType = Class
                 .forName("com.puppycrawl.tools.checkstyle.checks.javadoc."
-                        + "JavadocMethodCheck$AbstractClassInfo");
+                        + "JavadocMethodCheck$ClassInfo");
 
         final Constructor<?> classAliasConstructor = classAliasType
                 .getDeclaredConstructor(tokenType, abstractTypeInfoType);
@@ -615,26 +570,15 @@ public class JavadocMethodCheckTest extends AbstractModuleTestSupport {
         final Method toString = classAlias.getClass().getDeclaredMethod("toString");
         toString.setAccessible(true);
         final String result = (String) toString.invoke(classAlias);
-        assertEquals("Invalid toString result",
-            "ClassAlias[alias Token[blablabla(1x1)] for Token[blablabla(1x1)]]", result);
+        assertEquals("ClassAlias[alias Token[blablabla(1x1)] for Token[blablabla(1x1)]]", result,
+                "Invalid toString result");
     }
 
     @Test
     public void testWithoutLogErrors() throws Exception {
         final DefaultConfiguration config = createModuleConfig(JavadocMethodCheck.class);
-        config.addAttribute("allowUndeclaredRTE", "true");
         verify(config, getPath("InputJavadocMethodLoadErrors.java"),
                 CommonUtil.EMPTY_STRING_ARRAY);
-    }
-
-    @Test
-    public void testWithSuppressLoadErrors() throws Exception {
-        final DefaultConfiguration checkConfig = createModuleConfig(JavadocMethodCheck.class);
-        checkConfig.addAttribute("suppressLoadErrors", "true");
-        checkConfig.addAttribute("allowUndeclaredRTE", "true");
-        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
-
-        verify(checkConfig, getPath("InputJavadocMethodLoadErrors.java"), expected);
     }
 
 }

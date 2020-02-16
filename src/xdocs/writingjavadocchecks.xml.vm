@@ -752,7 +752,7 @@ Checkstyle ends with 5 errors.
        Now you can see parsed javadoc tree as child of comment block.
       </p>
       <p>
-        <span class="wrapper">
+        <span class="wrapper block">
           <img alt="screenshot" src="images/gui_javadoc_screenshot.png"/>
         </span>
       </p>
@@ -834,7 +834,7 @@ Checkstyle ends with 5 errors.
 
     <section name="Declare check's external resource locations">
       <p>
-      See <a href="writingchecks.html#Declare_checks_external_resource_locations">Declare check's
+      See <a href="writingchecks.html#Declare_check.27s_external_resource_locations">Declare check's
       external resource locations</a>.
       </p>
     </section>

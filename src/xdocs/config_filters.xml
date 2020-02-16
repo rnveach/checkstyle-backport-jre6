@@ -437,7 +437,7 @@ public class UserService {
           <p>
             Filter <code>SuppressionFilter</code> rejects
             audit events for Check violations according to
-            a <a href="dtds/suppressions_1_2.dtd">suppressions XML
+            a <a href="/dtds/suppressions_1_2.dtd">suppressions XML
             document</a> in a file. If there is no configured
             suppressions file or the optional is set to true and
             suppressions file was not found the Filter accepts all audit events.
@@ -480,7 +480,7 @@ public class UserService {
       </subsection>
       <subsection name="Notes" id="SuppressionFilter_Notes">
         <p>
-          A <a href="dtds/suppressions_1_2.dtd">suppressions XML
+          A <a href="/dtds/suppressions_1_2.dtd">suppressions XML
           document</a> contains a set of <code>suppress</code> elements, where
           each <code>suppress</code> element can have the following attributes:
         </p>
@@ -653,6 +653,14 @@ public class UserService {
       </subsection>
       <subsection name="Example of Usage" id="SuppressionFilter_Example_of_Usage">
         <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+SuppressionFilter">
+              Google Style</a>
+          </li>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Asun_checks.xml+repo%3Acheckstyle%2Fcheckstyle+SuppressionFilter">
+              Sun Style</a>
+          </li>
           <li>
             <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+SuppressionFilter">
             Checkstyle Style</a>
@@ -895,6 +903,7 @@ public class UserService {
           checks:
         </p>
         <ul>
+          <li>AbbreviationAsWordInName</li>
           <li>AbstractClassName</li>
           <li>AnonInnerLength</li>
           <li>ArrayTypeStyle</li>
@@ -1391,6 +1400,14 @@ CLASS_DEF -> CLASS_DEF [1:0]
       </subsection>
       <subsection name="Example of Usage" id="SuppressionXpathFilter_Example_of_Usage">
         <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+SuppressionXpathFilter">
+              Google Style</a>
+          </li>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Asun_checks.xml+repo%3Acheckstyle%2Fcheckstyle+SuppressionXpathFilter">
+              Sun Style</a>
+          </li>
           <li>
             <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+SuppressionXpathFilter">
               Checkstyle Style</a>
@@ -2317,7 +2334,7 @@ public class UserService {
               <p>
                   Properties <code>offCommentFormat</code> and <code>onCommentFormat</code>
                   must have equal
-                  <a href="https://docs.oracle.com/javase/11/docs/api/java/util/regex/Matcher.html#groupCount()">
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Matcher.html#groupCount()">
                   paren counts</a>.
               </p>
           </subsection>

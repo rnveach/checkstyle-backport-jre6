@@ -20,10 +20,10 @@
 package com.puppycrawl.tools.checkstyle.utils;
 
 import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -45,16 +45,16 @@ public class TokenUtilTest {
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertTrue("Constructor is not private",
-                isUtilsClassHasPrivateConstructor(TokenUtil.class, true));
+        assertTrue(isUtilsClassHasPrivateConstructor(TokenUtil.class, true),
+                "Constructor is not private");
     }
 
     @Test
     public void testGetIntFromAccessibleField() throws NoSuchFieldException {
         final Field field = Integer.class.getField("MAX_VALUE");
+        final int maxValue = TokenUtil.getIntFromField(field, 0);
 
-        assertEquals("Invalid getIntFromField result",
-                Integer.MAX_VALUE, TokenUtil.getIntFromField(field, 0));
+        assertEquals(Integer.MAX_VALUE, maxValue, "Invalid getIntFromField result");
     }
 
     @Test
@@ -69,10 +69,10 @@ public class TokenUtilTest {
             // The exception message may vary depending on the version of the JDK.
             // It will definitely contain the TokenUtil class name and the Integer class name.
             final String message = expected.getMessage();
-            assertTrue("Invalid exception message: " + message,
-                    message.startsWith("java.lang.IllegalAccessException: ")
+            assertTrue(message.startsWith("java.lang.IllegalAccessException: ")
                         && message.contains("com.puppycrawl.tools.checkstyle.utils.TokenUtil")
-                        && message.contains("access a member of class java.lang.Integer"));
+                        && message.contains("access a member of class java.lang.Integer"),
+                    "Invalid exception message: " + message);
         }
     }
 
@@ -86,7 +86,7 @@ public class TokenUtilTest {
         expectedMap.put("MAX_VALUE", Integer.MAX_VALUE);
         expectedMap.put("MIN_VALUE", Integer.MIN_VALUE);
 
-        assertEquals("Unexpected name to value map", expectedMap, actualMap);
+        assertEquals(expectedMap, actualMap, "Unexpected name to value map");
     }
 
     @Test
@@ -101,8 +101,7 @@ public class TokenUtilTest {
             TokenUtil.valueToNameArrayFromNameToValueMap(map);
         final String[] expectedArray = {"ZERO", "ONE", "TWO"};
 
-        assertArrayEquals("Unexpected value to name array",
-            expectedArray, actualArray);
+        assertArrayEquals(expectedArray, actualArray, "Unexpected value to name array");
     }
 
     @Test
@@ -127,9 +126,9 @@ public class TokenUtilTest {
             TokenUtil.getTokenName(nextAfterMaxId);
             fail("IllegalArgumentException is expected");
         }
-        catch (IllegalArgumentException expected) {
-            assertEquals("Invalid exception message",
-                    "given id " + nextAfterMaxId, expected.getMessage());
+        catch (IllegalArgumentException expectedException) {
+            assertEquals("given id " + nextAfterMaxId, expectedException.getMessage(),
+                    "Invalid exception message");
         }
     }
 
@@ -145,7 +144,7 @@ public class TokenUtilTest {
             final String name = field.getName();
             final int id = field.getInt(name);
 
-            assertEquals("Invalid token name", name, TokenUtil.getTokenName(id));
+            assertEquals(name, TokenUtil.getTokenName(id), "Invalid token name");
         }
     }
 
@@ -157,8 +156,7 @@ public class TokenUtilTest {
             fail("IllegalArgumentException is expected");
         }
         catch (IllegalArgumentException expected) {
-            assertEquals("Invalid exception message",
-                    "given id " + id, expected.getMessage());
+            assertEquals("given id " + id, expected.getMessage(), "Invalid exception message");
         }
     }
 
@@ -170,8 +168,7 @@ public class TokenUtilTest {
             fail("IllegalArgumentException is expected");
         }
         catch (IllegalArgumentException expected) {
-            assertEquals("Invalid exception message",
-                    "given name " + id, expected.getMessage());
+            assertEquals("given name " + id, expected.getMessage(), "Invalid exception message");
         }
     }
 
@@ -183,30 +180,29 @@ public class TokenUtilTest {
             fail("IllegalArgumentException is expected");
         }
         catch (IllegalArgumentException expected) {
-            assertEquals("Invalid exception message",
-                    "given name " + id, expected.getMessage());
+            assertEquals("given name " + id, expected.getMessage(), "Invalid exception message");
         }
     }
 
     @Test
     public void testIsCommentType() {
-        assertTrue("Should return true when valid type passed",
-                TokenUtil.isCommentType(TokenTypes.SINGLE_LINE_COMMENT));
-        assertTrue("Should return true when valid type passed",
-                TokenUtil.isCommentType(TokenTypes.BLOCK_COMMENT_BEGIN));
-        assertTrue("Should return true when valid type passed",
-                TokenUtil.isCommentType(TokenTypes.BLOCK_COMMENT_END));
-        assertTrue("Should return true when valid type passed",
-                TokenUtil.isCommentType(TokenTypes.COMMENT_CONTENT));
-        assertTrue("Should return true when valid type passed",
-                TokenUtil.isCommentType("COMMENT_CONTENT"));
+        assertTrue(TokenUtil.isCommentType(TokenTypes.SINGLE_LINE_COMMENT),
+                "Should return true when valid type passed");
+        assertTrue(TokenUtil.isCommentType(TokenTypes.BLOCK_COMMENT_BEGIN),
+                "Should return true when valid type passed");
+        assertTrue(TokenUtil.isCommentType(TokenTypes.BLOCK_COMMENT_END),
+                "Should return true when valid type passed");
+        assertTrue(TokenUtil.isCommentType(TokenTypes.COMMENT_CONTENT),
+                "Should return true when valid type passed");
+        assertTrue(TokenUtil.isCommentType("COMMENT_CONTENT"),
+                "Should return true when valid type passed");
     }
 
     @Test
     public void testGetTokenTypesTotalNumber() {
         final int tokenTypesTotalNumber = TokenUtil.getTokenTypesTotalNumber();
 
-        assertEquals("Invalid token total number", 169, tokenTypesTotalNumber);
+        assertEquals(169, tokenTypesTotalNumber, "Invalid token total number");
     }
 
     @Test
@@ -217,8 +213,8 @@ public class TokenUtilTest {
             sum += tokenId;
         }
 
-        assertEquals("Invalid token length", 169, allTokenIds.length);
-        assertEquals("invalid sum", 15662, sum);
+        assertEquals(169, allTokenIds.length, "Invalid token length");
+        assertEquals(15662, sum, "invalid sum");
     }
 
     @Test
@@ -226,14 +222,14 @@ public class TokenUtilTest {
         final int id = TokenTypes.COMMENT_CONTENT;
         final String tokenName = TokenUtil.getTokenName(id);
 
-        assertEquals("Invalid token name", "COMMENT_CONTENT", tokenName);
+        assertEquals("COMMENT_CONTENT", tokenName, "Invalid token name");
     }
 
     @Test
     public void testCorrectBehaviourOfGetTokenId() {
         final String id = "EOF";
 
-        assertEquals("Invalid token id", TokenTypes.EOF, TokenUtil.getTokenId(id));
+        assertEquals(TokenTypes.EOF, TokenUtil.getTokenId(id), "Invalid token id");
     }
 
     @Test
@@ -241,7 +237,7 @@ public class TokenUtilTest {
         final String id = "EOF";
         final String shortDescription = TokenUtil.getShortDescription(id);
 
-        assertEquals("Invalid short description", "The end of file token.", shortDescription);
+        assertEquals("The end of file token.", shortDescription, "Invalid short description");
     }
 
     @Test
@@ -266,7 +262,7 @@ public class TokenUtilTest {
                 }
             });
 
-        assertEquals("Invalid second sibling", secondSibling, result.orElse(null));
+        assertEquals(secondSibling, result.orElse(null), "Invalid second sibling");
     }
 
     @Test
@@ -290,9 +286,10 @@ public class TokenUtilTest {
                 return children.add(t);
             }
         });
+        final DetailAST firstChild = children.get(0);
 
-        assertEquals("Must be one match", 1, children.size());
-        assertEquals("Mismatched child node", secondSibling, children.get(0));
+        assertEquals(1, children.size(), "Must be one match");
+        assertEquals(secondSibling, firstChild, "Mismatched child node");
     }
 
 }

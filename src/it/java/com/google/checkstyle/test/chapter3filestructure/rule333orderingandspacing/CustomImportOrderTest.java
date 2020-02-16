@@ -30,6 +30,8 @@ public class CustomImportOrderTest extends AbstractGoogleModuleTestSupport {
 
     /** Shortcuts to make code more compact. */
     private static final String MSG_LINE_SEPARATOR = CustomImportOrderCheck.MSG_LINE_SEPARATOR;
+    private static final String MSG_SEPARATED_IN_GROUP =
+        CustomImportOrderCheck.MSG_SEPARATED_IN_GROUP;
     private static final String MSG_LEX = CustomImportOrderCheck.MSG_LEX;
     private static final String MSG_NONGROUP_EXPECTED =
         CustomImportOrderCheck.MSG_NONGROUP_EXPECTED;
@@ -54,6 +56,8 @@ public class CustomImportOrderTest extends AbstractGoogleModuleTestSupport {
             "13: " + getCheckMessage(clazz, MSG_LEX, "java.io.IOException", "javax.swing.JTable"),
             "14: " + getCheckMessage(clazz, MSG_LEX, "java.io.InputStream", "javax.swing.JTable"),
             "15: " + getCheckMessage(clazz, MSG_LEX, "java.io.Reader", "javax.swing.JTable"),
+            "17: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "com.google.common.base.Ascii"),
             "17: " + getCheckMessage(clazz, MSG_LEX, "com.google.common.base.Ascii",
                 "javax.swing.JTable"),
         };
@@ -73,12 +77,16 @@ public class CustomImportOrderTest extends AbstractGoogleModuleTestSupport {
             "9: " + getCheckMessage(clazz, MSG_LEX, "java.util.*", "java.util.StringTokenizer"),
             "11: " + getCheckMessage(clazz, MSG_LEX, "java.util.concurrent.*",
                 "java.util.concurrent.AbstractExecutorService"),
+            "13: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "com.google.checkstyle.test.chapter2filebasic.rule21filename.*"),
             "13: " + getCheckMessage(clazz, MSG_LEX,
                 "com.google.checkstyle.test.chapter2filebasic.rule21filename.*",
                 "java.util.concurrent.AbstractExecutorService"),
             "14: " + getCheckMessage(clazz, MSG_LEX,
                 "com.google.checkstyle.test.chapter3filestructure.rule3sourcefile.*",
                 "java.util.concurrent.AbstractExecutorService"),
+            "16: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "com.google.common.reflect.*"),
             "16: " + getCheckMessage(clazz, MSG_LEX, "com.google.common.reflect.*",
                 "java.util.concurrent.AbstractExecutorService"),
         };
@@ -96,6 +104,8 @@ public class CustomImportOrderTest extends AbstractGoogleModuleTestSupport {
             "4: " + getCheckMessage(clazz, MSG_LINE_SEPARATOR, "java.awt.Dialog"),
             "5: " + getCheckMessage(clazz, MSG_NONGROUP_EXPECTED, STATIC,
                 "javax.swing.WindowConstants.*"),
+            "7: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "com.google.checkstyle.test.chapter2filebasic.rule21filename.*"),
             "7: " + getCheckMessage(clazz, MSG_LEX,
                 "com.google.checkstyle.test.chapter2filebasic.rule21filename.*", "java.awt.Dialog"),
             "8: " + getCheckMessage(clazz, MSG_LEX, "com.google.common.reflect.*",
@@ -118,11 +128,62 @@ public class CustomImportOrderTest extends AbstractGoogleModuleTestSupport {
     }
 
     @Test
+    public void testCustomImport4() throws Exception {
+        final String[] expected = {
+            "7: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "javax.swing.WindowConstants.*"),
+            "15: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "java.util.StringTokenizer"),
+            "17: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "java.util.concurrent.AbstractExecutorService"),
+        };
+
+        final Configuration checkConfig = getModuleConfig("CustomImportOrder");
+        final String filePath = getPath("InputCustomImportOrder4.java");
+
+        final Integer[] warnList = getLinesWithWarn(filePath);
+        verify(checkConfig, filePath, expected, warnList);
+    }
+
+    @Test
+    public void testCustomImport5() throws Exception {
+        final String[] expected = {
+            "9: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "javax.swing.WindowConstants.*"),
+            "13: " + getCheckMessage(clazz, MSG_LINE_SEPARATOR,
+                "com.google.checkstyle.test.chapter2filebasic.rule21filename.*"),
+            "17: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "com.google.common.reflect.*"),
+            "21: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "java.util.StringTokenizer"),
+            "25: " + getCheckMessage(clazz, MSG_SEPARATED_IN_GROUP,
+                "java.util.concurrent.AbstractExecutorService"),
+        };
+
+        final Configuration checkConfig = getModuleConfig("CustomImportOrder");
+        final String filePath = getPath("InputCustomImportOrder5.java");
+
+        final Integer[] warnList = getLinesWithWarn(filePath);
+        verify(checkConfig, filePath, expected, warnList);
+    }
+
+    @Test
     public void testValid() throws Exception {
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         final Configuration checkConfig = getModuleConfig("CustomImportOrder");
         final String filePath = getPath("InputCustomImportOrderValid.java");
+
+        final Integer[] warnList = getLinesWithWarn(filePath);
+        verify(checkConfig, filePath, expected, warnList);
+    }
+
+    @Test
+    public void testValid2() throws Exception {
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        final Configuration checkConfig = getModuleConfig("CustomImportOrder");
+        final String filePath = getPath("InputCustomImportOrderValid2.java");
 
         final Integer[] warnList = getLinesWithWarn(filePath);
         verify(checkConfig, filePath, expected, warnList);

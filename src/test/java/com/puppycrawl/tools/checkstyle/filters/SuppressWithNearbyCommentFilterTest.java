@@ -20,9 +20,9 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -361,8 +361,9 @@ public class SuppressWithNearbyCommentFilterTest
         }
         catch (CheckstyleException ex) {
             final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
-            assertEquals("Invalid exception message", "unable to parse influence"
-                + " from 'SUPPRESS CHECKSTYLE MemberNameCheck' using a", cause.getMessage());
+            assertEquals("unable to parse influence"
+                + " from 'SUPPRESS CHECKSTYLE MemberNameCheck' using a", cause.getMessage(),
+                    "Invalid exception message");
         }
     }
 
@@ -414,8 +415,8 @@ public class SuppressWithNearbyCommentFilterTest
         }
         catch (CheckstyleException ex) {
             final IllegalArgumentException cause = (IllegalArgumentException) ex.getCause();
-            assertEquals("Invalid exception message",
-                "unable to parse expanded comment a[l", cause.getMessage());
+            assertEquals("unable to parse expanded comment a[l", cause.getMessage(),
+                    "Invalid exception message");
         }
     }
 
@@ -427,7 +428,7 @@ public class SuppressWithNearbyCommentFilterTest
         contents.reportSingleLineComment(1, 0);
         final TreeWalkerAuditEvent auditEvent =
                 new TreeWalkerAuditEvent(contents, null, null, null);
-        assertTrue("Filter should accept null localized message", filter.accept(auditEvent));
+        assertTrue(filter.accept(auditEvent), "Filter should accept null localized message");
     }
 
     @Test
@@ -436,7 +437,7 @@ public class SuppressWithNearbyCommentFilterTest
         final FileContents contents = null;
         final TreeWalkerAuditEvent auditEvent = new TreeWalkerAuditEvent(contents, null,
                 new LocalizedMessage(1, null, null, null, null, Object.class, null), null);
-        assertTrue("Filter should accept audit event", filter.accept(auditEvent));
+        assertTrue(filter.accept(auditEvent), "Filter should accept audit event");
     }
 
     @Test
@@ -444,10 +445,10 @@ public class SuppressWithNearbyCommentFilterTest
         final SuppressWithNearbyCommentFilter filter = new SuppressWithNearbyCommentFilter();
         final Object tag =
                 getTagsAfterExecution(filter, "filename", "//SUPPRESS CHECKSTYLE ignore").get(0);
-        assertEquals("Invalid toString result",
-            "Tag[text='SUPPRESS CHECKSTYLE ignore', firstLine=1, lastLine=1, "
+        assertEquals(
+                "Tag[text='SUPPRESS CHECKSTYLE ignore', firstLine=1, lastLine=1, "
                     + "tagCheckRegexp=.*, tagMessageRegexp=null, tagIdRegexp=null]",
-                    tag.toString());
+                    tag.toString(), "Invalid toString result");
     }
 
     @Test
@@ -456,10 +457,10 @@ public class SuppressWithNearbyCommentFilterTest
         filter.setIdFormat(".*");
         final Object tag =
                 getTagsAfterExecution(filter, "filename", "//SUPPRESS CHECKSTYLE ignore").get(0);
-        assertEquals("Invalid toString result",
-            "Tag[text='SUPPRESS CHECKSTYLE ignore', firstLine=1, lastLine=1, "
+        assertEquals(
+                "Tag[text='SUPPRESS CHECKSTYLE ignore', firstLine=1, lastLine=1, "
                     + "tagCheckRegexp=.*, tagMessageRegexp=null, tagIdRegexp=.*]",
-                    tag.toString());
+                    tag.toString(), "Invalid toString result");
     }
 
     @Test
@@ -725,10 +726,10 @@ public class SuppressWithNearbyCommentFilterTest
                 new SuppressWithNearbyCommentFilter();
         final List<?> tags1 = getTagsAfterExecution(suppressionCommentFilter,
                 "filename1", "//SUPPRESS CHECKSTYLE ignore this");
-        assertEquals("Invalid tags size", 1, tags1.size());
+        assertEquals(1, tags1.size(), "Invalid tags size");
         final List<?> tags2 = getTagsAfterExecution(suppressionCommentFilter,
                 "filename2", "No comments in this file");
-        assertEquals("Invalid tags size", 0, tags2.size());
+        assertEquals(0, tags2.size(), "Invalid tags size");
     }
 
     /**

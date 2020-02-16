@@ -21,8 +21,8 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocPackageCheck.MSG_LEGACY_PACKAGE_HTML;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocPackageCheck.MSG_PACKAGE_INFO;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Collections;
@@ -146,8 +146,8 @@ public class JavadocPackageCheckTest
             fail("CheckstyleException expected to be thrown");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Invalid exception message. Expected: " + expectedExceptionMessage,
-                    expectedExceptionMessage, ex.getMessage());
+            assertEquals(expectedExceptionMessage, ex.getMessage(),
+                    "Invalid exception message. Expected: " + expectedExceptionMessage);
         }
     }
 

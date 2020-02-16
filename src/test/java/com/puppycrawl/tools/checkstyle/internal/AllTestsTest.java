@@ -19,6 +19,9 @@
 
 package com.puppycrawl.tools.checkstyle.internal;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
@@ -51,7 +53,7 @@ public class AllTestsTest {
                 }
             });
 
-        Assert.assertTrue("found tests", !allTests.keySet().isEmpty());
+        assertFalse(allTests.keySet().isEmpty(), "found tests");
 
         walk(new File("src/test/resources/com/puppycrawl"),
                 new Function<File, Object>() {
@@ -97,7 +99,7 @@ public class AllTestsTest {
                     }
                 });
 
-        Assert.assertTrue("found tests", !allTests.keySet().isEmpty());
+        assertFalse(allTests.keySet().isEmpty(), "found tests");
 
         walk(new File("src/test/java"),
                 new Function<File, Object>() {
@@ -186,8 +188,8 @@ public class AllTestsTest {
                 final boolean skipFileNaming = shouldSkipInputFileNameCheck(path, fileName);
 
                 if (!skipFileNaming) {
-                    Assert.assertTrue("Resource must start with 'Input' or 'Expected': " + path,
-                            fileName.startsWith("Input") || fileName.startsWith("Expected"));
+                    assertTrue(fileName.startsWith("Input") || fileName.startsWith("Expected"),
+                            "Resource must start with 'Input' or 'Expected': " + path);
 
                     if (fileName.startsWith("Input")) {
                         fileName = fileName.substring(5);
@@ -231,18 +233,20 @@ public class AllTestsTest {
             }
         }
 
-        Assert.assertTrue("Resource must be named after a Test like 'InputMyCustomCase.java' "
+        assertTrue(found, "Resource must be named after a Test like 'InputMyCustomCase.java' "
                 + "and be in the sub-package of the test like 'mycustom' "
-                + "for test 'MyCustomCheckTest': " + path, found);
+                + "for test 'MyCustomCheckTest': " + path);
     }
 
     private static void verifyHasProductionFile(Map<String, List<String>> allTests, File file) {
         if (file.isFile()) {
             final String fileName = file.getName().replace("Test.java", ".java");
+            final String filePath = file.getPath();
 
             if (!fileName.endsWith("TestSupport.java")
                     // tests external utility XPathEvaluator
-                    && !"XpathMapper.java".equals(fileName)) {
+                    && !"XpathMapper.java".equals(fileName)
+                    && !filePath.contains(File.separatorChar + "jupiter" + File.separatorChar)) {
                 final String path;
 
                 try {
@@ -258,9 +262,9 @@ public class AllTestsTest {
                     final String packge = path.substring(0, slash);
                     final List<String> classes = allTests.get(packge);
 
-                    Assert.assertTrue("Test must be named after a production class "
-                            + "and must be in the same package of the production class: " + path,
-                            classes != null && classes.contains(fileName));
+                    assertTrue(classes != null && classes.contains(fileName),
+                            "Test must be named after a production class "
+                            + "and must be in the same package of the production class: " + path);
                 }
             }
         }

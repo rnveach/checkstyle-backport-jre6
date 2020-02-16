@@ -20,10 +20,10 @@
 package com.puppycrawl.tools.checkstyle.checks.design;
 
 import static com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck.MSG_KEY;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -55,8 +55,8 @@ public class VisibilityModifierCheckTest
             TokenTypes.VARIABLE_DEF,
             TokenTypes.IMPORT,
         };
-        assertArrayEquals("Default required tokens are invalid",
-            expected, checkObj.getRequiredTokens());
+        assertArrayEquals(
+                expected, checkObj.getRequiredTokens(), "Default required tokens are invalid");
     }
 
     @Test
@@ -362,8 +362,8 @@ public class VisibilityModifierCheckTest
             TokenTypes.VARIABLE_DEF,
             TokenTypes.IMPORT,
         };
-        assertArrayEquals("Default acceptable tokens are invalid",
-            expected, obj.getAcceptableTokens());
+        assertArrayEquals(expected, obj.getAcceptableTokens(),
+                "Default acceptable tokens are invalid");
     }
 
     @Test
@@ -426,8 +426,8 @@ public class VisibilityModifierCheckTest
             fail("exception expected");
         }
         catch (IllegalArgumentException ex) {
-            assertEquals("Invalid exception message",
-                "Unexpected token type: class", ex.getMessage());
+            assertEquals("Unexpected token type: class", ex.getMessage(),
+                    "Invalid exception message");
         }
     }
 
@@ -494,8 +494,8 @@ public class VisibilityModifierCheckTest
         final Method method = Whitebox.getMethod(VisibilityModifierCheck.class,
             "isStarImport", DetailAST.class);
 
-        assertTrue("Should return true when star import is passed",
-            (Boolean) method.invoke(check, importAst));
+        assertTrue((Boolean) method.invoke(check, importAst),
+                "Should return true when star import is passed");
     }
 
     @Test

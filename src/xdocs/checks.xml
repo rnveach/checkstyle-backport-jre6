@@ -371,7 +371,7 @@
             by the format property.</td>
           </tr>
           <tr>
-            <td><a href="config_naming.html#InvalidJavadocPosition">
+            <td><a href="config_javadoc.html#InvalidJavadocPosition">
               InvalidJavadocPosition</a></td>
             <td>
               Checks that Javadocs are located at the correct position.</td>
@@ -581,6 +581,10 @@
             <td><a href="config_misc.html#NewlineAtEndOfFile">NewlineAtEndOfFile</a></td>
             <td>
             Checks that there is a newline at the end of each file.</td>
+          </tr>
+          <tr>
+            <td><a href="config_coding.html#NoArrayTrailingComma">NoArrayTrailingComma</a></td>
+            <td>Checks if array initialization does not contain a trailing comma.</td>
           </tr>
           <tr>
             <td><a href="config_coding.html#NoClone">NoClone</a></td>

@@ -19,7 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
@@ -50,7 +50,7 @@ public class JavadocDetailNodeParserTest extends AbstractModuleTestSupport {
         final String expected = toLfLineEnding(new String(Files7.readAllBytes(Paths.get(
                 getPath("ExpectedJavadocDetailNodeParser.txt"))),
                 StandardCharsets.UTF_8));
-        assertEquals("Invalid parse result", expected, actual);
+        assertEquals(expected, actual, "Invalid parse result");
     }
 
 }

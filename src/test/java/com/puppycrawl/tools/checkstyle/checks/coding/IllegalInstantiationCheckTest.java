@@ -20,11 +20,13 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import static com.puppycrawl.tools.checkstyle.checks.coding.IllegalInstantiationCheck.MSG_KEY;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Collection;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -145,9 +147,9 @@ public class IllegalInstantiationCheckTest
     @Test
     public void testTokensNotNull() {
         final IllegalInstantiationCheck check = new IllegalInstantiationCheck();
-        Assert.assertNotNull("Acceptable tokens should not be null", check.getAcceptableTokens());
-        Assert.assertNotNull("Default tokens should not be null", check.getDefaultTokens());
-        Assert.assertNotNull("Required tokens should not be null", check.getRequiredTokens());
+        assertNotNull(check.getAcceptableTokens(), "Acceptable tokens should not be null");
+        assertNotNull(check.getDefaultTokens(), "Default tokens should not be null");
+        assertNotNull(check.getRequiredTokens(), "Required tokens should not be null");
     }
 
     @Test
@@ -159,7 +161,7 @@ public class IllegalInstantiationCheckTest
 
         try {
             check.visitToken(lambdaAst);
-            Assert.fail("IllegalArgumentException is expected");
+            fail("IllegalArgumentException is expected");
         }
         catch (IllegalArgumentException ex) {
             // it is OK
@@ -188,15 +190,16 @@ public class IllegalInstantiationCheckTest
                 }
             });
 
-        Assert.assertTrue("Ast should contain CLASS_DEF", classDef.isPresent());
-        Assert.assertTrue("State is not cleared on beginTree",
-                TestUtil.isStatefulFieldClearedDuringBeginTree(check, classDef.get(), "classNames",
-                    new Predicate<Object>() {
-                        @Override
-                        public boolean test(Object classNames) {
-                            return ((Collection<String>) classNames).isEmpty();
-                        }
-                    }));
+        assertTrue(classDef.isPresent(), "Ast should contain CLASS_DEF");
+        assertTrue(
+            TestUtil.isStatefulFieldClearedDuringBeginTree(check, classDef.get(), "classNames",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object classNames) {
+                        return ((Collection<String>) classNames).isEmpty();
+                    }
+                }),
+                "State is not cleared on beginTree");
     }
 
     /**
@@ -220,15 +223,16 @@ public class IllegalInstantiationCheckTest
                 }
             });
 
-        Assert.assertTrue("Ast should contain IMPORT_DEF", importDef.isPresent());
-        Assert.assertTrue("State is not cleared on beginTree",
-                TestUtil.isStatefulFieldClearedDuringBeginTree(check, importDef.get(), "imports",
-                    new Predicate<Object>() {
-                        @Override
-                        public boolean test(Object imports) {
-                            return ((Collection<?>) imports).isEmpty();
-                        }
-                    }));
+        assertTrue(importDef.isPresent(), "Ast should contain IMPORT_DEF");
+        assertTrue(
+            TestUtil.isStatefulFieldClearedDuringBeginTree(check, importDef.get(), "imports",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object imports) {
+                        return ((Collection<?>) imports).isEmpty();
+                    }
+                }),
+                "State is not cleared on beginTree");
     }
 
     /**
@@ -253,15 +257,16 @@ public class IllegalInstantiationCheckTest
                 }
             });
 
-        Assert.assertTrue("Ast should contain LITERAL_NEW", literalNew.isPresent());
-        Assert.assertTrue("State is not cleared on beginTree",
-                TestUtil.isStatefulFieldClearedDuringBeginTree(check, literalNew.get(),
-                    "instantiations",
-                    new Predicate<Object>() {
-                        @Override
-                        public boolean test(Object instantiations) {
-                            return ((Collection<DetailAST>) instantiations).isEmpty();
-                        }
-                    }));
+        assertTrue(literalNew.isPresent(), "Ast should contain LITERAL_NEW");
+        assertTrue(
+            TestUtil.isStatefulFieldClearedDuringBeginTree(check, literalNew.get(),
+                "instantiations",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object instantiations) {
+                        return ((Collection<DetailAST>) instantiations).isEmpty();
+                    }
+                }),
+            "State is not cleared on beginTree");
     }
 }

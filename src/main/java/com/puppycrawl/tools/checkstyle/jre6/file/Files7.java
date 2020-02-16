@@ -68,6 +68,32 @@ public final class Files7 {
         directory.getFile().mkdirs();
     }
 
+    public static Path createTempDirectory(String name) throws IOException {
+        final File temp;
+
+        temp = File.createTempFile(name, Long.toString(System.nanoTime()));
+
+        if (!(temp.delete())) {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+
+        if (!(temp.mkdir())) {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+
+        return new Path(temp);
+    }
+
+    public static Path createTempFile(Path directory, String prefix, String suffix)
+            throws IOException {
+        String newPrefix = prefix;
+        if (newPrefix != null && newPrefix.length() == 0) {
+            newPrefix = "tmp";
+        }
+
+        return new Path(File.createTempFile(newPrefix, suffix, directory.getFile()));
+    }
+
     public static boolean exists(Path path) {
         return path.getFile().exists();
     }

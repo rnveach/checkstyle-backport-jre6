@@ -19,7 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.indentation;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class LineSetTest {
 
         final String result = lineSet.toString();
 
-        assertEquals("Invalid toString result", "LineSet[firstLine=0, lastLine=2]", result);
+        assertEquals("LineSet[firstLine=0, lastLine=2]", result, "Invalid toString result");
     }
 
 }

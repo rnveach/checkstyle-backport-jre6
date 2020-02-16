@@ -20,7 +20,7 @@
 package com.puppycrawl.tools.checkstyle;
 
 import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
@@ -28,8 +28,8 @@ public class DefinitionsTest {
 
     @Test
     public void testIsProperUtilsClass() throws Exception {
-        assertTrue("Constructor is not private",
-                isUtilsClassHasPrivateConstructor(Definitions.class, true));
+        assertTrue(isUtilsClassHasPrivateConstructor(Definitions.class, true),
+                "Constructor is not private");
     }
 
 }

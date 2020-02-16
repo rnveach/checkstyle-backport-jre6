@@ -19,10 +19,10 @@
 
 package com.puppycrawl.tools.checkstyle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -64,13 +64,6 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
         return ConfigurationLoader.loadConfiguration(fName, new PropertiesExpander(props));
     }
 
-    /**
-     * Non meaningful javadoc just to contain "noinspection" tag.
-     * Till https://youtrack.jetbrains.com/issue/IDEA-187209
-     * @return method class
-     * @throws Exception if smth wrong
-     * @noinspection JavaReflectionMemberAccess
-     */
     private static Method getReplacePropertiesMethod() throws Exception {
         final Class<?>[] params = new Class<?>[3];
         params[0] = String.class;
@@ -116,9 +109,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("An exception is expected");
         }
         catch (IllegalArgumentException ex) {
-            assertEquals("Invalid exception message",
-                "Multi thread mode for Checker module is not implemented",
-                ex.getMessage());
+            assertEquals("Multi thread mode for Checker module is not implemented",
+                ex.getMessage(), "Invalid exception message");
         }
     }
 
@@ -164,12 +156,12 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("missing property name");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"name\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"property\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().endsWith(":8:41"));
+            assertTrue(ex.getMessage().contains("\"name\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().contains("\"property\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().endsWith(":8:41"),
+                    "Invalid exception message: " + ex.getMessage());
         }
     }
 
@@ -183,12 +175,12 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("missing property name");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"name\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"property\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().endsWith(":8:41"));
+            assertTrue(ex.getMessage().contains("\"name\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().contains("\"property\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().endsWith(":8:41"),
+                    "Invalid exception message: " + ex.getMessage());
         }
     }
 
@@ -199,12 +191,12 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("missing property value");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"value\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"property\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().endsWith(":8:43"));
+            assertTrue(ex.getMessage().contains("\"value\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().contains("\"property\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().endsWith(":8:43"),
+                    "Invalid exception message: " + ex.getMessage());
         }
     }
 
@@ -215,12 +207,12 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("missing module name");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"name\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"module\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().endsWith(":7:23"));
+            assertTrue(ex.getMessage().contains("\"name\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().contains("\"module\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().endsWith(":7:23"),
+                    "Invalid exception message: " + ex.getMessage());
         }
     }
 
@@ -231,12 +223,12 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("missing module parent");
         }
         catch (CheckstyleException ex) {
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"property\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().contains("\"module\""));
-            assertTrue("Invalid exception message: " + ex.getMessage(),
-                    ex.getMessage().endsWith(":8:38"));
+            assertTrue(ex.getMessage().contains("\"property\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().contains("\"module\""),
+                    "Invalid exception message: " + ex.getMessage());
+            assertTrue(ex.getMessage().endsWith(":8:38"),
+                    "Invalid exception message: " + ex.getMessage());
         }
     }
 
@@ -306,28 +298,24 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
         final Configuration[] grandchildren = children[0].getChildren();
 
         final String expectedKey = "name.invalidPattern";
-        assertTrue("Messages should contain key: " + expectedKey,
-            grandchildren[0].getMessages()
-            .containsKey(expectedKey));
+        assertTrue(grandchildren[0].getMessages().containsKey(expectedKey),
+                "Messages should contain key: " + expectedKey);
     }
 
     private static void verifyConfigNode(
         DefaultConfiguration config, String name, int childrenLength,
         Properties atts) throws Exception {
-        assertEquals("name.", name, config.getName());
+        assertEquals(name, config.getName(), "name.");
         assertEquals(
-            "children.length.",
-            childrenLength,
-            config.getChildren().length);
+                childrenLength,
+            config.getChildren().length, "children.length.");
 
         final String[] attNames = config.getAttributeNames();
-        assertEquals("attributes.length", atts.size(), attNames.length);
+        assertEquals(atts.size(), attNames.length, "attributes.length");
 
         for (String attName : attNames) {
-            assertEquals(
-                "attribute[" + attName + "]",
-                atts.getProperty(attName),
-                config.getAttribute(attName));
+            final String attribute = config.getAttribute(attName);
+            assertEquals(atts.getProperty(attName), attribute, "attribute[" + attName + "]");
         }
     }
 
@@ -339,7 +327,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
         for (String testValue : testValues) {
             final String value = (String) getReplacePropertiesMethod().invoke(
                 null, testValue, new PropertiesExpander(props), null);
-            assertEquals("\"" + testValue + "\"", value, testValue);
+            assertEquals(value, testValue, "\"" + testValue + "\"");
         }
     }
 
@@ -352,8 +340,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("expected to fail, instead got: " + value);
         }
         catch (InvocationTargetException ex) {
-            assertEquals("Invalid exception cause message",
-                "Syntax error in property: ${a", ex.getCause().getMessage());
+            assertEquals("Syntax error in property: ${a", ex.getCause().getMessage(),
+                    "Invalid exception cause message");
         }
     }
 
@@ -366,8 +354,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("expected to fail, instead got: " + value);
         }
         catch (InvocationTargetException ex) {
-            assertEquals("Invalid exception cause message",
-                "Property ${c} has not been set", ex.getCause().getMessage());
+            assertEquals("Property ${c} has not been set", ex.getCause().getMessage(),
+                    "Invalid exception cause message");
         }
     }
 
@@ -391,8 +379,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
         for (String[] testValue : testValues) {
             final String value = (String) getReplacePropertiesMethod().invoke(
                 null, testValue[0], new PropertiesExpander(props), null);
-            assertEquals("\"" + testValue[0] + "\"",
-                testValue[1], value);
+            assertEquals(testValue[1], value, "\"" + testValue[0] + "\"");
         }
     }
 
@@ -480,8 +467,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("Exception is expected");
         }
         catch (IllegalStateException ex) {
-            assertEquals("Invalid exception cause message",
-                "Unknown name:" + "hello" + ".", ex.getMessage());
+            assertEquals("Unknown name:" + "hello" + ".", ex.getMessage(),
+                    "Invalid exception cause message");
         }
     }
 
@@ -492,15 +479,14 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
             fail("exception in expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Invalid exception message",
-                "unable to parse configuration stream", ex.getMessage());
-            assertSame("Expected cause of type SAXException",
-                SAXException.class, ex.getCause().getClass());
-            assertSame("Expected cause of type CheckstyleException",
-                CheckstyleException.class, ex.getCause().getCause().getClass());
-            assertEquals("Invalid exception cause message",
-                "Property ${nonexistent} has not been set",
-                ex.getCause().getCause().getMessage());
+            assertEquals("unable to parse configuration stream", ex.getMessage(),
+                    "Invalid exception message");
+            assertSame(SAXException.class, ex.getCause().getClass(),
+                    "Expected cause of type SAXException");
+            assertSame(CheckstyleException.class, ex.getCause().getCause().getClass(),
+                    "Expected cause of type CheckstyleException");
+            assertEquals("Property ${nonexistent} has not been set",
+                ex.getCause().getCause().getMessage(), "Invalid exception cause message");
         }
     }
 
@@ -512,7 +498,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
                         new PropertiesExpander(new Properties()), IgnoredModulesOptions.OMIT);
 
         final Configuration[] children = config.getChildren();
-        assertEquals("Invalid children count", 0, children[0].getChildren().length);
+        final int length = children[0].getChildren().length;
+        assertEquals(0, length, "Invalid children count");
     }
 
     @Test
@@ -524,7 +511,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
                         new PropertiesExpander(new Properties()), IgnoredModulesOptions.OMIT);
 
         final Configuration[] children = config.getChildren();
-        assertEquals("Invalid children count", 0, children[0].getChildren().length);
+        final int length = children[0].getChildren().length;
+        assertEquals(0, length, "Invalid children count");
     }
 
     @Test
@@ -535,7 +523,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
                         new PropertiesExpander(new Properties()), IgnoredModulesOptions.OMIT);
 
         final Configuration[] children = config.getChildren();
-        assertEquals("Invalid children count", 0, children.length);
+        assertEquals(0, children.length, "Invalid children count");
     }
 
     @Test
@@ -547,13 +535,13 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
                             new PropertiesExpander(new Properties()), IgnoredModulesOptions.OMIT);
 
             final Configuration[] children = config.getChildren();
-            assertEquals("Invalid children count", 0, children[0].getChildren().length);
+            final int length = children[0].getChildren().length;
+            assertEquals(0, length, "Invalid children count");
             fail("Exception is expected");
         }
         catch (CheckstyleException ex) {
-            assertEquals("Invalid exception message",
-                    "Unable to find: ;InputConfigurationLoaderModuleIgnoreSeverity.xml",
-                    ex.getMessage());
+            assertEquals("Unable to find: ;InputConfigurationLoaderModuleIgnoreSeverity.xml",
+                    ex.getMessage(), "Invalid exception message");
         }
     }
 
@@ -566,8 +554,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
                         new PropertiesExpander(new Properties()), IgnoredModulesOptions.OMIT);
 
         final Configuration[] children = config.getChildren();
-        assertEquals("Invalid children count",
-            0, children[0].getChildren().length);
+        final int length = children[0].getChildren().length;
+        assertEquals(0, length, "Invalid children count");
     }
 
     @Test
@@ -578,7 +566,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
         final String value = (String) getReplacePropertiesMethod().invoke(
             null, "${checkstyle.basedir}", new PropertiesExpander(props), defaultValue);
 
-        assertEquals("Invalid property value", defaultValue, value);
+        assertEquals(defaultValue, value, "Invalid property value");
     }
 
     @Test
@@ -589,8 +577,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
                         new PropertiesExpander(new Properties()), IgnoredModulesOptions.OMIT);
 
         final Configuration[] children = config.getChildren();
-        assertEquals("Invalid children count",
-            0, children[0].getChildren().length);
+        final int length = children[0].getChildren().length;
+        assertEquals(0, length, "Invalid children count");
     }
 
     @Test
@@ -601,8 +589,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
         Whitebox.invokeMethod(ConfigurationLoader.class,
                 "parsePropertyString", "$",
                fragments, propertyRefs);
-        assertEquals("Fragments list has unexpected amount of items",
-                1, fragments.size());
+        assertEquals(1, fragments.size(), "Fragments list has unexpected amount of items");
     }
 
     @Test
@@ -613,7 +600,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
 
         final Configuration configuration = ConfigurationLoader.loadConfiguration(fName,
                 new PropertiesExpander(props), ConfigurationLoader.IgnoredModulesOptions.OMIT);
-        assertEquals("Name is not expected", "Checker", configuration.getName());
+        assertEquals("Checker", configuration.getName(), "Name is not expected");
 
         final DefaultConfiguration configuration1 =
                 (DefaultConfiguration) ConfigurationLoader.loadConfiguration(
@@ -623,7 +610,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
                         ConfigurationLoader.IgnoredModulesOptions.EXECUTE);
 
         final Configuration[] children = configuration1.getChildren();
-        assertEquals("Unexpected children size", 1, children[0].getChildren().length);
+        final int length = children[0].getChildren().length;
+        assertEquals(1, length, "Unexpected children size");
     }
 
 }
