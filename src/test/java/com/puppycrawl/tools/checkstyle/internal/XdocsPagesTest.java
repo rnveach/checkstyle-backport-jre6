@@ -1584,6 +1584,7 @@ public class XdocsPagesTest {
             styleChecks.remove("BeforeExecutionExclusionFileFilter");
             styleChecks.remove("SuppressionFilter");
             styleChecks.remove("SuppressionXpathFilter");
+            styleChecks.remove("SuppressionXpathSingleFilter");
             styleChecks.remove("TreeWalker");
             styleChecks.remove("Checker");
 

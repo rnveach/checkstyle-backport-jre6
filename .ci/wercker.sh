@@ -87,6 +87,8 @@ no-error-xwiki)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/xwiki/xwiki-commons.git
   cd .ci-temp/xwiki-commons
+  SHA_XWIKI="8a2e04689fb8e707a3457833d""d44c909a""cc43e5b"
+  git checkout $SHA_XWIKI
   mvn -f xwiki-commons-tools/xwiki-commons-tool-verification-resources/pom.xml \
     install -DskipTests -Dcheckstyle.version=${CS_POM_VERSION}
   mvn -e test-compile checkstyle:check@default -Dcheckstyle.version=${CS_POM_VERSION}
@@ -223,6 +225,22 @@ no-exception-checkstyle-sevntu)
   sed -i'' 's/#sevntu-checkstyle/sevntu-checkstyle/' projects-for-wercker.properties
   groovy ./launch.groovy --listOfProjects projects-for-wercker.properties \
       --config checks-nonjavadoc-error.xml --checkstyleVersion ${CS_POM_VERSION}
+  cd ../../
+  rm -rf contribution
+  ;;
+
+no-exception-checkstyle-sevntu-javadoc)
+  set -e
+  CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
+                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+  echo CS_version: ${CS_POM_VERSION}
+  checkout_from https://github.com/checkstyle/contribution.git
+  cd .ci-temp/contribution/checkstyle-tester
+  sed -i'' 's/^guava/#guava/' projects-for-wercker.properties
+  sed -i'' 's/#local-checkstyle/local-checkstyle/' projects-for-wercker.properties
+  sed -i'' 's/#sevntu-checkstyle/sevntu-checkstyle/' projects-for-wercker.properties
+  groovy ./launch.groovy --listOfProjects projects-for-wercker.properties \
+      --config checks-only-javadoc-error.xml --checkstyleVersion ${CS_POM_VERSION}
   cd ../../
   rm -rf contribution
   ;;

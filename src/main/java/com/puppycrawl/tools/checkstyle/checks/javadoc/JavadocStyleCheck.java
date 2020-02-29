@@ -390,7 +390,7 @@ public class JavadocStyleCheck
 
             if (textStart != -1) {
                 if (line.charAt(textStart) == '@') {
-                    //we have found the tag section
+                    // we have found the tag section
                     break;
                 }
                 builder.append(line.substring(textStart));
@@ -485,7 +485,7 @@ public class JavadocStyleCheck
                 return;
             }
             if (tag.isClosedTag()) {
-                //do nothing
+                // do nothing
                 continue;
             }
             if (tag.isCloseTag()) {
@@ -504,7 +504,7 @@ public class JavadocStyleCheck
                 }
             }
             else {
-                //We only push html tags that are allowed
+                // We only push html tags that are allowed
                 if (isAllowedTag(tag)) {
                     htmlStack.push(tag);
                 }

@@ -659,7 +659,7 @@ public class MainTest {
 
     @Test
     public void testExistingTargetFilePlainOutputProperties() throws Exception {
-        //exit.expectSystemExitWithStatus(0);
+        // exit.expectSystemExitWithStatus(0);
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() {

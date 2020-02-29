@@ -399,7 +399,7 @@ public enum JavadocTagInfo {
         TEXT_TO_TAG = Collections.unmodifiableMap(textToTagBuilder);
         NAME_TO_TAG = Collections.unmodifiableMap(nameToTagBuilder);
 
-        //Arrays sorting for binary search
+        // Arrays sorting for binary search
         Arrays.sort(DEF_TOKEN_TYPES);
         Arrays.sort(DEF_TOKEN_TYPES_DEPRECATED);
     }

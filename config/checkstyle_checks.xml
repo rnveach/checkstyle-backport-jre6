@@ -137,6 +137,13 @@
     <property name="message"
               value="Old site links should not be used, please use https://checkstyle.org"/>
   </module>
+  <module name="RegexpSingleline">
+    <property name="id" value="noPackageCommentWithOtherVisibility"/>
+    <property name="format" value="/\*\s+package\s+\*/\s+(private|protected|public)"/>
+    <property name="fileExtensions" value="java"/>
+    <property name="message"
+              value="Package comment marker should not be used if other visibility is defined"/>
+  </module>
   <module name="RegexpOnFilename" />
   <module name="RegexpOnFilename">
       <property name="folderPattern" value="[\\/]src[\\/]\w+[\\/]java[\\/]"/>
@@ -297,6 +304,7 @@
 
     <!-- Coding -->
     <module name="ArrayTrailingComma"/>
+    <module name="AvoidDoubleBraceInitialization"/>
     <module name="AvoidInlineConditionals"/>
     <module name="AvoidNoArgumentSuperConstructorCall"/>
     <module name="CovariantEquals"/>
@@ -593,6 +601,12 @@
     <module name="OuterTypeFilename"/>
     <module name="TodoComment">
       <property name="format" value="(TODO)|(FIXME)" />
+    </module>
+    <!-- till https://github.com/checkstyle/checkstyle/issues/7388 -->
+    <module name="TodoComment">
+      <property name="id" value="commentStartWithSpace"/>
+      <property name="format" value="^([^\s\/*])"/>
+      <message key="todo.match" value="Comment text should start with space."/>
     </module>
     <module name="TrailingComment"/>
     <module name="UncommentedMain">

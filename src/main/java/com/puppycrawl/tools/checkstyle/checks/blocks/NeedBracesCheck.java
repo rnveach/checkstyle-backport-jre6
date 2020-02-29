@@ -24,6 +24,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * <p>
@@ -285,16 +286,6 @@ public class NeedBracesCheck extends AbstractCheck {
     }
 
     /**
-     * Checks if two ast nodes are on the same line.
-     * @param first ast to check
-     * @param second ast to check
-     * @return true if elements on same line, false otherwise
-     */
-    private static boolean isOnSameLine(DetailAST first, DetailAST second) {
-        return first.getLineNo() == second.getLineNo();
-    }
-
-    /**
      * Checks if current statement is single-line statement, e.g.:
      * <p>
      * {@code
@@ -354,7 +345,7 @@ public class NeedBracesCheck extends AbstractCheck {
         boolean result = false;
         if (literalWhile.getParent().getType() == TokenTypes.SLIST) {
             final DetailAST block = literalWhile.getLastChild().getPreviousSibling();
-            result = isOnSameLine(literalWhile, block);
+            result = TokenUtil.areOnSameLine(literalWhile, block);
         }
         return result;
     }
@@ -373,7 +364,7 @@ public class NeedBracesCheck extends AbstractCheck {
         boolean result = false;
         if (literalDo.getParent().getType() == TokenTypes.SLIST) {
             final DetailAST block = literalDo.getFirstChild();
-            result = isOnSameLine(block, literalDo);
+            result = TokenUtil.areOnSameLine(block, literalDo);
         }
         return result;
     }
@@ -394,7 +385,7 @@ public class NeedBracesCheck extends AbstractCheck {
             result = true;
         }
         else if (literalFor.getParent().getType() == TokenTypes.SLIST) {
-            result = isOnSameLine(literalFor, literalFor.getLastChild());
+            result = TokenUtil.areOnSameLine(literalFor, literalFor.getLastChild());
         }
         return result;
     }
@@ -421,7 +412,7 @@ public class NeedBracesCheck extends AbstractCheck {
                 block = literalIfLastChild;
             }
             final DetailAST ifCondition = literalIf.findFirstToken(TokenTypes.EXPR);
-            result = isOnSameLine(ifCondition, block);
+            result = TokenUtil.areOnSameLine(ifCondition, block);
         }
         return result;
     }
@@ -438,7 +429,7 @@ public class NeedBracesCheck extends AbstractCheck {
      */
     private static boolean isSingleLineLambda(DetailAST lambda) {
         final DetailAST lastLambdaToken = getLastLambdaToken(lambda);
-        return isOnSameLine(lambda, lastLambdaToken);
+        return TokenUtil.areOnSameLine(lambda, lastLambdaToken);
     }
 
     /**
@@ -475,7 +466,7 @@ public class NeedBracesCheck extends AbstractCheck {
         if (node != null) {
             node = node.getLastChild();
             if (node != null) {
-                result = isOnSameLine(ast, node);
+                result = TokenUtil.areOnSameLine(ast, node);
             }
         }
         return result;
@@ -493,7 +484,7 @@ public class NeedBracesCheck extends AbstractCheck {
      */
     private static boolean isSingleLineElse(DetailAST literalElse) {
         final DetailAST block = literalElse.getFirstChild();
-        return isOnSameLine(literalElse, block);
+        return TokenUtil.areOnSameLine(literalElse, block);
     }
 
 }

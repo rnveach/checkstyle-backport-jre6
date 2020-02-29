@@ -878,11 +878,17 @@ interface ThirdInterface&lt;type&gt; {} // violation, name 'type' must
         <p>
           An example of how to configure the check is:
         </p>
-
         <source>
 &lt;module name="LambdaParameterName"/&gt;
         </source>
-
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+Function&lt;String, String&gt; function1 = s -&gt; s.toLowerCase(); // OK
+Function&lt;String, String&gt; function2 = S -&gt; S.toLowerCase(); // violation, name 'S'
+                                               // must match pattern '^[a-z][a-zA-Z0-9]*$'
+          </pre>
+        </div>
         <p>
           An example of how to configure the check for names that begin with a lower case letter,
           followed by letters is:
@@ -892,23 +898,23 @@ interface ThirdInterface&lt;type&gt; {} // violation, name 'type' must
   &lt;property name="format" value="^[a-z]([a-zA-Z]+)*$"/&gt;
 &lt;/module&gt;
         </source>
-        <p>Example of checking with this config:</p>
-        <source>
-public class TestClass {
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  Function&lt;String, String&gt; function1 = str -&gt; str.toUpperCase().trim(); // OK
+  Function&lt;String, String&gt; function2 = _s -&gt; _s.trim(); // violation, name '_s'
+                                             // must match pattern '^[a-z]([a-zA-Z]+)*$'
 
-    Function&lt;String, String&gt; function1 = str -> str.toUpperCase().trim();
-
-    Function&lt;String, String&gt; function2 = _s -> _s.trim().toUpperCase(); // violation
-
-    public boolean testMethod(String sentence) {
-        return Stream.of(sentence.split(" "))
-            .map(word -> word.trim())
-            .anyMatch(Word -> "in".equals(Word)); // violation
-    }
-
+  public boolean myMethod(String sentence) {
+    return Stream.of(sentence.split(" "))
+            .map(word -&gt; word.trim()) // OK
+            .anyMatch(Word -&gt; "in".equals(Word)); // violation, name 'Word'
+                                   // must match pattern '^[a-z]([a-zA-Z]+)*$'
+  }
 }
-        </source>
-
+          </pre>
+        </div>
       </subsection>
 
       <subsection name="Example of Usage" id="LambdaParameterName_Example_of_Usage">
@@ -1386,15 +1392,18 @@ class MyClass {
 class MyClass {
   public int num1; // OK
   protected int num2; // OK
-  int num3; // OK
+  final int num3 = 3; // OK
   private int num4; // OK
+
+  static int num5; // ignored: not an instance variable
+  public static final int CONSTANT = 1; // ignored: not an instance variable
 
   public int NUM1; // violation, name 'NUM1'
                    // must match pattern '^[a-z][a-zA-Z0-9]*$'
   protected int NUM2; // violation, name 'NUM2'
                       // must match pattern '^[a-z][a-zA-Z0-9]*$'
-  int NUM3; // violation, name 'NUM3'
-            // must match pattern '^[a-z][a-zA-Z0-9]*$'
+  final int NUM3; // violation, name 'NUM3'
+                  // must match pattern '^[a-z][a-zA-Z0-9]*$'
   private int NUM4; // violation, name 'NUM4'
                     // must match pattern '^[a-z][a-zA-Z0-9]*$'
 }
@@ -2018,33 +2027,75 @@ public boolean equals(Object o) {
         <source>
 &lt;module name=&quot;ParameterName&quot;/&gt;
         </source>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  void method1(int v1) {} // OK
+  void method2(int V2) {} // violation, name 'V2' must match pattern '^[a-z][a-zA-Z0-9]*$'
+}
+          </pre>
+        </div>
         <p>
           An example of how to configure the check for names that begin with a lower case letter,
           followed by letters, digits, and underscores:
         </p>
         <source>
-&lt;module name="ParameterName"&gt;
-  &lt;property name="format" value="^[a-z][_a-zA-Z0-9]+$"/&gt;
+&lt;module name=&quot;ParameterName&quot;&gt;
+  &lt;property name=&quot;format&quot; value=&quot;^[a-z][_a-zA-Z0-9]+$&quot;/&gt;
 &lt;/module&gt;
         </source>
-          <p>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  void method1(int v1) {} // OK
+  void method2(int v_2) {} // OK
+  void method3(int V3) {} // violation, name 'V3' must match pattern '^[a-z][_a-zA-Z0-9]+$'
+}
+          </pre>
+        </div>
+        <p>
             An example of how to configure the check to skip methods with Override annotation from
             validation:
-          </p>
-          <source>
-&lt;module name="ParameterName"&gt;
-  &lt;property name="ignoreOverridden" value="true"/&gt;
+        </p>
+        <source>
+&lt;module name=&quot;ParameterName&quot;&gt;
+  &lt;property name=&quot;ignoreOverridden&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
-          </source>
+        </source>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  void method1(int v1) {} // OK
+  void method2(int V2) {} // violation, name 'V2' must match pattern '^[a-z][a-zA-Z0-9]*$'
+  @Override
+  public boolean equals(Object V3) { // OK
+    return true;
+  }
+}
+          </pre>
+        </div>
         <p>
           An example of how to configure the check for names that begin with
           a lower case letter, followed by letters and digits is:
         </p>
         <source>
-&lt;module name="ParameterName"&gt;
-  &lt;property name="format" value="^[a-z][a-zA-Z0-9]+$"/&gt;
+&lt;module name=&quot;ParameterName&quot;&gt;
+  &lt;property name=&quot;format&quot; value=&quot;^[a-z][a-zA-Z0-9]+$&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  void method1(int v1) {} // OK
+  void method2(int v_2) {} // violation, name 'v_2' must match pattern '^[a-z][a-zA-Z0-9]+$'
+  void method3(int V3) {} // violation, name 'V3' must match pattern '^[a-z][a-zA-Z0-9]+$'
+}
+          </pre>
+        </div>
         <p>
           The following configuration checks that the parameters always start with two
           lowercase characters and, in addition, that public method parameters cannot be one
@@ -2064,6 +2115,19 @@ public boolean equals(Object o) {
     value=&quot;Parameter name ''{0}'' must match pattern ''{1}''&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  void method1(int v1) {} // OK
+  protected method2(int V2) {} // violation, Parameter name 'V2'
+                               // must match pattern '^[a-z]([a-z0-9][a-zA-Z0-9]*)?$'
+  private method3(int a) {} // OK
+  public method4(int b) {} // violation, Parameter name 'b'
+                           // must match pattern '^[a-z][a-z0-9][a-zA-Z0-9]*$'
+}
+          </pre>
+        </div>
       </subsection>
 
       <subsection name="Example of Usage" id="ParameterName_Example_of_Usage">
@@ -2172,15 +2236,61 @@ public boolean equals(Object o) {
         <source>
 &lt;module name=&quot;StaticVariableName&quot;/&gt;
         </source>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  public static int goodStatic = 2; // OK
+  private static int BadStatic = 2; // violation, name 'BadStatic'
+                                    // must match pattern '^[a-z][a-zA-Z0-9]*$'
+}
+          </pre>
+        </div>
         <p>
-          An example of how to configure the check for names that begin with a lower case letter,
-          followed by letters, digits, and underscores is:
+          An example of how to suppress the check to public and protected types is:
         </p>
         <source>
-&lt;module name="StaticVariableName"&gt;
-  &lt;property name="format" value="^[a-z](_?[a-zA-Z0-9]+)*$"/&gt;
+&lt;module name=&quot;StaticVariableName&quot;&gt;
+  &lt;property name=&quot;applyToPublic&quot; value=&quot;false&quot;/&gt;
+  &lt;property name=&quot;applyToProtected&quot; value=&quot;false&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  public static int GoodStatic1 = 2; // OK
+  protected static int GoodStatic2 = 2; //OK
+  private static int goodStatic = 2 // OK
+  private static int BadStatic = 2; // violation, name 'BadStatic'
+                                    // must match pattern '^[a-z][a-zA-Z0-9]*$'
+}
+          </pre>
+        </div>
+        <p>
+          An example of how to configure the check for names that begin with a lower case letter,
+          followed by letters, digits, and underscores. Also, suppress the check from being
+          applied to private and package-private types:
+        </p>
+        <source>
+&lt;module name=&quot;StaticVariableName&quot;&gt;
+  &lt;property name=&quot;format&quot; value=&quot;^[a-z](_?[a-zA-Z0-9]+)*$&quot;/&gt;
+  &lt;property name=&quot;applyToPrivate&quot; value=&quot;false&quot;/&gt;
+  &lt;property name=&quot;applyToPackage&quot; value=&quot;false&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+class MyClass {
+  public static int good_static = 2; // OK
+  public static int Bad_Static = 2; // violation, name 'Bad_Static'
+                                    // must match pattern '^[a-z](_?[a-zA-Z0-9]+)*$'
+  private static int Good_Static1 = 2; // OK
+  static int Good_Static2 = 2; // OK
+}
+          </pre>
+        </div>
       </subsection>
 
       <subsection name="Example of Usage" id="StaticVariableName_Example_of_Usage">
@@ -2309,25 +2419,45 @@ public boolean equals(Object o) {
         </p>
 
         <source>
-&lt;module name="TypeName"/&gt;
+&lt;module name=&quot;TypeName&quot;/&gt;
         </source>
-
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+ public interface FirstName {} // OK
+ protected class SecondName {} // OK
+ enum Third_Name {} // violation, name 'Third_Name' must match pattern '^[A-Z][a-zA-Z0-9]*$'
+ private class FourthName_ {} // violation, name 'FourthName_'
+                              // must match pattern '^[A-Z][a-zA-Z0-9]*$'
+          </pre>
+        </div>
         <p>
           An example of how to configure the check for names that begin with a lower case letter,
-          followed by letters, digits, and underscores is:
+          followed by letters, digits, and underscores. Also, suppress the check from being
+          applied to protected and private type:
         </p>
         <source>
-&lt;module name="TypeName"&gt;
-  &lt;property name="format" value="^[a-z](_?[a-zA-Z0-9]+)*$"/&gt;
+&lt;module name=&quot;TypeName&quot;&gt;
+  &lt;property name=&quot;format&quot; value=&quot;^[a-z](_?[a-zA-Z0-9]+)*$&quot;/&gt;
+  &lt;property name=&quot;applyToProtected&quot; value=&quot;false&quot;/&gt;
+  &lt;property name=&quot;applyToPrivate&quot; value=&quot;false&quot;/&gt;
 &lt;/module&gt;
         </source>
-
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+ public interface firstName {} // OK
+ public class SecondName {} // violation, name 'SecondName'
+                            // must match pattern '^[a-z](_?[a-zA-Z0-9]+)*$'
+ protected class ThirdName {} // OK
+ private class FourthName {} // OK
+          </pre>
+        </div>
         <p>
           The following configuration element ensures that
           interface names begin with <code>"I_"</code>, followed by
           letters and digits:
         </p>
-
         <source>
 &lt;module name=&quot;TypeName&quot;&gt;
   &lt;property name=&quot;format&quot;
@@ -2336,6 +2466,14 @@ public boolean equals(Object o) {
     value=&quot;INTERFACE_DEF&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Code Example:</p>
+        <div class="wrapper">
+          <pre>
+ public interface I_firstName {} // OK
+ interface SecondName {} // violation, name 'SecondName'
+                         // must match pattern '^I_[a-zA-Z0-9]*$'
+          </pre>
+        </div>
       </subsection>
 
       <subsection name="Example of Usage" id="TypeName_Example_of_Usage">

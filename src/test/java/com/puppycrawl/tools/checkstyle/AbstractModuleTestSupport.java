@@ -285,9 +285,11 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         try {
             final List<String> actuals = new ArrayList<String>();
-            for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= expected.length;
-                    line = lnr.readLine()) {
-                actuals.add(line);
+            if (expected.length > 0) {
+                for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= expected.length;
+                        line = lnr.readLine()) {
+                    actuals.add(line);
+                }
             }
             Collections.sort(actuals);
             Arrays.sort(expected);

@@ -67,7 +67,7 @@ return new int[] {
 }
         </source>
         <p>
-          If closing brace is on the same line as training comma, this benefit is gone
+          If closing brace is on the same line as trailing comma, this benefit is gone
           (as the check does not demand a certain location of curly braces the following
           two cases will not produce a violation):
         </p>
@@ -80,7 +80,7 @@ return new int[] {
  300000000000000000000,} // Added line
         </source>
         <p>
-          If opening brace is on the same line as training comma there's also (more arguable)
+          If opening brace is on the same line as trailing comma there's also (more arguable)
           problem:
         </p>
         <source>
@@ -167,6 +167,109 @@ int[] a2 = new int[]{
       </subsection>
 
       <subsection name="Parent Module" id="ArrayTrailingComma_Parent_Module">
+        <p>
+          <a href="config.html#TreeWalker">TreeWalker</a>
+        </p>
+      </subsection>
+    </section>
+
+    <section name="AvoidDoubleBraceInitialization">
+      <p>Since Checkstyle 8.30</p>
+      <subsection name="Description" id="AvoidDoubleBraceInitialization_Description">
+        <p>
+          Detects double brace initialization.
+        </p>
+        <p>
+          Rationale: Double brace initialization (set of
+          <a href="https://docs.oracle.com/javase/specs/jls/se12/html/jls-8.html#jls-8.6">
+          Instance Initializers</a> in class body) may look cool,
+          but it is considered as anti-pattern and should be avoided.
+          This is also can lead to a hard-to-detect memory leak, if the anonymous class instance is
+          returned outside and other object(s) hold reference to it.
+          Created anonymous class is not static, it holds an implicit reference to the outer class
+          instance.
+          See this
+          <a href="https://blog.jooq.org/2014/12/08/dont-be-clever-the-double-curly-braces-anti-pattern/">
+          blog post</a> and
+          <a href="https://www.baeldung.com/java-double-brace-initialization">
+          article</a> for more details.
+          Check ignores any comments and semicolons in class body.
+        </p>
+      </subsection>
+
+      <subsection name="Examples" id="AvoidDoubleBraceInitialization_Examples">
+        <p>
+          To configure the check:
+        </p>
+        <source>
+&lt;module name=&quot;AvoidDoubleBraceInitialization&quot;/&gt;
+        </source>
+        <p>
+          Which results in the following violations:
+        </p>
+        <source>
+class MyClass {
+  List list1 = new ArrayList&lt;Object&gt; { // violation
+    {
+      add(new Object());
+    }
+  };
+  List list2 = new ArrayList&lt;Object&gt; { // violation, comments and semicolons are ignored
+    ;
+    // my comment
+    {
+      add(new Object());
+    }
+  };
+}
+        </source>
+        <p>
+          Check only looks for double brace initialization and it ignores cases
+          where the anonymous class has fields or methods.
+          Though these might create the same memory issues as double brace,
+          the extra class members can produce side effects if changed incorrectly.
+        </p>
+          <source>
+class MyClass {
+  List list = new ArrayList&lt;Object&gt; { // OK as it is not pure double brace pattern
+     private int field;
+     {
+       add(new Object());
+     }
+  };
+}
+          </source>
+      </subsection>
+
+      <subsection name="Example of Usage" id="AvoidDoubleBraceInitialization_Example_of_Usage">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+AvoidDoubleBraceInitialization">
+            Checkstyle Style</a>
+          </li>
+        </ul>
+      </subsection>
+
+      <subsection name="Violation Messages" id="AvoidDoubleBraceInitialization_Violation_Messages">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fcoding+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22avoid.double.brace.init%22">
+              avoid.double.brace.init</a>
+          </li>
+        </ul>
+        <p>
+          All messages can be customized if the default message doesn't suit you.
+          Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
+        </p>
+      </subsection>
+
+      <subsection name="Package" id="AvoidDoubleBraceInitialization_Package">
+        <p>
+          com.puppycrawl.tools.checkstyle.checks.coding
+        </p>
+      </subsection>
+
+      <subsection name="Parent Module" id="AvoidDoubleBraceInitialization_Parent_Module">
         <p>
           <a href="config.html#TreeWalker">TreeWalker</a>
         </p>
@@ -2885,6 +2988,30 @@ class TestMethodCall {
         <source>
 &lt;module name=&quot;MissingSwitchDefault&quot;/&gt;
         </source>
+        <p>
+          Example of violation:
+        </p>
+        <source>
+switch (i) {    // violation
+  case 1:
+    break;
+  case 2:
+    break;
+}
+        </source>
+        <p>
+          Example of correct code:
+        </p>
+        <source>
+switch (i) {
+  case 1:
+    break;
+  case 2:
+    break;
+  default: // OK
+    break;
+}
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="MissingSwitchDefault_Example_of_Usage">
@@ -3958,7 +4085,7 @@ enum Foo10 { FOO, BAR } // OK
               An example of how to configure this Check:
           </p>
           <source>
-              &lt;module name=&quot;OneStatementPerLine&quot;/&gt;
+&lt;module name=&quot;OneStatementPerLine&quot;/&gt;
           </source>
           <p>
               The following examples will be flagged as a violation:
@@ -4868,6 +4995,12 @@ return !valid();
         <p>
           Checks that string literals are not used with <code>==</code> or
           <code>&#33;=</code>.
+          Since <code>==</code> will compare the object references,
+          not the actual value of the strings,
+          <code>String.equals()</code> should be used.
+          More information can be found
+          <a href="http://www.thejavageek.com/2013/07/27/string-comparison-with-equals-and-assignment-operator/">
+          in this article</a>.
         </p>
 
         <p>
@@ -4889,6 +5022,25 @@ if (&quot;something&quot;.equals(x))
         </p>
         <source>
 &lt;module name=&quot;StringLiteralEquality&quot;/&gt;
+        </source>
+        <p>
+          Examples of violations:
+        </p>
+        <source>
+String status = "pending";
+
+if (status == "done") {} // violation
+
+while (status != "done") {} // violation
+
+boolean flag = (status == "done"); // violation
+
+boolean flag = (status.equals("done")); // OK
+
+String name = "X";
+
+if (name == getName()) {}
+// OK, limitation that check cannot tell runtime type returned from method call
         </source>
       </subsection>
 

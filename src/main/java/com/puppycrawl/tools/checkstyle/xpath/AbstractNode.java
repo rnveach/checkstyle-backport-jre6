@@ -160,6 +160,16 @@ public abstract class AbstractNode implements NodeInfo {
     }
 
     /**
+     * Returns string value. Throws {@code UnsupportedOperationException}, because no child
+     * class implements it and this method is not used for querying.
+     * @return string value
+     */
+    @Override
+    public String getStringValue() {
+        throw throwUnsupportedOperationException();
+    }
+
+    /**
      * Returns namespace array. Throws {@code UnsupportedOperationException}, because no child
      * class implements it and this method is not used for querying.
      * @param namespaceBindings namespace array

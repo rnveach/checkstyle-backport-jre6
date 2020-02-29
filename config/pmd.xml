@@ -88,21 +88,17 @@
      <property name="enumPattern" value="[A-Z][a-zA-Z0-9]*" />
      <property name="annotationPattern" value="[A-Z][a-zA-Z0-9]*" />
      <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]*Util" />
-     <!-- We can not brake compatibility with previous versions. -->
-     <property name="violationSuppressXPath"
-               value="//ClassOrInterfaceDeclaration
-                          [@Image='AbstractClassNameCheck' or @Image='AutomaticBean']"/>
-    </properties>
-  </rule>
-  <rule ref="category/java/codestyle.xml/ClassNamingConventions">
-    <properties>
      <!-- Definitions and XmlLoader.LoadExternalDtdFeatureProvider aren't utility classes.
-          JavadocTokenTypes and TokenTypes aren't utility classes.
-            They are token definition classes. Also, they are part of the API. -->
+          AutomaticBean is part of API, we can not change a name.
+          JavadocTokenTypes and TokenTypes aren't utility classes. They are
+            token definition classes. Also, they are part of the API. -->
      <property name="violationSuppressXPath"
                value="//ClassOrInterfaceDeclaration[@Image='Definitions'
-                   or @Image='JavadocTokenTypes' or @Image='TokenTypes'
-                   or @Image='LoadExternalDtdFeatureProvider']"/>
+                           or @Image='LoadExternalDtdFeatureProvider'
+                           or @Image='JavadocTokenTypes'
+                           or @Image='TokenTypes'
+                           or @Image='AutomaticBean']
+                   "/>
     </properties>
   </rule>
   <rule ref="category/java/codestyle.xml/ConfusingTernary">
@@ -151,6 +147,14 @@
                 value="//ClassOrInterfaceDeclaration[@Image='Main' or @Image='Tag']"/>
     </properties>
   </rule>
+  <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier">
+      <properties>
+          <property name="ignoredAnnotations" value="" />
+          <property name="regex" value="\/\*\s+(package)\s+\*\/" />
+          <property name="checkTopLevelTypes" value="false" />
+      </properties>
+  </rule>
+
   <rule ref="category/java/errorprone.xml">
     <!-- That rule is not practical, no options to allow some magic numbers,
          we will use our implementation. -->

@@ -155,15 +155,6 @@ public class ElementNode extends AbstractNode {
     }
 
     /**
-     * Returns string value.
-     * @return string value
-     */
-    @Override
-    public String getStringValue() {
-        return text;
-    }
-
-    /**
      * Determines axis iteration algorithm. Throws {@code UnsupportedOperationException} in case,
      * when there is no axis iterator for given axisNumber.
      *
@@ -350,7 +341,7 @@ public class ElementNode extends AbstractNode {
          * Create an iterator over the "following" axis.
          * @param start the initial context node.
          */
-        /* default */ FollowingEnumeration(NodeInfo start) {
+        /* package */ FollowingEnumeration(NodeInfo start) {
             siblingEnum = start.iterateAxis(AxisInfo.FOLLOWING_SIBLING);
         }
 
