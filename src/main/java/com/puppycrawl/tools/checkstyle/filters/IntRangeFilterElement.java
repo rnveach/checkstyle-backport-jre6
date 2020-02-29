@@ -19,7 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.filters;
 
-import java.util.Objects;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * This filter element is immutable and accepts an Integer in a range.

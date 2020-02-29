@@ -23,8 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.DefaultLocale;
+import java.util.Locale;
+
+import org.junit.Test;
 
 /**
  * Test cases for {@link SeverityLevel} enumeration.
@@ -71,17 +72,23 @@ public class SeverityLevelTest {
                 "Invalid getInstance result");
     }
 
-    @DefaultLocale(language = "tr", country = "TR")
     @Test
     public void testMixedCaseSpacesWithDifferentLocales() {
-        assertEquals(SeverityLevel.IGNORE, SeverityLevel.getInstance("IgnoRe "),
-                "Invalid getInstance result");
-        assertEquals(SeverityLevel.INFO, SeverityLevel.getInstance(" iNfo"),
-                "Invalid getInstance result");
-        assertEquals(SeverityLevel.WARNING, SeverityLevel.getInstance(" WarniNg"),
-                "Invalid getInstance result");
-        assertEquals(SeverityLevel.ERROR, SeverityLevel.getInstance("    ERROR "),
-                "Invalid getInstance result");
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(new Locale("TR", "tr"));
+            assertEquals(SeverityLevel.IGNORE, SeverityLevel.getInstance("IgnoRe "),
+                    "Invalid getInstance result");
+            assertEquals(SeverityLevel.INFO, SeverityLevel.getInstance(" iNfo"),
+                    "Invalid getInstance result");
+            assertEquals(SeverityLevel.WARNING, SeverityLevel.getInstance(" WarniNg"),
+                    "Invalid getInstance result");
+            assertEquals(SeverityLevel.ERROR, SeverityLevel.getInstance("    ERROR "),
+                    "Invalid getInstance result");
+        }
+        finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
 }

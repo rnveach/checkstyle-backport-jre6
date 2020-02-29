@@ -22,8 +22,6 @@ package com.puppycrawl.tools.checkstyle;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +30,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -100,13 +100,26 @@ public final class JavadocPropertiesGenerator {
      * @throws CheckstyleException if a javadoc comment can not be parsed
      */
     private static void writePropertiesFile(CliOptions options) throws CheckstyleException {
-        try (PrintWriter writer = new PrintWriter(options.outputFile,
-                StandardCharsets.UTF_8.name())) {
-            final DetailAST top = JavaParser.parseFile(options.inputFile,
-                    JavaParser.Options.WITH_COMMENTS).getFirstChild();
-            final DetailAST objBlock = getClassBody(top);
-            if (objBlock != null) {
-                iteratePublicStaticIntFields(objBlock, writer::println);
+        try {
+            final PrintWriter writer = new PrintWriter(options.outputFile,
+                    StandardCharsets.UTF_8.name());
+            try {
+                final DetailAST top = JavaParser.parseFile(options.inputFile,
+                        JavaParser.Options.WITH_COMMENTS).getFirstChild();
+                final DetailAST objBlock = getClassBody(top);
+                if (objBlock != null) {
+                    iteratePublicStaticIntFields(objBlock,
+                        new Consumer<String>() {
+                            @Override
+                            public boolean accept(String s) {
+                                writer.println(s);
+                                return true;
+                            }
+                        });
+                }
+            }
+            finally {
+                writer.close();
             }
         }
         catch (IOException ex) {

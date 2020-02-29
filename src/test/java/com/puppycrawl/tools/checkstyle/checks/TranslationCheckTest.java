@@ -33,16 +33,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.powermock.reflect.Whitebox;
 import org.w3c.dom.Node;
 
@@ -58,12 +57,16 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.BiPredicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class TranslationCheckTest extends AbstractXmlTestSupport {
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
     protected String getPackageLocation() {
@@ -108,10 +111,14 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
 
     @Test
     public void testDifferentPaths() throws Exception {
-        final File file = new File(temporaryFolder, "messages_test_de.properties");
-        try (Writer writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
+        final File file = new File(temporaryFolder.newFolder(), "messages_test_de.properties");
+        final Writer writer = Files7.newBufferedWriter(new Path(file), StandardCharsets.UTF_8);
+        try {
             final String content = "hello=Hello\ncancel=Cancel";
             writer.write(content);
+        }
+        finally {
+            writer.close();
         }
         final Configuration checkConfig = createModuleConfig(TranslationCheck.class);
         final String[] expected = {
@@ -199,8 +206,12 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
                 Collections.singletonList(line + secondErrorMessage)));
 
         verifyXml(getPath("ExpectedTranslationLog.xml"), out,
-            TranslationCheckTest::isFilenamesEqual,
-            firstErrorMessage, secondErrorMessage);
+            new BiPredicate<Node, Node>() {
+                @Override
+                public boolean test(Node expected, Node actual) {
+                    return isFilenamesEqual(expected, actual);
+                }
+            }, firstErrorMessage, secondErrorMessage);
     }
 
     @Test
@@ -642,7 +653,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
 
         @Override
         public void fireErrors(String fileName, SortedSet<Violation> errors) {
-            savedErrors = new TreeSet<>(errors);
+            savedErrors = new TreeSet<Violation>(errors);
         }
 
     }

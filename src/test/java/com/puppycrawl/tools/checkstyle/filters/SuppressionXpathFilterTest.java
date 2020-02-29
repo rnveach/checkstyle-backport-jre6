@@ -19,7 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.filters;
 
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,7 +29,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
@@ -39,7 +38,6 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.EqualsVerifierReport;
 import nl.jqno.equalsverifier.Warning;
 
 public class SuppressionXpathFilterTest extends AbstractModuleTestSupport {
@@ -151,13 +149,9 @@ public class SuppressionXpathFilterTest extends AbstractModuleTestSupport {
 
     @Test
     public void testEqualsAndHashCode() {
-        final EqualsVerifierReport ev = EqualsVerifier.forClass(SuppressionXpathFilter.class)
+        EqualsVerifier.forClass(SuppressionXpathFilter.class)
                 .usingGetClass()
-                .withIgnoredFields("file", "optional", "configuration")
-                .suppress(Warning.NONFINAL_FIELDS).report();
-        assertWithMessage("Error: " + ev.getMessage())
-                .that(ev.isSuccessful())
-                .isTrue();
+                .suppress(Warning.NONFINAL_FIELDS).verify();
     }
 
     @Test

@@ -31,13 +31,14 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.UnsupportedCharsetException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -172,8 +173,9 @@ public final class FileText {
         // Use the BufferedReader to break down the lines as this
         // is about 30% faster than using the
         // LINE_TERMINATOR.split(fullText, -1) method
-        try (BufferedReader reader = new BufferedReader(new StringReader(fullText))) {
-            final ArrayList<String> textLines = new ArrayList<>();
+        final BufferedReader reader = new BufferedReader(new StringReader(fullText));
+        try {
+            final ArrayList<String> textLines = new ArrayList<String>();
             while (true) {
                 final String line = reader.readLine();
                 if (line == null) {
@@ -182,6 +184,9 @@ public final class FileText {
                 textLines.add(line);
             }
             lines = textLines.toArray(CommonUtil.EMPTY_STRING_ARRAY);
+        }
+        finally {
+            reader.close();
         }
     }
 
@@ -200,8 +205,9 @@ public final class FileText {
             throw new FileNotFoundException(inputFile.getPath() + " (No such file or directory)");
         }
         final StringBuilder buf = new StringBuilder(1024);
-        final InputStream stream = Files.newInputStream(inputFile.toPath());
-        try (Reader reader = new InputStreamReader(stream, decoder)) {
+        final InputStream stream = Files7.newInputStream(new Path(inputFile));
+        final Reader reader = new InputStreamReader(stream, decoder);
+        try {
             final char[] chars = new char[READ_BUFFER_SIZE];
             while (true) {
                 final int len = reader.read(chars);
@@ -210,6 +216,9 @@ public final class FileText {
                 }
                 buf.append(chars, 0, len);
             }
+        }
+        finally {
+            reader.close();
         }
         return buf.toString();
     }

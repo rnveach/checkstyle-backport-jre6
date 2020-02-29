@@ -286,10 +286,10 @@ public class IllegalImportCheck
     public static final String MSG_KEY = "import.illegal";
 
     /** The compiled regular expressions for packages. */
-    private final List<Pattern> illegalPkgsRegexps = new ArrayList<>();
+    private final List<Pattern> illegalPkgsRegexps = new ArrayList<Pattern>();
 
     /** The compiled regular expressions for classes. */
-    private final List<Pattern> illegalClassesRegexps = new ArrayList<>();
+    private final List<Pattern> illegalClassesRegexps = new ArrayList<Pattern>();
 
     /**
      * Specify packages to reject, if <b>regexp</b> property is not set, checks

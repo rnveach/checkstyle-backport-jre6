@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,6 +49,14 @@ public final class XmlMetaReader {
 
     /** Description tag of metadata XML files. */
     private static final String XML_TAG_DESCRIPTION = "description";
+
+    /** Access External DTD. */
+    private static final String ACCESS_EXTERNAL_DTD =
+        "http://javax.xml.XMLConstants/property/accessExternalDTD";
+
+    /** Access External Schema. */
+    private static final String ACCESS_EXTERNAL_SCHEMA =
+        "http://javax.xml.XMLConstants/property/accessExternalSchema";
 
     /**
      * Do no allow {@code XmlMetaReader} instances to be created.
@@ -75,7 +82,7 @@ public final class XmlMetaReader {
         final Set<String> standardModuleFileNames =
                 new Reflections("com.puppycrawl.tools.checkstyle.meta",
                         new ResourcesScanner()).getResources(Pattern.compile(".*\\.xml"));
-        final Set<String> allMetadataSources = new HashSet<>(standardModuleFileNames);
+        final Set<String> allMetadataSources = new HashSet<String>(standardModuleFileNames);
         for (String packageName : thirdPartyPackages) {
             final Set<String> thirdPartyModuleFileNames =
                     new Reflections(packageName, new ResourcesScanner())
@@ -83,7 +90,7 @@ public final class XmlMetaReader {
             allMetadataSources.addAll(thirdPartyModuleFileNames);
         }
 
-        final List<ModuleDetails> result = new ArrayList<>();
+        final List<ModuleDetails> result = new ArrayList<ModuleDetails>();
         for (String fileName : allMetadataSources) {
             final ModuleType moduleType;
             if (fileName.endsWith("FileFilter.xml")) {
@@ -100,7 +107,15 @@ public final class XmlMetaReader {
                 moduleDetails = read(XmlMetaReader.class.getResourceAsStream("/" + fileName),
                         moduleType);
             }
-            catch (ParserConfigurationException | IOException | SAXException ex) {
+            catch (ParserConfigurationException ex) {
+                throw new IllegalStateException("Problem to read all modules including third "
+                        + "party if any. Problem detected at file: " + fileName, ex);
+            }
+            catch (IOException ex) {
+                throw new IllegalStateException("Problem to read all modules including third "
+                        + "party if any. Problem detected at file: " + fileName, ex);
+            }
+            catch (SAXException ex) {
                 throw new IllegalStateException("Problem to read all modules including third "
                         + "party if any. Problem detected at file: " + fileName, ex);
             }
@@ -125,8 +140,8 @@ public final class XmlMetaReader {
         ModuleDetails result = null;
         if (moduleType != null) {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            factory.setAttribute(ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(ACCESS_EXTERNAL_SCHEMA, "");
             final DocumentBuilder builder = factory.newDocumentBuilder();
             final Document document = builder.parse(moduleMetadataStream);
             final Element root = document.getDocumentElement();
@@ -174,7 +189,7 @@ public final class XmlMetaReader {
      * @return list of property details object created
      */
     private static List<ModulePropertyDetails> createProperties(Element properties) {
-        final List<ModulePropertyDetails> result = new ArrayList<>();
+        final List<ModulePropertyDetails> result = new ArrayList<ModulePropertyDetails>();
         final NodeList propertyList = properties.getElementsByTagName("property");
         for (int i = 0; i < propertyList.getLength(); i++) {
             final ModulePropertyDetails propertyDetails = new ModulePropertyDetails();
@@ -211,7 +226,7 @@ public final class XmlMetaReader {
         List<String> result = null;
         if (!children.isEmpty()) {
             final NodeList nodeList = children.get(0).getElementsByTagName(listOption);
-            final List<String> listContent = new ArrayList<>();
+            final List<String> listContent = new ArrayList<String>();
             for (int j = 0; j < nodeList.getLength(); j++) {
                 listContent.add(getAttributeValue((Element) nodeList.item(j), attribute));
             }
@@ -229,7 +244,7 @@ public final class XmlMetaReader {
      */
     private static List<Element> getDirectChildsByTag(Element element, String sTagName) {
         final NodeList children = element.getElementsByTagName(sTagName);
-        final List<Element> res = new ArrayList<>();
+        final List<Element> res = new ArrayList<Element>();
         for (int i = 0; i < children.getLength(); i++) {
             if (children.item(i).getParentNode().equals(element)) {
                 res.add((Element) children.item(i));

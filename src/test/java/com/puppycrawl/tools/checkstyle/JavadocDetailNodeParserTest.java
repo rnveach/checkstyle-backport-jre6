@@ -22,13 +22,13 @@ package com.puppycrawl.tools.checkstyle;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public class JavadocDetailNodeParserTest extends AbstractModuleTestSupport {
 
@@ -47,7 +47,7 @@ public class JavadocDetailNodeParserTest extends AbstractModuleTestSupport {
         final JavadocDetailNodeParser.ParseStatus status = parser.parseJavadocAsDetailNode(ast);
         final String actual = toLfLineEnding(DetailNodeTreeStringPrinter.printTree(status.getTree(),
                 "", ""));
-        final String expected = toLfLineEnding(new String(Files.readAllBytes(Paths.get(
+        final String expected = toLfLineEnding(new String(Files7.readAllBytes(Paths.get(
                 getPath("ExpectedJavadocDetailNodeParser.txt"))),
                 StandardCharsets.UTF_8));
         assertEquals(expected, actual, "Invalid parse result");

@@ -42,7 +42,7 @@ class PkgImportControl extends AbstractImportControl {
     private static final String DOT_ESCAPED_REGEX = "\\\\.";
 
     /** List of children {@link AbstractImportControl} objects. */
-    private final List<AbstractImportControl> children = new ArrayList<>();
+    private final List<AbstractImportControl> children = new ArrayList<AbstractImportControl>();
 
     /** The full name for the package. */
     private final String fullPackageName;

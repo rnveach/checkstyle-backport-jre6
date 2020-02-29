@@ -27,11 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.SortedSet;
 
 import org.antlr.v4.runtime.CommonToken;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
@@ -41,6 +40,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 // -@cs[AbbreviationAsWordInName] Can't change check name
@@ -110,7 +111,7 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIntegerOverflow() throws Exception {
 
-        final long largerThanMaxInt = 3_486_784_401L;
+        final long largerThanMaxInt = 3486784401L;
 
         final String[] expected = {
             "20:5: " + getCheckMessage(MSG_KEY, largerThanMaxInt, 0),
@@ -129,11 +130,21 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
         final NPathComplexityCheck check = new NPathComplexityCheck();
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "rangeValues",
-                rangeValues -> ((Collection<Context>) rangeValues).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object rangeValues) {
+                        return ((Collection<Context>) rangeValues).isEmpty();
+                    }
+                }),
                 "Stateful field is not cleared after beginTree");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "expressionValues",
-                expressionValues -> ((Collection<Context>) expressionValues).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object expressionValues) {
+                        return ((Collection<Context>) expressionValues).isEmpty();
+                    }
+                }),
                 "Stateful field is not cleared after beginTree");
     }
 
@@ -150,7 +161,12 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
         final NPathComplexityCheck check = new NPathComplexityCheck();
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "afterValues",
-                isAfterValues -> ((Collection<Context>) isAfterValues).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object isAfterValues) {
+                        return ((Collection<Context>) isAfterValues).isEmpty();
+                    }
+                }),
                 "Stateful field is not cleared after beginTree");
     }
 
@@ -160,7 +176,12 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
         final Optional<DetailAST> question = TestUtil.findTokenInAstByPredicate(
             JavaParser.parseFile(new File(getPath("InputNPathComplexity.java")),
                 JavaParser.Options.WITHOUT_COMMENTS),
-            ast -> ast.getType() == TokenTypes.QUESTION);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.QUESTION;
+                }
+            });
 
         assertTrue(question.isPresent(), "Ast should contain QUESTION");
 
@@ -169,13 +190,19 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
                 check,
                 question.get(),
                 "processingTokenEnd",
-                processingTokenEnd -> {
-                    try {
-                        return getFieldValue(processingTokenEnd, "endLineNo") == 0
-                            && getFieldValue(processingTokenEnd, "endColumnNo") == 0;
-                    }
-                    catch (IllegalAccessException | NoSuchFieldException ex) {
-                        throw new IllegalStateException(ex);
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object processingTokenEnd) {
+                        try {
+                            return getFieldValue(processingTokenEnd, "endLineNo") == 0
+                                    && getFieldValue(processingTokenEnd, "endColumnNo") == 0;
+                        }
+                        catch (IllegalAccessException ex) {
+                            throw new IllegalStateException(ex);
+                        }
+                        catch (NoSuchFieldException ex) {
+                            throw new IllegalStateException(ex);
+                        }
                     }
                 }), "State is not cleared on beginTree");
     }

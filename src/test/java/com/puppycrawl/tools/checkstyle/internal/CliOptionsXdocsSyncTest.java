@@ -20,13 +20,10 @@
 package com.puppycrawl.tools.checkstyle.internal;
 
 import static com.google.common.truth.Truth.assertWithMessage;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,14 +31,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import picocli.CommandLine;
 import picocli.CommandLine.Model.OptionSpec;
 
@@ -49,7 +48,7 @@ public class CliOptionsXdocsSyncTest {
 
     @Test
     public void validateCliDocSections() throws Exception {
-        final Map<String, String> cmdDesc = new HashMap<>();
+        final Map<String, String> cmdDesc = new HashMap<String, String>();
 
         final NodeList sections = getSectionsFromXdoc("src/xdocs/cmdline.xml.vm");
         final Set<String> cmdOptions = getListById(sections.item(2), "CLI_Options");
@@ -94,15 +93,15 @@ public class CliOptionsXdocsSyncTest {
         final Class<?> cliOptions = Class.forName("com.puppycrawl.tools.checkstyle"
                 + ".Main$CliOptions");
         final CommandLine commandLine = new CommandLine(cliOptions);
-        final Set<String> shortParamsMain = commandLine.getCommandSpec().options()
-                        .stream()
-                        .map(OptionSpec::shortestName)
-                        .collect(Collectors.toSet());
-        final Set<String> longParamsMain = commandLine.getCommandSpec().options()
-                        .stream()
-                        .map(OptionSpec::longestName)
-                        .filter(names -> names.length() != 2)
-                        .collect(Collectors.toSet());
+        final Set<String> shortParamsMain = new HashSet<String>();
+        final Set<String> longParamsMain = new HashSet<String>();
+        for (OptionSpec option : commandLine.getCommandSpec().options()) {
+            shortParamsMain.add(option.shortestName());
+            final String name = option.longestName();
+            if (name.length() != 2) {
+                longParamsMain.add(name);
+            }
+        }
 
         assertEquals("Short parameters in Main.java and cmdline"
                         + ".xml.vm should match", shortParamsXdoc, shortParamsMain);
@@ -111,7 +110,7 @@ public class CliOptionsXdocsSyncTest {
     }
 
     private static Set<String> getParameters(String text, String regex) {
-        final Set<String> result = new HashSet<>();
+        final Set<String> result = new HashSet<String>();
         final Pattern pattern = Pattern.compile(regex);
         final Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
@@ -122,7 +121,7 @@ public class CliOptionsXdocsSyncTest {
 
     private static NodeList getSectionsFromXdoc(String xdocPath) throws Exception {
         final Path path = Paths.get(xdocPath);
-        final String input = new String(Files.readAllBytes(path), UTF_8);
+        final String input = new String(Files7.readAllBytes(path), UTF_8);
         final Document document = XmlUtil.getRawXml(path.getFileName().toString(), input, input);
         return document.getElementsByTagName("section");
     }
@@ -131,10 +130,10 @@ public class CliOptionsXdocsSyncTest {
         Set<String> result = null;
         final Node node = XmlUtil.findChildElementById(subSection, id);
         if (node != null) {
-            result = XmlUtil.getChildrenElements(node)
-                    .stream()
-                    .map(Node::getTextContent)
-                    .collect(Collectors.toSet());
+            result = new HashSet<String>();
+            for (Node childNode : XmlUtil.getChildrenElements(node)) {
+                result.add(childNode.getTextContent());
+            }
         }
         return result;
     }

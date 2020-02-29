@@ -20,12 +20,12 @@
 package com.puppycrawl.tools.checkstyle.checks.whitespace;
 
 import java.util.Locale;
-import java.util.function.UnaryOperator;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.UnaryOperator;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
@@ -391,7 +391,13 @@ public class OperatorWrapCheck
             result = node.getPreviousSibling();
         }
         else {
-            result = adjustParens(node.getFirstChild(), DetailAST::getNextSibling);
+            result = adjustParens(node.getFirstChild(),
+                new UnaryOperator<DetailAST>() {
+                    @Override
+                    public DetailAST apply(DetailAST node) {
+                        return node.getNextSibling();
+                    }
+                });
         }
         while (result.getLastChild() != null) {
             result = result.getLastChild();
@@ -420,7 +426,13 @@ public class OperatorWrapCheck
             else {
                 rightNode = node.getLastChild();
             }
-            result = adjustParens(rightNode, DetailAST::getPreviousSibling);
+            result = adjustParens(rightNode,
+                new UnaryOperator<DetailAST>() {
+                    @Override
+                    public DetailAST apply(DetailAST node) {
+                        return node.getPreviousSibling();
+                    }
+                });
         }
 
         // The ARRAY_INIT AST is confusing. It should be

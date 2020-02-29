@@ -20,7 +20,6 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -29,12 +28,13 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
@@ -266,8 +266,8 @@ public class RequireThisCheck extends AbstractCheck {
     public static final String MSG_VARIABLE = "require.this.variable";
 
     /** Set of all declaration tokens. */
-    private static final Set<Integer> DECLARATION_TOKENS = Collections.unmodifiableSet(
-        Arrays.stream(new Integer[] {
+    private static final Set<Integer> DECLARATION_TOKENS =
+        Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.VARIABLE_DEF,
             TokenTypes.CTOR_DEF,
             TokenTypes.METHOD_DEF,
@@ -278,11 +278,11 @@ public class RequireThisCheck extends AbstractCheck {
             TokenTypes.PARAMETER_DEF,
             TokenTypes.TYPE_ARGUMENT,
             TokenTypes.RECORD_DEF,
-            TokenTypes.RECORD_COMPONENT_DEF,
-        }).collect(Collectors.toSet()));
+            TokenTypes.RECORD_COMPONENT_DEF
+        ));
     /** Set of all assign tokens. */
-    private static final Set<Integer> ASSIGN_TOKENS = Collections.unmodifiableSet(
-        Arrays.stream(new Integer[] {
+    private static final Set<Integer> ASSIGN_TOKENS =
+        Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.ASSIGN,
             TokenTypes.PLUS_ASSIGN,
             TokenTypes.STAR_ASSIGN,
@@ -292,11 +292,11 @@ public class RequireThisCheck extends AbstractCheck {
             TokenTypes.BSR_ASSIGN,
             TokenTypes.SL_ASSIGN,
             TokenTypes.BAND_ASSIGN,
-            TokenTypes.BXOR_ASSIGN,
-        }).collect(Collectors.toSet()));
+            TokenTypes.BXOR_ASSIGN
+        ));
     /** Set of all compound assign tokens. */
-    private static final Set<Integer> COMPOUND_ASSIGN_TOKENS = Collections.unmodifiableSet(
-        Arrays.stream(new Integer[] {
+    private static final Set<Integer> COMPOUND_ASSIGN_TOKENS =
+        Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.PLUS_ASSIGN,
             TokenTypes.STAR_ASSIGN,
             TokenTypes.DIV_ASSIGN,
@@ -305,11 +305,11 @@ public class RequireThisCheck extends AbstractCheck {
             TokenTypes.BSR_ASSIGN,
             TokenTypes.SL_ASSIGN,
             TokenTypes.BAND_ASSIGN,
-            TokenTypes.BXOR_ASSIGN,
-        }).collect(Collectors.toSet()));
+            TokenTypes.BXOR_ASSIGN
+        ));
 
     /** Frame for the currently processed AST. */
-    private final Deque<AbstractFrame> current = new ArrayDeque<>();
+    private final Deque<AbstractFrame> current = new ArrayDeque<AbstractFrame>();
 
     /** Tree of all the parsed frames. */
     private Map<DetailAST, AbstractFrame> frames;
@@ -377,10 +377,10 @@ public class RequireThisCheck extends AbstractCheck {
 
     @Override
     public void beginTree(DetailAST rootAST) {
-        frames = new HashMap<>();
+        frames = new HashMap<DetailAST, AbstractFrame>();
         current.clear();
 
-        final Deque<AbstractFrame> frameStack = new LinkedList<>();
+        final Deque<AbstractFrame> frameStack = new LinkedList<AbstractFrame>();
         DetailAST curNode = rootAST;
         while (curNode != null) {
             collectDeclarations(frameStack, curNode);
@@ -1004,8 +1004,8 @@ public class RequireThisCheck extends AbstractCheck {
      */
     private static Set<DetailAST> getAllTokensOfType(DetailAST ast, int tokenType) {
         DetailAST vertex = ast;
-        final Set<DetailAST> result = new HashSet<>();
-        final Deque<DetailAST> stack = new ArrayDeque<>();
+        final Set<DetailAST> result = new HashSet<DetailAST>();
+        final Deque<DetailAST> stack = new ArrayDeque<DetailAST>();
         while (vertex != null || !stack.isEmpty()) {
             if (!stack.isEmpty()) {
                 vertex = stack.pop();
@@ -1036,8 +1036,8 @@ public class RequireThisCheck extends AbstractCheck {
     private static Set<DetailAST> getAllTokensOfType(DetailAST ast, int tokenType,
                                                      int endLineNumber) {
         DetailAST vertex = ast;
-        final Set<DetailAST> result = new HashSet<>();
-        final Deque<DetailAST> stack = new ArrayDeque<>();
+        final Set<DetailAST> result = new HashSet<DetailAST>();
+        final Deque<DetailAST> stack = new ArrayDeque<DetailAST>();
         while (vertex != null || !stack.isEmpty()) {
             if (!stack.isEmpty()) {
                 vertex = stack.pop();
@@ -1069,8 +1069,8 @@ public class RequireThisCheck extends AbstractCheck {
     private static Set<DetailAST> getAllTokensWhichAreEqualToCurrent(DetailAST ast, DetailAST token,
                                                                      int endLineNumber) {
         DetailAST vertex = ast;
-        final Set<DetailAST> result = new HashSet<>();
-        final Deque<DetailAST> stack = new ArrayDeque<>();
+        final Set<DetailAST> result = new HashSet<DetailAST>();
+        final Deque<DetailAST> stack = new ArrayDeque<DetailAST>();
         while (vertex != null || !stack.isEmpty()) {
             if (!stack.isEmpty()) {
                 vertex = stack.pop();
@@ -1206,7 +1206,7 @@ public class RequireThisCheck extends AbstractCheck {
      * @param ast the {@code DetailAST} value of the token to be checked
      * @return true if the token is a Lambda parameter
      */
-    private static boolean isLambdaParameter(DetailAST ast) {
+    private static boolean isLambdaParameter(final DetailAST ast) {
         DetailAST parent;
         for (parent = ast.getParent(); parent != null; parent = parent.getParent()) {
             if (parent.getType() == TokenTypes.LAMBDA) {
@@ -1227,10 +1227,13 @@ public class RequireThisCheck extends AbstractCheck {
             }
             else {
                 isLambdaParameter = TokenUtil.findFirstTokenByPredicate(lambdaParameters,
-                    paramDef -> {
-                        final DetailAST param = paramDef.findFirstToken(TokenTypes.IDENT);
-                        return param != null && param.getText().equals(ast.getText());
-                    }).isPresent();
+                        new Predicate<DetailAST>() {
+                            @Override
+                            public boolean test(DetailAST paramDef) {
+                                final DetailAST param = paramDef.findFirstToken(TokenTypes.IDENT);
+                                return param != null && param.getText().equals(ast.getText());
+                            }
+                        }).isPresent();
             }
         }
         return isLambdaParameter;
@@ -1288,7 +1291,7 @@ public class RequireThisCheck extends AbstractCheck {
         protected AbstractFrame(AbstractFrame parent, DetailAST ident) {
             this.parent = parent;
             frameNameIdent = ident;
-            varIdents = new HashSet<>();
+            varIdents = new HashSet<DetailAST>();
         }
 
         /**
@@ -1449,10 +1452,10 @@ public class RequireThisCheck extends AbstractCheck {
          */
         /* package */ ClassFrame(AbstractFrame parent, DetailAST ident) {
             super(parent, ident);
-            instanceMembers = new HashSet<>();
-            instanceMethods = new HashSet<>();
-            staticMembers = new HashSet<>();
-            staticMethods = new HashSet<>();
+            instanceMembers = new HashSet<DetailAST>();
+            instanceMethods = new HashSet<DetailAST>();
+            staticMembers = new HashSet<DetailAST>();
+            staticMethods = new HashSet<DetailAST>();
         }
 
         @Override

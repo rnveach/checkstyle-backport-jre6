@@ -24,13 +24,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 import com.puppycrawl.tools.checkstyle.PackageNamesLoader;
 import com.puppycrawl.tools.checkstyle.PackageObjectFactory;
@@ -40,6 +37,8 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 public final class TestUtil {
 
@@ -68,7 +67,7 @@ public final class TestUtil {
      */
     public static boolean isUtilsClassHasPrivateConstructor(final Class<?> utilClass,
                                                              boolean checkConstructorIsPrivate)
-            throws ReflectiveOperationException {
+            throws Exception {
         final Constructor<?> constructor = utilClass.getDeclaredConstructor();
         final boolean result;
         if (checkConstructorIsPrivate && !Modifier.isPrivate(constructor.getModifiers())) {
@@ -92,8 +91,13 @@ public final class TestUtil {
      */
     public static Field getClassDeclaredField(Class<?> clss, String fieldName)
             throws NoSuchFieldException {
-        final Optional<Field> classField = Arrays.stream(clss.getDeclaredFields())
-                .filter(field -> fieldName.equals(field.getName())).findFirst();
+        Optional<Field> classField = Optional.empty();
+        for (Field field : clss.getDeclaredFields()) {
+            if (fieldName.equals(field.getName())) {
+                classField = Optional.of(field);
+                break;
+            }
+        }
         final Field resultField;
         if (classField.isPresent()) {
             resultField = classField.get();
@@ -115,8 +119,13 @@ public final class TestUtil {
      */
     public static Method getClassDeclaredMethod(Class<?> clss, String methodName)
             throws NoSuchMethodException {
-        final Optional<Method> classMethod = Arrays.stream(clss.getDeclaredMethods())
-                .filter(method -> methodName.equals(method.getName())).findFirst();
+        Optional<Method> classMethod = Optional.empty();
+        for (Method method : clss.getDeclaredMethods()) {
+            if (methodName.equals(method.getName())) {
+                classMethod = Optional.of(method);
+                break;
+            }
+        }
         final Method resultMethod;
         if (classMethod.isPresent()) {
             resultMethod = classMethod.get();
@@ -262,7 +271,7 @@ public final class TestUtil {
      * @throws Exception if getting result fails
      */
     public static <V> V getResultWithLimitedResources(Callable<V> callable) throws Exception {
-        final FutureTask<V> futureTask = new FutureTask<>(callable);
+        final FutureTask<V> futureTask = new FutureTask<V>(callable);
         final Thread thread = new Thread(null, futureTask,
                 "LimitedStackSizeThread", MINIMAL_STACK_SIZE);
         thread.start();

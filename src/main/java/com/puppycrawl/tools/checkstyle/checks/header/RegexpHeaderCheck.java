@@ -235,7 +235,7 @@ public class RegexpHeaderCheck extends AbstractHeaderCheck {
     private static final Pattern BLANK_LINE = Pattern.compile(EMPTY_LINE_PATTERN);
 
     /** The compiled regular expressions. */
-    private final List<Pattern> headerRegexps = new ArrayList<>();
+    private final List<Pattern> headerRegexps = new ArrayList<Pattern>();
 
     /** Specify the line numbers to repeat (zero or more times). */
     private int[] multiLines = EMPTY_INT_ARRAY;

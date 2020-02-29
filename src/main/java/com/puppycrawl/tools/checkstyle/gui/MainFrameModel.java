@@ -21,7 +21,6 @@ package com.puppycrawl.tools.checkstyle.gui;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +29,8 @@ import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 /**
  * Model for checkstyle frame.
@@ -78,7 +79,7 @@ public class MainFrameModel {
     private final ParseTreeTableModel parseTreeTableModel;
 
     /** Lines to position map. */
-    private List<Integer> linesToPosition = new ArrayList<>();
+    private List<Integer> linesToPosition = new ArrayList<Integer>();
 
     /** Current mode. */
     private ParseMode parseMode = ParseMode.PLAIN_JAVA;
@@ -186,7 +187,7 @@ public class MainFrameModel {
      * @return lines to position map.
      */
     public List<Integer> getLinesToPosition() {
-        return new ArrayList<>(linesToPosition);
+        return new ArrayList<Integer>(linesToPosition);
     }
 
     /**
@@ -220,7 +221,7 @@ public class MainFrameModel {
                 parseTreeTableModel.setParseMode(parseMode);
                 final String[] sourceLines = getFileText(file).toLinesArray();
 
-                final List<Integer> linesToPositionTemp = new ArrayList<>();
+                final List<Integer> linesToPositionTemp = new ArrayList<Integer>();
                 // starts line counting at 1
                 linesToPositionTemp.add(0);
 
@@ -228,7 +229,7 @@ public class MainFrameModel {
                 // insert the contents of the file to the text area
                 for (final String element : sourceLines) {
                     linesToPositionTemp.add(sb.length());
-                    sb.append(element).append(System.lineSeparator());
+                    sb.append(element).append(System7.lineSeparator());
                 }
                 linesToPosition = linesToPositionTemp;
                 text = sb.toString();

@@ -28,11 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.SortedSet;
 
 import org.antlr.v4.runtime.CommonToken;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
@@ -41,6 +40,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class RequireThisCheckTest extends AbstractModuleTestSupport {
@@ -460,12 +461,23 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
                 new File(getPath("InputRequireThisSimple.java")),
                 JavaParser.Options.WITHOUT_COMMENTS);
         final Optional<DetailAST> classDef = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.CLASS_DEF);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.CLASS_DEF;
+                }
+            });
 
         assertTrue(classDef.isPresent(), "Ast should contain CLASS_DEF");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, classDef.get(),
-                "current", current -> ((Collection<?>) current).isEmpty()),
+                "current",
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object current) {
+                        return ((Collection<?>) current).isEmpty();
+                    }
+                }),
                 "State is not cleared on beginTree");
     }
 

@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
@@ -415,8 +414,8 @@ public class VisibilityModifierCheck
     public static final String MSG_KEY = "variable.notPrivate";
 
     /** Default immutable types canonical names. */
-    private static final List<String> DEFAULT_IMMUTABLE_TYPES = Collections.unmodifiableList(
-        Arrays.stream(new String[] {
+    private static final List<String> DEFAULT_IMMUTABLE_TYPES =
+        Collections.unmodifiableList(Arrays.asList(
             "java.lang.String",
             "java.lang.Integer",
             "java.lang.Byte",
@@ -436,16 +435,16 @@ public class VisibilityModifierCheck
             "java.net.URI",
             "java.net.Inet4Address",
             "java.net.Inet6Address",
-            "java.net.InetSocketAddress",
-        }).collect(Collectors.toList()));
+            "java.net.InetSocketAddress"
+        ));
 
     /** Default ignore annotations canonical names. */
-    private static final List<String> DEFAULT_IGNORE_ANNOTATIONS = Collections.unmodifiableList(
-        Arrays.stream(new String[] {
+    private static final List<String> DEFAULT_IGNORE_ANNOTATIONS =
+        Collections.unmodifiableList(Arrays.asList(
             "org.junit.Rule",
             "org.junit.ClassRule",
-            "com.google.common.annotations.VisibleForTesting",
-        }).collect(Collectors.toList()));
+            "com.google.common.annotations.VisibleForTesting"
+        ));
 
     /** Name for 'public' access modifier. */
     private static final String PUBLIC_ACCESS_MODIFIER = "public";
@@ -490,7 +489,7 @@ public class VisibilityModifierCheck
      * consideration.
      */
     private List<String> ignoreAnnotationCanonicalNames =
-        new ArrayList<>(DEFAULT_IGNORE_ANNOTATIONS);
+        new ArrayList<String>(DEFAULT_IGNORE_ANNOTATIONS);
 
     /** Control whether protected members are allowed. */
     private boolean protectedAllowed;
@@ -505,7 +504,7 @@ public class VisibilityModifierCheck
     private boolean allowPublicFinalFields;
 
     /** Specify immutable classes canonical names. */
-    private List<String> immutableClassCanonicalNames = new ArrayList<>(DEFAULT_IMMUTABLE_TYPES);
+    private List<String> immutableClassCanonicalNames = new ArrayList<String>(DEFAULT_IMMUTABLE_TYPES);
 
     /**
      * Setter to specify the list of annotations canonical names which ignore variables
@@ -791,7 +790,7 @@ public class VisibilityModifierCheck
      */
     private static Set<String> getModifiers(DetailAST defAST) {
         final DetailAST modifiersAST = defAST.findFirstToken(TokenTypes.MODIFIERS);
-        final Set<String> modifiersSet = new HashSet<>();
+        final Set<String> modifiersSet = new HashSet<String>();
         if (modifiersAST != null) {
             DetailAST modifier = modifiersAST.getFirstChild();
             while (modifier != null) {
@@ -891,7 +890,7 @@ public class VisibilityModifierCheck
      * @return a list of type parameters class names.
      */
     private static List<String> getTypeArgsClassNames(DetailAST typeArgs) {
-        final List<String> typeClassNames = new ArrayList<>();
+        final List<String> typeClassNames = new ArrayList<String>();
         DetailAST type = typeArgs.findFirstToken(TokenTypes.TYPE_ARGUMENT);
         boolean isCanonicalName = isCanonicalName(type);
         String typeName = getTypeName(type, isCanonicalName);
@@ -916,11 +915,15 @@ public class VisibilityModifierCheck
      * @return true if all of generic type arguments are immutable.
      */
     private boolean areImmutableTypeArguments(List<String> typeArgsClassNames) {
-        return typeArgsClassNames.stream().noneMatch(
-            typeName -> {
-                return !immutableClassShortNames.contains(typeName)
-                    && !immutableClassCanonicalNames.contains(typeName);
-            });
+        boolean result = true;
+        for (String typeName : typeArgsClassNames) {
+            if (!immutableClassShortNames.contains(typeName)
+                    && !immutableClassCanonicalNames.contains(typeName)) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -1025,7 +1028,7 @@ public class VisibilityModifierCheck
      * @return the list of short names of classes.
      */
     private static List<String> getClassShortNames(List<String> canonicalClassNames) {
-        final List<String> shortNames = new ArrayList<>();
+        final List<String> shortNames = new ArrayList<String>();
         for (String canonicalClassName : canonicalClassNames) {
             final String shortClassName = canonicalClassName
                     .substring(canonicalClassName.lastIndexOf('.') + 1);

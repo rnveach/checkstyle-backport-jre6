@@ -120,7 +120,7 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
     /**
      * Compiled pattern for all system newlines.
      */
-    private static final Pattern ALL_NEW_LINES = Pattern.compile("\\R");
+    private static final Pattern ALL_NEW_LINES = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
 
     /**
      * String used to amend TEXT_BLOCK_CONTENT so that it matches STRING_LITERAL.
@@ -130,7 +130,7 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
     /**
      * The found strings and their tokens.
      */
-    private final Map<String, List<DetailAST>> stringMap = new HashMap<>();
+    private final Map<String, List<DetailAST>> stringMap = new HashMap<String, List<DetailAST>>();
 
     /**
      * Specify token type names where duplicate strings are ignored even if they
@@ -230,7 +230,12 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
             }
             if (ignoreStringsRegexp == null
                     || !ignoreStringsRegexp.matcher(currentString).find()) {
-                stringMap.computeIfAbsent(currentString, key -> new ArrayList<>()).add(ast);
+                List<DetailAST> hitList = stringMap.get(currentString);
+                if (hitList == null) {
+                    hitList = new ArrayList<DetailAST>();
+                    stringMap.put(currentString, hitList);
+                }
+                hitList.add(ast);
             }
         }
     }

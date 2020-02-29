@@ -23,7 +23,7 @@ import static com.puppycrawl.tools.checkstyle.checks.annotation.MissingDeprecate
 import static com.puppycrawl.tools.checkstyle.checks.annotation.MissingDeprecatedCheck.MSG_KEY_JAVADOC_DUPLICATE_TAG;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;

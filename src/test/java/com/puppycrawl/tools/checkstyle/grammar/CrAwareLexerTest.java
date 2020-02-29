@@ -21,16 +21,16 @@ package com.puppycrawl.tools.checkstyle.grammar;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class CrAwareLexerTest {
 
     @Test
     public void testConsumeCarriageReturnZeroCharPositionInLine() {
         final String text = "\r";
-        final CharStream charStream = CharStreams.fromString(text);
+        final CharStream charStream = new ANTLRInputStream(text);
         final CrAwareLexerSimulator lexer =
                 new CrAwareLexerSimulator(null, null, null, null);
         lexer.consume(charStream);
@@ -43,7 +43,7 @@ public class CrAwareLexerTest {
     @Test
     public void testConsumeCarriageReturnNewline() {
         final String text = "\r";
-        final CharStream charStream = CharStreams.fromString(text);
+        final CharStream charStream = new ANTLRInputStream(text);
         final CrAwareLexerSimulator lexer =
                 new CrAwareLexerSimulator(null, null, null, null);
         lexer.consume(charStream);
@@ -56,7 +56,7 @@ public class CrAwareLexerTest {
     @Test
     public void testConsumeWindowsNewlineZeroCharPositionInLine() {
         final String text = "\r\n";
-        final CharStream charStream = CharStreams.fromString(text);
+        final CharStream charStream = new ANTLRInputStream(text);
         final CrAwareLexerSimulator lexer =
                 new CrAwareLexerSimulator(null, null, null, null);
         lexer.consume(charStream);
@@ -70,7 +70,7 @@ public class CrAwareLexerTest {
     @Test
     public void testConsumeWindowsNewline() {
         final String text = "\r\n";
-        final CharStream charStream = CharStreams.fromString(text);
+        final CharStream charStream = new ANTLRInputStream(text);
         final CrAwareLexerSimulator lexer =
                 new CrAwareLexerSimulator(null, null, null, null);
         lexer.consume(charStream);

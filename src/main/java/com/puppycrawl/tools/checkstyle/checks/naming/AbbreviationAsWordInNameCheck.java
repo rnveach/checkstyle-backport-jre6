@@ -19,12 +19,11 @@
 
 package com.puppycrawl.tools.checkstyle.checks.naming;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
@@ -331,7 +330,7 @@ public class AbbreviationAsWordInNameCheck extends AbstractCheck {
      * Specify list of abbreviations that must be skipped for checking. Abbreviations
      * should be separated by comma.
      */
-    private Set<String> allowedAbbreviations = new HashSet<>();
+    private Set<String> allowedAbbreviations = new HashSet<String>();
 
     /** Allow to skip variables with {@code final} modifier. */
     private boolean ignoreFinal = true;
@@ -410,8 +409,8 @@ public class AbbreviationAsWordInNameCheck extends AbstractCheck {
      */
     public void setAllowedAbbreviations(String... allowedAbbreviations) {
         if (allowedAbbreviations != null) {
-            this.allowedAbbreviations =
-                Arrays.stream(allowedAbbreviations).collect(Collectors.toSet());
+            this.allowedAbbreviations = new HashSet<String>();
+            Collections.addAll(this.allowedAbbreviations, allowedAbbreviations);
         }
     }
 
@@ -657,7 +656,7 @@ public class AbbreviationAsWordInNameCheck extends AbstractCheck {
      * @return The list of children one level below on the current parent node.
      */
     private static List<DetailAST> getChildren(final DetailAST node) {
-        final List<DetailAST> result = new LinkedList<>();
+        final List<DetailAST> result = new LinkedList<DetailAST>();
         DetailAST curNode = node.getFirstChild();
         while (curNode != null) {
             result.add(curNode);

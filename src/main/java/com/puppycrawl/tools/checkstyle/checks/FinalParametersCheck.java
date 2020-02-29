@@ -19,15 +19,15 @@
 
 package com.puppycrawl.tools.checkstyle.checks;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
@@ -113,8 +113,7 @@ public class FinalParametersCheck extends AbstractCheck {
      * <a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html">
      * primitive datatypes</a>.
      */
-    private final Set<Integer> primitiveDataTypes = Collections.unmodifiableSet(
-        Arrays.stream(new Integer[] {
+    private final Set<Integer> primitiveDataTypes = Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.LITERAL_BYTE,
             TokenTypes.LITERAL_SHORT,
             TokenTypes.LITERAL_INT,
@@ -122,8 +121,8 @@ public class FinalParametersCheck extends AbstractCheck {
             TokenTypes.LITERAL_FLOAT,
             TokenTypes.LITERAL_DOUBLE,
             TokenTypes.LITERAL_BOOLEAN,
-            TokenTypes.LITERAL_CHAR, })
-        .collect(Collectors.toSet()));
+            TokenTypes.LITERAL_CHAR
+        ));
 
     /**
      * Ignore primitive types as parameters.
@@ -193,7 +192,14 @@ public class FinalParametersCheck extends AbstractCheck {
                 && modifiers.findFirstToken(TokenTypes.LITERAL_NATIVE) == null) {
             final DetailAST parameters =
                 method.findFirstToken(TokenTypes.PARAMETERS);
-            TokenUtil.forEachChild(parameters, TokenTypes.PARAMETER_DEF, this::checkParam);
+            TokenUtil.forEachChild(parameters, TokenTypes.PARAMETER_DEF,
+                new Consumer<DetailAST>() {
+                    @Override
+                    public boolean accept(DetailAST param) {
+                        checkParam(param);
+                        return true;
+                    }
+                });
         }
     }
 

@@ -25,12 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class JavadocTokenTypesTest {
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(JavadocTokenTypes.class, true),
                 "Constructor is not private");
     }

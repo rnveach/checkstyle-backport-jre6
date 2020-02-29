@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 

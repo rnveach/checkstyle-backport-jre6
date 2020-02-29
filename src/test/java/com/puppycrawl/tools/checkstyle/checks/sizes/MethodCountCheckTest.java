@@ -26,7 +26,7 @@ import static com.puppycrawl.tools.checkstyle.checks.sizes.MethodCountCheck.MSG_
 import static com.puppycrawl.tools.checkstyle.checks.sizes.MethodCountCheck.MSG_PUBLIC_METHODS;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;

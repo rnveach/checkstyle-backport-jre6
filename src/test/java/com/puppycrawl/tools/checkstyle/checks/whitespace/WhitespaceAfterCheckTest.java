@@ -23,7 +23,7 @@ import static com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterC
 import static com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck.MSG_WS_TYPECAST;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;

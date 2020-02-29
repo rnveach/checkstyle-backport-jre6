@@ -25,15 +25,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,6 +55,7 @@ import com.puppycrawl.tools.checkstyle.api.RootModule;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevelCounter;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -74,10 +74,10 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
             SeverityLevel.ERROR);
 
     /** Vector of listeners. */
-    private final List<AuditListener> listeners = new ArrayList<>();
+    private final List<AuditListener> listeners = new ArrayList<AuditListener>();
 
     /** Vector of fileset checks. */
-    private final List<FileSetCheck> fileSetChecks = new ArrayList<>();
+    private final List<FileSetCheck> fileSetChecks = new ArrayList<FileSetCheck>();
 
     /** The audit event before execution file filters. */
     private final BeforeExecutionFileFilterSet beforeExecutionFileFilters =
@@ -215,17 +215,24 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
             fsc.beginProcessing(charset);
         }
 
-        final List<File> targetFiles = files.stream()
-                .filter(file -> CommonUtil.matchesFileExtension(file, fileExtensions))
-                .collect(Collectors.toList());
+        final List<File> targetFiles = new ArrayList<File>();
+        for (File file : files) {
+            if (CommonUtil.matchesFileExtension(file, fileExtensions)) {
+                targetFiles.add(file);
+            }
+        }
         processFiles(targetFiles);
 
         // Finish up
-        // It may also log!!!
-        fileSetChecks.forEach(FileSetCheck::finishProcessing);
+        for (final FileSetCheck fsc : fileSetChecks) {
+            // It may also log!!!
+            fsc.finishProcessing();
+        }
 
-        // It may also log!!!
-        fileSetChecks.forEach(FileSetCheck::destroy);
+        for (final FileSetCheck fsc : fileSetChecks) {
+            // It may also log!!!
+            fsc.destroy();
+        }
 
         final int errorCount = counter.getCount();
         fireAuditFinished();
@@ -240,11 +247,25 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      *         checks and filters.
      */
     private Set<String> getExternalResourceLocations() {
-        return Stream.concat(fileSetChecks.stream(), filters.getFilters().stream())
-            .filter(ExternalResourceHolder.class::isInstance)
-            .map(ExternalResourceHolder.class::cast)
-            .flatMap(resource -> resource.getExternalResourceLocations().stream())
-            .collect(Collectors.toSet());
+        final Set<String> results = new HashSet<String>();
+        populateExternalResourceLocations(results, fileSetChecks);
+        populateExternalResourceLocations(results, filters.getFilters());
+        return results;
+    }
+
+    /**
+     * Populates a set of external configuration resource locations.
+     *
+     * @param results The set to add the results to.
+     * @param list The list of possible external resources to examine.
+     */
+    private static void populateExternalResourceLocations(Set<String> results,
+            Collection<?> list) {
+        for (Object item : list) {
+            if (item instanceof ExternalResourceHolder) {
+                results.addAll(((ExternalResourceHolder) item).getExternalResourceLocations());
+            }
+        }
     }
 
     /** Notify all listeners about the audit start. */
@@ -317,11 +338,11 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      *
      * @param file a file to process.
      * @return a sorted set of violations to be logged.
-     * @throws CheckstyleException if error condition within Checkstyle occurs.
+     * @throws Exception if error condition within Checkstyle occurs.
      * @noinspection ProhibitedExceptionThrown
      */
-    private SortedSet<Violation> processFile(File file) throws CheckstyleException {
-        final SortedSet<Violation> fileMessages = new TreeSet<>();
+    private SortedSet<Violation> processFile(File file) throws Exception {
+        final SortedSet<Violation> fileMessages = new TreeSet<Violation>();
         try {
             final FileText theText = new FileText(file.getAbsoluteFile(), charset);
             for (final FileSetCheck fsc : fileSetChecks) {

@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
@@ -52,7 +52,7 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
         return "com/puppycrawl/tools/checkstyle/gui/parsetreetablepresentation";
     }
 
-    @BeforeEach
+    @Before
     public void loadTree() throws Exception {
         tree = JavaParser.parseFile(new File(getPath("InputParseTreeTablePresentation.java")),
             JavaParser.Options.WITH_COMMENTS).getFirstChild().getNextSibling();
@@ -226,8 +226,8 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
         final ParseTreeTablePresentation parseTree = new ParseTreeTablePresentation(null);
         final Object treeModel = parseTree.getValueAt(node, 0);
         final String type = (String) parseTree.getValueAt(node, 1);
-        final int line = (int) parseTree.getValueAt(node, 2);
-        final int column = (int) parseTree.getValueAt(node, 3);
+        final int line = (Integer) parseTree.getValueAt(node, 2);
+        final int column = (Integer) parseTree.getValueAt(node, 3);
         final String text = (String) parseTree.getValueAt(node, 4);
 
         assertEquals("IDENT", type, "Node should be an Identifier");
@@ -262,8 +262,8 @@ public class ParseTreeTablePresentationTest extends AbstractPathTestSupport {
 
         final Object treeModel = parseTree.getValueAt(child, 0);
         final String type = (String) parseTree.getValueAt(child, 1);
-        final int line = (int) parseTree.getValueAt(child, 2);
-        final int column = (int) parseTree.getValueAt(child, 3);
+        final int line = (Integer) parseTree.getValueAt(child, 2);
+        final int column = (Integer) parseTree.getValueAt(child, 3);
         final String text = (String) parseTree.getValueAt(child, 4);
         final String expectedText = "JAVADOC";
 

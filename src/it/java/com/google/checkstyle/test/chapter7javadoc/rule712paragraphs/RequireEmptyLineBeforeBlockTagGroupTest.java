@@ -21,7 +21,7 @@ package com.google.checkstyle.test.chapter7javadoc.rule712paragraphs;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.google.checkstyle.test.base.AbstractGoogleModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;

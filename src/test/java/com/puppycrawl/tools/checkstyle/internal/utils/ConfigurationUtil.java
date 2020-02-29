@@ -54,7 +54,7 @@ public final class ConfigurationUtil {
     }
 
     public static Set<Configuration> getModules(Configuration config) {
-        final Set<Configuration> result = new HashSet<>();
+        final Set<Configuration> result = new HashSet<Configuration>();
 
         for (Configuration child : config.getChildren()) {
             if ("TreeWalker".equals(child.getName())) {
@@ -69,7 +69,7 @@ public final class ConfigurationUtil {
     }
 
     public static Set<Configuration> getChecks(Configuration config) {
-        final Set<Configuration> result = new HashSet<>();
+        final Set<Configuration> result = new HashSet<Configuration>();
 
         for (Configuration child : config.getChildren()) {
             if ("TreeWalker".equals(child.getName())) {

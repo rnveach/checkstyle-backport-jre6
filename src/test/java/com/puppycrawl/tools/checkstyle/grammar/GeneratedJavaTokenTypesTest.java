@@ -23,9 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageLexer;
 
@@ -276,9 +275,12 @@ public class GeneratedJavaTokenTypesTest {
         assertEquals(212, JavaLanguageLexer.PERMITS_CLAUSE, message);
 
         // Read JavaDoc before changing
-        final int tokenCount = (int) Arrays.stream(JavaLanguageLexer.class.getDeclaredFields())
-                .filter(GeneratedJavaTokenTypesTest::isPublicStaticFinalInt)
-                .count();
+        int tokenCount = 0;
+        for (Field field : JavaLanguageLexer.class.getDeclaredFields()) {
+            if (isPublicStaticFinalInt(field)) {
+                tokenCount++;
+            }
+        }
 
         assertEquals(224, tokenCount,
                 "all tokens must be added to list in"

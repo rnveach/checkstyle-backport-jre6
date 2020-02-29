@@ -26,12 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -452,14 +453,15 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
 
         final int indexOfStartLineInInputFile = 16;
         final String message = getCheckMessage(MSG_KEY);
-        final String[] expected = IntStream.rangeClosed(0, 0xffff)
-                .parallel()
-                .filter(val -> !isControlCharacter(val))
-                .mapToObj(msg -> indexOfStartLineInInputFile + msg + ":54: " + message)
-                .toArray(String[]::new);
+        final List<String> expected = new ArrayList<String>();
+        for (int val = 0; val < 0x10000; val++) {
+            if (!isControlCharacter(val)) {
+                expected.add(indexOfStartLineInInputFile + val + ":54: " + message);
+            }
+        }
         verifyWithInlineConfigParser(
                 getPath("InputAvoidEscapedUnicodeCharactersAllEscapedUnicodeCharacters.java"),
-                expected);
+                expected.toArray(new String[expected.size()]));
     }
 
     /**
@@ -477,7 +479,7 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
         final Method countMatches = Whitebox.getMethod(AvoidEscapedUnicodeCharactersCheck.class,
                 "countMatches", Pattern.class, String.class);
         final AvoidEscapedUnicodeCharactersCheck check = new AvoidEscapedUnicodeCharactersCheck();
-        final int actual = (int) countMatches.invoke(check,
+        final int actual = (Integer) countMatches.invoke(check,
                 Pattern.compile("\\\\u[a-fA-F0-9]{4}"), "\\u1234");
         assertEquals(1, actual, "Unexpected matches count");
     }

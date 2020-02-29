@@ -143,6 +143,6 @@ public final class ParserUtil {
             lines++;
             columns = 0;
         }
-        return new AbstractMap.SimpleEntry<>(lines, columns);
+        return new AbstractMap.SimpleEntry<Integer, Integer>(lines, columns);
     }
 }

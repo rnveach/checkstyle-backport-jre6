@@ -21,7 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks.naming;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class AccessModifierOptionTest {
 

@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class JavadocMetadataScraperTest {
 
@@ -33,7 +33,7 @@ public class JavadocMetadataScraperTest {
 
     private static Map<String, ModuleDetails> moduleDetailsStore;
 
-    @BeforeAll
+    @BeforeClass
     public static void fillModuleDetailsStore() throws Exception {
         MetadataGeneratorUtil.generate(System.getProperty("user.dir")
                 + "/src/test/resources/com/puppycrawl/tools/checkstyle"

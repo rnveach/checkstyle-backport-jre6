@@ -155,7 +155,7 @@ public class RootNode extends AbstractNode {
      * @noinspection resource, IOResourceOpenedButNotSafelyClosed
      */
     @Override
-    public AxisIterator iterateAxis(int axisNumber) {
+    public AxisIterator iterateAxis(byte axisNumber) {
         final AxisIterator result;
         switch (axisNumber) {
             case AxisInfo.ANCESTOR:
@@ -165,7 +165,7 @@ public class RootNode extends AbstractNode {
             case AxisInfo.FOLLOWING_SIBLING:
             case AxisInfo.PRECEDING:
             case AxisInfo.PRECEDING_SIBLING:
-                result = EmptyIterator.ofNodes();
+                result = EmptyIterator.OfNodes.THE_INSTANCE;
                 break;
             case AxisInfo.ANCESTOR_OR_SELF:
             case AxisInfo.SELF:
@@ -177,7 +177,7 @@ public class RootNode extends AbstractNode {
                             getChildren().toArray(EMPTY_ABSTRACT_NODE_ARRAY));
                 }
                 else {
-                    result = EmptyIterator.ofNodes();
+                    result = EmptyIterator.OfNodes.THE_INSTANCE;
                 }
                 break;
             case AxisInfo.DESCENDANT:
@@ -185,7 +185,7 @@ public class RootNode extends AbstractNode {
                     result = new Navigator.DescendantEnumeration(this, false, true);
                 }
                 else {
-                    result = EmptyIterator.ofNodes();
+                    result = EmptyIterator.OfNodes.THE_INSTANCE;
                 }
                 break;
             case AxisInfo.DESCENDANT_OR_SELF:

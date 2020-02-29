@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser;
 import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.ParseErrorMessage;
@@ -72,17 +71,28 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
      * to guarantee basic thread safety and avoid shared, mutable state when not necessary.
      */
     private static final ThreadLocal<Map<String, ParseStatus>> TREE_CACHE =
-            ThreadLocal.withInitial(HashMap::new);
+        new ThreadLocal<Map<String, ParseStatus>>() {
+            @Override
+            protected Map<String, ParseStatus> initialValue() {
+                return new HashMap<String, ParseStatus>();
+            }
+        };
 
     /**
      * The file context.
      *
      * @noinspection ThreadLocalNotStaticFinal
      */
-    private final ThreadLocal<FileContext> context = ThreadLocal.withInitial(FileContext::new);
+    private final ThreadLocal<FileContext> context =
+        new ThreadLocal<FileContext>() {
+            @Override
+            protected FileContext initialValue() {
+                return new FileContext();
+            }
+        };
 
     /** The javadoc tokens the check is interested in. */
-    private final Set<Integer> javadocTokens = new HashSet<>();
+    private final Set<Integer> javadocTokens = new HashSet<Integer>();
 
     /**
      * This property determines if a check should log a violation upon encountering javadoc with
@@ -180,8 +190,9 @@ public abstract class AbstractJavadocCheck extends AbstractCheck {
     public void init() {
         validateDefaultJavadocTokens();
         if (javadocTokens.isEmpty()) {
-            javadocTokens.addAll(
-                    Arrays.stream(getDefaultJavadocTokens()).boxed().collect(Collectors.toList()));
+            for (int id : getDefaultJavadocTokens()) {
+                javadocTokens.add(id);
+            }
         }
         else {
             final int[] acceptableJavadocTokens = getAcceptableJavadocTokens();

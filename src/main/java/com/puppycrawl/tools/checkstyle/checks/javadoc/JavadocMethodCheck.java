@@ -525,9 +525,27 @@ public class JavadocMethodCheck extends AbstractCheck {
         final AccessModifierOption accessModifier = CheckUtil
                 .getAccessModifierFromModifiersToken(ast);
         return surroundingAccessModifier != null
-                && Arrays.stream(accessModifiers)
-                        .anyMatch(modifier -> modifier == surroundingAccessModifier)
-                && Arrays.stream(accessModifiers).anyMatch(modifier -> modifier == accessModifier);
+                && anyMatch(accessModifiers, surroundingAccessModifier)
+                && anyMatch(accessModifiers, accessModifier);
+    }
+
+    /**
+     * Checks whether the provided option matches any of the modifiers.
+     *
+     * @param accessModifiers The option to search through.
+     * @param find The option to find.
+     * @return The result of the search.
+     */
+    private static boolean anyMatch(AccessModifierOption[] accessModifiers,
+            AccessModifierOption find) {
+        boolean result = false;
+        for (AccessModifierOption option : accessModifiers) {
+            if (option == find) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -567,8 +585,11 @@ public class JavadocMethodCheck extends AbstractCheck {
             }
 
             // Dump out all unused tags
-            tags.stream().filter(javadocTag -> !javadocTag.isSeeOrInheritDocTag())
-                .forEach(javadocTag -> log(javadocTag.getLineNo(), MSG_UNUSED_TAG_GENERAL));
+            for (JavadocTag javadocTag : tags) {
+                if (!javadocTag.isSeeOrInheritDocTag()) {
+                    log(javadocTag.getLineNo(), MSG_UNUSED_TAG_GENERAL);
+                }
+            }
         }
     }
 
@@ -605,7 +626,7 @@ public class JavadocMethodCheck extends AbstractCheck {
      */
     private static List<JavadocTag> getMethodTags(TextBlock comment) {
         final String[] lines = comment.getText();
-        final List<JavadocTag> tags = new ArrayList<>();
+        final List<JavadocTag> tags = new ArrayList<JavadocTag>();
         int currentLine = comment.getStartLineNo() - 1;
         final int startColumnNumber = comment.getStartColNo();
 
@@ -685,7 +706,7 @@ public class JavadocMethodCheck extends AbstractCheck {
             multilineCont = MATCH_JAVADOC_MULTILINE_CONT.matcher(lines[remIndex]);
         } while (!multilineCont.find());
 
-        final List<JavadocTag> tags = new ArrayList<>();
+        final List<JavadocTag> tags = new ArrayList<JavadocTag>();
         final String lFin = multilineCont.group(1);
         if (!NEXT_TAG.equals(lFin)
             && !END_JAVADOC.equals(lFin)) {
@@ -706,7 +727,7 @@ public class JavadocMethodCheck extends AbstractCheck {
      */
     private static List<DetailAST> getParameters(DetailAST ast) {
         final DetailAST params = ast.findFirstToken(TokenTypes.PARAMETERS);
-        final List<DetailAST> returnValue = new ArrayList<>();
+        final List<DetailAST> returnValue = new ArrayList<DetailAST>();
 
         DetailAST child = params.getFirstChild();
         while (child != null) {
@@ -728,7 +749,7 @@ public class JavadocMethodCheck extends AbstractCheck {
      * @return the list of exception nodes for ast.
      */
     private static List<ExceptionInfo> getThrows(DetailAST ast) {
-        final List<ExceptionInfo> returnValue = new ArrayList<>();
+        final List<ExceptionInfo> returnValue = new ArrayList<ExceptionInfo>();
         final DetailAST throwsAST = ast
                 .findFirstToken(TokenTypes.LITERAL_THROWS);
         if (throwsAST != null) {
@@ -751,7 +772,7 @@ public class JavadocMethodCheck extends AbstractCheck {
      * @return list of ExceptionInfo
      */
     private static List<ExceptionInfo> getThrowed(DetailAST methodAst) {
-        final List<ExceptionInfo> returnValue = new ArrayList<>();
+        final List<ExceptionInfo> returnValue = new ArrayList<ExceptionInfo>();
         final DetailAST blockAst = methodAst.findFirstToken(TokenTypes.SLIST);
         if (blockAst != null) {
             final List<DetailAST> throwLiterals = findTokensInAstByType(blockAst,
@@ -836,9 +857,17 @@ public class JavadocMethodCheck extends AbstractCheck {
      */
     private static List<ExceptionInfo> combineExceptionInfo(List<ExceptionInfo> list1,
                                                      List<ExceptionInfo> list2) {
-        final List<ExceptionInfo> result = new ArrayList<>(list1);
+        final List<ExceptionInfo> result = new ArrayList<ExceptionInfo>(list1);
         for (ExceptionInfo exceptionInfo : list2) {
-            if (result.stream().noneMatch(item -> isExceptionInfoSame(item, exceptionInfo))) {
+            boolean found = false;
+            for (ExceptionInfo item : result) {
+                if (isExceptionInfoSame(item, exceptionInfo)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
                 result.add(exceptionInfo);
             }
         }
@@ -854,7 +883,7 @@ public class JavadocMethodCheck extends AbstractCheck {
      * @return {@link List} of {@link DetailAST} nodes which matches the predicate.
      */
     public static List<DetailAST> findTokensInAstByType(DetailAST root, int astType) {
-        final List<DetailAST> result = new ArrayList<>();
+        final List<DetailAST> result = new ArrayList<DetailAST>();
         // iterative preorder depth-first search
         DetailAST curNode = root;
         do {
@@ -1030,7 +1059,7 @@ public class JavadocMethodCheck extends AbstractCheck {
             List<ExceptionInfo> throwsList, boolean reportExpectedTags) {
         // Loop over the tags, checking to see they exist in the throws.
         // The foundThrows used for performance only
-        final Set<String> foundThrows = new HashSet<>();
+        final Set<String> foundThrows = new HashSet<String>();
         final ListIterator<JavadocTag> tagIt = tags.listIterator();
         while (tagIt.hasNext()) {
             final JavadocTag tag = tagIt.next();
@@ -1049,13 +1078,14 @@ public class JavadocMethodCheck extends AbstractCheck {
         // Now dump out all throws without tags :- unless
         // the user has chosen to suppress these problems
         if (validateThrows && reportExpectedTags) {
-            throwsList.stream().filter(exceptionInfo -> !exceptionInfo.isFound())
-                .forEach(exceptionInfo -> {
+            for (ExceptionInfo exceptionInfo : throwsList) {
+                if (!exceptionInfo.isFound()) {
                     final Token token = exceptionInfo.getName();
                     log(exceptionInfo.getAst(),
                         MSG_EXPECTED_TAG,
                         JavadocTagInfo.THROWS.getText(), token.getText());
-                });
+                }
+            }
         }
     }
 

@@ -27,23 +27,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class ImportControlCheckTest extends AbstractModuleTestSupport {
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
     protected String getPackageLocation() {
@@ -329,17 +331,17 @@ public class ImportControlCheckTest extends AbstractModuleTestSupport {
         treeWalkerConfig.addChild(checkConfig);
 
         final DefaultConfiguration checkerConfig = createRootConfig(treeWalkerConfig);
-        final File cacheFile = File.createTempFile("junit", null, temporaryFolder);
+        final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
         checkerConfig.addProperty("cacheFile", cacheFile.getPath());
 
-        final String filePath = File.createTempFile("empty", ".java", temporaryFolder).getPath();
+        final String filePath = File.createTempFile("empty", ".java", temporaryFolder.newFolder()).getPath();
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkerConfig, filePath, expected);
         // One more time to use cache.
         verify(checkerConfig, filePath, expected);
 
-        final String contents = new String(Files.readAllBytes(cacheFile.toPath()),
+        final String contents = new String(Files7.readAllBytes(new Path(cacheFile)),
                 StandardCharsets.UTF_8);
         assertTrue(contents.contains("InputImportControlOneRegExp.xml"),
                 "External resource is not present in cache");

@@ -25,16 +25,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class FileTextTest extends AbstractPathTestSupport {
 
@@ -56,8 +56,7 @@ public class FileTextTest extends AbstractPathTestSupport {
         catch (IllegalStateException ex) {
             assertWithMessage("Invalid exception message")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo("Unsupported charset: " + charsetName);
+                    .hasMessage("Unsupported charset: " + charsetName);
         }
     }
 
@@ -73,8 +72,7 @@ public class FileTextTest extends AbstractPathTestSupport {
         catch (FileNotFoundException ex) {
             assertWithMessage("Invalid exception message")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo("any name (No such file or directory)");
+                    .hasMessage("any name (No such file or directory)");
         }
     }
 
@@ -96,7 +94,7 @@ public class FileTextTest extends AbstractPathTestSupport {
         final LineColumn lineColumn = fileText.lineColumn(100);
         final FileText copy = new FileText(fileText);
         assertWithMessage("LineBreaks not copied")
-                .that((Object) Whitebox.getInternalState(copy, "lineBreaks"))
+                .that(Whitebox.getInternalState(copy, "lineBreaks"))
                 .isNotNull();
         final LineColumn actual = copy.lineColumn(100);
         assertWithMessage("Invalid linecolumn")
@@ -111,7 +109,7 @@ public class FileTextTest extends AbstractPathTestSupport {
         final FileText fileText = new FileText(new File(filepath), charset.name());
         final FileText copy = new FileText(fileText);
         assertWithMessage("LineBreaks not null")
-                .that((Object) Whitebox.getInternalState(copy, "lineBreaks"))
+                .that(Whitebox.getInternalState(copy, "lineBreaks"))
                 .isNull();
         final LineColumn lineColumn = copy.lineColumn(100);
         assertWithMessage("Invalid line")
@@ -179,7 +177,7 @@ public class FileTextTest extends AbstractPathTestSupport {
      */
     @Test
     public void testFindLineBreaksCache() throws Exception {
-        final FileText fileText = new FileText(new File("fileName"), Collections.emptyList());
+        final FileText fileText = new FileText(new File("fileName"), Collections.<String>emptyList());
         final int[] lineBreaks = {5};
         Whitebox.setInternalState(fileText, "lineBreaks", lineBreaks);
         // produces NPE if used

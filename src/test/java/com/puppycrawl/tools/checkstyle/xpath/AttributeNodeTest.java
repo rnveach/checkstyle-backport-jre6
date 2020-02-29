@@ -24,17 +24,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import net.sf.saxon.om.AxisInfo;
-import net.sf.saxon.tree.iter.AxisIterator;
 
 public class AttributeNodeTest {
 
     private static AttributeNode attributeNode;
 
-    @BeforeEach
+    @Before
     public void init() {
         attributeNode = new AttributeNode("name", "value");
     }
@@ -54,11 +54,15 @@ public class AttributeNodeTest {
     @Test
     public void testGetDepth() {
         final UnsupportedOperationException exception =
-            assertThrows(UnsupportedOperationException.class, attributeNode::getDepth);
+            assertThrows(UnsupportedOperationException.class, new Executable() {
+                @Override
+                public void execute() throws Throwable {
+                    attributeNode.getDepth();
+                }
+            });
         assertWithMessage("Invalid exception message")
             .that(exception)
-            .hasMessageThat()
-                .isEqualTo("Operation is not supported");
+            .hasMessage("Operation is not supported");
     }
 
     @Test
@@ -83,11 +87,15 @@ public class AttributeNodeTest {
     @Test
     public void testGetChildren() {
         final UnsupportedOperationException exception =
-            assertThrows(UnsupportedOperationException.class, attributeNode::getChildren);
+            assertThrows(UnsupportedOperationException.class, new Executable() {
+                @Override
+                public void execute() throws Throwable {
+                    attributeNode.getChildren();
+                }
+            });
         assertWithMessage("Invalid exception message")
             .that(exception)
-            .hasMessageThat()
-            .isEqualTo("Operation is not supported");
+            .hasMessage("Operation is not supported");
     }
 
     @Test
@@ -121,7 +129,8 @@ public class AttributeNodeTest {
 
     @Test
     public void testIterate() {
-        try (AxisIterator ignored = attributeNode.iterateAxis(AxisInfo.SELF)) {
+        try {
+            attributeNode.iterateAxis(AxisInfo.SELF);
             fail("Exception is excepted");
         }
         catch (UnsupportedOperationException ex) {
@@ -175,18 +184,6 @@ public class AttributeNodeTest {
         catch (UnsupportedOperationException ex) {
             assertEquals("Operation is not supported",
                 ex.getMessage(), "Invalid exception message");
-        }
-    }
-
-    @Test
-    public void testGetAllNamespaces() {
-        try {
-            attributeNode.getAllNamespaces();
-            fail("Exception is excepted");
-        }
-        catch (UnsupportedOperationException ex) {
-            assertEquals("Operation is not supported",
-                    ex.getMessage(), "Invalid exception message");
         }
     }
 }

@@ -30,8 +30,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -43,8 +44,8 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class SuppressionFilterTest extends AbstractModuleTestSupport {
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
     protected String getPackageLocation() {
@@ -156,10 +157,10 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
         filterConfig.addProperty("file", getPath("InputSuppressionFilterNone.xml"));
 
         final DefaultConfiguration checkerConfig = createRootConfig(filterConfig);
-        final File cacheFile = File.createTempFile("junit", null, temporaryFolder);
+        final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
         checkerConfig.addProperty("cacheFile", cacheFile.getPath());
 
-        final String filePath = File.createTempFile("file", ".java", temporaryFolder).getPath();
+        final String filePath = File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkerConfig, filePath, expected);
@@ -194,11 +195,11 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
             firstFilterConfig.addProperty("file", urlForTest);
 
             final DefaultConfiguration firstCheckerConfig = createRootConfig(firstFilterConfig);
-            final File cacheFile = File.createTempFile("junit", null, temporaryFolder);
+            final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
             firstCheckerConfig.addProperty("cacheFile", cacheFile.getPath());
 
             final String pathToEmptyFile =
-                    File.createTempFile("file", ".java", temporaryFolder).getPath();
+                    File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
             final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
             verify(firstCheckerConfig, pathToEmptyFile, expected);
@@ -224,7 +225,8 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
             int attemptCount = 0;
 
             while (attemptCount <= attemptLimit) {
-                try (InputStream stream = new URL(url).openStream()) {
+                final InputStream stream = new URL(url).openStream();
+                try {
                     // Attempt to read a byte in order to check whether file content is available
                     available = stream.read() != -1;
                     break;
@@ -240,6 +242,9 @@ public class SuppressionFilterTest extends AbstractModuleTestSupport {
                     else {
                         throw ex;
                     }
+                }
+                finally {
+                    stream.close();
                 }
             }
         }

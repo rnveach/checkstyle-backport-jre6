@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
@@ -33,6 +32,8 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 
 /**
  * <p>
@@ -130,14 +131,7 @@ public class SuppressWarningsHolder
     private static final String ALL_WARNING_MATCHING_ID = "all";
 
     /** A map from check source names to suppression aliases. */
-    private static final Map<String, String> CHECK_ALIAS_MAP = new HashMap<>();
-
-    /**
-     * A thread-local holder for the list of suppression entries for the last
-     * file parsed.
-     */
-    private static final ThreadLocal<List<Entry>> ENTRIES =
-            ThreadLocal.withInitial(LinkedList::new);
+    private static final Map<String, String> CHECK_ALIAS_MAP = new HashMap<String, String>();
 
     /**
      * Compiled pattern used to match whitespace in text block content.
@@ -148,6 +142,17 @@ public class SuppressWarningsHolder
      * Compiled pattern used to match preceding newline in text block content.
      */
     private static final Pattern NEWLINE = Pattern.compile("\\n");
+
+    /**
+     * A thread-local holder for the list of suppression entries for the last
+     * file parsed.
+     */
+    private static final ThreadLocal<List<Entry>> ENTRIES = new ThreadLocal<List<Entry>>() {
+        @Override
+        protected List<Entry> initialValue() {
+            return new LinkedList<Entry>();
+        }
+    };
 
     /**
      * Returns the default alias for the source name of a check, which is the
@@ -300,7 +305,7 @@ public class SuppressWarningsHolder
     }
 
     @Override
-    public void visitToken(DetailAST ast) {
+    public void visitToken(final DetailAST ast) {
         // check whether annotation is SuppressWarnings
         // expected children: AT ( IDENT | DOT ) LPAREN <values> RPAREN
         String identifier = getIdentifier(getNthChild(ast, 1));
@@ -308,8 +313,12 @@ public class SuppressWarningsHolder
             identifier = identifier.substring(JAVA_LANG_PREFIX.length());
         }
         if ("SuppressWarnings".equals(identifier)) {
-            getAnnotationTarget(ast).ifPresent(targetAST -> {
-                addSuppressions(getAllAnnotationValues(ast), targetAST);
+            getAnnotationTarget(ast).ifPresent(new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST targetAST) {
+                    addSuppressions(getAllAnnotationValues(ast), targetAST);
+                    return true;
+                }
             });
         }
     }
@@ -532,7 +541,7 @@ public class SuppressWarningsHolder
      * @return list of expressions in strings
      */
     private static List<String> findAllExpressionsInChildren(DetailAST parent) {
-        final List<String> valueList = new LinkedList<>();
+        final List<String> valueList = new LinkedList<String>();
         DetailAST childAST = parent.getFirstChild();
         while (childAST != null) {
             if (childAST.getType() == TokenTypes.EXPR) {

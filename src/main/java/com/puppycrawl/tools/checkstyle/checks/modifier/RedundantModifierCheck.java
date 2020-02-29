@@ -21,12 +21,13 @@ package com.puppycrawl.tools.checkstyle.checks.modifier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
@@ -284,8 +285,21 @@ public class RedundantModifierCheck
     private void checkEnumConstructorModifiers(DetailAST ast) {
         final DetailAST modifiers = ast.findFirstToken(TokenTypes.MODIFIERS);
         TokenUtil.findFirstTokenByPredicate(
-            modifiers, mod -> mod.getType() != TokenTypes.ANNOTATION
-        ).ifPresent(modifier -> log(modifier, MSG_KEY, modifier.getText()));
+            modifiers,
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST mod) {
+                    return mod.getType() != TokenTypes.ANNOTATION;
+                }
+            }
+        ).ifPresent(
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST modifier) {
+                    log(modifier, MSG_KEY, modifier.getText());
+                    return true;
+                }
+            });
     }
 
     /**
@@ -380,9 +394,14 @@ public class RedundantModifierCheck
      */
     private void processAbstractMethodParameters(DetailAST ast) {
         final DetailAST parameters = ast.findFirstToken(TokenTypes.PARAMETERS);
-        TokenUtil.forEachChild(parameters, TokenTypes.PARAMETER_DEF, paramDef -> {
-            checkForRedundantModifier(paramDef, TokenTypes.FINAL);
-        });
+        TokenUtil.forEachChild(parameters, TokenTypes.PARAMETER_DEF,
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST paramDef) {
+                    checkForRedundantModifier(paramDef, TokenTypes.FINAL);
+                    return true;
+                }
+            });
     }
 
     /**
@@ -413,12 +432,17 @@ public class RedundantModifierCheck
      * @param modifierType The modifier to check for.
      */
     private void checkForRedundantModifier(DetailAST ast, int modifierType) {
-        Optional.ofNullable(ast.findFirstToken(TokenTypes.MODIFIERS))
-            .ifPresent(modifiers -> {
-                TokenUtil.forEachChild(modifiers, modifierType, modifier -> {
-                    log(modifier, MSG_KEY, modifier.getText());
+        final DetailAST modifiers = ast.findFirstToken(TokenTypes.MODIFIERS);
+        if (modifiers != null) {
+            TokenUtil.forEachChild(modifiers, modifierType,
+                new Consumer<DetailAST>() {
+                    @Override
+                    public boolean accept(DetailAST modifier) {
+                        log(modifier, MSG_KEY, modifier.getText());
+                        return true;
+                    }
                 });
-            });
+        }
     }
 
     /**
@@ -511,9 +535,15 @@ public class RedundantModifierCheck
      * @return List of annotations
      */
     private static List<DetailAST> getMethodAnnotationsList(DetailAST methodDef) {
-        final List<DetailAST> annotationsList = new ArrayList<>();
+        final List<DetailAST> annotationsList = new ArrayList<DetailAST>();
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
-        TokenUtil.forEachChild(modifiers, TokenTypes.ANNOTATION, annotationsList::add);
+        TokenUtil.forEachChild(modifiers, TokenTypes.ANNOTATION,
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    return annotationsList.add(ast);
+                }
+            });
         return annotationsList;
     }
 

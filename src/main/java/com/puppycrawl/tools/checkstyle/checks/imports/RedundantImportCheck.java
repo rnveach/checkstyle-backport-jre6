@@ -90,9 +90,9 @@ public class RedundantImportCheck
     public static final String MSG_DUPLICATE = "import.duplicate";
 
     /** Set of the imports. */
-    private final Set<FullIdent> imports = new HashSet<>();
+    private final Set<FullIdent> imports = new HashSet<FullIdent>();
     /** Set of static imports. */
-    private final Set<FullIdent> staticImports = new HashSet<>();
+    private final Set<FullIdent> staticImports = new HashSet<FullIdent>();
 
     /** Name of package in file. */
     private String pkgName;
@@ -138,8 +138,13 @@ public class RedundantImportCheck
                 log(ast, MSG_SAME, imp.getText());
             }
             // Check for a duplicate import
-            imports.stream().filter(full -> imp.getText().equals(full.getText()))
-                .forEach(full -> log(ast, MSG_DUPLICATE, full.getLineNo(), imp.getText()));
+            for (FullIdent full : imports) {
+                if (imp.getText().equals(full.getText())) {
+                    log(ast,
+                            MSG_DUPLICATE, full.getLineNo(),
+                            imp.getText());
+                }
+            }
 
             imports.add(imp);
         }
@@ -148,8 +153,12 @@ public class RedundantImportCheck
             final FullIdent imp =
                 FullIdent.createFullIdent(
                     ast.getLastChild().getPreviousSibling());
-            staticImports.stream().filter(full -> imp.getText().equals(full.getText()))
-                .forEach(full -> log(ast, MSG_DUPLICATE, full.getLineNo(), imp.getText()));
+            for (FullIdent full : staticImports) {
+                if (imp.getText().equals(full.getText())) {
+                    log(ast,
+                        MSG_DUPLICATE, full.getLineNo(), imp.getText());
+                }
+            }
 
             staticImports.add(imp);
         }

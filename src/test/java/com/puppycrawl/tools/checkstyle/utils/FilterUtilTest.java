@@ -25,23 +25,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class FilterUtilTest {
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(FilterUtil.class, true),
                 "Constructor is not private");
     }
 
     @Test
     public void testExistingFile() throws Exception {
-        final File file = File.createTempFile("junit", null, temporaryFolder);
+        final File file = File.createTempFile("junit", null, temporaryFolder.newFolder());
         assertTrue(FilterUtil.isFileExists(file.getPath()), "Suppression file exists");
     }
 

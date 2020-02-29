@@ -23,7 +23,6 @@ package com.puppycrawl.tools.checkstyle;
  * An interface for filtering {@code TreeWalkerAuditEvent}.
  *
  */
-@FunctionalInterface
 public interface TreeWalkerFilter {
 
     /**

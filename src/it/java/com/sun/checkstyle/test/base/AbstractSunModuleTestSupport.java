@@ -102,7 +102,7 @@ public abstract class AbstractSunModuleTestSupport extends AbstractItModuleTestS
      * @throws IllegalStateException if there is a problem retrieving the module or config.
      */
     protected static Configuration getModuleConfig(String moduleName, String moduleId) {
-        final Configuration result;
+        Configuration result;
         final List<Configuration> configs = getModuleConfigs(moduleName);
         if (configs.size() == 1) {
             result = configs.get(0);
@@ -114,16 +114,21 @@ public abstract class AbstractSunModuleTestSupport extends AbstractItModuleTestS
             throw new IllegalStateException("multiple instances of the same Module are detected");
         }
         else {
-            result = configs.stream().filter(conf -> {
+            result = null;
+            for (Configuration conf : configs) {
                 try {
-                    return conf.getProperty("id").equals(moduleId);
+                    if (conf.getProperty("id").equals(moduleId)) {
+                        result = conf;
+                        break;
+                    }
                 }
                 catch (CheckstyleException ex) {
                     throw new IllegalStateException("problem to get ID attribute from " + conf, ex);
                 }
-            })
-            .findFirst()
-            .orElseThrow(() -> new IllegalStateException("problem with module config"));
+            }
+            if (result == null) {
+                throw new IllegalStateException("problem with module config");
+            }
         }
 
         return result;
@@ -136,7 +141,7 @@ public abstract class AbstractSunModuleTestSupport extends AbstractItModuleTestS
      * @return {@link Configuration} instance for the given module name.
      */
     protected static List<Configuration> getModuleConfigs(String moduleName) {
-        final List<Configuration> result = new ArrayList<>();
+        final List<Configuration> result = new ArrayList<Configuration>();
         for (Configuration currentConfig : CONFIGURATION.getChildren()) {
             if ("TreeWalker".equals(currentConfig.getName())) {
                 for (Configuration moduleConfig : currentConfig.getChildren()) {

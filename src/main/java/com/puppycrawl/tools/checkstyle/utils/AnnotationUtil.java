@@ -20,11 +20,11 @@
 package com.puppycrawl.tools.checkstyle.utils;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 /**
  * Contains utility methods designed to work with annotations.
@@ -101,7 +101,7 @@ public final class AnnotationUtil {
      *                      {@code false} otherwise.
      * @throws IllegalArgumentException when ast or annotations are null
      */
-    public static boolean containsAnnotation(DetailAST ast, List<String> annotations) {
+    public static boolean containsAnnotation(DetailAST ast, final List<String> annotations) {
         if (ast == null) {
             throw new IllegalArgumentException(THE_AST_IS_NULL);
         }
@@ -113,14 +113,17 @@ public final class AnnotationUtil {
         boolean result = false;
 
         if (!annotations.isEmpty()) {
-            final DetailAST firstMatchingAnnotation = findFirstAnnotation(ast, annotationNode -> {
-                DetailAST identNode = annotationNode.findFirstToken(TokenTypes.IDENT);
-                if (identNode == null) {
-                    identNode = annotationNode.findFirstToken(TokenTypes.DOT)
-                            .findFirstToken(TokenTypes.IDENT);
-                }
+            final DetailAST firstMatchingAnnotation = findFirstAnnotation(ast, new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST annotationNode) {
+                    DetailAST identNode = annotationNode.findFirstToken(TokenTypes.IDENT);
+                    if (identNode == null) {
+                        identNode = annotationNode.findFirstToken(TokenTypes.DOT)
+                                .findFirstToken(TokenTypes.IDENT);
+                    }
 
-                return annotations.contains(identNode.getText());
+                    return annotations.contains(identNode.getText());
+                }
             });
             result = firstMatchingAnnotation != null;
         }
@@ -178,7 +181,7 @@ public final class AnnotationUtil {
      * @throws IllegalArgumentException when ast or annotations are null; when annotation is blank
      */
     public static DetailAST getAnnotation(final DetailAST ast,
-        String annotation) {
+        final String annotation) {
         if (ast == null) {
             throw new IllegalArgumentException(THE_AST_IS_NULL);
         }
@@ -192,11 +195,14 @@ public final class AnnotationUtil {
                     "the annotation is empty or spaces");
         }
 
-        return findFirstAnnotation(ast, annotationNode -> {
-            final DetailAST firstChild = annotationNode.findFirstToken(TokenTypes.AT);
-            final String name =
-                    FullIdent.createFullIdent(firstChild.getNextSibling()).getText();
-            return annotation.equals(name);
+        return findFirstAnnotation(ast, new Predicate<DetailAST>() {
+            @Override
+            public boolean test(DetailAST annotationNode) {
+                final DetailAST firstChild = annotationNode.findFirstToken(TokenTypes.AT);
+                final String name =
+                        FullIdent.createFullIdent(firstChild.getNextSibling()).getText();
+                return annotation.equals(name);
+            }
         });
     }
 

@@ -192,7 +192,7 @@ public class AtclauseOrderCheck extends AbstractJavadocCheck {
      * @param targets user's targets.
      */
     public void setTarget(String... targets) {
-        final List<Integer> customTarget = new ArrayList<>();
+        final List<Integer> customTarget = new ArrayList<Integer>();
         for (String temp : targets) {
             customTarget.add(TokenUtil.getTokenId(temp.trim()));
         }
@@ -205,7 +205,7 @@ public class AtclauseOrderCheck extends AbstractJavadocCheck {
      * @param orders user's orders.
      */
     public void setTagOrder(String... orders) {
-        final List<String> customOrder = new ArrayList<>();
+        final List<String> customOrder = new ArrayList<String>();
         for (String order : orders) {
             customOrder.add(order.trim());
         }

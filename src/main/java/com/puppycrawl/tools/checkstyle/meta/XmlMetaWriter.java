@@ -23,7 +23,6 @@ import java.io.File;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -55,6 +54,14 @@ public final class XmlMetaWriter {
     /** Default(UNIX) file separator. */
     private static final String DEFAULT_FILE_SEPARATOR = "/";
 
+    /** Access External DTD. */
+    private static final String ACCESS_EXTERNAL_DTD =
+        "http://javax.xml.XMLConstants/property/accessExternalDTD";
+
+    /** Access External Schema. */
+    private static final String ACCESS_EXTERNAL_SCHEMA =
+        "http://javax.xml.XMLConstants/property/accessExternalSchema";
+
     /**
      * Do no allow {@code XmlMetaWriter} instances to be created.
      */
@@ -71,8 +78,8 @@ public final class XmlMetaWriter {
     public static void write(ModuleDetails moduleDetails) throws TransformerException,
             ParserConfigurationException {
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        dbFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        dbFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        dbFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
+        dbFactory.setAttribute(ACCESS_EXTERNAL_SCHEMA, "");
         final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         final Document doc = dBuilder.newDocument();
 

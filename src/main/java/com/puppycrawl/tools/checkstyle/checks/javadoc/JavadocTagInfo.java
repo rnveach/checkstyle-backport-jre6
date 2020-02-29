@@ -21,9 +21,8 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
@@ -383,10 +382,16 @@ public enum JavadocTagInfo {
     private static final Map<String, JavadocTagInfo> NAME_TO_TAG;
 
     static {
-        TEXT_TO_TAG = Collections.unmodifiableMap(Arrays.stream(values())
-            .collect(Collectors.toMap(JavadocTagInfo::getText, Function.identity())));
-        NAME_TO_TAG = Collections.unmodifiableMap(Arrays.stream(values())
-            .collect(Collectors.toMap(JavadocTagInfo::getName, Function.identity())));
+        final Map<String, JavadocTagInfo> textToTagBuilder = new HashMap<String, JavadocTagInfo>();
+        final Map<String, JavadocTagInfo> nameToTagBuilder = new HashMap<String, JavadocTagInfo>();
+
+        for (final JavadocTagInfo tag : values()) {
+            textToTagBuilder.put(tag.text, tag);
+            nameToTagBuilder.put(tag.name, tag);
+        }
+
+        TEXT_TO_TAG = Collections.unmodifiableMap(textToTagBuilder);
+        NAME_TO_TAG = Collections.unmodifiableMap(nameToTagBuilder);
 
         // Arrays sorting for binary search
         Arrays.sort(DEF_TOKEN_TYPES);

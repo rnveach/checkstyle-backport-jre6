@@ -22,6 +22,8 @@ package com.puppycrawl.tools.checkstyle.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
+
 /**
  * Represents a full identifier, including dots, with associated
  * position information.
@@ -39,7 +41,7 @@ import java.util.List;
 public final class FullIdent {
 
     /** The list holding subsequent elements of identifier. **/
-    private final List<String> elements = new ArrayList<>();
+    private final List<String> elements = new ArrayList<String>();
     /** The topmost and leftmost AST of the full identifier. */
     private DetailAST detailAst;
 
@@ -141,7 +143,7 @@ public final class FullIdent {
      * @return the text
      */
     public String getText() {
-        return String.join("", elements);
+        return String7.join("", elements);
     }
 
     /**
@@ -173,7 +175,7 @@ public final class FullIdent {
 
     @Override
     public String toString() {
-        return String.join("", elements)
+        return String7.join("", elements)
             + "[" + detailAst.getLineNo() + "x" + detailAst.getColumnNo() + "]";
     }
 

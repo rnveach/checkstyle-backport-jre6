@@ -19,17 +19,17 @@
 
 package com.puppycrawl.tools.checkstyle.checks;
 
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 
 /**
  * <p>
@@ -139,12 +139,12 @@ public class UncommentedMainCheck
     public static final String MSG_KEY = "uncommented.main";
 
     /** Set of possible String array types. */
-    private static final Set<String> STRING_PARAMETER_NAMES = Stream.of(
+    private static final Set<String> STRING_PARAMETER_NAMES = new HashSet<String>(Arrays.asList(
         String[].class.getCanonicalName(),
         String.class.getCanonicalName(),
         String[].class.getSimpleName(),
         String.class.getSimpleName()
-    ).collect(Collectors.toSet());
+    ));
 
     /**
      * Specify pattern for qualified names of classes which are allowed to

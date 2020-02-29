@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -181,7 +181,7 @@ public class NewlineAtEndOfFileCheckTest
         final DefaultConfiguration checkConfig = createModuleConfig(NewlineAtEndOfFileCheck.class);
         final NewlineAtEndOfFileCheck check = new NewlineAtEndOfFileCheck();
         check.configure(checkConfig);
-        final List<String> lines = new ArrayList<>(1);
+        final List<String> lines = new ArrayList<String>(1);
         lines.add("txt");
         final File impossibleFile = new File("");
         final FileText fileText = new FileText(impossibleFile, lines);
@@ -194,8 +194,9 @@ public class NewlineAtEndOfFileCheckTest
 
     @Test
     public void testWrongSeparatorLength() throws Exception {
-        try (RandomAccessFile file =
-                     new ReadZeroRandomAccessFile(getPath("InputNewlineAtEndOfFileLf.java"), "r")) {
+        final RandomAccessFile file =
+                new ReadZeroRandomAccessFile(getPath("InputNewlineAtEndOfFileLf.java"), "r");
+        try {
             Whitebox.invokeMethod(new NewlineAtEndOfFileCheck(), "endsWithNewline", file,
                 LineSeparatorOption.LF);
             fail("Exception is expected");
@@ -203,6 +204,9 @@ public class NewlineAtEndOfFileCheckTest
         catch (IOException ex) {
             assertEquals("Unable to read 1 bytes, got 0", ex.getMessage(),
                     "Error message is unexpected");
+        }
+        finally {
+            file.close();
         }
     }
 

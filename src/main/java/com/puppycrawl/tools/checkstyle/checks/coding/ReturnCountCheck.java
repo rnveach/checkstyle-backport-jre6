@@ -168,7 +168,7 @@ public final class ReturnCountCheck extends AbstractCheck {
     public static final String MSG_KEY_VOID = "return.countVoid";
 
     /** Stack of method contexts. */
-    private final Deque<Context> contextStack = new ArrayDeque<>();
+    private final Deque<Context> contextStack = new ArrayDeque<Context>();
 
     /** Specify method names to ignore. */
     private Pattern format = Pattern.compile("^equals$");

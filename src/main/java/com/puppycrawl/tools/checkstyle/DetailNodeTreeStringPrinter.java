@@ -21,7 +21,6 @@ package com.puppycrawl.tools.checkstyle;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.ParseErrorMessage;
 import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.ParseStatus;
@@ -30,6 +29,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 import com.puppycrawl.tools.checkstyle.utils.ParserUtil;
 

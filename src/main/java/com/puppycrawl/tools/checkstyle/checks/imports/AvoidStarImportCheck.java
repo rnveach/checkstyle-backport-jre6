@@ -153,7 +153,7 @@ public class AvoidStarImportCheck
     private static final String STAR_IMPORT_SUFFIX = ".*";
 
     /** Specify packages where star imports are allowed. */
-    private final List<String> excludes = new ArrayList<>();
+    private final List<String> excludes = new ArrayList<String>();
 
     /**
      * Control whether to allow starred class imports like

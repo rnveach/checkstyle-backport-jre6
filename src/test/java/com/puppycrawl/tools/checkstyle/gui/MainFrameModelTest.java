@@ -30,8 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -51,7 +51,7 @@ public class MainFrameModelTest extends AbstractModuleTestSupport {
         return "com/puppycrawl/tools/checkstyle/gui/mainframemodel";
     }
 
-    @BeforeEach
+    @Before
     public void prepareTestData() throws IOException {
         model = new MainFrameModel();
         testData = new File(getPath(FILE_NAME_TEST_DATA));

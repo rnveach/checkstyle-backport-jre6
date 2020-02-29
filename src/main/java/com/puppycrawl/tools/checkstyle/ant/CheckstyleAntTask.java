@@ -23,15 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -58,6 +54,8 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.RootModule;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevelCounter;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * An implementation of a ANT task for calling checkstyle. See the documentation
@@ -74,16 +72,16 @@ public class CheckstyleAntTask extends Task {
     private static final String TIME_SUFFIX = " ms.";
 
     /** Contains the paths to process. */
-    private final List<Path> paths = new ArrayList<>();
+    private final List<Path> paths = new ArrayList<Path>();
 
     /** Contains the filesets to process. */
-    private final List<FileSet> fileSets = new ArrayList<>();
+    private final List<FileSet> fileSets = new ArrayList<FileSet>();
 
     /** Contains the formatters to log to. */
-    private final List<Formatter> formatters = new ArrayList<>();
+    private final List<Formatter> formatters = new ArrayList<Formatter>();
 
     /** Contains the Properties to override. */
-    private final List<Property> overrideProps = new ArrayList<>();
+    private final List<Property> overrideProps = new ArrayList<Property>();
 
     /** Class path to locate class files. */
     private Path classpath;
@@ -442,8 +440,16 @@ public class CheckstyleAntTask extends Task {
 
         // Load the properties file if specified
         if (properties != null) {
-            try (InputStream inStream = Files.newInputStream(properties.toPath())) {
-                returnValue.load(inStream);
+            try {
+                final InputStream inStream = Files7
+                        .newInputStream(new com.puppycrawl.tools.checkstyle.jre6.file.Path(
+                                properties));
+                try {
+                    returnValue.load(inStream);
+                }
+                finally {
+                    inStream.close();
+                }
             }
             catch (final IOException ex) {
                 throw new BuildException("Error loading Properties file '"
@@ -505,7 +511,7 @@ public class CheckstyleAntTask extends Task {
      * @return the list of files included via the fileName, filesets and paths.
      */
     private List<File> getFilesToCheck() {
-        final List<File> allFiles = new ArrayList<>();
+        final List<File> allFiles = new ArrayList<File>();
         if (fileName != null) {
             // oops we've got an additional one to process, don't
             // forget it. No sweat, it's fully resolved via the setter.
@@ -528,7 +534,7 @@ public class CheckstyleAntTask extends Task {
      * @return a list of files defined via paths.
      */
     private List<File> scanPaths() {
-        final List<File> allFiles = new ArrayList<>();
+        final List<File> allFiles = new ArrayList<File>();
 
         for (int i = 0; i < paths.size(); i++) {
             final Path currentPath = paths.get(i);
@@ -549,7 +555,7 @@ public class CheckstyleAntTask extends Task {
     private List<File> scanPath(Path path, int pathIndex) {
         final String[] resources = path.list();
         log(pathIndex + ") Scanning path " + path, Project.MSG_VERBOSE);
-        final List<File> allFiles = new ArrayList<>();
+        final List<File> allFiles = new ArrayList<File>();
         int concreteFilesCount = 0;
 
         for (String resource : resources) {
@@ -581,7 +587,7 @@ public class CheckstyleAntTask extends Task {
      * @return the list of files included via the filesets.
      */
     protected List<File> scanFileSets() {
-        final List<File> allFiles = new ArrayList<>();
+        final List<File> allFiles = new ArrayList<File>();
 
         for (int i = 0; i < fileSets.size(); i++) {
             final FileSet fileSet = fileSets.get(i);
@@ -606,10 +612,11 @@ public class CheckstyleAntTask extends Task {
         log(String.format(Locale.ROOT, "%d) Adding %d files from directory %s",
             logIndex, fileNames.length, scanner.getBasedir()), Project.MSG_VERBOSE);
 
-        return Arrays.stream(fileNames)
-            .map(name -> scanner.getBasedir() + File.separator + name)
-            .map(File::new)
-            .collect(Collectors.toList());
+        final List<File> result = new ArrayList<File>();
+        for (String name : fileNames) {
+            result.add(new File(scanner.getBasedir() + File.separator + name));
+        }
+        return result;
     }
 
     /**
@@ -704,7 +711,8 @@ public class CheckstyleAntTask extends Task {
                 );
             }
             else {
-                final OutputStream infoStream = Files.newOutputStream(toFile.toPath());
+                final OutputStream infoStream = Files7
+                        .newOutputStream(new com.puppycrawl.tools.checkstyle.jre6.file.Path(toFile));
                 defaultLogger =
                         new DefaultLogger(infoStream, AutomaticBean.OutputStreamOptions.CLOSE,
                                 infoStream, AutomaticBean.OutputStreamOptions.NONE);
@@ -726,8 +734,9 @@ public class CheckstyleAntTask extends Task {
                         AutomaticBean.OutputStreamOptions.CLOSE);
             }
             else {
-                xmlLogger = new XMLLogger(Files.newOutputStream(toFile.toPath()),
-                        AutomaticBean.OutputStreamOptions.CLOSE);
+                xmlLogger = new XMLLogger(
+                        Files7.newOutputStream(new com.puppycrawl.tools.checkstyle.jre6.file.Path(
+                                toFile)), AutomaticBean.OutputStreamOptions.CLOSE);
             }
             return xmlLogger;
         }

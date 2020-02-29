@@ -40,7 +40,13 @@ public abstract class AbstractFileSetCheck
      *
      * @noinspection ThreadLocalNotStaticFinal
      */
-    private final ThreadLocal<FileContext> context = ThreadLocal.withInitial(FileContext::new);
+    private final ThreadLocal<FileContext> context =
+        new ThreadLocal<FileContext>() {
+            @Override
+            protected FileContext initialValue() {
+                return new FileContext();
+            }
+        };
 
     /** The dispatcher errors are fired to. */
     private MessageDispatcher messageDispatcher;
@@ -86,7 +92,7 @@ public abstract class AbstractFileSetCheck
         if (CommonUtil.matchesFileExtension(file, fileExtensions)) {
             processFiltered(file, fileText);
         }
-        final SortedSet<Violation> result = new TreeSet<>(violations);
+        final SortedSet<Violation> result = new TreeSet<Violation>(violations);
         violations.clear();
         return result;
     }
@@ -117,7 +123,7 @@ public abstract class AbstractFileSetCheck
      * @return the sorted set of {@link Violation}.
      */
     public SortedSet<Violation> getViolations() {
-        return new TreeSet<>(context.get().violations);
+        return new TreeSet<Violation>(context.get().violations);
     }
 
     /**
@@ -237,7 +243,7 @@ public abstract class AbstractFileSetCheck
      * @param fileName the audited file
      */
     protected final void fireErrors(String fileName) {
-        final SortedSet<Violation> errors = new TreeSet<>(context.get().violations);
+        final SortedSet<Violation> errors = new TreeSet<Violation>(context.get().violations);
         context.get().violations.clear();
         messageDispatcher.fireErrors(fileName, errors);
     }
@@ -248,7 +254,7 @@ public abstract class AbstractFileSetCheck
     private static class FileContext {
 
         /** The sorted set for collecting violations. */
-        private final SortedSet<Violation> violations = new TreeSet<>();
+        private final SortedSet<Violation> violations = new TreeSet<Violation>();
 
         /** The current file contents. */
         private FileContents fileContents;

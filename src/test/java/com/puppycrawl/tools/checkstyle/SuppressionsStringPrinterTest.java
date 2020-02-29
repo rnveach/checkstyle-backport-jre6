@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 
@@ -41,7 +41,7 @@ public class SuppressionsStringPrinterTest extends AbstractTreeTestSupport {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(
                 isUtilsClassHasPrivateConstructor(SuppressionsStringPrinter.class, true),
                 "Constructor is not private");

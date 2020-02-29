@@ -22,11 +22,12 @@ package com.puppycrawl.tools.checkstyle.filters;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocTypeCheck.MSG_JAVADOC_MISSING;
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -178,7 +179,8 @@ public class SuppressWarningsFilterTest
     }
 
     private static String[] removeSuppressed(String[] from, String... remove) {
-        final Collection<String> coll = Arrays.stream(from).collect(Collectors.toList());
+        final Collection<String> coll = new ArrayList<String>();
+        Collections.addAll(coll, from);
         coll.removeAll(Arrays.asList(remove));
         return coll.toArray(CommonUtil.EMPTY_STRING_ARRAY);
     }

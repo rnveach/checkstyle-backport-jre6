@@ -23,6 +23,7 @@ import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
@@ -381,9 +382,12 @@ public class AnnotationLocationCheck extends AbstractCheck {
      * @return true if the annotation has parameters.
      */
     private static boolean isParameterized(DetailAST annotation) {
-        return TokenUtil.findFirstTokenByPredicate(annotation, ast -> {
-            return ast.getType() == TokenTypes.EXPR
-                || ast.getType() == TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR;
+        return TokenUtil.findFirstTokenByPredicate(annotation, new Predicate<DetailAST>() {
+            @Override
+            public boolean test(DetailAST ast) {
+                return ast.getType() == TokenTypes.EXPR
+                    || ast.getType() == TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR;
+            }
         }).isPresent();
     }
 

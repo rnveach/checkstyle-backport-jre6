@@ -29,8 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,12 +36,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class UniquePropertiesCheckTest extends AbstractModuleTestSupport {
@@ -88,7 +88,7 @@ public class UniquePropertiesCheckTest extends AbstractModuleTestSupport {
      */
     @Test
     public void testNotFoundKey() throws Exception {
-        final List<String> testStrings = new ArrayList<>(3);
+        final List<String> testStrings = new ArrayList<String>(3);
         final Method getLineNumber = UniquePropertiesCheck.class.getDeclaredMethod(
             "getLineNumber", FileText.class, String.class);
         assertNotNull(getLineNumber, "Get line number method should be present");
@@ -130,7 +130,7 @@ public class UniquePropertiesCheckTest extends AbstractModuleTestSupport {
         final String fileName =
                 getPath("InputUniquePropertiesCheckNotExisting.properties");
         final File file = new File(fileName);
-        final FileText fileText = new FileText(file, Collections.emptyList());
+        final FileText fileText = new FileText(file, Collections.<String>emptyList());
         final SortedSet<Violation> violations =
                 check.process(file, fileText);
         assertEquals(1, violations.size(), "Wrong messages count: " + violations.size());
@@ -154,7 +154,7 @@ public class UniquePropertiesCheckTest extends AbstractModuleTestSupport {
         final Method method = uniqueProperties.getClass().getDeclaredMethod("put", Object.class,
                 Object.class);
         final Object result = method.invoke(uniqueProperties, 1, "value");
-        final Map<Object, Object> table = new HashMap<>();
+        final Map<Object, Object> table = new HashMap<Object, Object>();
         final Object expected = table.put(1, "value");
         assertEquals(expected, result, "Invalid result of put method");
 
@@ -172,8 +172,14 @@ public class UniquePropertiesCheckTest extends AbstractModuleTestSupport {
     private static String getFileNotFoundDetail(File file) {
         // Create exception to know detail message we should wait in
         // LocalisedMessage
-        try (InputStream stream = Files.newInputStream(file.toPath())) {
-            throw new IllegalStateException("File " + file.getPath() + " should not exist");
+        try {
+            final InputStream stream = Files7.newInputStream(new Path(file));
+            try {
+                throw new IllegalStateException("File " + file.getPath() + " should not exist");
+            }
+            finally {
+                stream.close();
+            }
         }
         catch (IOException ex) {
             return ex.getLocalizedMessage();

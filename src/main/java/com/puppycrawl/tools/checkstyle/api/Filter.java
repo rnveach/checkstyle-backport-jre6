@@ -22,7 +22,6 @@ package com.puppycrawl.tools.checkstyle.api;
 /**
  * An interface for filtering AuditEvents.
  */
-@FunctionalInterface
 public interface Filter {
 
     /**

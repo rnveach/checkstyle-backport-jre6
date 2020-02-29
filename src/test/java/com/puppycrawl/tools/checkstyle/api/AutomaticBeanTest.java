@@ -20,6 +20,7 @@
 package com.puppycrawl.tools.checkstyle.api;
 
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +31,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -51,13 +52,11 @@ public class AutomaticBeanTest {
         }
         catch (CheckstyleException ex) {
             assertWithMessage("Exceptions cause should be null")
-                    .that(ex)
-                    .hasCauseThat()
+                    .that(ex.getCause())
                     .isNull();
             assertWithMessage("Invalid exception message")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo("Property 'NonExistent' does not exist,"
+                    .hasMessage("Property 'NonExistent' does not exist,"
                             + " please check the documentation");
         }
     }
@@ -74,13 +73,11 @@ public class AutomaticBeanTest {
         }
         catch (CheckstyleException ex) {
             assertWithMessage("Exceptions cause should be null")
-                    .that(ex)
-                    .hasCauseThat()
+                    .that(ex.getCause())
                     .isNull();
             assertWithMessage("Invalid exception message")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo("Property 'privateField' does not exist,"
+                    .hasMessage("Property 'privateField' does not exist,"
                             + " please check the documentation");
         }
     }
@@ -101,8 +98,7 @@ public class AutomaticBeanTest {
                     + " in web documentation if Check is standard.";
             assertWithMessage("Invalid exception message")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo(expectedMessage);
+                    .hasMessage(expectedMessage);
         }
     }
 
@@ -123,8 +119,7 @@ public class AutomaticBeanTest {
         catch (CheckstyleException ex) {
             assertWithMessage("Invalid exception message")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo("childConf is not allowed as a "
+                    .hasMessage("childConf is not allowed as a "
                             + "child in parentConf. Please review 'Parent Module' section "
                             + "for this Check in web documentation if Check is standard.");
         }
@@ -143,13 +138,10 @@ public class AutomaticBeanTest {
         catch (CheckstyleException ex) {
             final String expected = "Cannot set property ";
             assertWithMessage("Invalid exception cause, should be: InvocationTargetException")
-                    .that(ex)
-                    .hasCauseThat()
+                    .that(ex.getCause())
                     .isInstanceOf(InvocationTargetException.class);
-            assertWithMessage("Invalid exception message, should start with: " + expected)
-                    .that(ex)
-                    .hasMessageThat()
-                    .startsWith(expected);
+            assertTrue("Invalid exception message, should start with: " + expected,
+                    ex.getMessage().startsWith(expected));
         }
     }
 
@@ -166,13 +158,10 @@ public class AutomaticBeanTest {
         catch (CheckstyleException ex) {
             final String expected = "illegal value ";
             assertWithMessage("Invalid exception cause, should be: ConversionException")
-                    .that(ex)
-                    .hasCauseThat()
+                    .that(ex.getCause())
                     .isInstanceOf(ConversionException.class);
-            assertWithMessage("Invalid exception message, should start with: " + expected)
-                    .that(ex)
-                    .hasMessageThat()
-                    .startsWith(expected);
+            assertTrue("Invalid exception message, should start with: " + expected,
+                    ex.getMessage().startsWith(expected));
         }
     }
 
@@ -190,8 +179,7 @@ public class AutomaticBeanTest {
         catch (IllegalStateException ex) {
             assertWithMessage("Invalid exception message")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo("null,wrongVal,0,someValue");
+                    .hasMessage("null,wrongVal,0,someValue");
         }
     }
 
@@ -274,8 +262,7 @@ public class AutomaticBeanTest {
         catch (CheckstyleException ex) {
             assertWithMessage("Error message is not expected")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo("illegal value 'BAD' for property 'uri'");
+                    .hasMessage("illegal value 'BAD' for property 'uri'");
         }
     }
 

@@ -21,8 +21,9 @@ package com.puppycrawl.tools.checkstyle.internal;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
@@ -49,7 +50,7 @@ public class ArchUnitTest {
             "postProcessHeaderLines",
             "getLogMessageId",
         };
-        final String ignoreMethodList = String.join("|", methodsWithOverrideAnnotation);
+        final String ignoreMethodList = String7.join("|", methodsWithOverrideAnnotation);
         final JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("com.puppycrawl.tools.checkstyle.checks");

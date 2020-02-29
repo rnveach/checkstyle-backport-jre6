@@ -24,7 +24,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import java.lang.reflect.Method;
 import java.util.SortedSet;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;

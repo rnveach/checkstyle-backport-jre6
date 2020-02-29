@@ -25,12 +25,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifierOption;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Long7;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 /**
  * Contains utility methods for the checks.
@@ -70,7 +72,7 @@ public final class CheckUtil {
     private static final Pattern GETTER_PATTERN = Pattern.compile("^(is|get)[A-Z].*");
 
     /** Compiled pattern for all system newlines. */
-    private static final Pattern ALL_NEW_LINES = Pattern.compile("\\R");
+    private static final Pattern ALL_NEW_LINES = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
 
     /** Prevent instances. */
     private CheckUtil() {
@@ -221,7 +223,7 @@ public final class CheckUtil {
                     result = Integer.parseInt(txt, radix);
                 }
                 else {
-                    result = Integer.parseUnsignedInt(txt, radix);
+                    result = Integer7.parseUnsignedInt(txt, radix);
                 }
             }
             else {
@@ -229,7 +231,7 @@ public final class CheckUtil {
                     result = Long.parseLong(txt, radix);
                 }
                 else {
-                    result = Long.parseUnsignedLong(txt, radix);
+                    result = Long7.parseUnsignedLong(txt, radix);
                 }
             }
         }
@@ -279,7 +281,7 @@ public final class CheckUtil {
         final DetailAST typeParameters =
             node.findFirstToken(TokenTypes.TYPE_PARAMETERS);
 
-        final List<String> typeParameterNames = new ArrayList<>();
+        final List<String> typeParameterNames = new ArrayList<String>();
         if (typeParameters != null) {
             final DetailAST typeParam =
                 typeParameters.findFirstToken(TokenTypes.TYPE_PARAMETER);
@@ -309,7 +311,7 @@ public final class CheckUtil {
         final DetailAST typeParameters =
             node.findFirstToken(TokenTypes.TYPE_PARAMETERS);
 
-        final List<DetailAST> typeParams = new ArrayList<>();
+        final List<DetailAST> typeParams = new ArrayList<DetailAST>();
         if (typeParameters != null) {
             final DetailAST typeParam =
                 typeParameters.findFirstToken(TokenTypes.TYPE_PARAMETER);
@@ -519,7 +521,7 @@ public final class CheckUtil {
      * @return set of class names and short class names.
      */
     public static Set<String> parseClassNames(String... classNames) {
-        final Set<String> illegalClassNames = new HashSet<>();
+        final Set<String> illegalClassNames = new HashSet<String>();
         for (final String name : classNames) {
             illegalClassNames.add(name);
             final int lastDot = name.lastIndexOf('.');
@@ -547,11 +549,19 @@ public final class CheckUtil {
         final List<String> lines =
             Arrays.asList(ALL_NEW_LINES.split(contentWithInitialNewLineRemoved));
         final int indent = getSmallestIndent(lines);
-        final String suffix = "";
+        String result = "";
+        boolean first = true;
 
-        return lines.stream()
-                .map(line -> stripIndentAndTrailingWhitespaceFromLine(line, indent))
-                .collect(Collectors.joining(System.lineSeparator(), suffix, suffix));
+        for (String line : lines) {
+            if (first) {
+                first = false;
+            }
+            else {
+                result += System7.lineSeparator();
+            }
+            result += stripIndentAndTrailingWhitespaceFromLine(line, indent);
+        }
+        return result;
     }
 
     /**
@@ -579,10 +589,19 @@ public final class CheckUtil {
      * @return number of spaces representing the smallest indent in this text block.
      */
     private static int getSmallestIndent(List<String> lines) {
-        return lines.stream()
-            .mapToInt(CommonUtil::indexOfNonWhitespace)
-            .min()
-            .orElse(0);
+        int min = -1;
+
+        for (String line : lines) {
+            final int value = CommonUtil.indexOfNonWhitespace(line);
+            if (min == -1 || value < min) {
+                min = value;
+            }
+        }
+        if (min == -1) {
+            min = 0;
+        }
+
+        return min;
     }
 
     /**

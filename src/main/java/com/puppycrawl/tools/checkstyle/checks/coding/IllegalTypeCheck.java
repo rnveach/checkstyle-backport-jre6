@@ -19,19 +19,19 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
@@ -371,13 +371,13 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * Specify classes that should not be used as types in variable declarations,
      * return values or parameters.
      */
-    private final Set<String> illegalClassNames = new HashSet<>();
+    private final Set<String> illegalClassNames = new HashSet<String>();
     /** Illegal short classes. */
-    private final Set<String> illegalShortClassNames = new HashSet<>();
+    private final Set<String> illegalShortClassNames = new HashSet<String>();
     /** Define abstract classes that may be used as types. */
-    private final Set<String> legalAbstractClassNames = new HashSet<>();
+    private final Set<String> legalAbstractClassNames = new HashSet<String>();
     /** Specify methods that should not be checked. */
-    private final Set<String> ignoredMethodNames = new HashSet<>();
+    private final Set<String> ignoredMethodNames = new HashSet<String>();
     /**
      * Control whether to check only methods and fields with any of the specified modifiers.
      * This property does not affect method calls nor method references.
@@ -663,7 +663,13 @@ public final class IllegalTypeCheck extends AbstractCheck {
                 checkIdent(child);
             }
             else if (child.getType() == TokenTypes.TYPE_ARGUMENTS) {
-                TokenUtil.forEachChild(child, TokenTypes.TYPE_ARGUMENT, this::checkType);
+                TokenUtil.forEachChild(child, TokenTypes.TYPE_ARGUMENT, new Consumer<DetailAST>() {
+                    @Override
+                    public boolean accept(DetailAST type) {
+                        IllegalTypeCheck.this.checkType(type);
+                        return false;
+                    }
+                });
             }
             child = child.getNextSibling();
         }
@@ -704,7 +710,13 @@ public final class IllegalTypeCheck extends AbstractCheck {
     private void checkTypeParameters(final DetailAST node) {
         final DetailAST typeParameters = node.findFirstToken(TokenTypes.TYPE_PARAMETERS);
         if (typeParameters != null) {
-            TokenUtil.forEachChild(typeParameters, TokenTypes.TYPE_PARAMETER, this::checkType);
+            TokenUtil.forEachChild(typeParameters, TokenTypes.TYPE_PARAMETER, new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST type) {
+                    IllegalTypeCheck.this.checkType(type);
+                    return false;
+                }
+            });
         }
     }
 
@@ -720,7 +732,13 @@ public final class IllegalTypeCheck extends AbstractCheck {
         }
 
         if (typeArguments != null) {
-            TokenUtil.forEachChild(typeArguments, TokenTypes.TYPE_ARGUMENT, this::checkType);
+            TokenUtil.forEachChild(typeArguments, TokenTypes.TYPE_ARGUMENT, new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST type) {
+                    IllegalTypeCheck.this.checkType(type);
+                    return false;
+                }
+            });
         }
     }
 
@@ -857,11 +875,13 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * @param modifiers String contains modifiers.
      */
     public void setMemberModifiers(String modifiers) {
-        memberModifiers = Stream.of(modifiers.split(","))
-            .map(String::trim)
-            .filter(token -> !token.isEmpty())
-            .map(TokenUtil::getTokenId)
-            .collect(Collectors.toList());
+        final List<Integer> modifiersList = new ArrayList<Integer>();
+        for (String modifier : modifiers.split(",")) {
+            if (!modifier.isEmpty()) {
+                modifiersList.add(TokenUtil.getTokenId(modifier.trim()));
+            }
+        }
+        memberModifiers = modifiersList;
     }
 
 }

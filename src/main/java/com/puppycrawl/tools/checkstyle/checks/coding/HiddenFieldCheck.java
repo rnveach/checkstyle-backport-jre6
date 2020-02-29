@@ -21,7 +21,6 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -30,6 +29,8 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
@@ -489,9 +490,14 @@ public class HiddenFieldCheck
 
             // For each record component definition, we will add it to this frame.
             TokenUtil.forEachChild(recordComponents,
-                TokenTypes.RECORD_COMPONENT_DEF, node -> {
-                    final String name = node.findFirstToken(TokenTypes.IDENT).getText();
-                    newFrame.addInstanceField(name);
+                TokenTypes.RECORD_COMPONENT_DEF,
+                new Consumer<DetailAST>() {
+                    @Override
+                    public boolean accept(DetailAST node) {
+                        final String name = node.findFirstToken(TokenTypes.IDENT).getText();
+                        newFrame.addInstanceField(name);
+                        return true;
+                    }
                 });
         }
         // push container
@@ -795,10 +801,10 @@ public class HiddenFieldCheck
         private final FieldFrame parent;
 
         /** Set of instance field names. */
-        private final Set<String> instanceFields = new HashSet<>();
+        private final Set<String> instanceFields = new HashSet<String>();
 
         /** Set of static field names. */
-        private final Set<String> staticFields = new HashSet<>();
+        private final Set<String> staticFields = new HashSet<String>();
 
         /**
          * Creates new frame.

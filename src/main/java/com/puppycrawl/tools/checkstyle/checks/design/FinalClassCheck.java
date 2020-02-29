@@ -147,7 +147,7 @@ public class FinalClassCheck
 
     @Override
     public void beginTree(DetailAST rootAST) {
-        classes = new ArrayDeque<>();
+        classes = new ArrayDeque<ClassDesc>();
         packageName = "";
     }
 

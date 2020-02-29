@@ -33,27 +33,29 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.xpath.AbstractNode;
 import com.puppycrawl.tools.checkstyle.xpath.RootNode;
 
 public class XpathUtilTest {
 
-    @TempDir
-    public File tempFolder;
+    @Rule
+    public final TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(XpathUtil.class, true),
                 "Constructor is not private");
     }
@@ -96,8 +98,8 @@ public class XpathUtilTest {
     @Test
     public void testPrintXpathNotComment() throws Exception {
         final String fileContent = "class Test { public void method() {int a = 5;}}";
-        final File file = File.createTempFile("junit", null, tempFolder);
-        Files.write(file.toPath(), fileContent.getBytes(StandardCharsets.UTF_8));
+        final File file = File.createTempFile("junit", null, tempFolder.newFolder());
+        Files7.write(new Path(file), fileContent.getBytes(StandardCharsets.UTF_8));
         final String expected = addEndOfLine(
             "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
             "`--CLASS_DEF -> CLASS_DEF [1:0]",
@@ -114,8 +116,8 @@ public class XpathUtilTest {
     @Test
     public void testPrintXpathComment() throws Exception {
         final String fileContent = "class Test { /* comment */ }";
-        final File file = File.createTempFile("junit", null, tempFolder);
-        Files.write(file.toPath(), fileContent.getBytes(StandardCharsets.UTF_8));
+        final File file = File.createTempFile("junit", null, tempFolder.newFolder());
+        Files7.write(new Path(file), fileContent.getBytes(StandardCharsets.UTF_8));
         final String expected = addEndOfLine(
             "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
             "`--CLASS_DEF -> CLASS_DEF [1:0]",
@@ -129,8 +131,8 @@ public class XpathUtilTest {
     @Test
     public void testPrintXpathTwo() throws Exception {
         final String fileContent = "class Test { public void method() {int a = 5; int b = 5;}}";
-        final File file = File.createTempFile("junit", null, tempFolder);
-        Files.write(file.toPath(), fileContent.getBytes(StandardCharsets.UTF_8));
+        final File file = File.createTempFile("junit", null, tempFolder.newFolder());
+        Files7.write(new Path(file), fileContent.getBytes(StandardCharsets.UTF_8));
         final String expected = addEndOfLine(
             "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
             "`--CLASS_DEF -> CLASS_DEF [1:0]",
@@ -155,8 +157,8 @@ public class XpathUtilTest {
     @Test
     public void testInvalidXpath() throws IOException {
         final String fileContent = "class Test { public void method() {int a = 5; int b = 5;}}";
-        final File file = File.createTempFile("junit", null, tempFolder);
-        Files.write(file.toPath(), fileContent.getBytes(StandardCharsets.UTF_8));
+        final File file = File.createTempFile("junit", null, tempFolder.newFolder());
+        Files7.write(new Path(file), fileContent.getBytes(StandardCharsets.UTF_8));
         final String invalidXpath = "\\//CLASS_DEF"
                 + "//METHOD_DEF//VARIABLE_DEF//IDENT";
         try {

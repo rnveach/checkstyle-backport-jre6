@@ -123,4 +123,5 @@ public class CheckstyleAntTaskPowerTest extends AbstractPathTestSupport {
                     ex.getMessage().startsWith("Unable to process files:"));
         }
     }
+
 }

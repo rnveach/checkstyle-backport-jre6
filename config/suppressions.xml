@@ -15,6 +15,8 @@
              files="TokenTypes.java|IndentationCheckTest.java"
              lines="1"/>
 
+  <suppress checks="NewlineAtEndOfFile" files=".*" />
+
   <!-- illegal words are part of Javadoc -->
   <suppress checks="TodoComment" files=".*TodoCommentCheck\.java"/>
 
@@ -656,4 +658,29 @@
   <!-- DetailAST API requires large number of methods -->
   <suppress checks="MethodCount"
             files="[\\/]src[\\/]main[\\/]java[\\/]com[\\/]puppycrawl[\\/]tools[\\/]checkstyle[\\/]DetailAstImpl.java"/>
+
+  <!-- ========================================================= -->
+  <!-- backport suppressions -->
+  <!-- ========================================================= -->
+
+  <!-- separating lines causes issues with rebasing -->
+  <suppress checks="LineLength" files=".*"/>
+  <!-- result of duplicating exception handling -->
+  <suppress checks="MultipleStringLiterals" files=".*"/>
+  <!-- check doesn't validate lambdas the same as anonymous classes -->
+  <suppress checks="AnonInnerLength" files=".*"/>
+  <!-- suppress these as they are conversion from lambdas -->
+  <suppress checks="AvoidInlineConditionals" files="[\\/]XdocsJavaDocsTest\.java"/>
+  <!-- exception are from newer jdk -->
+  <suppress checks="IllegalCatch" files=".*"/>
+  <!-- old code is more complex then new and fixing would cause issues with rebasing -->
+  <suppress checks="ClassDataAbstractionCoupling|NPathComplexity|ExecutableStatementCount|CyclomaticComplexity" files=".*"/>
+  <!-- makes code simpler and follow lambda original -->
+  <suppress checks="InnerAssignment" files=".*"/>
+  <!-- can relax more on this package -->
+  <suppress message="Missing a Javadoc" files="[\\/]jre6[\\/]"/>
+  <suppress checks="JavadocPackage|WriteTag|DesignForExtension|ReturnCount|ParameterName|AvoidInlineConditionals|MagicNumber" files="[\\/]jre6[\\/]"/>
+  <suppress id="ImportControlTest" files="[\\/]src[\\/]test[\\/]java[\\/]org[\\/]junit"/>
+  <!-- can't split class apart -->
+  <suppress checks="MethodCount" files="[\\/]AbstractNode.java$"/>
 </suppressions>

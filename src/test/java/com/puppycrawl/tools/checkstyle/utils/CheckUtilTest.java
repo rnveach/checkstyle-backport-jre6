@@ -31,10 +31,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
@@ -43,6 +42,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifierOption;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 public class CheckUtilTest extends AbstractPathTestSupport {
 
@@ -52,7 +53,7 @@ public class CheckUtilTest extends AbstractPathTestSupport {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(CheckUtil.class, true),
                 "Constructor is not private");
     }
@@ -364,16 +365,16 @@ public class CheckUtilTest extends AbstractPathTestSupport {
     public void testParseDoubleIntegerValues() {
         assertEquals(0.0, CheckUtil.parseDouble("0L", TokenTypes.NUM_LONG), 0,
                 "Invalid parse result");
-        assertEquals(0b101, CheckUtil.parseDouble("0B101", TokenTypes.NUM_INT), 0,
+        assertEquals(Integer.parseInt("101", 2), CheckUtil.parseDouble("0B101", TokenTypes.NUM_INT), 0,
                 "Invalid parse result");
-        assertEquals(289_775_941,
+        assertEquals(289775941,
                 CheckUtil.parseDouble("0b10001010001011010000101000101L", TokenTypes.NUM_LONG), 0,
                 "Invalid parse result");
         assertEquals(1.0, CheckUtil.parseDouble("1", TokenTypes.NUM_INT), 0,
                 "Invalid parse result");
         assertEquals(8.0, CheckUtil.parseDouble("8L", TokenTypes.NUM_LONG), 0,
                 "Invalid parse result");
-        assertEquals(-2.147_483_648E10, CheckUtil.parseDouble("-21474836480", TokenTypes.NUM_LONG),
+        assertEquals(-2.147483648E10, CheckUtil.parseDouble("-21474836480", TokenTypes.NUM_LONG),
                 0, "Invalid parse result");
         assertEquals(-2, CheckUtil.parseDouble("-2", TokenTypes.NUM_INT), 0,
                 "Invalid parse result");
@@ -381,7 +382,7 @@ public class CheckUtilTest extends AbstractPathTestSupport {
                 "Invalid parse result");
         assertEquals(2915.0, CheckUtil.parseDouble("0x0B63", TokenTypes.NUM_INT), 0,
                 "Invalid parse result");
-        assertEquals(2.147_483_647E10, CheckUtil.parseDouble("21474836470", TokenTypes.NUM_LONG),
+        assertEquals(2.147483647E10, CheckUtil.parseDouble("21474836470", TokenTypes.NUM_LONG),
                 0, "Invalid parse result");
         assertEquals(59.0, CheckUtil.parseDouble("073l", TokenTypes.NUM_LONG), 0,
                 "Invalid parse result");
@@ -391,7 +392,7 @@ public class CheckUtilTest extends AbstractPathTestSupport {
     public void testParseClassNames() {
         final Set<String> actual = CheckUtil.parseClassNames(
                 "I.am.class.name.with.dot.in.the.end.", "ClassOnly", "my.Class");
-        final Set<String> expected = new HashSet<>();
+        final Set<String> expected = new HashSet<String>();
         expected.add("I.am.class.name.with.dot.in.the.end.");
         expected.add("ClassOnly");
         expected.add("my.Class");
@@ -411,9 +412,14 @@ public class CheckUtilTest extends AbstractPathTestSupport {
             JavaParser.Options.WITH_COMMENTS), type);
     }
 
-    private static DetailAST getNode(DetailAST root, int type) {
+    private static DetailAST getNode(DetailAST root, final int type) {
         final Optional<DetailAST> node = findTokenInAstByPredicate(root,
-            ast -> ast.getType() == type);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == type;
+                }
+            });
 
         if (!node.isPresent()) {
             fail("Cannot find node of specified type: " + type);

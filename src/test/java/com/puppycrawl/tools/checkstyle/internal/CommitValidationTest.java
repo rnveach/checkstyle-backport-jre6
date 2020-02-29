@@ -25,16 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -44,8 +40,10 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 
 /**
  * Validate commit message has proper structure.
@@ -97,7 +95,7 @@ public class CommitValidationTest {
 
     private static List<RevCommit> lastCommits;
 
-    @BeforeAll
+    @BeforeClass
     public static void setUp() throws Exception {
         lastCommits = getCommitsToCheck();
     }
@@ -203,7 +201,8 @@ public class CommitValidationTest {
 
     private static List<RevCommit> getCommitsToCheck() throws Exception {
         final List<RevCommit> commits;
-        try (Repository repo = new FileRepositoryBuilder().findGitDir().build()) {
+        final Repository repo = new FileRepositoryBuilder().findGitDir().build();
+        try {
             final RevCommitsPair revCommitsPair = resolveRevCommitsPair(repo);
             if (COMMITS_RESOLUTION_MODE == CommitsResolutionMode.BY_COUNTER) {
                 commits = getCommitsByCounter(revCommitsPair.getFirst());
@@ -214,11 +213,14 @@ public class CommitValidationTest {
                 commits.addAll(getCommitsByLastCommitAuthor(revCommitsPair.getSecond()));
             }
         }
+        finally {
+            repo.close();
+        }
         return commits;
     }
 
     private static List<RevCommit> filterValidCommits(List<RevCommit> revCommits) {
-        final List<RevCommit> filteredCommits = new LinkedList<>();
+        final List<RevCommit> filteredCommits = new LinkedList<RevCommit>();
         for (RevCommit commit : revCommits) {
             final String commitAuthor = commit.getAuthorIdent().getName();
             if (!USERS_EXCLUDED_FROM_VALIDATION.contains(commitAuthor)) {
@@ -231,8 +233,9 @@ public class CommitValidationTest {
     private static RevCommitsPair resolveRevCommitsPair(Repository repo) {
         RevCommitsPair revCommitIteratorPair;
 
-        try (RevWalk revWalk = new RevWalk(repo);
-             Git git = new Git(repo)) {
+        final RevWalk revWalk = new RevWalk(repo);
+        final Git git = new Git(repo);
+        try {
             final Iterator<RevCommit> first;
             final Iterator<RevCommit> second;
             final ObjectId headId = repo.resolve(Constants.HEAD);
@@ -246,15 +249,21 @@ public class CommitValidationTest {
             }
             else {
                 first = git.log().call().iterator();
-                second = Collections.emptyIterator();
+                second = Collections7.<RevCommit>emptyIterator();
             }
 
             revCommitIteratorPair =
                     new RevCommitsPair(new OmitMergeCommitsIterator(first),
                             new OmitMergeCommitsIterator(second));
         }
-        catch (GitAPIException | IOException ignored) {
+        catch (GitAPIException ignored) {
             revCommitIteratorPair = new RevCommitsPair();
+        }
+        catch (IOException ignored) {
+            revCommitIteratorPair = new RevCommitsPair();
+        }
+        finally {
+            git.close();
         }
 
         return revCommitIteratorPair;
@@ -266,15 +275,18 @@ public class CommitValidationTest {
 
     private static List<RevCommit> getCommitsByCounter(
             Iterator<RevCommit> previousCommitsIterator) {
-        final Spliterator<RevCommit> spliterator =
-            Spliterators.spliteratorUnknownSize(previousCommitsIterator, Spliterator.ORDERED);
-        return StreamSupport.stream(spliterator, false).limit(PREVIOUS_COMMITS_TO_CHECK_COUNT)
-            .collect(Collectors.toList());
+        final List<RevCommit> result = new ArrayList<RevCommit>();
+        int count = 0;
+        while (previousCommitsIterator.hasNext() && count < PREVIOUS_COMMITS_TO_CHECK_COUNT) {
+            result.add(previousCommitsIterator.next());
+            count++;
+        }
+        return result;
     }
 
     private static List<RevCommit> getCommitsByLastCommitAuthor(
             Iterator<RevCommit> previousCommitsIterator) {
-        final List<RevCommit> commits = new LinkedList<>();
+        final List<RevCommit> commits = new LinkedList<RevCommit>();
 
         if (previousCommitsIterator.hasNext()) {
             final RevCommit lastCommit = previousCommitsIterator.next();
@@ -331,8 +343,8 @@ public class CommitValidationTest {
         private final Iterator<RevCommit> second;
 
         /* package */ RevCommitsPair() {
-            first = Collections.emptyIterator();
-            second = Collections.emptyIterator();
+            first = Collections7.emptyIterator();
+            second = Collections7.emptyIterator();
         }
 
         /* package */ RevCommitsPair(Iterator<RevCommit> first, Iterator<RevCommit> second) {

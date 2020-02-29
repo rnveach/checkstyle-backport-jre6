@@ -24,7 +24,6 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 /**
  * Represents the formatter interface for log message.
  */
-@FunctionalInterface
 public interface AuditEventFormatter {
 
     /**

@@ -50,11 +50,11 @@ public class CodeSelector {
         this.editor = editor;
         if (node instanceof DetailAST) {
             pModel = new CodeSelectorPresentation((DetailAST) node,
-                    new ArrayList<>(lines2position));
+                    new ArrayList<Integer>(lines2position));
         }
         else {
             pModel = new CodeSelectorPresentation((DetailNode) node,
-                    new ArrayList<>(lines2position));
+                    new ArrayList<Integer>(lines2position));
         }
     }
 

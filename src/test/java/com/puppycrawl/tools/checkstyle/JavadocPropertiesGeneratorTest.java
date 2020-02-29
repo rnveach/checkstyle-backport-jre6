@@ -26,26 +26,22 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
-import org.itsallcode.io.Capturable;
-import org.itsallcode.junit.sysextensions.SystemErrGuard;
-import org.itsallcode.junit.sysextensions.SystemErrGuard.SysErr;
-import org.itsallcode.junit.sysextensions.SystemOutGuard;
-import org.itsallcode.junit.sysextensions.SystemOutGuard.SysOut;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
-@ExtendWith({SystemErrGuard.class, SystemOutGuard.class})
 public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
-    private static final String EOL = System.lineSeparator();
+    private static final String EOL = System7.lineSeparator();
     private static final String USAGE = String.format(Locale.ROOT,
             "Usage: java com.puppycrawl.tools.checkstyle.JavadocPropertiesGenerator [-hV]%n"
                     + "       --destfile=<outputFile> <inputFile>%n"
@@ -56,6 +52,11 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
                     + "  -V, --version     Print version information and exit.%n");
     private static final File DESTFILE = new File("target/tokentypes.properties");
     private static final String DESTFILE_ABSOLUTE_PATH = DESTFILE.getAbsolutePath();
+
+    @Rule
+    public final SystemErrRule systemErr = new SystemErrRule().enableLog().mute();
+    @Rule
+    public final SystemOutRule systemOut = new SystemOutRule().enableLog().mute();
 
     @Override
     protected String getPackageLocation() {
@@ -77,29 +78,14 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
                 + filename).getCanonicalPath();
     }
 
-    /**
-     * <p>Configures the environment for each test.</p>
-     * <ul>
-     * <li>Start output capture for {@link System#err} and {@link System#out}</li>
-     * </ul>
-     *
-     * @param systemErr wrapper for {@code System.err}
-     * @param systemOut wrapper for {@code System.out}
-     */
-    @BeforeEach
-    public void setUp(@SysErr Capturable systemErr, @SysOut Capturable systemOut) {
-        systemErr.captureMuted();
-        systemOut.captureMuted();
-    }
-
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(TestUtil.isUtilsClassHasPrivateConstructor(
             JavadocPropertiesGenerator.class, false), "Constructor is not private");
     }
 
     @Test
-    public void testNonExistentArgument(@SysErr Capturable systemErr, @SysOut Capturable systemOut)
+    public void testNonExistentArgument()
             throws Exception {
         JavadocPropertiesGenerator.main("--nonexistent-argument");
 
@@ -107,44 +93,40 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
                 "Missing required options and parameters: "
                 + "'--destfile=<outputFile>', '<inputFile>'%n")
                 + USAGE;
-        assertEquals(expected, systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals(expected, systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
-    public void testNoDestfileSpecified(@SysErr Capturable systemErr,
-            @SysOut Capturable systemOut) throws Exception {
+    public void testNoDestfileSpecified() throws Exception {
         JavadocPropertiesGenerator.main(getPath("InputMain.java"));
 
         final String expected = String.format(Locale.ROOT,
                 "Missing required option: '--destfile=<outputFile>'%n") + USAGE;
-        assertEquals(expected, systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals(expected, systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
-    public void testNoInputSpecified(@SysErr Capturable systemErr,
-            @SysOut Capturable systemOut) throws Exception {
+    public void testNoInputSpecified() throws Exception {
         JavadocPropertiesGenerator.main("--destfile", DESTFILE_ABSOLUTE_PATH);
 
         final String expected = String.format(Locale.ROOT,
                 "Missing required parameter: '<inputFile>'%n") + USAGE;
-        assertEquals(expected, systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals(expected, systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
-    public void testNotClass(@SysErr Capturable systemErr, @SysOut Capturable systemOut)
-            throws Exception {
+    public void testNotClass() throws Exception {
         JavadocPropertiesGenerator.main("--destfile", DESTFILE_ABSOLUTE_PATH,
             getPath("InputJavadocPropertiesGeneratorNotClass.java"));
-        assertEquals("", systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
-    public void testNotExistentInputSpecified(@SysErr Capturable systemErr,
-            @SysOut Capturable systemOut) {
+    public void testNotExistentInputSpecified() {
         try {
             JavadocPropertiesGenerator.main(
                 "--destfile", DESTFILE_ABSOLUTE_PATH, "NotExistent.java");
@@ -160,13 +142,12 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
             assertTrue(cause instanceof FileNotFoundException, "Invalid error message");
             assertTrue(cause.getMessage().contains("NotExistent.java"), "Invalid error message");
         }
-        assertEquals("", systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
-    public void testInvalidDestinationSpecified(@SysErr Capturable systemErr,
-            @SysOut Capturable systemOut) throws Exception {
+    public void testInvalidDestinationSpecified() throws Exception {
         try {
             // Passing a folder name will cause the FileNotFoundException.
             JavadocPropertiesGenerator.main("--destfile", "..",
@@ -182,13 +163,12 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
             assertTrue(cause instanceof FileNotFoundException, "Invalid error message");
             assertTrue(cause.getMessage().contains(".."), "Invalid error message");
         }
-        assertEquals("", systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
-    public void testCorrect(@SysErr Capturable systemErr, @SysOut Capturable systemOut)
-            throws Exception {
+    public void testCorrect() throws Exception {
         final String expectedContent = "EOF1=The end of file token." + EOL
             + "EOF2=The end of file token." + EOL
             + "TYPE_EXTENSION_AND='&amp;' symbol when used in a generic upper or lower bounds"
@@ -199,40 +179,37 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorCorrect.java"),
             "--destfile", DESTFILE_ABSOLUTE_PATH);
-        assertEquals("", systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
         final String fileContent = FileUtils.readFileToString(DESTFILE, StandardCharsets.UTF_8);
         assertEquals(expectedContent, fileContent, "File content is not expected");
     }
 
     @Test
-    public void testEmptyJavadoc(@SysErr Capturable systemErr, @SysOut Capturable systemOut)
-            throws Exception {
+    public void testEmptyJavadoc() throws Exception {
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorEmptyJavadoc.java"),
             "--destfile", DESTFILE_ABSOLUTE_PATH);
-        assertEquals("", systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
         final long size = FileUtils.sizeOf(DESTFILE);
-        assertEquals(0, size, "File '" + DESTFILE + "' must be empty");
+        assertEquals(0L, size, "File '" + DESTFILE + "' must be empty");
     }
 
     @Test
-    public void testNotConstants(@SysErr Capturable systemErr, @SysOut Capturable systemOut)
-            throws Exception {
+    public void testNotConstants() throws Exception {
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorNotConstants.java"),
             "--destfile", DESTFILE_ABSOLUTE_PATH);
-        assertEquals("", systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals("", systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals("", systemOut.getLog(), "Unexpected output log");
         final long size = FileUtils.sizeOf(DESTFILE);
-        assertEquals(0, size, "File '" + DESTFILE + "' must be empty");
+        assertEquals(0L, size, "File '" + DESTFILE + "' must be empty");
     }
 
     @Test
-    public void testHelp(@SysErr Capturable systemErr, @SysOut Capturable systemOut)
-            throws Exception {
+    public void testHelp() throws Exception {
         JavadocPropertiesGenerator.main("-h");
-        assertEquals("", systemErr.getCapturedData(), "Unexpected error log");
-        assertEquals(USAGE, systemOut.getCapturedData(), "Unexpected output log");
+        assertEquals("", systemErr.getLog(), "Unexpected error log");
+        assertEquals(USAGE, systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
@@ -248,7 +225,7 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
                     "Invalid error message");
         }
         final long size = FileUtils.sizeOf(DESTFILE);
-        assertEquals(0, size, "File '" + DESTFILE + "' must be empty");
+        assertEquals(0L, size, "File '" + DESTFILE + "' must be empty");
     }
 
     @Test
@@ -263,7 +240,7 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
                 ex.getMessage(), "Invalid error message");
         }
         final long size = FileUtils.sizeOf(DESTFILE);
-        assertEquals(0, size, "File '" + DESTFILE + "' must be empty");
+        assertEquals(0L, size, "File '" + DESTFILE + "' must be empty");
     }
 
     @Test

@@ -32,7 +32,7 @@ import com.puppycrawl.tools.checkstyle.api.Context;
 public final class DefaultContext implements Context {
 
     /** Stores the context entries. */
-    private final Map<String, Object> entries = new HashMap<>();
+    private final Map<String, Object> entries = new HashMap<String, Object>();
 
     @Override
     public Object get(String key) {
@@ -41,7 +41,7 @@ public final class DefaultContext implements Context {
 
     @Override
     public Collection<String> getAttributeNames() {
-        return new HashSet<>(entries.keySet());
+        return new HashSet<String>(entries.keySet());
     }
 
     /**

@@ -21,7 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 

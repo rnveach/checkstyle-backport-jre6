@@ -221,7 +221,8 @@ public class NewlineAtEndOfFileCheck
      */
     private void readAndCheckFile(File file) throws IOException {
         // Cannot use lines as the line separators have been removed!
-        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
+        final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+        try {
             if (lineSeparator == LineSeparatorOption.LF
                     && endsWithNewline(randomAccessFile, LineSeparatorOption.CRLF)) {
                 log(1, MSG_KEY_WRONG_ENDING, file.getPath());
@@ -229,6 +230,9 @@ public class NewlineAtEndOfFileCheck
             else if (!endsWithNewline(randomAccessFile, lineSeparator)) {
                 log(1, MSG_KEY_NO_NEWLINE_EOF, file.getPath());
             }
+        }
+        finally {
+            randomAccessFile.close();
         }
     }
 

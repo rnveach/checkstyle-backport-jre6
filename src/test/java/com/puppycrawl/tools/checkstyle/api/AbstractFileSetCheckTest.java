@@ -22,18 +22,18 @@ package com.puppycrawl.tools.checkstyle.api;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
 
@@ -54,12 +54,12 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testFileContents() {
         final FileContents contents = new FileContents(
-                new FileText(new File("inputAbstractFileSetCheck.tmp"), Collections.emptyList()));
+                new FileText(new File("inputAbstractFileSetCheck.tmp"), Collections.<String>emptyList()));
         final DummyFileSetCheck check = new DummyFileSetCheck();
         check.setFileContents(contents);
         assertWithMessage("expected file contents")
                 .that(check.getFileContents())
-                .isSameInstanceAs(contents);
+                .isInstanceOf(contents.getClass());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
         check.setFileExtensions("tmp");
         final File firstFile = new File("inputAbstractFileSetCheck.tmp");
         final SortedSet<Violation> firstFileMessages =
-            check.process(firstFile, new FileText(firstFile, Collections.emptyList()));
+            check.process(firstFile, new FileText(firstFile, Collections.<String>emptyList()));
 
         assertWithMessage("Invalid message")
                 .that(firstFileMessages.first().getViolation())
@@ -97,7 +97,7 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
         check.setFileExtensions("java");
         final File firstFile = new File("inputAbstractFileSetCheck.tmp");
 
-        check.process(firstFile, new FileText(firstFile, Collections.emptyList()));
+        check.process(firstFile, new FileText(firstFile, Collections.<String>emptyList()));
 
         final SortedSet<Violation> internalMessages =
                 check.getViolations();
@@ -113,7 +113,7 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
         check.setFileExtensions("tmp");
         final File firstFile = new File("inputAbstractFileSetCheck.tmp");
 
-        final FileText fileText = new FileText(firstFile, Collections.emptyList());
+        final FileText fileText = new FileText(firstFile, Collections.<String>emptyList());
         try {
             check.process(firstFile, fileText);
             assertWithMessage("Exception is expected")
@@ -134,7 +134,7 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
 
         // again to prove only 1 violation exists
         final File secondFile = new File("inputAbstractFileSetCheck.tmp");
-        final FileText fileText2 = new FileText(secondFile, Collections.emptyList());
+        final FileText fileText2 = new FileText(secondFile, Collections.<String>emptyList());
         try {
             check.process(secondFile, fileText2);
             assertWithMessage("Exception is expected")
@@ -213,7 +213,7 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
 
         assertWithMessage("Invalid message dispatcher")
                 .that(check.getMessageDispatcher())
-                .isSameInstanceAs(checker);
+                .isInstanceOf(checker.getClass());
     }
 
     @Test
@@ -340,7 +340,7 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
         @Override
         public void fireErrors(String fileName, SortedSet<Violation> errors) {
             name = fileName;
-            errorList = new TreeSet<>(errors);
+            errorList = new TreeSet<Violation>(errors);
         }
 
     }

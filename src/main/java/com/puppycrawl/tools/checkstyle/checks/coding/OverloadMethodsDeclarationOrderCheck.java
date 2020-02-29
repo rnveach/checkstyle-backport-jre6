@@ -127,8 +127,8 @@ public class OverloadMethodsDeclarationOrderCheck extends AbstractCheck {
     private void checkOverloadMethodsGrouping(DetailAST objectBlock) {
         final int allowedDistance = 1;
         DetailAST currentToken = objectBlock.getFirstChild();
-        final Map<String, Integer> methodIndexMap = new HashMap<>();
-        final Map<String, Integer> methodLineNumberMap = new HashMap<>();
+        final Map<String, Integer> methodIndexMap = new HashMap<String, Integer>();
+        final Map<String, Integer> methodLineNumberMap = new HashMap<String, Integer>();
         int currentIndex = 0;
         while (currentToken != null) {
             if (currentToken.getType() == TokenTypes.METHOD_DEF) {

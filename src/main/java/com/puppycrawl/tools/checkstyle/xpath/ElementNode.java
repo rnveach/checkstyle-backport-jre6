@@ -20,9 +20,9 @@
 package com.puppycrawl.tools.checkstyle.xpath;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 import com.puppycrawl.tools.checkstyle.utils.XpathUtil;
 import net.sf.saxon.om.AxisInfo;
@@ -96,7 +96,7 @@ public class ElementNode extends AbstractNode {
     public int compareOrder(NodeInfo other) {
         int result = 0;
         if (other instanceof AbstractNode) {
-            result = Integer.compare(depth, ((AbstractNode) other).getDepth());
+            result = Integer7.compare(depth, ((AbstractNode) other).getDepth());
             if (result == 0) {
                 result = compareCommonAncestorChildrenOrder(this, other);
             }
@@ -123,7 +123,7 @@ public class ElementNode extends AbstractNode {
         }
         final int index1 = ((ElementNode) child1).indexAmongSiblings;
         final int index2 = ((ElementNode) child2).indexAmongSiblings;
-        return Integer.compare(index1, index2);
+        return Integer7.compare(index1, index2);
     }
 
     /**
@@ -169,9 +169,13 @@ public class ElementNode extends AbstractNode {
     public String getAttributeValue(String namespace, String localPart) {
         final String result;
         if (TEXT_ATTRIBUTE_NAME.equals(localPart)) {
-            result = Optional.ofNullable(getAttributeNode())
-                .map(AttributeNode::getStringValue)
-                .orElse(null);
+            final AttributeNode node = getAttributeNode();
+            if (node != null) {
+                result = node.getStringValue();
+            }
+            else {
+                result = null;
+            }
         }
         else {
             result = null;
@@ -233,7 +237,7 @@ public class ElementNode extends AbstractNode {
      * @noinspection resource, IOResourceOpenedButNotSafelyClosed
      */
     @Override
-    public AxisIterator iterateAxis(int axisNumber) {
+    public AxisIterator iterateAxis(byte axisNumber) {
         final AxisIterator result;
         switch (axisNumber) {
             case AxisInfo.ANCESTOR:
@@ -251,7 +255,7 @@ public class ElementNode extends AbstractNode {
                             getChildren().toArray(EMPTY_ABSTRACT_NODE_ARRAY));
                 }
                 else {
-                    result = EmptyIterator.ofNodes();
+                    result = EmptyIterator.OfNodes.THE_INSTANCE;
                 }
                 break;
             case AxisInfo.DESCENDANT:
@@ -259,7 +263,7 @@ public class ElementNode extends AbstractNode {
                     result = new Navigator.DescendantEnumeration(this, false, true);
                 }
                 else {
-                    result = EmptyIterator.ofNodes();
+                    result = EmptyIterator.OfNodes.THE_INSTANCE;
                 }
                 break;
             case AxisInfo.DESCENDANT_OR_SELF:
@@ -344,7 +348,7 @@ public class ElementNode extends AbstractNode {
     private AxisIterator getPrecedingSiblingsIterator() {
         final AxisIterator result;
         if (indexAmongSiblings == 0) {
-            result = EmptyIterator.ofNodes();
+            result = EmptyIterator.OfNodes.THE_INSTANCE;
         }
         else {
             result = new ArrayIterator.OfNodes(
@@ -367,7 +371,7 @@ public class ElementNode extends AbstractNode {
     private AxisIterator getFollowingSiblingsIterator() {
         final AxisIterator result;
         if (indexAmongSiblings == parent.getChildren().size() - 1) {
-            result = EmptyIterator.ofNodes();
+            result = EmptyIterator.OfNodes.THE_INSTANCE;
         }
         else {
             result = new ArrayIterator.OfNodes(
@@ -467,6 +471,16 @@ public class ElementNode extends AbstractNode {
                 }
             }
             return result;
+        }
+
+        @Override
+        public void close() {
+            // no code
+        }
+
+        @Override
+        public int getProperties() {
+            return 0;
         }
     }
 

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.api.Comment;
@@ -229,7 +229,7 @@ public class JavadocUtilTest {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(JavadocUtil.class, true),
                 "Constructor is not private");
     }

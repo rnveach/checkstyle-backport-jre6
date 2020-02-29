@@ -28,13 +28,11 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -42,6 +40,8 @@ import org.xml.sax.SAXException;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader.IgnoredModulesOptions;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 /**
  * Unit test for ConfigurationLoader.
@@ -549,7 +549,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
     public void testLoadConfigurationDeprecated() throws Exception {
         final DefaultConfiguration config =
                 (DefaultConfiguration) ConfigurationLoader.loadConfiguration(
-                        new InputSource(Files.newInputStream(Paths.get(
+                        new InputSource(Files7.newInputStream(Paths.get(
                             getPath("InputConfigurationLoaderModuleIgnoreSeverity.xml")))),
                         new PropertiesExpander(new Properties()), IgnoredModulesOptions.OMIT);
 
@@ -583,8 +583,8 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
 
     @Test
     public void testParsePropertyString() throws Exception {
-        final List<String> propertyRefs = new ArrayList<>();
-        final List<String> fragments = new ArrayList<>();
+        final List<String> propertyRefs = new ArrayList<String>();
+        final List<String> fragments = new ArrayList<String>();
 
         Whitebox.invokeMethod(ConfigurationLoader.class,
                 "parsePropertyString", "$",
@@ -604,7 +604,7 @@ public class ConfigurationLoaderTest extends AbstractPathTestSupport {
 
         final DefaultConfiguration configuration1 =
                 (DefaultConfiguration) ConfigurationLoader.loadConfiguration(
-                        new InputSource(Files.newInputStream(Paths.get(
+                        new InputSource(Files7.newInputStream(Paths.get(
                             getPath("InputConfigurationLoaderModuleIgnoreSeverity.xml")))),
                         new PropertiesExpander(new Properties()),
                         ConfigurationLoader.IgnoredModulesOptions.EXECUTE);

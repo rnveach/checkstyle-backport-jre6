@@ -25,12 +25,12 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
@@ -180,15 +180,15 @@ public class FinalLocalVariableCheck extends AbstractCheck {
     };
 
     /** Scope Deque. */
-    private final Deque<ScopeData> scopeStack = new ArrayDeque<>();
+    private final Deque<ScopeData> scopeStack = new ArrayDeque<ScopeData>();
 
     /** Uninitialized variables of previous scope. */
     private final Deque<Deque<DetailAST>> prevScopeUninitializedVariables =
-            new ArrayDeque<>();
+            new ArrayDeque<Deque<DetailAST>>();
 
     /** Assigned variables of current scope. */
     private final Deque<Deque<DetailAST>> currentScopeAssignedVariables =
-            new ArrayDeque<>();
+            new ArrayDeque<Deque<DetailAST>>();
 
     /**
      * Control whether to check
@@ -271,7 +271,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
                 scopeStack.push(new ScopeData());
                 break;
             case TokenTypes.SLIST:
-                currentScopeAssignedVariables.push(new ArrayDeque<>());
+                currentScopeAssignedVariables.push(new ArrayDeque<DetailAST>());
                 if (ast.getParent().getType() != TokenTypes.CASE_GROUP
                     || ast.getParent().getParent().findFirstToken(TokenTypes.CASE_GROUP)
                     == ast.getParent()) {
@@ -453,8 +453,10 @@ public class FinalLocalVariableCheck extends AbstractCheck {
     private void storePrevScopeUninitializedVariableData() {
         final ScopeData scopeData = scopeStack.peek();
         final Deque<DetailAST> prevScopeUninitializedVariableData =
-                new ArrayDeque<>();
-        scopeData.uninitializedVariables.forEach(prevScopeUninitializedVariableData::push);
+                new ArrayDeque<DetailAST>();
+        for (DetailAST variable : scopeData.uninitializedVariables) {
+            prevScopeUninitializedVariableData.push(variable);
+        }
         prevScopeUninitializedVariables.push(prevScopeUninitializedVariableData);
     }
 
@@ -467,12 +469,15 @@ public class FinalLocalVariableCheck extends AbstractCheck {
      */
     private void updateAllUninitializedVariables(
             Deque<DetailAST> prevScopeUninitializedVariableData) {
+
         final boolean hasSomeScopes = !currentScopeAssignedVariables.isEmpty();
         if (hasSomeScopes) {
             // Check for only previous scope
             updateUninitializedVariables(prevScopeUninitializedVariableData);
             // Check for rest of the scope
-            prevScopeUninitializedVariables.forEach(this::updateUninitializedVariables);
+            for (Deque<DetailAST> variable : prevScopeUninitializedVariables) {
+                updateUninitializedVariables(variable);
+            }
         }
     }
 
@@ -840,10 +845,10 @@ public class FinalLocalVariableCheck extends AbstractCheck {
     private static class ScopeData {
 
         /** Contains variable definitions. */
-        private final Map<String, FinalVariableCandidate> scope = new HashMap<>();
+        private final Map<String, FinalVariableCandidate> scope = new HashMap<String, FinalVariableCandidate>();
 
         /** Contains definitions of uninitialized variables. */
-        private final Deque<DetailAST> uninitializedVariables = new ArrayDeque<>();
+        private final Deque<DetailAST> uninitializedVariables = new ArrayDeque<DetailAST>();
 
         /** Whether there is a {@code break} in the scope. */
         private boolean containsBreak;

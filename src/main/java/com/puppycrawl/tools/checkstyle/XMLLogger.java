@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +33,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -66,7 +66,7 @@ public class XMLLogger
 
     /** Holds all messages for the given file. */
     private final Map<String, FileMessages> fileMessages =
-            new ConcurrentHashMap<>();
+            new ConcurrentHashMap<String, FileMessages>();
 
     /**
      * Helper writer that allows easy encoding and printing.
@@ -336,10 +336,10 @@ public class XMLLogger
     private static class FileMessages {
 
         /** The file error events. */
-        private final List<AuditEvent> errors = Collections.synchronizedList(new ArrayList<>());
+        private final List<AuditEvent> errors = Collections.synchronizedList(new ArrayList<AuditEvent>());
 
         /** The file exceptions. */
-        private final List<Throwable> exceptions = Collections.synchronizedList(new ArrayList<>());
+        private final List<Throwable> exceptions = Collections.synchronizedList(new ArrayList<Throwable>());
 
         /**
          * Returns the file error events.

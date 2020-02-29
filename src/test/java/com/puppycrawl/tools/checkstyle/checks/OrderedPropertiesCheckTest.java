@@ -25,18 +25,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.util.Collections;
 import java.util.SortedSet;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
@@ -128,7 +127,7 @@ public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
         final String fileName =
                 getPath("InputOrderedPropertiesCheckNotExisting.properties");
         final File file = new File(fileName);
-        final FileText fileText = new FileText(file, Collections.emptyList());
+        final FileText fileText = new FileText(file, Collections.<String>emptyList());
         final SortedSet<Violation> violations =
                 check.process(file, fileText);
         assertEquals(1, violations.size(), "Wrong violations count: " + violations.size());
@@ -160,7 +159,7 @@ public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
         final String fileName =
                 getPath("InputOrderedProperties2EmptyValue.properties");
         final File file = new File(fileName);
-        final FileText fileText = new FileText(file, Collections.emptyList());
+        final FileText fileText = new FileText(file, Collections.<String>emptyList());
         final SortedSet<Violation> violations = check.process(file, fileText);
 
         assertEquals(1, violations.size(), "Wrong violations count: " + violations.size());
@@ -177,11 +176,12 @@ public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
      * Method generates NoSuchFileException details. It tries to a open file that does not exist.
      *
      * @param file to be opened
-     * @return localized detail message of {@link NoSuchFileException}
+     * @return localized detail message of {@link IOException}
      */
     private static String getFileNotFoundDetail(File file) {
         // Create exception to know detail message we should wait in LocalisedMessage
-        try (InputStream stream = Files.newInputStream(file.toPath())) {
+        try {
+            Files7.newInputStream(new Path(file));
             throw new IllegalStateException("File " + file.getPath() + " should not exist");
         }
         catch (IOException ex) {

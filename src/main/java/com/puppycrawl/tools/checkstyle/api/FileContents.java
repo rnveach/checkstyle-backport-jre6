@@ -55,15 +55,15 @@ public final class FileContents implements CommentListener {
      * Map of the Javadoc comments indexed on the last line of the comment.
      * The hack is it assumes that there is only one Javadoc comment per line.
      */
-    private final Map<Integer, TextBlock> javadocComments = new HashMap<>();
+    private final Map<Integer, TextBlock> javadocComments = new HashMap<Integer, TextBlock>();
     /** Map of the C++ comments indexed on the first line of the comment. */
-    private final Map<Integer, TextBlock> cppComments = new HashMap<>();
+    private final Map<Integer, TextBlock> cppComments = new HashMap<Integer, TextBlock>();
 
     /**
      * Map of the C comments indexed on the first line of the comment to a list
      * of comments on that line.
      */
-    private final Map<Integer, List<TextBlock>> clangComments = new HashMap<>();
+    private final Map<Integer, List<TextBlock>> clangComments = new HashMap<Integer, List<TextBlock>>();
 
     /**
      * Creates a new {@code FileContents} instance.
@@ -159,7 +159,7 @@ public final class FileContents implements CommentListener {
             entries.add(comment);
         }
         else {
-            final List<TextBlock> entries = new ArrayList<>();
+            final List<TextBlock> entries = new ArrayList<TextBlock>();
             entries.add(comment);
             clangComments.put(startLineNo, entries);
         }
@@ -282,9 +282,20 @@ public final class FileContents implements CommentListener {
             int endLineNo, int endColNo) {
         // Check C comments (all comments should be checked)
         final Collection<List<TextBlock>> values = clangComments.values();
-        return values.stream()
-            .flatMap(List::stream)
-            .anyMatch(comment -> comment.intersects(startLineNo, startColNo, endLineNo, endColNo));
+        boolean result = false;
+        for (List<TextBlock> list : values) {
+            for (TextBlock comment : list) {
+                if (comment.intersects(startLineNo, startColNo, endLineNo, endColNo)) {
+                    result = true;
+                    break;
+                }
+            }
+
+            if (result) {
+                break;
+            }
+        }
+        return result;
     }
 
     /**

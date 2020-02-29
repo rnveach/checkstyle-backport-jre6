@@ -49,7 +49,7 @@ public class ParseTreeTablePresentation {
     };
 
     /** Cache to store already parsed Javadoc comments. Used for optimisation purposes. */
-    private final Map<DetailAST, DetailNode> blockCommentToJavadocTree = new HashMap<>();
+    private final Map<DetailAST, DetailNode> blockCommentToJavadocTree = new HashMap<DetailAST, DetailNode>();
 
     /** The root node of the tree table model. */
     private DetailAST root;
@@ -357,8 +357,14 @@ public class ParseTreeTablePresentation {
      * @return root of DetailNode tree
      */
     private DetailNode getJavadocTree(DetailAST blockComment) {
-        return blockCommentToJavadocTree.computeIfAbsent(blockComment,
-                ParseTreeTablePresentation::parseJavadocTree);
+        DetailNode result = blockCommentToJavadocTree.get(blockComment);
+
+        if (result == null) {
+            result = ParseTreeTablePresentation.parseJavadocTree(blockComment);
+            blockCommentToJavadocTree.put(blockComment, result);
+        }
+
+        return result;
     }
 
     /**

@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -380,7 +380,7 @@ public class AbstractCheckTest extends AbstractModuleTestSupport {
 
         @Override
         protected Map<String, String> getCustomMessages() {
-            final Map<String, String> messages = new HashMap<>();
+            final Map<String, String> messages = new HashMap<String, String>();
             messages.put("key", "value");
             return messages;
         }

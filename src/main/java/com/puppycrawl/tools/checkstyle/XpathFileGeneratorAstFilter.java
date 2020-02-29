@@ -26,6 +26,7 @@ import java.util.Map;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
 import com.puppycrawl.tools.checkstyle.xpath.XpathQueryGenerator;
 
 /**
@@ -40,7 +41,7 @@ public class XpathFileGeneratorAstFilter extends AutomaticBean implements TreeWa
     private static final String DELIMITER = " | \n";
 
     /** Map from {@code Violation} objects to xpath queries. */
-    private static final Map<Violation, String> MESSAGE_QUERY_MAP = new HashMap<>();
+    private static final Map<Violation, String> MESSAGE_QUERY_MAP = new HashMap<Violation, String>();
 
     /** The distance between tab stop position. */
     private int tabWidth;
@@ -78,7 +79,7 @@ public class XpathFileGeneratorAstFilter extends AutomaticBean implements TreeWa
                     new XpathQueryGenerator(event, tabWidth);
             final List<String> xpathQueries = xpathQueryGenerator.generate();
             if (!xpathQueries.isEmpty()) {
-                final String query = String.join(DELIMITER, xpathQueries);
+                final String query = String7.join(DELIMITER, xpathQueries);
                 MESSAGE_QUERY_MAP.put(event.getViolation(), query);
             }
         }

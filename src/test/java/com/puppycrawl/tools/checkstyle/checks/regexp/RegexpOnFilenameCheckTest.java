@@ -28,7 +28,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -245,7 +245,7 @@ public class RegexpOnFilenameCheckTest extends AbstractModuleTestSupport {
         try {
             final RegexpOnFilenameCheck check = new RegexpOnFilenameCheck();
             check.setFileNamePattern(Pattern.compile("BAD"));
-            check.process(file, new FileText(file, Collections.emptyList()));
+            check.process(file, new FileText(file, Collections.<String>emptyList()));
             fail("CheckstyleException expected");
         }
         catch (CheckstyleException ex) {

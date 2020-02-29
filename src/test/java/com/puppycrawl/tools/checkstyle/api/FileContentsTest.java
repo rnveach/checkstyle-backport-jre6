@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 public class FileContentsTest {
@@ -280,7 +280,7 @@ public class FileContentsTest {
     public void testGetJavadocBefore() {
         final FileContents fileContents = new FileContents(
                 new FileText(new File("filename"), Collections.singletonList("    ")));
-        final Map<Integer, TextBlock> javadoc = new HashMap<>();
+        final Map<Integer, TextBlock> javadoc = new HashMap<Integer, TextBlock>();
         javadoc.put(0, new Comment(new String[] {"// "}, 2, 1, 2));
         Whitebox.setInternalState(fileContents, "javadocComments", javadoc);
         final TextBlock javadocBefore = fileContents.getJavadocBefore(2);
@@ -308,12 +308,12 @@ public class FileContentsTest {
     @Test
     public void testHasIntersectionEarlyOut() throws Exception {
         final FileContents fileContents = new FileContents(
-                new FileText(new File("filename"), Collections.emptyList()));
+                new FileText(new File("filename"), Collections.<String>emptyList()));
         final Map<Integer, List<TextBlock>> clangComments = Whitebox.getInternalState(fileContents,
                 "clangComments");
         final TextBlock textBlock = new Comment(new String[] {""}, 1, 1, 1);
         clangComments.put(1, Collections.singletonList(textBlock));
-        clangComments.put(2, Collections.emptyList());
+        clangComments.put(2, Collections.<TextBlock>emptyList());
 
         assertWithMessage("Invalid results")
                 .that((Boolean) Whitebox.invokeMethod(fileContents,

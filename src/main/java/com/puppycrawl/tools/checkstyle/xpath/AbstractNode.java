@@ -21,17 +21,18 @@ package com.puppycrawl.tools.checkstyle.xpath;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.event.Receiver;
+import net.sf.saxon.expr.parser.Location;
 import net.sf.saxon.om.AtomicSequence;
+import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamespaceBinding;
-import net.sf.saxon.om.NamespaceMap;
 import net.sf.saxon.om.NodeInfo;
+import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.TreeInfo;
-import net.sf.saxon.s9api.Location;
+import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.tree.iter.AxisIterator;
 import net.sf.saxon.tree.util.FastStringBuffer;
 import net.sf.saxon.tree.util.Navigator;
@@ -136,7 +137,7 @@ public abstract class AbstractNode implements NodeInfo {
      * @return {@code AxisIterator} object
      */
     @Override
-    public AxisIterator iterateAxis(int axisNumber, Predicate<? super NodeInfo> nodeTest) {
+    public AxisIterator iterateAxis(byte axisNumber, NodeTest nodeTest) {
         AxisIterator axisIterator = iterateAxis(axisNumber);
         if (nodeTest != null) {
             axisIterator = new Navigator.AxisFilter(axisIterator, nodeTest);
@@ -162,7 +163,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public String getStringValue() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -174,18 +175,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final NamespaceBinding[] getDeclaredNamespaces(NamespaceBinding[] namespaceBindings) {
-        throw createUnsupportedOperationException();
-    }
-
-    /**
-     * Returns namespace array. Throws {@code UnsupportedOperationException}, because no child
-     * class implements it and this method is not used for querying.
-     *
-     * @return namespace map
-     */
-    @Override
-    public NamespaceMap getAllNamespaces() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -196,7 +186,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final boolean isId() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -207,7 +197,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final boolean isIdref() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -218,7 +208,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final boolean isNilled() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -229,7 +219,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final boolean isStreamed() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -240,7 +230,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final Configuration getConfiguration() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -251,7 +241,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final void setSystemId(String systemId) {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -262,7 +252,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final String getSystemId() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -273,7 +263,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final String getPublicId() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -284,7 +274,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final String getBaseURI() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -295,7 +285,43 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final Location saveLocation() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
+    }
+
+    /**
+     * Compares current object with specified for position. Throws
+     * {@code UnsupportedOperationException}, because no child
+     * class implements it and this method is not used for querying.
+     *
+     * @param nodeInfo another {@code NodeInfo} object
+     * @return constant from {@code AxisInfo} representing order of
+     *      current object to specified one
+     */
+    @Override
+    public final int comparePosition(NodeInfo nodeInfo) {
+        throw throwUnsupportedOperationException();
+    }
+
+    /**
+     * Returns head. Throws {@code UnsupportedOperationException}, because no child
+     * class implements it and this method is not used for querying.
+     *
+     * @return head
+     */
+    @Override
+    public final Item head() {
+        throw throwUnsupportedOperationException();
+    }
+
+    /**
+     * Returns iterator. Throws {@code UnsupportedOperationException}, because no child
+     * class implements it and this method is not used for querying.
+     *
+     * @return iterator
+     */
+    @Override
+    public final SequenceIterator iterate() {
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -306,7 +332,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final CharSequence getStringValueCS() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -317,7 +343,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final int getFingerprint() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -328,7 +354,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final String getDisplayName() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -339,7 +365,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final String getPrefix() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -350,7 +376,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final SchemaType getSchemaType() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -361,7 +387,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final AtomicSequence atomize() {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -372,7 +398,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final void generateId(FastStringBuffer fastStringBuffer) {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -385,7 +411,7 @@ public abstract class AbstractNode implements NodeInfo {
      */
     @Override
     public final void copy(Receiver receiver, int index, Location location) {
-        throw createUnsupportedOperationException();
+        throw throwUnsupportedOperationException();
     }
 
     /**
@@ -394,7 +420,7 @@ public abstract class AbstractNode implements NodeInfo {
      *
      * @return UnsupportedOperationException exception
      */
-    private static UnsupportedOperationException createUnsupportedOperationException() {
+    private static UnsupportedOperationException throwUnsupportedOperationException() {
         return new UnsupportedOperationException("Operation is not supported");
     }
 

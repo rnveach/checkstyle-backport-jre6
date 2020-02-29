@@ -29,27 +29,27 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.DefaultLocale;
+import org.junit.After;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean.OutputStreamOptions;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 public class DefaultLoggerTest {
 
     private static final Locale DEFAULT_LOCALE = Locale.getDefault();
 
-    @AfterEach
+    @After
     public void tearDown() throws Exception {
         final Constructor<?> cons = getConstructor();
         final Map<String, ResourceBundle> bundleCache =
@@ -158,11 +158,11 @@ public class DefaultLoggerTest {
         dl.auditFinished(null);
         auditFinishMessage.setAccessible(true);
         auditStartMessage.setAccessible(true);
-        assertEquals(auditStartMessage.invoke(getAuditStartMessageClass()) + System.lineSeparator()
+        assertEquals(auditStartMessage.invoke(getAuditStartMessageClass()) + System7.lineSeparator()
                         + auditFinishMessage.invoke(getAuditFinishMessageClass())
-                        + System.lineSeparator(), infoStream.toString(), "expected output");
+                        + System7.lineSeparator(), infoStream.toString(), "expected output");
         assertEquals("[ERROR] fileName:1:2: customViolation [DefaultLoggerTest]"
-                + System.lineSeparator(), errorStream.toString(), "expected output");
+                + System7.lineSeparator(), errorStream.toString(), "expected output");
     }
 
     @Test
@@ -180,11 +180,11 @@ public class DefaultLoggerTest {
         dl.auditFinished(null);
         auditFinishMessage.setAccessible(true);
         auditStartMessage.setAccessible(true);
-        assertEquals(auditStartMessage.invoke(getAuditStartMessageClass()) + System.lineSeparator()
+        assertEquals(auditStartMessage.invoke(getAuditStartMessageClass()) + System7.lineSeparator()
                         + auditFinishMessage.invoke(getAuditFinishMessageClass())
-                        + System.lineSeparator(), infoStream.toString(), "expected output");
+                        + System7.lineSeparator(), infoStream.toString(), "expected output");
         assertEquals("[ERROR] fileName:1:2: customViolation [moduleId]"
-                + System.lineSeparator(), errorStream.toString(), "expected output");
+                + System7.lineSeparator(), errorStream.toString(), "expected output");
     }
 
     @Test
@@ -241,19 +241,26 @@ public class DefaultLoggerTest {
         }
     }
 
-    @DefaultLocale("fr")
     @Test
     public void testCleatBundleCache() throws Exception {
-        final Constructor<?> cons = getConstructor();
-        cons.setAccessible(true);
-        final Object messageClass = cons.newInstance(DefaultLogger.ADD_EXCEPTION_MESSAGE, null);
-        final Method message = messageClass.getClass().getDeclaredMethod("getMessage");
-        message.setAccessible(true);
-        final Map<String, ResourceBundle> bundleCache =
-                Whitebox.getInternalState(message.getDeclaringClass(), "BUNDLE_CACHE");
-        assertEquals("Une erreur est survenue {0}", message.invoke(messageClass),
-                "Invalid message");
-        assertEquals(1, bundleCache.size(), "Invalid bundle cache size");
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(new Locale("fr"));
+            final Constructor<?> cons = getConstructor();
+            cons.setAccessible(true);
+            final Object messageClass = cons.newInstance(DefaultLogger.ADD_EXCEPTION_MESSAGE,
+                    null);
+            final Method message = messageClass.getClass().getDeclaredMethod("getMessage");
+            message.setAccessible(true);
+            final Map<String, ResourceBundle> bundleCache =
+                    Whitebox.getInternalState(message.getDeclaringClass(), "BUNDLE_CACHE");
+            assertEquals("Une erreur est survenue {0}", message.invoke(messageClass),
+                    "Invalid message");
+            assertEquals(1, bundleCache.size(), "Invalid bundle cache size");
+        }
+        finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
     @Test

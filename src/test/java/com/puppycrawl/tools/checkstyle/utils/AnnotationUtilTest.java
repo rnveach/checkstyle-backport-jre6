@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -39,7 +39,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public class AnnotationUtilTest {
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         try {
             isUtilsClassHasPrivateConstructor(AnnotationUtil.class, true);
             fail("Exception is expected");
@@ -188,7 +188,7 @@ public class AnnotationUtilTest {
     @Test
     public void testContainsAnnotationListWithEmptyList() {
         final DetailAST ast = new DetailAstImpl();
-        final List<String> annotations = new ArrayList<>();
+        final List<String> annotations = new ArrayList<String>();
         final boolean result = AnnotationUtil.containsAnnotation(ast, annotations);
         assertFalse(result, "An empty list should lead to a false result");
     }

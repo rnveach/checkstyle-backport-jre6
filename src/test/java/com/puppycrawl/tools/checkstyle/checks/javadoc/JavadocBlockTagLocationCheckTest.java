@@ -22,7 +22,7 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocBlockTagLocationCheck.MSG_BLOCK_TAG_LOCATION;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;

@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
@@ -56,6 +55,8 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.PropertyCacheFile;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 @RunWith(PowerMockRunner.class)
@@ -97,7 +98,7 @@ public class PropertyCacheFilePowerTest extends AbstractPathTestSupport {
                 .thenThrow(IOException.class);
 
         // apply new external resource to clear cache
-        final Set<String> resources = new HashSet<>();
+        final Set<String> resources = new HashSet<String>();
         final String resource = getPath("InputPropertyCacheFile.header");
         resources.add(resource);
         cache.putExternalResources(resources);
@@ -161,7 +162,7 @@ public class PropertyCacheFilePowerTest extends AbstractPathTestSupport {
             configHashes[i] = cache.get(PropertyCacheFile.CONFIG_HASH_KEY);
             assertNotNull("Config hash key should not be null", configHashes[i]);
 
-            final Set<String> nonExistentExternalResources = new HashSet<>();
+            final Set<String> nonExistentExternalResources = new HashSet<String>();
             final String externalResourceFileName = "non_existent_file.xml";
             nonExistentExternalResources.add(externalResourceFileName);
             cache.putExternalResources(nonExistentExternalResources);
@@ -174,8 +175,12 @@ public class PropertyCacheFilePowerTest extends AbstractPathTestSupport {
             cache.persist();
 
             final Properties cacheDetails = new Properties();
-            try (BufferedReader reader = Files.newBufferedReader(cacheFile.toPath())) {
+            final BufferedReader reader = Files7.newBufferedReader(new Path(cacheFile));
+            try {
                 cacheDetails.load(reader);
+            }
+            finally {
+                reader.close();
             }
 
             final int expectedNumberOfObjectsInCacheFile = 2;
@@ -217,7 +222,7 @@ public class PropertyCacheFilePowerTest extends AbstractPathTestSupport {
             configHashes[i] = cache.get(PropertyCacheFile.CONFIG_HASH_KEY);
             assertNotNull("Config hash key should not be null", configHashes[i]);
 
-            final Set<String> nonExistentExternalResources = new HashSet<>();
+            final Set<String> nonExistentExternalResources = new HashSet<String>();
             final String externalResourceFileName = "non_existent_file.xml";
             nonExistentExternalResources.add(externalResourceFileName);
             cache.putExternalResources(nonExistentExternalResources);
@@ -230,8 +235,12 @@ public class PropertyCacheFilePowerTest extends AbstractPathTestSupport {
             cache.persist();
 
             final Properties cacheDetails = new Properties();
-            try (BufferedReader reader = Files.newBufferedReader(cacheFile.toPath())) {
+            final BufferedReader reader = Files7.newBufferedReader(new Path(cacheFile));
+            try {
                 cacheDetails.load(reader);
+            }
+            finally {
+                reader.close();
             }
 
             final int expectedNumberOfObjectsInCacheFile = 2;

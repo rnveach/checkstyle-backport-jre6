@@ -140,7 +140,7 @@ public class UnusedImportsCheck extends AbstractCheck {
     private static final String STAR_IMPORT_SUFFIX = ".*";
 
     /** Set of the imports. */
-    private final Set<FullIdent> imports = new HashSet<>();
+    private final Set<FullIdent> imports = new HashSet<FullIdent>();
 
     /** Flag to indicate when time to start collecting references. */
     private boolean collect;
@@ -173,9 +173,12 @@ public class UnusedImportsCheck extends AbstractCheck {
     public void finishTree(DetailAST rootAST) {
         currentFrame.finish();
         // loop over all the imports to see if referenced.
-        imports.stream()
-            .filter(imprt -> isUnusedImport(imprt.getText()))
-            .forEach(imprt -> log(imprt.getDetailAst(), MSG_KEY, imprt.getText()));
+        for (final FullIdent imprt : imports) {
+            if (isUnusedImport(imprt.getText())) {
+                log(imprt.getDetailAst(),
+                    MSG_KEY, imprt.getText());
+            }
+        }
     }
 
     @Override
@@ -335,18 +338,20 @@ public class UnusedImportsCheck extends AbstractCheck {
      * @return a set of classes referenced in the javadoc block
      */
     private static Set<String> collectReferencesFromJavadoc(TextBlock textBlock) {
-        final List<JavadocTag> tags = new ArrayList<>();
+        final List<JavadocTag> tags = new ArrayList<JavadocTag>();
         // gather all the inline tags, like @link
         // INLINE tags inside BLOCKs get hidden when using ALL
         tags.addAll(getValidTags(textBlock, JavadocUtil.JavadocTagType.INLINE));
         // gather all the block-level tags, like @throws and @see
         tags.addAll(getValidTags(textBlock, JavadocUtil.JavadocTagType.BLOCK));
 
-        final Set<String> references = new HashSet<>();
+        final Set<String> references = new HashSet<String>();
 
-        tags.stream()
-            .filter(JavadocTag::canReferenceImports)
-            .forEach(tag -> references.addAll(processJavadocTag(tag)));
+        for (JavadocTag tag : tags) {
+            if (tag.canReferenceImports()) {
+                references.addAll(processJavadocTag(tag));
+            }
+        }
         return references;
     }
 
@@ -369,7 +374,7 @@ public class UnusedImportsCheck extends AbstractCheck {
      * @return A list of references found in this tag
      */
     private static Set<String> processJavadocTag(JavadocTag tag) {
-        final Set<String> references = new HashSet<>();
+        final Set<String> references = new HashSet<String>();
         final String identifier = tag.getFirstArg().trim();
         for (Pattern pattern : new Pattern[]
         {FIRST_CLASS_NAME, ARGUMENT_NAME}) {
@@ -387,7 +392,7 @@ public class UnusedImportsCheck extends AbstractCheck {
      * @return A list of texts which matched the pattern
      */
     private static Set<String> matchPattern(String identifier, Pattern pattern) {
-        final Set<String> references = new HashSet<>();
+        final Set<String> references = new HashSet<String>();
         final Matcher matcher = pattern.matcher(identifier);
         while (matcher.find()) {
             references.add(topLevelType(matcher.group(1)));
@@ -436,8 +441,8 @@ public class UnusedImportsCheck extends AbstractCheck {
          */
         private Frame(Frame parent) {
             this.parent = parent;
-            declaredTypes = new HashSet<>();
-            referencedTypes = new HashSet<>();
+            declaredTypes = new HashSet<String>();
+            referencedTypes = new HashSet<String>();
         }
 
         /**

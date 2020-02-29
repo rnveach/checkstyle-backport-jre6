@@ -19,31 +19,31 @@
 
 package com.puppycrawl.tools.checkstyle.internal;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.puppycrawl.tools.checkstyle.internal.utils.XdocUtil;
 import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 
 public class XdocsMobileWrapperTest {
 
-    private static final List<String> NODES_TO_WRAP = new ArrayList<>();
+    private static final List<String> NODES_TO_WRAP = new ArrayList<String>();
 
-    @BeforeEach
+    @Before
     public void setUp() {
         NODES_TO_WRAP.add("pre");
         NODES_TO_WRAP.add("table");
@@ -57,7 +57,7 @@ public class XdocsMobileWrapperTest {
             final File file = path.toFile();
             final String fileName = file.getName();
 
-            final String input = new String(Files.readAllBytes(path), UTF_8);
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
             assertNotEquals("", input, fileName + ": input file cannot be empty");
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("section");

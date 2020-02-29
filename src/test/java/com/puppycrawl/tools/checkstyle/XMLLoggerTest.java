@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;

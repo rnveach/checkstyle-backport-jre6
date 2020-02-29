@@ -25,14 +25,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.gui.MainFrameModel.ParseMode;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 public class CodeSelectorPresentationTest extends AbstractPathTestSupport {
 
@@ -42,7 +43,7 @@ public class CodeSelectorPresentationTest extends AbstractPathTestSupport {
 
     private ImmutableList<Integer> linesToPosition;
 
-    @BeforeEach
+    @Before
     public void loadFile() throws Exception {
         model = new MainFrameModel();
         model.setParseMode(ParseMode.JAVA_WITH_JAVADOC_AND_COMMENTS);
@@ -65,8 +66,8 @@ public class CodeSelectorPresentationTest extends AbstractPathTestSupport {
      * @return lines to position mapping with one character line separator
      */
     private static List<Integer> convertLinesToPosition(List<Integer> systemLinesToPosition) {
-        final List<Integer> convertedLinesToPosition = new ArrayList<>();
-        final int lineSeparationCorrection = System.lineSeparator().length() - 1;
+        final List<Integer> convertedLinesToPosition = new ArrayList<Integer>();
+        final int lineSeparationCorrection = System7.lineSeparator().length() - 1;
         convertedLinesToPosition.add(0, systemLinesToPosition.get(0));
         for (int i = 1; i < systemLinesToPosition.size(); i++) {
             convertedLinesToPosition.add(i,

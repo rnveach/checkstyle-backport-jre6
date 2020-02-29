@@ -36,10 +36,11 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 
 /**
  * Custom class loader is needed to pass URLs to pretend these are loaded from the classpath
@@ -67,7 +68,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
     @Test
     public void testNoPackages() throws Exception {
         final Set<String> actualPackageNames = PackageNamesLoader
-                .getPackageNames(new TestUrlsClassLoader(Collections.emptyEnumeration()));
+                .getPackageNames(new TestUrlsClassLoader(Collections7.<URL>emptyEnumeration()));
 
         assertEquals(0, actualPackageNames.size(), "Invalid package names length.");
     }
@@ -103,7 +104,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
         assertEquals(expectedPackageNames.length,
             actualPackageNames.size(), "Invalid package names length.");
         final Set<String> checkstylePackagesSet =
-                new HashSet<>(Arrays.asList(expectedPackageNames));
+                new HashSet<String>(Arrays.asList(expectedPackageNames));
         assertEquals(checkstylePackagesSet, actualPackageNames, "Invalid names set.");
     }
 
@@ -121,7 +122,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
         assertEquals(expectedPackageNames.length,
             actualPackageNames.size(), "Invalid package names length.");
         final Set<String> checkstylePackagesSet =
-                new HashSet<>(Arrays.asList(expectedPackageNames));
+                new HashSet<String>(Arrays.asList(expectedPackageNames));
         assertEquals(checkstylePackagesSet, actualPackageNames, "Invalid names set.");
     }
 
@@ -140,7 +141,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
         assertEquals(expectedPackageNames.length, actualPackageNames.size(),
                 "Invalid package names length.");
         final Set<String> checkstylePackagesSet =
-                new HashSet<>(Arrays.asList(expectedPackageNames));
+                new HashSet<String>(Arrays.asList(expectedPackageNames));
         assertEquals(checkstylePackagesSet, actualPackageNames, "Invalid names set.");
     }
 

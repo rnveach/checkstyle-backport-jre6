@@ -62,7 +62,7 @@ public final class ChainedPropertyUtil {
     public static Properties getResolvedProperties(Properties properties)
             throws CheckstyleException {
         final Set<String> unresolvedPropertyNames =
-            new HashSet<>(properties.stringPropertyNames());
+            new HashSet<String>(properties.stringPropertyNames());
         Iterator<String> unresolvedPropertyIterator = unresolvedPropertyNames.iterator();
         final Map<Object, Object> comparisonProperties = new Properties();
 

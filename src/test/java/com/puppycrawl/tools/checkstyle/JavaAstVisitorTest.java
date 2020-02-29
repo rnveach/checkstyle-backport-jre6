@@ -150,7 +150,7 @@ public class JavaAstVisitorTest {
      * @return list of all {@code visit...} method names
      */
     private static List<String> getOrderedVisitMethodNames(DetailAST root) {
-        final List<String> orderedVisitMethodNames = new ArrayList<>();
+        final List<String> orderedVisitMethodNames = new ArrayList<String>();
 
         DetailAST classDef = root.getFirstChild();
         while (classDef.getType() != TokenTypes.CLASS_DEF) {

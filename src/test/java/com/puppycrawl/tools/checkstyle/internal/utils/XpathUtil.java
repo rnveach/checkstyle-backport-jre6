@@ -19,8 +19,8 @@
 
 package com.puppycrawl.tools.checkstyle.internal.utils;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.xpath.AbstractNode;
 import net.sf.saxon.Configuration;
@@ -55,7 +55,11 @@ public final class XpathUtil {
         final XPathDynamicContext xpathDynamicContext = xpathExpression
                 .createDynamicContext(rootNode);
         final List<Item> items = xpathExpression.evaluate(xpathDynamicContext);
-        return items.stream().map(item -> (NodeInfo) item).collect(Collectors.toList());
+        final List<NodeInfo> results = new ArrayList<NodeInfo>();
+        for (Item item : items) {
+            results.add((NodeInfo) item);
+        }
+        return results;
     }
 
 }

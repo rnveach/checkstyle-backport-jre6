@@ -37,18 +37,18 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.Dictionary;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
 import com.puppycrawl.tools.checkstyle.PropertiesExpander;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class CommonUtilTest extends AbstractPathTestSupport {
 
@@ -61,7 +61,7 @@ public class CommonUtilTest extends AbstractPathTestSupport {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(CommonUtil.class, true),
                 "Constructor is not private");
     }
@@ -258,8 +258,11 @@ public class CommonUtilTest extends AbstractPathTestSupport {
     @Test
     public void testCloseWithException() {
         try {
-            CommonUtil.close(() -> {
-                throw new IOException("Test IOException");
+            CommonUtil.close(new Closeable() {
+                @Override
+                public void close() throws IOException {
+                    throw new IOException("Test IOException");
+                }
             });
             fail("exception expected");
         }

@@ -194,7 +194,7 @@ public final class MissingDeprecatedCheck extends AbstractJavadocCheck {
     private static final String FQ_DEPRECATED = "java.lang." + DEPRECATED;
 
     /** List of token types to find parent of. */
-    private static final Set<Integer> TYPES_HASH_SET = new HashSet<>(Arrays.asList(
+    private static final Set<Integer> TYPES_HASH_SET = new HashSet<Integer>(Arrays.asList(
             TokenTypes.TYPE, TokenTypes.MODIFIERS, TokenTypes.ANNOTATION,
             TokenTypes.ANNOTATIONS, TokenTypes.ARRAY_DECLARATOR,
             TokenTypes.TYPE_PARAMETERS, TokenTypes.DOT));

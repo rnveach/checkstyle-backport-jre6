@@ -28,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
@@ -44,7 +45,7 @@ public final class AstTreeStringPrinter {
     private static final Pattern TAB = Pattern.compile("\t");
 
     /** OS specific line separator. */
-    private static final String LINE_SEPARATOR = System.lineSeparator();
+    private static final String LINE_SEPARATOR = System7.lineSeparator();
 
     /** Prevent instances. */
     private AstTreeStringPrinter() {

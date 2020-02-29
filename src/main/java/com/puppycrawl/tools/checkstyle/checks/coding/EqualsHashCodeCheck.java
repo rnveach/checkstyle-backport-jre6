@@ -140,10 +140,10 @@ public class EqualsHashCodeCheck
     public static final String MSG_KEY_EQUALS = "equals.noEquals";
 
     /** Maps OBJ_BLOCK to the method definition of equals(). */
-    private final Map<DetailAST, DetailAST> objBlockWithEquals = new HashMap<>();
+    private final Map<DetailAST, DetailAST> objBlockWithEquals = new HashMap<DetailAST, DetailAST>();
 
     /** Maps OBJ_BLOCKs to the method definition of hashCode(). */
-    private final Map<DetailAST, DetailAST> objBlockWithHashCode = new HashMap<>();
+    private final Map<DetailAST, DetailAST> objBlockWithHashCode = new HashMap<DetailAST, DetailAST>();
 
     @Override
     public int[] getDefaultTokens() {
@@ -224,14 +224,16 @@ public class EqualsHashCodeCheck
 
     @Override
     public void finishTree(DetailAST rootAST) {
-        objBlockWithEquals
-            .entrySet().stream().filter(detailASTDetailASTEntry -> {
-                return objBlockWithHashCode.remove(detailASTDetailASTEntry.getKey()) == null;
-            }).forEach(detailASTDetailASTEntry -> {
+        for (Map.Entry<DetailAST, DetailAST> detailASTDetailASTEntry : objBlockWithEquals
+                .entrySet()) {
+            if (objBlockWithHashCode.remove(detailASTDetailASTEntry.getKey()) == null) {
                 final DetailAST equalsAST = detailASTDetailASTEntry.getValue();
                 log(equalsAST, MSG_KEY_HASHCODE);
-            });
-        objBlockWithHashCode.forEach((key, equalsAST) -> log(equalsAST, MSG_KEY_EQUALS));
+            }
+        }
+        for (DetailAST equalsAST : objBlockWithHashCode.values()) {
+            log(equalsAST, MSG_KEY_EQUALS);
+        }
     }
 
 }

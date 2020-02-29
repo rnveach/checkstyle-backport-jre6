@@ -64,7 +64,7 @@ public class XmlLoader
      */
     protected XmlLoader(Map<String, String> publicIdToResourceNameMap)
             throws SAXException, ParserConfigurationException {
-        this.publicIdToResourceNameMap = new HashMap<>(publicIdToResourceNameMap);
+        this.publicIdToResourceNameMap = new HashMap<String, String>(publicIdToResourceNameMap);
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         LoadExternalDtdFeatureProvider.setFeaturesBySystemProperty(factory);
         factory.setValidating(true);

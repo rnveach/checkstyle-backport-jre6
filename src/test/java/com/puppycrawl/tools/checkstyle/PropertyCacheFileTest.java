@@ -33,26 +33,28 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class PropertyCacheFileTest extends AbstractPathTestSupport {
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
     protected String getPackageLocation() {
@@ -81,7 +83,7 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     @Test
     public void testInCache() throws IOException {
         final Configuration config = new DefaultConfiguration("myName");
-        final String filePath = File.createTempFile("junit", null, temporaryFolder).getPath();
+        final String filePath = File.createTempFile("junit", null, temporaryFolder.newFolder()).getPath();
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
         cache.put("myFile", 1);
         assertTrue(cache.isInCache("myFile", 1), "Should return true when file is in cache");
@@ -122,7 +124,7 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     @Test
     public void testConfigHashOnReset() throws IOException {
         final Configuration config = new DefaultConfiguration("myName");
-        final String filePath = File.createTempFile("junit", null, temporaryFolder).getPath();
+        final String filePath = File.createTempFile("junit", null, temporaryFolder.newFolder()).getPath();
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
 
         cache.load();
@@ -139,7 +141,7 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     @Test
     public void testConfigHashRemainsOnResetExternalResources() throws IOException {
         final Configuration config = new DefaultConfiguration("myName");
-        final String filePath = File.createTempFile("junit", null, temporaryFolder).getPath();
+        final String filePath = File.createTempFile("junit", null, temporaryFolder.newFolder()).getPath();
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
 
         // create cache with one file
@@ -150,7 +152,7 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
         assertNotNull(hash, "Config hash key should not be null");
 
         // apply new external resource to clear cache
-        final Set<String> resources = new HashSet<>();
+        final Set<String> resources = new HashSet<String>();
         resources.add("dummy");
         cache.putExternalResources(resources);
 
@@ -164,15 +166,15 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     public void testCacheRemainsWhenExternalResourceTheSame() throws IOException {
         final Configuration config = new DefaultConfiguration("myName");
         final String externalResourcePath =
-                File.createTempFile("junit", null, temporaryFolder).getPath();
-        final String filePath = File.createTempFile("junit", null, temporaryFolder).getPath();
+                File.createTempFile("junit", null, temporaryFolder.newFolder()).getPath();
+        final String filePath = File.createTempFile("junit", null, temporaryFolder.newFolder()).getPath();
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
 
         // pre-populate with cache with resources
 
         cache.load();
 
-        final Set<String> resources = new HashSet<>();
+        final Set<String> resources = new HashSet<String>();
         resources.add(externalResourcePath);
         cache.putExternalResources(resources);
 
@@ -191,12 +193,12 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     @Test
     public void testExternalResourceIsSavedInCache() throws Exception {
         final Configuration config = new DefaultConfiguration("myName");
-        final String filePath = File.createTempFile("junit", null, temporaryFolder).getPath();
+        final String filePath = File.createTempFile("junit", null, temporaryFolder.newFolder()).getPath();
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
 
         cache.load();
 
-        final Set<String> resources = new HashSet<>();
+        final Set<String> resources = new HashSet<String>();
         final String pathToResource = getPath("InputPropertyCacheFileExternal.properties");
         resources.add(pathToResource);
         cache.putExternalResources(resources);
@@ -206,9 +208,8 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
         final byte[] input =
                 ByteStreams.toByteArray(new BufferedInputStream(uri.toURL().openStream()));
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
-            oos.writeObject(input);
-        }
+        final ObjectOutputStream oos = new ObjectOutputStream(out);
+        oos.writeObject(input);
         digest.update(out.toByteArray());
         final String expected = BaseEncoding.base16().upperCase().encode(digest.digest());
 
@@ -220,7 +221,7 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
     public void testCacheDirectoryDoesNotExistAndShouldBeCreated() throws IOException {
         final Configuration config = new DefaultConfiguration("myName");
         final String filePath = String.format(Locale.getDefault(), "%s%2$stemp%2$scache.temp",
-            temporaryFolder, File.separator);
+            temporaryFolder.newFolder(), File.separator);
         final PropertyCacheFile cache = new PropertyCacheFile(config, filePath);
 
         // no exception expected, cache directory should be created
@@ -237,8 +238,8 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
 
         // no exception expected
         cache.persist();
-        assertTrue(Files.exists(Paths.get(filePath)), "Cache file does not exist");
-        Files.delete(Paths.get(filePath));
+        assertTrue(Files7.exists(Paths.get(filePath)), "Cache file does not exist");
+        Files7.delete(Paths.get(filePath));
     }
 
     @Test
@@ -246,7 +247,7 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
         final DefaultConfiguration config = new DefaultConfiguration("myConfig");
         config.addProperty("attr", "value");
 
-        final File cacheFile = File.createTempFile("junit", null, temporaryFolder);
+        final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
         final PropertyCacheFile cache = new PropertyCacheFile(config, cacheFile.getPath());
         cache.load();
 
@@ -257,8 +258,12 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
         cache.persist();
 
         final Properties details = new Properties();
-        try (BufferedReader reader = Files.newBufferedReader(cacheFile.toPath())) {
+        final BufferedReader reader = Files7.newBufferedReader(new Path(cacheFile));
+        try {
             details.load(reader);
+        }
+        finally {
+            reader.close();
         }
         assertEquals(1, details.size(), "Invalid details size");
 
@@ -278,8 +283,12 @@ public class PropertyCacheFileTest extends AbstractPathTestSupport {
         cacheAfterChangeInConfig.persist();
 
         final Properties detailsAfterChangeInConfig = new Properties();
-        try (BufferedReader reader = Files.newBufferedReader(cacheFile.toPath())) {
-            detailsAfterChangeInConfig.load(reader);
+        final BufferedReader reader2 = Files7.newBufferedReader(new Path(cacheFile));
+        try {
+            detailsAfterChangeInConfig.load(reader2);
+        }
+        finally {
+            reader2.close();
         }
         assertEquals(1, detailsAfterChangeInConfig.size(), "Invalid cache size");
     }

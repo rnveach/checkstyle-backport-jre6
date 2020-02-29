@@ -29,13 +29,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import net.sf.saxon.om.NodeInfo;
+import net.sf.saxon.trans.XPathException;
 
 public class XpathMapperTest extends AbstractModuleTestSupport {
 
@@ -462,7 +463,7 @@ public class XpathMapperTest extends AbstractModuleTestSupport {
             getXpathItems(xpath, rootNode);
             fail("Exception is excepted");
         }
-        catch (UnsupportedOperationException ex) {
+        catch (XPathException ex) {
             assertThat("Invalid exception", ex.getMessage(), equalTo("Operation is not supported"));
         }
     }
@@ -475,7 +476,7 @@ public class XpathMapperTest extends AbstractModuleTestSupport {
             getXpathItems(xpath, rootNode);
             fail("Exception is excepted");
         }
-        catch (UnsupportedOperationException ex) {
+        catch (XPathException ex) {
             assertThat("Invalid exception", ex.getMessage(), equalTo("Operation is not supported"));
         }
     }

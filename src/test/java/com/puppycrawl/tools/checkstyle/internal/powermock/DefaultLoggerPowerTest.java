@@ -26,7 +26,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -35,6 +34,7 @@ import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class DefaultLoggerPowerTest {

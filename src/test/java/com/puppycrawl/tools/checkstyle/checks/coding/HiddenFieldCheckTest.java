@@ -24,10 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.util.Optional;
-import java.util.function.Predicate;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -35,6 +33,8 @@ import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class HiddenFieldCheckTest
@@ -463,7 +463,12 @@ public class HiddenFieldCheckTest
         final DetailAST root = JavaParser.parseFile(new File(getPath("InputHiddenField8.java")),
                 JavaParser.Options.WITHOUT_COMMENTS);
         final Optional<DetailAST> classDef = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.CLASS_DEF);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.CLASS_DEF;
+                }
+            });
 
         assertTrue(classDef.isPresent(), "Ast should contain CLASS_DEF");
         assertTrue(
@@ -490,8 +495,13 @@ public class HiddenFieldCheckTest
                         result = false;
                     }
                 }
-                catch (NoSuchFieldException | IllegalArgumentException
-                        | IllegalAccessException ex) {
+                catch (NoSuchFieldException ex) {
+                    throw new IllegalStateException(ex);
+                }
+                catch (IllegalArgumentException ex) {
+                    throw new IllegalStateException(ex);
+                }
+                catch (IllegalAccessException ex) {
                     throw new IllegalStateException(ex);
                 }
             }

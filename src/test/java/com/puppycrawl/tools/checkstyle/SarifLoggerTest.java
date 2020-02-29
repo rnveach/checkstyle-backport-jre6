@@ -26,15 +26,15 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.internal.utils.CloseAndFlushTestByteArrayOutputStream;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class SarifLoggerTest extends AbstractModuleTestSupport {
 
@@ -216,7 +216,11 @@ public class SarifLoggerTest extends AbstractModuleTestSupport {
             assertNotNull(logger, "Null instance");
             fail("Exception was expected");
         }
-        catch (IllegalArgumentException | IOException exception) {
+        catch (IllegalArgumentException exception) {
+            assertEquals("Parameter outputStreamOptions can not be null",
+                    exception.getMessage(), "Invalid error message");
+        }
+        catch (IOException exception) {
             assertEquals("Parameter outputStreamOptions can not be null",
                     exception.getMessage(), "Invalid error message");
         }

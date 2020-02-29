@@ -24,11 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.PatternSyntaxException;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
@@ -37,6 +36,7 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class SuppressionXpathSingleFilterTest
         extends AbstractModuleTestSupport {
@@ -44,7 +44,7 @@ public class SuppressionXpathSingleFilterTest
     private File file;
     private FileContents fileContents;
 
-    @BeforeEach
+    @Before
     public void setUp() throws Exception {
         file = new File(getPath("InputSuppressionXpathSingleFilter.java"));
         fileContents = new FileContents(new FileText(file,

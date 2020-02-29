@@ -30,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -717,10 +718,10 @@ public class CustomImportOrderCheck extends AbstractCheck {
     private static final Pattern GROUP_SEPARATOR_PATTERN = Pattern.compile("\\s*###\\s*");
 
     /** Processed list of import order rules. */
-    private final List<String> customOrderRules = new ArrayList<>();
+    private final List<String> customOrderRules = new ArrayList<String>();
 
     /** Contains objects with import attributes. */
-    private final List<ImportDetails> importToGroupList = new ArrayList<>();
+    private final List<ImportDetails> importToGroupList = new ArrayList<ImportDetails>();
 
     /** Specify format of order declaration customizing by user. */
     private String customImportOrderRules = "";
@@ -1163,7 +1164,7 @@ public class CustomImportOrderCheck extends AbstractCheck {
             }
         }
         if (result == 0) {
-            result = Integer.compare(import1Tokens.length, import2Tokens.length);
+            result = Integer7.compare(import1Tokens.length, import2Tokens.length);
         }
         return result;
     }

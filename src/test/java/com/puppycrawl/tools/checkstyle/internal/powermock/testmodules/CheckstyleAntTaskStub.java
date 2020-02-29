@@ -37,7 +37,7 @@ public class CheckstyleAntTaskStub extends CheckstyleAntTask {
         // Assume that I/O error is happened when we try to invoke 'lastModified()' method.
         final Exception expectedError = new RuntimeException("");
         when(mock.lastModified()).thenThrow(expectedError);
-        final List<File> list = new ArrayList<>();
+        final List<File> list = new ArrayList<File>();
         list.add(mock);
         return list;
     }

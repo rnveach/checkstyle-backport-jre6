@@ -20,11 +20,11 @@
 package com.puppycrawl.tools.checkstyle.ant;
 
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +37,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 import org.apache.tools.ant.types.resources.FileResource;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
@@ -46,6 +46,8 @@ import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.internal.testmodules.TestRootModuleChecker;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 
 public class CheckstyleAntTaskTest extends AbstractPathTestSupport {
 
@@ -138,20 +140,29 @@ public class CheckstyleAntTaskTest extends AbstractPathTestSupport {
         // then
         final List<String> loggedMessages = antTask.getLoggedMessages();
 
-        assertWithMessage("Scanning path was not logged")
-                .that(loggedMessages.stream().filter(
-                        msg -> msg.startsWith("1) Scanning path")).count())
-                .isEqualTo(1);
+        assertEquals(1, count(loggedMessages,
+            new Consumer<String>() {
+                @Override
+                public boolean accept(String msg) {
+                    return msg.startsWith("1) Scanning path");
+                }
+            }), "Scanning path was not logged");
 
-        assertWithMessage("Scanning path was not logged")
-                .that(loggedMessages.stream().filter(
-                        msg -> msg.startsWith("1) Adding 1 files from path")).count())
-                .isEqualTo(1);
+        assertEquals(1, count(loggedMessages,
+            new Consumer<String>() {
+                @Override
+                public boolean accept(String msg) {
+                    return msg.startsWith("1) Adding 1 files from path");
+                }
+            }), "Scanning path was not logged");
 
-        assertWithMessage("Scanning empty was logged")
-                .that(loggedMessages.stream().filter(
-                        msg -> msg.startsWith("2) Adding 0 files from path ")).count())
-                .isEqualTo(0);
+        assertEquals(0, count(loggedMessages,
+            new Consumer<String>() {
+                @Override
+                public boolean accept(String msg) {
+                    return msg.startsWith("2) Adding 0 files from path ");
+                }
+            }), "Scanning empty was logged");
 
         assertWithMessage("Checker is not processed")
                 .that(TestRootModuleChecker.isProcessed())
@@ -163,6 +174,16 @@ public class CheckstyleAntTaskTest extends AbstractPathTestSupport {
         assertWithMessage("The path of file differs from expected")
                 .that(filesToCheck.get(0).getAbsolutePath())
                 .isEqualTo(getPath(FLAWLESS_INPUT));
+    }
+
+    private static int count(List<String> list, Consumer<String> test) {
+        int result = 0;
+        for (String item : list) {
+            if (test.accept(item)) {
+                result++;
+            }
+        }
+        return result;
     }
 
     @Test
@@ -696,7 +717,7 @@ public class CheckstyleAntTaskTest extends AbstractPathTestSupport {
         antTask.setClasspathRef(new Reference(new Project(), "id"));
 
         assertWithMessage("Classpath should not be null")
-                .that((Object) Whitebox.getInternalState(antTask, "classpath"))
+                .that(Whitebox.getInternalState(antTask, "classpath"))
                 .isNotNull();
     }
 
@@ -709,7 +730,7 @@ public class CheckstyleAntTaskTest extends AbstractPathTestSupport {
         antTask.setClasspathRef(new Reference(project, "idXX"));
 
         assertWithMessage("Classpath should not be null")
-                .that((Object) Whitebox.getInternalState(antTask, "classpath"))
+                .that(Whitebox.getInternalState(antTask, "classpath"))
                 .isNotNull();
 
         final Path classpath = Whitebox.getInternalState(antTask, "classpath");
@@ -770,7 +791,7 @@ public class CheckstyleAntTaskTest extends AbstractPathTestSupport {
 
     private static class CheckstyleAntTaskLogStub extends CheckstyleAntTask {
 
-        private final List<String> loggedMessages = new ArrayList<>();
+        private final List<String> loggedMessages = new ArrayList<String>();
 
         @Override
         public void log(String msg, int msgLevel) {

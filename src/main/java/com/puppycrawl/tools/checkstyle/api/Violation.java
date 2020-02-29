@@ -25,7 +25,6 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,10 +32,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Objects;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
+
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * Represents a violation that can be localised. The translations come from
@@ -55,7 +57,7 @@ public final class Violation
      * Avoids repetitive calls to ResourceBundle.getBundle().
      */
     private static final Map<String, ResourceBundle> BUNDLE_CACHE =
-        Collections.synchronizedMap(new HashMap<>());
+        Collections.synchronizedMap(new HashMap<String, ResourceBundle>());
 
     /** The default severity level if one is not specified. */
     private static final SeverityLevel DEFAULT_SEVERITY = SeverityLevel.ERROR;
@@ -437,11 +439,11 @@ public final class Violation
                 }
             }
             else {
-                result = Integer.compare(columnNo, other.columnNo);
+                result = Integer7.compare(columnNo, other.columnNo);
             }
         }
         else {
-            result = Integer.compare(lineNo, other.lineNo);
+            result = Integer7.compare(lineNo, other.lineNo);
         }
         return result;
     }
@@ -500,10 +502,14 @@ public final class Violation
      * @return a ResourceBundle
      */
     private ResourceBundle getBundle(String bundleName) {
-        return BUNDLE_CACHE.computeIfAbsent(bundleName, name -> {
-            return ResourceBundle.getBundle(
-                name, sLocale, sourceClass.getClassLoader(), new Utf8Control());
-        });
+        ResourceBundle resourceBundle = BUNDLE_CACHE
+                .get(bundleName);
+        if (resourceBundle == null) {
+            resourceBundle = ResourceBundle.getBundle(bundleName, sLocale,
+                    sourceClass.getClassLoader(), new Utf8Control());
+            BUNDLE_CACHE.put(bundleName, resourceBundle);
+        }
+        return resourceBundle;
     }
 
     /**
@@ -526,10 +532,14 @@ public final class Violation
                 final URLConnection connection = url.openConnection();
                 if (connection != null) {
                     connection.setUseCaches(!reload);
-                    try (Reader streamReader = new InputStreamReader(connection.getInputStream(),
-                            StandardCharsets.UTF_8.name())) {
+                    final Reader streamReader = new InputStreamReader(connection.getInputStream(),
+                            StandardCharsets.UTF_8.name());
+                    try {
                         // Only this line is changed to make it read property files as UTF-8.
                         resourceBundle = new PropertyResourceBundle(streamReader);
+                    }
+                    finally {
+                        streamReader.close();
                     }
                 }
             }

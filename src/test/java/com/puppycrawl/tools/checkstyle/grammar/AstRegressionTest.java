@@ -25,7 +25,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractTreeTestSupport;
 import com.puppycrawl.tools.checkstyle.AstTreeStringPrinter;

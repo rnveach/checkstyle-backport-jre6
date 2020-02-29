@@ -19,17 +19,15 @@
 
 package com.puppycrawl.tools.checkstyle.filters;
 
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
@@ -38,18 +36,17 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.Violation;
-import net.sf.saxon.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.EqualsVerifierReport;
 
 public class XpathFilterElementTest extends AbstractModuleTestSupport {
 
     private File file;
     private FileContents fileContents;
 
-    @BeforeEach
+    @Before
     public void setUp() throws Exception {
         file = new File(getPath("InputXpathFilterElementSuppressByXpath.java"));
         fileContents = new FileContents(new FileText(file,
@@ -303,17 +300,13 @@ public class XpathFilterElementTest extends AbstractModuleTestSupport {
 
     @Test
     public void testEqualsAndHashCode() throws Exception {
-        final XPathEvaluator xpathEvaluator = new XPathEvaluator(Configuration.newConfiguration());
-        final EqualsVerifierReport ev = EqualsVerifier.forClass(XpathFilterElement.class)
+        final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+        EqualsVerifier.forClass(XpathFilterElement.class)
             .withPrefabValues(XPathExpression.class,
                 xpathEvaluator.createExpression("//METHOD_DEF"),
                 xpathEvaluator.createExpression("//VARIABLE_DEF"))
                 .usingGetClass()
-                .withIgnoredFields("fileRegexp", "checkRegexp", "messageRegexp", "xpathExpression")
-                .report();
-        assertWithMessage("Error: " + ev.getMessage())
-                .that(ev.isSuccessful())
-                .isTrue();
+                .verify();
     }
 
     private TreeWalkerAuditEvent getEvent(int line, int column, int tokenType)

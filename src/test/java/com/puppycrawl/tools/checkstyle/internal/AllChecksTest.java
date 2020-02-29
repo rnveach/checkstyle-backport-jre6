@@ -39,12 +39,10 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
+import com.google.common.collect.ImmutableSet;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -80,27 +78,27 @@ public class AllChecksTest extends AbstractModuleTestSupport {
     };
 
     private static final Map<String, Set<String>> CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE =
-            new HashMap<>();
+            new HashMap<String, Set<String>>();
     private static final Map<String, Set<String>> GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE =
-            new HashMap<>();
+            new HashMap<String, Set<String>>();
     private static final Set<String> INTERNAL_MODULES;
 
     static {
         // checkstyle
 
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceBefore", Stream.of(
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceBefore", ImmutableSet.of(
                 // we use GenericWhitespace for this behavior
-                "GENERIC_START", "GENERIC_END").collect(Collectors.toSet()));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AbbreviationAsWordInName", Stream.of(
+                "GENERIC_START", "GENERIC_END"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AbbreviationAsWordInName", ImmutableSet.of(
                 // enum values should be uppercase, we use EnumValueNameCheck instead
-                "ENUM_CONSTANT_DEF").collect(Collectors.toSet()));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("FinalLocalVariable", Stream.of(
+                "ENUM_CONSTANT_DEF"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("FinalLocalVariable", ImmutableSet.of(
                 // we prefer all parameters be effectively final as to not damage readability
                 // we use ParameterAssignmentCheck to enforce this
-                "PARAMETER_DEF").collect(Collectors.toSet()));
+                "PARAMETER_DEF"));
         // we have no need to block these specific tokens
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("IllegalToken",
-                Stream.of("LITERAL_SUPER", "LITERAL_ASSERT", "ENUM_CONSTANT_DEF",
+                ImmutableSet.of("LITERAL_SUPER", "LITERAL_ASSERT", "ENUM_CONSTANT_DEF",
                         "TYPE_PARAMETERS", "TYPE_UPPER_BOUNDS", "NUM_DOUBLE", "LITERAL_SWITCH",
                         "ANNOTATIONS", "LITERAL_SHORT", "LITERAL_PROTECTED", "FOR_CONDITION",
                         "FOR_INIT", "LITERAL_LONG", "MINUS", "OBJBLOCK", "LITERAL_NULL",
@@ -138,70 +136,63 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                         "PATTERN_VARIABLE_DEF", "RECORD_DEF", "LITERAL_RECORD",
                         "RECORD_COMPONENTS", "RECORD_COMPONENT_DEF", "COMPACT_CTOR_DEF",
                         "TEXT_BLOCK_LITERAL_BEGIN", "TEXT_BLOCK_CONTENT", "TEXT_BLOCK_LITERAL_END",
-                        "LITERAL_YIELD", "SWITCH_RULE")
-                        .collect(Collectors.toSet()));
+                        "LITERAL_YIELD", "SWITCH_RULE"));
         // we have no need to block specific token text
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("IllegalTokenText",
-                Stream.of("NUM_DOUBLE", "NUM_FLOAT", "NUM_INT", "NUM_LONG", "IDENT",
-                    "COMMENT_CONTENT", "STRING_LITERAL", "CHAR_LITERAL", "TEXT_BLOCK_CONTENT")
-                    .collect(Collectors.toSet()));
+                ImmutableSet.of("NUM_DOUBLE", "NUM_FLOAT", "NUM_INT", "NUM_LONG", "IDENT",
+                    "COMMENT_CONTENT", "STRING_LITERAL", "CHAR_LITERAL", "TEXT_BLOCK_CONTENT"));
         // we do not use this check as it is deprecated
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WriteTag",
-                Stream.of("ENUM_CONSTANT_DEF", "METHOD_DEF", "CTOR_DEF",
-                    "ANNOTATION_FIELD_DEF", "RECORD_DEF", "COMPACT_CTOR_DEF")
-                    .collect(Collectors.toSet()));
+                ImmutableSet.of("ENUM_CONSTANT_DEF", "METHOD_DEF", "CTOR_DEF",
+                    "ANNOTATION_FIELD_DEF", "RECORD_DEF", "COMPACT_CTOR_DEF"));
         // state of the configuration when test was made until reason found in
         // https://github.com/checkstyle/checkstyle/issues/3730
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AnnotationLocation",
-                Stream.of("CLASS_DEF", "CTOR_DEF", "ENUM_DEF", "INTERFACE_DEF",
+                ImmutableSet.of("CLASS_DEF", "CTOR_DEF", "ENUM_DEF", "INTERFACE_DEF",
                         "METHOD_DEF", "VARIABLE_DEF",
-                        "RECORD_DEF", "COMPACT_CTOR_DEF")
-                        .collect(Collectors.toSet()));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoLineWrap", Stream.of(
+                        "RECORD_DEF", "COMPACT_CTOR_DEF"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoLineWrap", ImmutableSet.of(
                 // method/constructor declaration could be long due to "parameters/exceptions", it
                 // is ok to be not strict there
                 "METHOD_DEF", "CTOR_DEF", "COMPACT_CTOR_DEF",
                 // type declaration could be long due to "extends/implements", it is ok to
                 // be not strict there
-                "CLASS_DEF", "ENUM_DEF", "INTERFACE_DEF", "RECORD_DEF")
-                .collect(Collectors.toSet()));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceAfter", Stream.of(
+                "CLASS_DEF", "ENUM_DEF", "INTERFACE_DEF", "RECORD_DEF"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceAfter", ImmutableSet.of(
                 // whitespace after is preferred
-                "TYPECAST", "LITERAL_SYNCHRONIZED").collect(Collectors.toSet()));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("SeparatorWrap", Stream.of(
+                "TYPECAST", "LITERAL_SYNCHRONIZED"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("SeparatorWrap", ImmutableSet.of(
                 // needs context to decide what type of parentheses should be separated or not
                 // which this check does not provide
-                "LPAREN", "RPAREN").collect(Collectors.toSet()));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NeedBraces", Stream.of(
+                "LPAREN", "RPAREN"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NeedBraces", ImmutableSet.of(
                 // we prefer no braces here as it looks unusual even though they help avoid sharing
                 // scope of variables
-                "LITERAL_DEFAULT", "LITERAL_CASE").collect(Collectors.toSet()));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("FinalParameters", Stream.of(
+                "LITERAL_DEFAULT", "LITERAL_CASE"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("FinalParameters", ImmutableSet.of(
                 // we prefer these to be effectively final as to not damage readability
-                "FOR_EACH_CLAUSE", "LITERAL_CATCH").collect(Collectors.toSet()));
-        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WhitespaceAround", Stream.of(
+                "FOR_EACH_CLAUSE", "LITERAL_CATCH"));
+        CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WhitespaceAround", ImmutableSet.of(
                 // we prefer no spaces on one side or both for these tokens
                 "ARRAY_INIT",
                 "ELLIPSIS",
                 // these are covered by GenericWhitespaceCheck
-                "WILDCARD_TYPE", "GENERIC_END", "GENERIC_START").collect(Collectors.toSet()));
+                "WILDCARD_TYPE", "GENERIC_END", "GENERIC_START"));
 
         // google
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AnnotationLocation", Stream.of(
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AnnotationLocation", ImmutableSet.of(
                 // state of the configuration when test was made until reason found in
                 // https://github.com/checkstyle/checkstyle/issues/3730
-                "ANNOTATION_DEF", "ANNOTATION_FIELD_DEF", "ENUM_CONSTANT_DEF", "PACKAGE_DEF")
-                .collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AbbreviationAsWordInName", Stream.of(
+                "ANNOTATION_DEF", "ANNOTATION_FIELD_DEF", "ENUM_CONSTANT_DEF", "PACKAGE_DEF"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AbbreviationAsWordInName", ImmutableSet.of(
                 // enum values should be uppercase
-                "ENUM_CONSTANT_DEF").collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoLineWrap", Stream.of(
+                "ENUM_CONSTANT_DEF"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoLineWrap", ImmutableSet.of(
                 // method declaration could be long due to "parameters/exceptions", it is ok to
                 // be not strict there
                 "METHOD_DEF", "CTOR_DEF", "CLASS_DEF", "ENUM_DEF", "INTERFACE_DEF", "RECORD_DEF",
-                "COMPACT_CTOR_DEF")
-                .collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("SeparatorWrap", Stream.of(
+                "COMPACT_CTOR_DEF"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("SeparatorWrap", ImmutableSet.of(
                 // location could be any to allow writing expressions for indexes evaluation
                 // on new line, see https://github.com/checkstyle/checkstyle/issues/3752
                 "RBRACK",
@@ -213,11 +204,11 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 "SEMI",
                 // needs context to decide what type of parentheses should be separated or not
                 // which this check does not provide
-                "LPAREN", "RPAREN").collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NeedBraces", Stream.of(
+                "LPAREN", "RPAREN"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NeedBraces", ImmutableSet.of(
                 // google doesn't require or prevent braces on these
-                "LAMBDA", "LITERAL_DEFAULT", "LITERAL_CASE").collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("EmptyBlock", Stream.of(
+                "LAMBDA", "LITERAL_DEFAULT", "LITERAL_CASE"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("EmptyBlock", ImmutableSet.of(
                 // google doesn't specifically mention empty braces at the start of a case/default
                 "LITERAL_DEFAULT", "LITERAL_CASE",
                 // can be empty for special cases via '6.2 Caught exceptions: not ignored'
@@ -227,21 +218,19 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 // state of the configuration when test was made until
                 // https://github.com/checkstyle/checkstyle/issues/4121
                 "INSTANCE_INIT", "LITERAL_DO", "LITERAL_FOR", "LITERAL_SYNCHRONIZED",
-                "LITERAL_WHILE", "STATIC_INIT").collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WhitespaceAround", Stream.of(
+                "LITERAL_WHILE", "STATIC_INIT"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WhitespaceAround", ImmutableSet.of(
                 //  allowed via '4.8.3 Arrays'
                 "ARRAY_INIT",
                 //  '...' is almost same as '[]' by meaning
                 "ELLIPSIS",
                 // google prefers no spaces on one side or both for these tokens
-                "GENERIC_START", "GENERIC_END", "WILDCARD_TYPE")
-                .collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("IllegalTokenText", Stream.of(
+                "GENERIC_START", "GENERIC_END", "WILDCARD_TYPE"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("IllegalTokenText", ImmutableSet.of(
                 // all other java tokens and text are allowed
                 "NUM_DOUBLE", "NUM_FLOAT", "NUM_INT", "NUM_LONG", "IDENT",
-                "COMMENT_CONTENT", "STRING_LITERAL", "CHAR_LITERAL", "TEXT_BLOCK_CONTENT")
-                .collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("OperatorWrap", Stream.of(
+                "COMMENT_CONTENT", "STRING_LITERAL", "CHAR_LITERAL", "TEXT_BLOCK_CONTENT"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("OperatorWrap", ImmutableSet.of(
                 // specifically allowed via '4.5.1 Where to break' because the following are
                 // assignment operators and they are allowed to break before or after the symbol
                 "DIV_ASSIGN", "BOR_ASSIGN", "SL_ASSIGN", "ASSIGN", "BSR_ASSIGN", "BAND_ASSIGN",
@@ -249,19 +238,20 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 "MOD_ASSIGN",
                 // COLON token ignored in check config, explained in
                 // https://github.com/checkstyle/checkstyle/issues/4122
-                "COLON").collect(Collectors.toSet()));
-        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceBefore", Stream.of(
+                "COLON"));
+        GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceBefore", ImmutableSet.of(
                 // google uses GenericWhitespace for this behavior
                 "GENERIC_START", "GENERIC_END",
                 // whitespace is necessary between a type annotation and ellipsis
                 // according '4.6.2 Horizontal whitespace point 9'
-                "ELLIPSIS").collect(Collectors.toSet()));
-        INTERNAL_MODULES = Definitions.INTERNAL_MODULES.stream()
-                .map(moduleName -> {
-                    final String[] packageTokens = moduleName.split("\\.");
-                    return packageTokens[packageTokens.length - 1];
-                })
-                .collect(Collectors.toSet());
+                "ELLIPSIS"));
+
+        INTERNAL_MODULES = new HashSet<String>();
+
+        for (String moduleName : Definitions.INTERNAL_MODULES) {
+            final String[] packageTokens = moduleName.split("\\.");
+            INTERNAL_MODULES.add(packageTokens[packageTokens.length - 1]);
+        }
     }
 
     @Override
@@ -371,12 +361,13 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         final Set<String> moduleNames = CheckUtil.getSimpleNames(CheckUtil.getCheckstyleModules());
 
         moduleNames.removeAll(INTERNAL_MODULES);
-        moduleNames.stream().filter(check -> !modulesReferencedInConfig.contains(check))
-            .forEach(check -> {
+        for (String check : moduleNames) {
+            if (!modulesReferencedInConfig.contains(check)) {
                 final String errorMessage = String.format(Locale.ROOT,
                     "%s is not referenced in checkstyle_checks.xml", check);
                 fail(errorMessage);
-            });
+            }
+        }
     }
 
     @Test
@@ -403,8 +394,8 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         final ModuleFactory moduleFactory = TestUtil.getPackageObjectFactory();
         final Set<Configuration> configChecks = ConfigurationUtil.getChecks(configuration);
 
-        final Map<String, Set<String>> configCheckTokens = new HashMap<>();
-        final Map<String, Set<String>> checkTokens = new HashMap<>();
+        final Map<String, Set<String>> configCheckTokens = new HashMap<String, Set<String>>();
+        final Map<String, Set<String>> checkTokens = new HashMap<String, Set<String>>();
 
         for (Configuration checkConfig : configChecks) {
             final String checkName = checkConfig.getName();
@@ -427,7 +418,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 Set<String> configTokens = configCheckTokens.get(checkName);
 
                 if (configTokens == null) {
-                    configTokens = new HashSet<>();
+                    configTokens = new HashSet<String>();
 
                     configCheckTokens.put(checkName, configTokens);
 
@@ -474,13 +465,15 @@ public class AllChecksTest extends AbstractModuleTestSupport {
     private static void validateDefaultTokens(Configuration checkConfig, AbstractCheck check,
                                               Set<String> configTokens) {
 
-        final Set<Integer> defaultTokensSet = IntStream.of(check.getDefaultTokens())
-            .boxed()
-            .collect(Collectors.toSet());
+        final Set<Integer> defaultTokensSet = new HashSet<Integer>();
+        for (int token : check.getDefaultTokens()) {
+            defaultTokensSet.add(token);
+        }
 
-        final Set<Integer> requiredTokensSet = IntStream.of(check.getRequiredTokens())
-            .boxed()
-            .collect(Collectors.toSet());
+        final Set<Integer> requiredTokensSet = new HashSet<Integer>();
+        for (int token : check.getRequiredTokens()) {
+            requiredTokensSet.add(token);
+        }
 
         if (defaultTokensSet.equals(requiredTokensSet)) {
             configTokens.addAll(
@@ -503,14 +496,15 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         checkstyleModulesNames.remove("Checker");
         // temporarily hosted in test folder
         checkstyleModulesNames.removeAll(INTERNAL_MODULES);
-        checkstyleModulesNames.stream()
-            .filter(moduleName -> !modulesNamesWhichHaveXdocs.contains(moduleName))
-            .forEach(moduleName -> {
+
+        for (String moduleName : checkstyleModulesNames) {
+            if (!modulesNamesWhichHaveXdocs.contains(moduleName)) {
                 final String missingModuleMessage = String.format(Locale.ROOT,
                     "Module %s does not have xdoc documentation.",
                     moduleName);
                 fail(missingModuleMessage);
-            });
+            }
+        }
     }
 
     @Test
@@ -541,7 +535,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
 
     @Test
     public void testAllCheckstyleMessages() throws Exception {
-        final Map<String, List<String>> usedMessages = new TreeMap<>();
+        final Map<String, List<String>> usedMessages = new TreeMap<String, List<String>>();
 
         // test validity of messages from modules
         for (Class<?> module : CheckUtil.getCheckstyleModules()) {
@@ -585,8 +579,12 @@ public class AllChecksTest extends AbstractModuleTestSupport {
             Class<?> module, Field message) throws Exception {
         final String messageString = message.get(null).toString();
         final String packageName = module.getPackage().getName();
-        final List<String> packageMessages =
-                usedMessages.computeIfAbsent(packageName, key -> new ArrayList<>());
+        List<String> packageMessages = usedMessages.get(packageName);
+
+        if (packageMessages == null) {
+            packageMessages = new ArrayList<String>();
+            usedMessages.put(packageName, packageMessages);
+        }
 
         packageMessages.add(messageString);
 

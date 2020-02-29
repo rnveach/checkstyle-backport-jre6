@@ -25,15 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
 public class BlockCommentPositionTest extends AbstractModuleTestSupport {
 
@@ -47,30 +47,85 @@ public class BlockCommentPositionTest extends AbstractModuleTestSupport {
     public void testJavaDocsRecognition() throws Exception {
         final List<BlockCommentPositionTestMetadata> metadataList = Arrays.asList(
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnClass.java",
-                        BlockCommentPosition::isOnClass, 3),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnClass(node);
+                        }
+                    }, 3),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnMethod.java",
-                        BlockCommentPosition::isOnMethod, 6),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnMethod(node);
+                        }
+                    }, 6),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnField.java",
-                        BlockCommentPosition::isOnField, 3),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnField(node);
+                        }
+                    }, 3),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnEnum.java",
-                        BlockCommentPosition::isOnEnum, 3),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnEnum(node);
+                        }
+                    }, 3),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnConstructor.java",
-                        BlockCommentPosition::isOnConstructor, 3),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnConstructor(node);
+                        }
+                    }, 3),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnInterface.java",
-                        BlockCommentPosition::isOnInterface, 3),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnInterface(node);
+                        }
+                    }, 3),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnAnnotation.java",
-                        BlockCommentPosition::isOnAnnotationDef, 3),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnAnnotationDef(node);
+                        }
+                    }, 3),
                 new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnEnumMember.java",
-                        BlockCommentPosition::isOnEnumConstant, 2),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnEnumConstant(node);
+                        }
+                    }, 2),
                 new BlockCommentPositionTestMetadata(
                         "InputBlockCommentPositionOnAnnotationField.java",
-                        BlockCommentPosition::isOnAnnotationField, 4),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnAnnotationField(node);
+                        }
+                    }, 4),
                 new BlockCommentPositionTestMetadata(
                         "inputs/normal/package-info.java",
-                        BlockCommentPosition::isOnPackage, 1),
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnPackage(node);
+                        }
+                    }, 1),
                 new BlockCommentPositionTestMetadata(
                         "inputs/annotation/package-info.java",
-                        BlockCommentPosition::isOnPackage, 1)
+                    new Function<DetailAST, Boolean>() {
+                        @Override
+                        public Boolean apply(DetailAST node) {
+                            return BlockCommentPosition.isOnPackage(node);
+                        }
+                    }, 1)
         );
 
         for (BlockCommentPositionTestMetadata metadata : metadataList) {
@@ -85,9 +140,19 @@ public class BlockCommentPositionTest extends AbstractModuleTestSupport {
     public void testJavaDocsRecognitionNonCompilable() throws Exception {
         final List<BlockCommentPositionTestMetadata> metadataList = Arrays.asList(
             new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnRecord.java",
-                BlockCommentPosition::isOnRecord, 3),
+                new Function<DetailAST, Boolean>() {
+                    @Override
+                    public Boolean apply(DetailAST node) {
+                        return BlockCommentPosition.isOnRecord(node);
+                    }
+                }, 3),
             new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnCompactCtor.java",
-                BlockCommentPosition::isOnCompactConstructor, 3)
+                new Function<DetailAST, Boolean>() {
+                    @Override
+                    public Boolean apply(DetailAST node) {
+                        return BlockCommentPosition.isOnCompactConstructor(node);
+                    }
+                }, 3)
         );
 
         for (BlockCommentPositionTestMetadata metadata : metadataList) {

@@ -41,10 +41,16 @@ public abstract class AbstractCheck extends AbstractViolationReporter {
      *
      * @noinspection ThreadLocalNotStaticFinal
      */
-    private final ThreadLocal<FileContext> context = ThreadLocal.withInitial(FileContext::new);
+    private final ThreadLocal<FileContext> context =
+        new ThreadLocal<FileContext>() {
+            @Override
+            protected FileContext initialValue() {
+                return new FileContext();
+            }
+        };
 
     /** The tokens the check is interested in. */
-    private final Set<String> tokens = new HashSet<>();
+    private final Set<String> tokens = new HashSet<String>();
 
     /** The tab width for column reporting. */
     private int tabWidth = CommonUtil.DEFAULT_TAB_WIDTH;
@@ -111,7 +117,7 @@ public abstract class AbstractCheck extends AbstractViolationReporter {
      * @return the sorted set of {@link Violation}.
      */
     public SortedSet<Violation> getViolations() {
-        return new TreeSet<>(context.get().violations);
+        return new TreeSet<Violation>(context.get().violations);
     }
 
     /**
@@ -300,7 +306,7 @@ public abstract class AbstractCheck extends AbstractViolationReporter {
     private static class FileContext {
 
         /** The sorted set for collecting violations. */
-        private final SortedSet<Violation> violations = new TreeSet<>();
+        private final SortedSet<Violation> violations = new TreeSet<Violation>();
 
         /** The current file contents. */
         private FileContents fileContents;

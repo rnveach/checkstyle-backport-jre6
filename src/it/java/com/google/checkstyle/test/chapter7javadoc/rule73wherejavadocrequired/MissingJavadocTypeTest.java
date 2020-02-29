@@ -21,7 +21,7 @@ package com.google.checkstyle.test.chapter7javadoc.rule73wherejavadocrequired;
 
 import static com.puppycrawl.tools.checkstyle.checks.javadoc.MissingJavadocMethodCheck.MSG_JAVADOC_MISSING;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.google.checkstyle.test.base.AbstractGoogleModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;

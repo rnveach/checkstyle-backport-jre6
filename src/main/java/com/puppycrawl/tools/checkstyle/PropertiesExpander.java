@@ -46,7 +46,7 @@ public final class PropertiesExpander
         if (properties == null) {
             throw new IllegalArgumentException("cannot pass null");
         }
-        values = new HashMap<>(properties.size());
+        values = new HashMap<String, String>(properties.size());
         for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
             final String name = (String) e.nextElement();
             values.put(name, properties.getProperty(name));

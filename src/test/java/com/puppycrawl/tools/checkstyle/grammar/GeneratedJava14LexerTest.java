@@ -21,11 +21,8 @@ package com.puppycrawl.tools.checkstyle.grammar;
 
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
+import org.junit.Test;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
@@ -38,10 +35,11 @@ public class GeneratedJava14LexerTest
     extends AbstractModuleTestSupport {
 
     /**
-     * Is {@code true} if current default encoding is UTF-8.
+     * <p>Is {@code true} if this is Windows.</p>
+     *
+     * <p>Adapted from org.apache.commons.lang3.SystemUtils.</p>
      */
-    private static final boolean IS_UTF8 = Charset.forName(System.getProperty("file.encoding"))
-            .equals(StandardCharsets.UTF_8);
+    private static final boolean IS_WINDOWS = System.getProperty("os.name").startsWith("Windows");
 
     @Override
     protected String getPackageLocation() {
@@ -50,8 +48,8 @@ public class GeneratedJava14LexerTest
 
     @Test
     public void testUnexpectedChar() throws Exception {
-        // Encoding problems will occur if default encoding is not UTF-8
-        Assumptions.assumeTrue(IS_UTF8, "Problems with encoding may occur");
+        // Encoding problems can occur in Windows
+        Assumptions.assumeTrue(IS_WINDOWS, "Problems with encoding may occur");
 
         // input is 'ÃЯ'
         final String[] expected = {

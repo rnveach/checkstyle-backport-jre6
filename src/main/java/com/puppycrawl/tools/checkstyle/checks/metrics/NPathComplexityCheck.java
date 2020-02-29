@@ -28,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
@@ -251,13 +252,13 @@ public final class NPathComplexityCheck extends AbstractCheck {
     /**
      * Stack of NP values for ranges.
      */
-    private final Deque<BigInteger> rangeValues = new ArrayDeque<>();
+    private final Deque<BigInteger> rangeValues = new ArrayDeque<BigInteger>();
 
     /** Stack of NP values for expressions. */
-    private final Deque<Integer> expressionValues = new ArrayDeque<>();
+    private final Deque<Integer> expressionValues = new ArrayDeque<Integer>();
 
     /** Stack of belongs to range values for question operator. */
-    private final Deque<Boolean> afterValues = new ArrayDeque<>();
+    private final Deque<Boolean> afterValues = new ArrayDeque<Boolean>();
 
     /**
      * Range of the last processed expression. Used for checking that ternary operation
@@ -620,7 +621,14 @@ public final class NPathComplexityCheck extends AbstractCheck {
         final DetailAST literalCase = ast.getFirstChild();
 
         TokenUtil.forEachChild(literalCase,
-            TokenTypes.EXPR, node -> counter.getAndIncrement());
+            TokenTypes.EXPR,
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST node) {
+                    counter.getAndIncrement();
+                    return true;
+                }
+            });
 
         return counter.get();
     }

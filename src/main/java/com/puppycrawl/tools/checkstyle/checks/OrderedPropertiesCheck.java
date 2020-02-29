@@ -22,7 +22,6 @@ package com.puppycrawl.tools.checkstyle.checks;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -33,7 +32,10 @@ import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 
 /**
  * <p>Detects if keys in properties files are in correct order.</p>
@@ -126,12 +128,21 @@ public class OrderedPropertiesCheck extends AbstractFileSetCheck {
      * @noinspection EnumerationCanBeIteration
      */
     @Override
-    protected void processFiltered(File file, FileText fileText) {
+    protected void processFiltered(File file, FileText fileText) throws CheckstyleException {
         final SequencedProperties properties = new SequencedProperties();
-        try (InputStream inputStream = Files.newInputStream(file.toPath())) {
-            properties.load(inputStream);
+        try {
+            final InputStream inputStream = Files7.newInputStream(new Path(file));
+            try {
+                properties.load(inputStream);
+            }
+            finally {
+                inputStream.close();
+            }
         }
-        catch (IOException | IllegalArgumentException ex) {
+        catch (IOException ex) {
+            log(1, MSG_IO_EXCEPTION_KEY, file.getPath(), ex.getLocalizedMessage());
+        }
+        catch (IllegalArgumentException ex) {
             log(1, MSG_IO_EXCEPTION_KEY, file.getPath(), ex.getLocalizedMessage());
         }
 
@@ -222,7 +233,7 @@ public class OrderedPropertiesCheck extends AbstractFileSetCheck {
         /**
          * Holding the keys in the same order than in the file.
          */
-        private final List<Object> keyList = new ArrayList<>();
+        private final List<Object> keyList = new ArrayList<Object>();
 
         /**
          * Returns a copy of the keys.

@@ -21,11 +21,8 @@ package com.puppycrawl.tools.checkstyle.filters;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -34,6 +31,10 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.Filter;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -433,10 +434,15 @@ public class SuppressWithPlainTextCommentFilter extends AutomaticBean implements
      * @return list of {@link Suppression} instances.
      */
     private List<Suppression> getSuppressions(FileText fileText) {
-        final List<Suppression> suppressions = new ArrayList<>();
+        final List<Suppression> suppressions = new ArrayList<Suppression>();
         for (int lineNo = 0; lineNo < fileText.size(); lineNo++) {
             final Optional<Suppression> suppression = getSuppression(fileText, lineNo);
-            suppression.ifPresent(suppressions::add);
+            suppression.ifPresent(new Consumer<Suppression>() {
+                @Override
+                public boolean accept(Suppression suppression) {
+                    return suppressions.add(suppression);
+                }
+            });
         }
         return suppressions;
     }
@@ -477,12 +483,16 @@ public class SuppressWithPlainTextCommentFilter extends AutomaticBean implements
      */
     private static Suppression getNearestSuppression(List<Suppression> suppressions,
                                                      AuditEvent event) {
-        return suppressions
-            .stream()
-            .filter(suppression -> suppression.isMatch(event))
-            .reduce((first, second) -> second)
-            .filter(suppression -> suppression.suppressionType != SuppressionType.ON)
-            .orElse(null);
+        Suppression result = null;
+        for (Suppression suppression : suppressions) {
+            if (suppression.isMatch(event)) {
+                result = suppression;
+            }
+        }
+        if (result != null && result.suppressionType == SuppressionType.ON) {
+            result = null;
+        }
+        return result;
     }
 
     /** Enum which represents the type of the suppression. */

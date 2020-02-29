@@ -28,16 +28,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
 
@@ -47,7 +47,7 @@ public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(AstTreeStringPrinter.class, true),
                 "Constructor is not private");
     }
@@ -96,7 +96,7 @@ public class AstTreeStringPrinterTest extends AbstractTreeTestSupport {
                 System.getProperty("file.encoding", StandardCharsets.UTF_8.name()));
         final String actual = toLfLineEnding(AstTreeStringPrinter.printAst(text,
                 JavaParser.Options.WITHOUT_COMMENTS));
-        final String expected = toLfLineEnding(new String(Files.readAllBytes(Paths.get(
+        final String expected = toLfLineEnding(new String(Files7.readAllBytes(Paths.get(
                 getPath("ExpectedAstTreeStringPrinter.txt"))), StandardCharsets.UTF_8));
 
         assertEquals(expected, actual, "Print AST output is invalid");

@@ -21,11 +21,11 @@ package com.puppycrawl.tools.checkstyle;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 
 public abstract class AbstractPathTestSupport {
 
@@ -34,7 +34,7 @@ public abstract class AbstractPathTestSupport {
     // by replacing the full match with the empty string
     private static final String CR_FOLLOWED_BY_LF_REGEX = "(?x)\\\\r(?=\\\\n)|\\r(?=\\n)";
 
-    private static final String EOL = System.lineSeparator();
+    private static final String EOL = System7.lineSeparator();
 
     /**
      * Returns the exact location for the package where the file is present.
@@ -79,7 +79,7 @@ public abstract class AbstractPathTestSupport {
      * @throws IOException if I/O exception occurs while reading
      */
     protected static String readFile(String filename) throws IOException {
-        return toLfLineEnding(new String(Files.readAllBytes(
+        return toLfLineEnding(new String(Files7.readAllBytes(
                 Paths.get(filename)), StandardCharsets.UTF_8));
     }
 
@@ -90,7 +90,12 @@ public abstract class AbstractPathTestSupport {
      * @return joined strings
      */
     public static String addEndOfLine(String... strings) {
-        return Stream.of(strings).collect(Collectors.joining(EOL, "", EOL));
+        final StringBuilder result = new StringBuilder();
+        for (String string : strings) {
+            result.append(string);
+            result.append(EOL);
+        }
+        return result.toString();
     }
 
     protected static String toLfLineEnding(String text) {

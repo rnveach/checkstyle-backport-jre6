@@ -32,7 +32,7 @@ public final class BeforeExecutionFileFilterSet
     implements BeforeExecutionFileFilter {
 
     /** Filter set. */
-    private final Set<BeforeExecutionFileFilter> beforeExecutionFileFilters = new HashSet<>();
+    private final Set<BeforeExecutionFileFilter> beforeExecutionFileFilters = new HashSet<BeforeExecutionFileFilter>();
 
     /**
      * Adds a Filter to the set.

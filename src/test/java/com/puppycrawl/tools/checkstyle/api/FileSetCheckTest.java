@@ -23,7 +23,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;

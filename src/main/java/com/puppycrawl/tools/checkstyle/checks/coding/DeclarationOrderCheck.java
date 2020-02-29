@@ -274,8 +274,8 @@ public class DeclarationOrderCheck extends AbstractCheck {
 
     @Override
     public void beginTree(DetailAST rootAST) {
-        scopeStates = new ArrayDeque<>();
-        classFieldNames = new HashSet<>();
+        scopeStates = new ArrayDeque<ScopeState>();
+        classFieldNames = new HashSet<String>();
     }
 
     @Override
@@ -433,8 +433,8 @@ public class DeclarationOrderCheck extends AbstractCheck {
      */
     private static Set<DetailAST> getAllTokensOfType(DetailAST ast, int tokenType) {
         DetailAST vertex = ast;
-        final Set<DetailAST> result = new HashSet<>();
-        final Deque<DetailAST> stack = new ArrayDeque<>();
+        final Set<DetailAST> result = new HashSet<DetailAST>();
+        final Deque<DetailAST> stack = new ArrayDeque<DetailAST>();
         while (vertex != null || !stack.isEmpty()) {
             if (!stack.isEmpty()) {
                 vertex = stack.pop();

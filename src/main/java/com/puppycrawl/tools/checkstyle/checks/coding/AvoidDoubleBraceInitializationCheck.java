@@ -21,12 +21,12 @@ package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
@@ -126,8 +126,12 @@ public class AvoidDoubleBraceInitializationCheck extends AbstractCheck {
     /**
      * Predicate for tokens that is used in {@link #hasOnlyInitialization(DetailAST)}.
      */
-    private static final Predicate<DetailAST> HAS_MEMBERS =
-        token -> !IGNORED_TYPES.contains(token.getType());
+    private static final Predicate<DetailAST> HAS_MEMBERS = new Predicate<DetailAST>() {
+        @Override
+        public boolean test(DetailAST token) {
+            return !IGNORED_TYPES.contains(token.getType());
+        }
+    };
 
     @Override
     public int[] getDefaultTokens() {

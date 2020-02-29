@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -127,11 +128,14 @@ public class MainFrame extends JFrame {
         reloadFileButton.setMnemonic(KeyEvent.VK_R);
         reloadFileButton.setText("Reload File");
 
-        final JComboBox<ParseMode> modesCombobox = new JComboBox<>(ParseMode.values());
+        final JComboBox modesCombobox = new JComboBox(ParseMode.values());
         modesCombobox.setSelectedIndex(0);
-        modesCombobox.addActionListener(event -> {
-            model.setParseMode((ParseMode) modesCombobox.getSelectedItem());
-            reloadAction.actionPerformed(null);
+        modesCombobox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                model.setParseMode((ParseMode) modesCombobox.getSelectedItem());
+                reloadAction.actionPerformed(null);
+            }
         });
 
         final JLabel modesLabel = new JLabel("Modes:", SwingConstants.RIGHT);

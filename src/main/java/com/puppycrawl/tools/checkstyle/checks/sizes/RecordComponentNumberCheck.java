@@ -27,6 +27,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifierOption;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
@@ -222,7 +223,13 @@ public class RecordComponentNumberCheck extends AbstractCheck {
         final AtomicInteger count = new AtomicInteger(0);
         TokenUtil.forEachChild(recordComponents,
             TokenTypes.RECORD_COMPONENT_DEF,
-            node -> count.getAndIncrement());
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST node) {
+                    count.getAndIncrement();
+                    return true;
+                }
+            });
         return count.get();
     }
 
@@ -233,7 +240,15 @@ public class RecordComponentNumberCheck extends AbstractCheck {
      * @return whether the record definition matches the expected access modifier.
      */
     private boolean matchAccessModifiers(final AccessModifierOption accessModifier) {
-        return Arrays.stream(accessModifiers)
-                .anyMatch(modifier -> modifier == accessModifier);
+        boolean result = false;
+
+        for (AccessModifierOption modifier : accessModifiers) {
+            if (modifier == accessModifier) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 }

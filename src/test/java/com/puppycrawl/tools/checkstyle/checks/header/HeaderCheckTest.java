@@ -29,8 +29,9 @@ import java.io.File;
 import java.net.URI;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -40,8 +41,8 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class HeaderCheckTest extends AbstractModuleTestSupport {
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
     protected String getPackageLocation() {
@@ -211,7 +212,7 @@ public class HeaderCheckTest extends AbstractModuleTestSupport {
         checkConfig.addProperty("headerFile", getPath("InputHeaderjava.header"));
 
         final DefaultConfiguration checkerConfig = createRootConfig(checkConfig);
-        final File cacheFile = File.createTempFile("junit", null, temporaryFolder);
+        final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
         checkerConfig.addProperty("cacheFile", cacheFile.getPath());
 
         final String[] expected = {
@@ -229,7 +230,7 @@ public class HeaderCheckTest extends AbstractModuleTestSupport {
         checkConfig.addProperty("header", "Test");
 
         final DefaultConfiguration checkerConfig = createRootConfig(checkConfig);
-        final File cacheFile = File.createTempFile("junit", null, temporaryFolder);
+        final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
         checkerConfig.addProperty("cacheFile", cacheFile.getPath());
 
         final String[] expected = {

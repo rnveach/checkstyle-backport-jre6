@@ -22,8 +22,8 @@ package com.puppycrawl.tools.checkstyle.checks.imports;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 public class PkgImportControlTest {
 
@@ -44,7 +44,7 @@ public class PkgImportControlTest {
     private final PkgImportControl icBootRegexpParen = new PkgImportControl(icRootRegexpParent,
             "bo+t", true, MismatchStrategy.DELEGATE_TO_PARENT);
 
-    @BeforeEach
+    @Before
     public void setUp() {
         icRoot.addChild(icCommon);
         icRoot.addImportRule(

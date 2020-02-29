@@ -28,11 +28,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -43,6 +41,11 @@ import com.puppycrawl.tools.checkstyle.api.DetailNode;
 import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.AbstractJavadocCheck;
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Supplier;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
@@ -52,7 +55,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 public class JavadocMetadataScraper extends AbstractJavadocCheck {
 
     /** Module details store used for testing. */
-    private static final Map<String, ModuleDetails> MODULE_DETAILS_STORE = new HashMap<>();
+    private static final Map<String, ModuleDetails> MODULE_DETAILS_STORE = new HashMap<String, ModuleDetails>();
 
     /** Regular expression for property location in class-level javadocs. */
     private static final Pattern PROPERTY_TAG = Pattern.compile("\\s*Property\\s*");
@@ -99,7 +102,7 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      * metadata files.
      */
     private static final Set<String> PROPERTIES_TO_NOT_WRITE = Collections.unmodifiableSet(
-            new HashSet<>(Arrays.asList(
+            new HashSet<String>(Arrays.asList(
                     "null",
                     "the charset property of the parent <a href=https://checkstyle.org/"
                         + "config.html#Checker>Checker</a> module"
@@ -219,7 +222,11 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
                 try {
                     XmlMetaWriter.write(moduleDetails);
                 }
-                catch (TransformerException | ParserConfigurationException ex) {
+                catch (TransformerException ex) {
+                    throw new IllegalStateException("Failed to write metadata into XML file for "
+                            + "module: " + getModuleSimpleName(), ex);
+                }
+                catch (ParserConfigurationException ex) {
                     throw new IllegalStateException("Failed to write metadata into XML file for "
                             + "module: " + getModuleSimpleName(), ex);
                 }
@@ -266,7 +273,7 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      * @param nodeLi list item javadoc node
      * @return modulePropertyDetail object for the corresponding property
      */
-    private static ModulePropertyDetails createProperties(DetailNode nodeLi) {
+    private static ModulePropertyDetails createProperties(final DetailNode nodeLi) {
         final ModulePropertyDetails modulePropertyDetails = new ModulePropertyDetails();
 
         final Optional<DetailNode> propertyNameNode = getFirstChildOfType(nodeLi,
@@ -276,10 +283,13 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
             final String propertyName = getTextFromTag(propertyNameTag);
 
             final DetailNode propertyType = getFirstChildOfMatchingText(nodeLi, TYPE_TAG)
-                .orElseThrow(() -> {
-                    return new MetadataGenerationException(String.format(
-                        Locale.ROOT, PROP_TYPE_MISSING, propertyName)
-                    );
+                .orElseThrow(new Supplier<MetadataGenerationException>() {
+                    @Override
+                    public MetadataGenerationException get() {
+                        return new MetadataGenerationException(String.format(
+                            Locale.ROOT, PROP_TYPE_MISSING, propertyName)
+                        );
+                    }
                 });
             final String propertyDesc = DESC_CLEAN.matcher(
                     constructSubTreeText(nodeLi, propertyNameTag.getIndex() + 1,
@@ -299,11 +309,19 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
             }
 
             final String defaultValue = getFirstChildOfMatchingText(nodeLi, DEFAULT_VALUE_TAG)
-                .map(defaultValueNode -> getPropertyDefaultText(nodeLi, defaultValueNode))
-                .orElseThrow(() -> {
-                    return new MetadataGenerationException(String.format(
-                        Locale.ROOT, PROP_DEFAULT_VALUE_MISSING, propertyName)
-                    );
+                .map(new Function<DetailNode, String>() {
+                    @Override
+                    public String apply(DetailNode defaultValueNode) {
+                        return getPropertyDefaultText(nodeLi, defaultValueNode);
+                    }
+                })
+                .orElseThrow(new Supplier<MetadataGenerationException>() {
+                    @Override
+                    public MetadataGenerationException get() {
+                        return new MetadataGenerationException(String.format(
+                            Locale.ROOT, PROP_DEFAULT_VALUE_MISSING, propertyName)
+                        );
+                    }
                 });
             if (!PROPERTIES_TO_NOT_WRITE.contains(defaultValue)) {
                 modulePropertyDetails.setDefaultValue(defaultValue);
@@ -336,12 +354,12 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      * @return clean text
      */
     private static String cleanDefaultTokensText(String initialText) {
-        final Set<String> tokens = new LinkedHashSet<>();
+        final Set<String> tokens = new LinkedHashSet<String>();
         final Matcher matcher = TOKEN_TEXT_PATTERN.matcher(initialText);
         while (matcher.find()) {
             tokens.add(matcher.group(0));
         }
-        return String.join(",", tokens);
+        return String7.join(",", tokens);
     }
 
     /**
@@ -358,9 +376,9 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
         final StringBuilder result = new StringBuilder(1024);
         DetailNode detailNode = node;
 
-        final Deque<DetailNode> stack = new ArrayDeque<>();
+        final Deque<DetailNode> stack = new ArrayDeque<DetailNode>();
         stack.addFirst(detailNode);
-        final Set<DetailNode> visited = new HashSet<>();
+        final Set<DetailNode> visited = new HashSet<DetailNode>();
         while (!stack.isEmpty()) {
             detailNode = stack.getFirst();
             stack.removeFirst();
@@ -440,7 +458,17 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
     private static String getViolationMessages(DetailNode nodeLi) {
         final Optional<DetailNode> resultNode = getFirstChildOfType(nodeLi,
                 JavadocTokenTypes.JAVADOC_INLINE_TAG, 0);
-        return resultNode.map(JavadocMetadataScraper::getTextFromTag).orElse("");
+
+        final String result;
+
+        if (resultNode.isPresent()) {
+            result = getTextFromTag(resultNode.get());
+        }
+        else {
+            result = "";
+        }
+
+        return result;
     }
 
     /**
@@ -450,7 +478,16 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      * @return text contained by the tag
      */
     private static String getTextFromTag(DetailNode nodeTag) {
-        return Optional.ofNullable(nodeTag).map(JavadocMetadataScraper::getText).orElse("");
+        final String result;
+
+        if (nodeTag == null) {
+            result = "";
+        }
+        else {
+            result = getText(nodeTag);
+        }
+
+        return result;
     }
 
     /**
@@ -464,9 +501,16 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      */
     private static Optional<DetailNode> getFirstChildOfType(DetailNode node, int tokenType,
                                                             int offset) {
-        return Arrays.stream(node.getChildren())
-                .filter(child -> child.getIndex() >= offset && child.getType() == tokenType)
-                .findFirst();
+        Optional<DetailNode> result = Optional.empty();
+
+        for (DetailNode child : node.getChildren()) {
+            if (child.getIndex() >= offset && child.getType() == tokenType) {
+                result = Optional.of(child);
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -476,10 +520,23 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      * @return the joined text of node
      */
     private static String getText(DetailNode parentNode) {
-        return Arrays.stream(parentNode.getChildren())
-                .filter(child -> child.getType() == JavadocTokenTypes.TEXT)
-                .map(node -> QUOTE_PATTERN.matcher(node.getText().trim()).replaceAll(""))
-                .collect(Collectors.joining(" "));
+        String result = "";
+        boolean first = true;
+
+        for (DetailNode child : parentNode.getChildren()) {
+            if (child.getType() == JavadocTokenTypes.TEXT) {
+                if (first) {
+                    first = false;
+                }
+                else {
+                    result += " ";
+                }
+
+                result += QUOTE_PATTERN.matcher(child.getText().trim()).replaceAll("");
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -491,9 +548,16 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      */
     private static Optional<DetailNode> getFirstChildOfMatchingText(DetailNode node,
                                                                     Pattern pattern) {
-        return Arrays.stream(node.getChildren())
-                .filter(child -> pattern.matcher(child.getText()).matches())
-                .findFirst();
+        Optional<DetailNode> result = Optional.empty();
+
+        for (DetailNode child : node.getChildren()) {
+            if (pattern.matcher(child.getText()).matches()) {
+                result = Optional.of(child);
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -537,8 +601,12 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      */
     private static String getParentText(DetailNode nodeParagraph) {
         return getFirstChildOfType(nodeParagraph, JavadocTokenTypes.JAVADOC_INLINE_TAG, 0)
-                .map(JavadocMetadataScraper::getTextFromTag)
-                .orElse(null);
+                .map(new Function<DetailNode, String>() {
+                    @Override
+                    public String apply(DetailNode node) {
+                        return getTextFromTag(node);
+                    }
+                }).orElse(null);
     }
 
     /**
@@ -580,7 +648,7 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      * @return package name
      */
     private static String getPackageName(String filePath) {
-        final Deque<String> result = new ArrayDeque<>();
+        final Deque<String> result = new ArrayDeque<String>();
         final String[] filePathTokens = FILE_SEPARATOR_PATTERN.split(filePath);
         for (int i = filePathTokens.length - 1; i >= 0; i--) {
             if ("java".equals(filePathTokens[i]) || "resources".equals(filePathTokens[i])) {
@@ -590,7 +658,7 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
         }
         final String fileName = result.removeLast();
         result.addLast(fileName.substring(0, fileName.length() - JAVA_FILE_EXTENSION.length()));
-        return String.join(".", result);
+        return String7.join(".", result);
     }
 
     /**
@@ -611,9 +679,12 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
     public boolean isTopLevelClassJavadoc() {
         final DetailAST parent = getParent(getBlockCommentAst());
         final Optional<DetailAST> className = TokenUtil
-                .findFirstTokenByPredicate(parent, child -> {
-                    return parent.getType() == TokenTypes.CLASS_DEF
-                            && child.getType() == TokenTypes.IDENT;
+                .findFirstTokenByPredicate(parent, new Predicate<DetailAST>() {
+                    @Override
+                    public boolean test(DetailAST child) {
+                        return parent.getType() == TokenTypes.CLASS_DEF
+                                && child.getType() == TokenTypes.IDENT;
+                    }
                 });
         return className.isPresent()
                 && getModuleSimpleName().equals(className.get().getText());
@@ -668,11 +739,26 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      * @param pattern pattern to match
      * @return true if one of child text nodes matches pattern
      */
-    private static boolean isChildNodeTextMatches(DetailNode ast, Pattern pattern) {
+    private static boolean isChildNodeTextMatches(DetailNode ast, final Pattern pattern) {
         return getFirstChildOfType(ast, JavadocTokenTypes.TEXT, 0)
-                .map(DetailNode::getText)
-                .map(pattern::matcher)
-                .map(Matcher::matches)
+                .map(new Function<DetailNode, String>() {
+                    @Override
+                    public String apply(DetailNode node) {
+                        return node.getText();
+                    }
+                })
+                .map(new Function<String, Matcher>() {
+                    @Override
+                    public Matcher apply(String text) {
+                        return pattern.matcher(text);
+                    }
+                })
+                .map(new Function<Matcher, Boolean>() {
+                    @Override
+                    public Boolean apply(Matcher matcher) {
+                        return matcher.matches();
+                    }
+                })
                 .orElse(false);
     }
 }

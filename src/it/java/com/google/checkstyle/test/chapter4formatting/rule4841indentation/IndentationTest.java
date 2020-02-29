@@ -22,7 +22,7 @@ package com.google.checkstyle.test.chapter4formatting.rule4841indentation;
 import static com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck.MSG_CHILD_ERROR;
 import static com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck.MSG_ERROR;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.google.checkstyle.test.base.AbstractIndentationTestSupport;
 import com.puppycrawl.tools.checkstyle.api.Configuration;

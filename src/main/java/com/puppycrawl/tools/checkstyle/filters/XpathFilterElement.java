@@ -20,12 +20,11 @@
 package com.puppycrawl.tools.checkstyle.filters;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
 import com.puppycrawl.tools.checkstyle.TreeWalkerFilter;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.xpath.AbstractNode;
 import com.puppycrawl.tools.checkstyle.xpath.RootNode;
@@ -217,9 +216,9 @@ public class XpathFilterElement implements TreeWalkerFilter {
         }
         else {
             isMatching = false;
-            final List<AbstractNode> nodes = getItems(event)
-                    .stream().map(AbstractNode.class::cast).collect(Collectors.toList());
-            for (AbstractNode abstractNode : nodes) {
+            final List<Item> nodes = getItems(event);
+            for (Item node : nodes) {
+                final AbstractNode abstractNode = (AbstractNode) node;
                 isMatching = abstractNode.getTokenType() == event.getTokenType()
                         && abstractNode.getLineNumber() == event.getLine()
                         && abstractNode.getColumnNumber() == event.getColumnCharIndex();

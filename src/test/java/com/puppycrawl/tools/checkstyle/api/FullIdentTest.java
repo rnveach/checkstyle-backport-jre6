@@ -23,13 +23,13 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.JavaParser;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class FullIdentTest extends AbstractModuleTestSupport {
 

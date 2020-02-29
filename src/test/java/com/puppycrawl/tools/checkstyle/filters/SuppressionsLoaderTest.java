@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 import org.xml.sax.InputSource;
 
@@ -310,7 +310,7 @@ public class SuppressionsLoaderTest extends AbstractPathTestSupport {
         final String fn = getPath("InputSuppressionsLoaderXpathCorrect.xml");
         final Set<TreeWalkerFilter> filterSet = SuppressionsLoader.loadXpathSuppressions(fn);
 
-        final Set<TreeWalkerFilter> expectedFilterSet = new HashSet<>();
+        final Set<TreeWalkerFilter> expectedFilterSet = new HashSet<TreeWalkerFilter>();
         final XpathFilterElement xf0 =
                 new XpathFilterElement("file1", "test", null, "id1", "//CLASS_DEF");
         expectedFilterSet.add(xf0);

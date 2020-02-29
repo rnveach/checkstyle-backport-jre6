@@ -32,14 +32,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 public class JavaParserTest extends AbstractModuleTestSupport {
 
@@ -49,7 +50,7 @@ public class JavaParserTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(TestUtil.isUtilsClassHasPrivateConstructor(
             JavaParser.class, false), "Constructor is not private");
     }
@@ -66,7 +67,12 @@ public class JavaParserTest extends AbstractModuleTestSupport {
                 JavaParser.Options.WITH_COMMENTS);
 
         final Optional<DetailAST> blockComment = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.BLOCK_COMMENT_BEGIN);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.BLOCK_COMMENT_BEGIN;
+                }
+            });
 
         assertTrue(blockComment.isPresent(), "Block comment should be present");
 
@@ -92,7 +98,12 @@ public class JavaParserTest extends AbstractModuleTestSupport {
                 JavaParser.Options.WITH_COMMENTS);
 
         final Optional<DetailAST> singleLineComment = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.SINGLE_LINE_COMMENT);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.SINGLE_LINE_COMMENT;
+                }
+            });
         assertTrue(singleLineComment.isPresent(), "Single line comment should be present");
 
         final DetailAST comment = singleLineComment.get();
@@ -117,7 +128,12 @@ public class JavaParserTest extends AbstractModuleTestSupport {
                 JavaParser.Options.WITH_COMMENTS);
 
         final Optional<DetailAST> singleLineComment = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.SINGLE_LINE_COMMENT);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.SINGLE_LINE_COMMENT;
+                }
+            });
         assertTrue(singleLineComment.isPresent(), "Single line comment should be present");
 
         final DetailAST comment = singleLineComment.get();
@@ -142,7 +158,12 @@ public class JavaParserTest extends AbstractModuleTestSupport {
                 JavaParser.Options.WITHOUT_COMMENTS);
 
         final Optional<DetailAST> singleLineComment = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.SINGLE_LINE_COMMENT);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.SINGLE_LINE_COMMENT;
+                }
+            });
         assertFalse(singleLineComment.isPresent(), "Single line comment should be present");
     }
 
@@ -189,7 +210,12 @@ public class JavaParserTest extends AbstractModuleTestSupport {
                 JavaParser.Options.WITHOUT_COMMENTS);
 
         final Optional<DetailAST> textBlockContent = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.TEXT_BLOCK_CONTENT);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.TEXT_BLOCK_CONTENT;
+                }
+            });
 
         assertTrue(textBlockContent.isPresent(), "Text block content should be present");
 
@@ -234,8 +260,8 @@ public class JavaParserTest extends AbstractModuleTestSupport {
     }
 
     private static final class CountComments {
-        private final List<String> lineComments = new ArrayList<>();
-        private final List<String> blockComments = new ArrayList<>();
+        private final List<String> lineComments = new ArrayList<String>();
+        private final List<String> blockComments = new ArrayList<String>();
 
         /* package */ CountComments(DetailAST root) {
             forEachChild(root);

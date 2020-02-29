@@ -41,9 +41,9 @@ public final class JavadocTags {
      * @param invalidTags the list of invalid tags
      */
     public JavadocTags(List<JavadocTag> tags, List<InvalidJavadocTag> invalidTags) {
-        final List<JavadocTag> validTagsCopy = new ArrayList<>(tags);
+        final List<JavadocTag> validTagsCopy = new ArrayList<JavadocTag>(tags);
         validTags = Collections.unmodifiableList(validTagsCopy);
-        final List<InvalidJavadocTag> invalidTagsCopy = new ArrayList<>(invalidTags);
+        final List<InvalidJavadocTag> invalidTagsCopy = new ArrayList<InvalidJavadocTag>(invalidTags);
         this.invalidTags = Collections.unmodifiableList(invalidTagsCopy);
     }
 

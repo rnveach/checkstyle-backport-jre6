@@ -28,19 +28,19 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -122,13 +122,17 @@ public final class PropertyCacheFile {
         configHash = getHashCodeBasedOnObjectContent(config);
         final File file = new File(fileName);
         if (file.exists()) {
-            try (InputStream inStream = Files.newInputStream(file.toPath())) {
+            final InputStream inStream = Files7.newInputStream(new Path(file));
+            try {
                 details.load(inStream);
                 final String cachedConfigHash = details.getProperty(CONFIG_HASH_KEY);
                 if (!configHash.equals(cachedConfigHash)) {
                     // Detected configuration change - clear cache
                     reset();
                 }
+            }
+            finally {
+                inStream.close();
             }
         }
         else {
@@ -146,10 +150,14 @@ public final class PropertyCacheFile {
         final Path path = Paths.get(fileName);
         final Path directory = path.getParent();
         if (directory != null) {
-            Files.createDirectories(directory);
+            Files7.createDirectories(directory);
         }
-        try (OutputStream out = Files.newOutputStream(path)) {
+        final OutputStream out = Files7.newOutputStream(path);
+        try {
             details.store(out, null);
+        }
+        finally {
+            out.close();
         }
     }
 
@@ -223,7 +231,11 @@ public final class PropertyCacheFile {
 
             return new BigInteger(1, digest.digest()).toString(BASE_16).toUpperCase(Locale.ROOT);
         }
-        catch (final IOException | NoSuchAlgorithmException ex) {
+        catch (final IOException ex) {
+            // rethrow as unchecked exception
+            throw new IllegalStateException("Unable to calculate hashcode.", ex);
+        }
+        catch (final NoSuchAlgorithmException ex) {
             // rethrow as unchecked exception
             throw new IllegalStateException("Unable to calculate hashcode.", ex);
         }
@@ -238,8 +250,12 @@ public final class PropertyCacheFile {
      */
     private static void serialize(Serializable object,
                                   OutputStream outputStream) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
+        final ObjectOutputStream oos = new ObjectOutputStream(outputStream);
+        try {
             oos.writeObject(object);
+        }
+        finally {
+            oos.close();
         }
     }
 
@@ -264,7 +280,7 @@ public final class PropertyCacheFile {
      * @return a set of {@link ExternalResource}.
      */
     private static Set<ExternalResource> loadExternalResources(Set<String> resourceLocations) {
-        final Set<ExternalResource> resources = new HashSet<>();
+        final Set<ExternalResource> resources = new HashSet<ExternalResource>();
         for (String location : resourceLocations) {
             try {
                 final byte[] content = loadExternalResource(location);
@@ -272,7 +288,16 @@ public final class PropertyCacheFile {
                 resources.add(new ExternalResource(EXTERNAL_RESOURCE_KEY_PREFIX + location,
                         contentHashSum));
             }
-            catch (CheckstyleException | IOException ex) {
+            catch (CheckstyleException ex) {
+                // if exception happened (configuration resource was not found, connection is not
+                // available, resource is broken, etc), we need to calculate hash sum based on
+                // exception object content in order to check whether problem is resolved later
+                // and/or the configuration is changed.
+                final String contentHashSum = getHashCodeBasedOnObjectContent(ex);
+                resources.add(new ExternalResource(EXTERNAL_RESOURCE_KEY_PREFIX + location,
+                        contentHashSum));
+            }
+            catch (IOException ex) {
                 // if exception happened (configuration resource was not found, connection is not
                 // available, resource is broken, etc), we need to calculate hash sum based on
                 // exception object content in order to check whether problem is resolved later
@@ -296,9 +321,13 @@ public final class PropertyCacheFile {
     private static byte[] loadExternalResource(String location)
             throws IOException, CheckstyleException {
         final URI uri = CommonUtil.getUriByFilename(location);
+        final InputStream is = uri.toURL().openStream();
 
-        try (InputStream is = uri.toURL().openStream()) {
+        try {
             return toByteArray(is);
+        }
+        finally {
+            is.close();
         }
     }
 
@@ -331,7 +360,14 @@ public final class PropertyCacheFile {
      * @return true if the contents of external configuration resources were changed.
      */
     private boolean areExternalResourcesChanged(Set<ExternalResource> resources) {
-        return resources.stream().anyMatch(this::isResourceChanged);
+        boolean result = false;
+        for (ExternalResource resource : resources) {
+            if (isResourceChanged(resource)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -341,18 +377,18 @@ public final class PropertyCacheFile {
      * @return true if resource is changed.
      */
     private boolean isResourceChanged(ExternalResource resource) {
-        boolean changed = false;
+        boolean result = false;
         if (isResourceLocationInCache(resource.location)) {
             final String contentHashSum = resource.contentHashSum;
             final String cachedHashSum = details.getProperty(resource.location);
             if (!cachedHashSum.equals(contentHashSum)) {
-                changed = true;
+                result = true;
             }
         }
         else {
-            changed = true;
+            result = true;
         }
-        return changed;
+        return result;
     }
 
     /**
@@ -362,8 +398,9 @@ public final class PropertyCacheFile {
      * @param externalResources a set of {@link ExternalResource}.
      */
     private void fillCacheWithExternalResources(Set<ExternalResource> externalResources) {
-        externalResources
-            .forEach(resource -> details.setProperty(resource.location, resource.contentHashSum));
+        for (ExternalResource resource : externalResources) {
+            details.setProperty(resource.location, resource.contentHashSum);
+        }
     }
 
     /**

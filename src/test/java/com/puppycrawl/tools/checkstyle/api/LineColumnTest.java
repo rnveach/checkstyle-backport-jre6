@@ -21,10 +21,9 @@ package com.puppycrawl.tools.checkstyle.api;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.EqualsVerifierReport;
 
 public class LineColumnTest {
 
@@ -66,11 +65,8 @@ public class LineColumnTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        final EqualsVerifierReport ev = EqualsVerifier.forClass(LineColumn.class).usingGetClass()
-                .report();
-        assertWithMessage("Error: " + ev.getMessage())
-                .that(ev.isSuccessful())
-                .isTrue();
+        EqualsVerifier.forClass(LineColumn.class).usingGetClass()
+                .verify();
     }
 
     @Test

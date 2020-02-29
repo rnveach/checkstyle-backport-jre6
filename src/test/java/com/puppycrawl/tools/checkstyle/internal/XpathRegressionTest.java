@@ -23,24 +23,21 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Definitions;
@@ -50,12 +47,15 @@ import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocStyleCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.WriteTagCheck;
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
 
 public class XpathRegressionTest extends AbstractModuleTestSupport {
 
     // Checks that not compatible with SuppressionXpathFilter
     public static final Set<String> INCOMPATIBLE_CHECK_NAMES =
-        Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
             "NoCodeInFile (reason is that AST is not generated for a file not containing code)",
             "Regexp (reason is at  #7759)",
             "RegexpSinglelineJava (reason is at  #7759)"
@@ -66,7 +66,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     // then all of them should be added to the list of incompatible checks
     // and this field should be removed
     public static final Set<String> INCOMPATIBLE_JAVADOC_CHECK_NAMES =
-            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
                     "AtclauseOrder",
                     "JavadocBlockTagLocation",
                     "JavadocMethod",
@@ -87,7 +87,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     // Older regex-based checks that are under INCOMPATIBLE_JAVADOC_CHECK_NAMES
     // but not subclasses of AbstractJavadocCheck.
     private static final Set<Class<?>> REGEXP_JAVADOC_CHECKS =
-            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            Collections.unmodifiableSet(new HashSet<Class<?>>(Arrays.asList(
                     JavadocStyleCheck.class,
                     JavadocMethodCheck.class,
                     JavadocTypeCheck.class,
@@ -96,7 +96,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
 
     // Checks that allowed to have no XPath IT Regression Testing
     // till https://github.com/checkstyle/checkstyle/issues/6207
-    private static final Set<String> MISSING_CHECK_NAMES = new HashSet<>(Arrays.asList(
+    private static final Set<String> MISSING_CHECK_NAMES = new HashSet<String>(Arrays.asList(
             "BooleanExpressionComplexity",
             "CatchParameterName",
             "ClassDataAbstractionCoupling",
@@ -155,7 +155,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     ));
 
     // Modules that will never have xpath support ever because they not report violations
-    private static final Set<String> NO_VIOLATION_MODULES = new HashSet<>(Collections.singletonList(
+    private static final Set<String> NO_VIOLATION_MODULES = new HashSet<String>(Collections.singletonList(
             "SuppressWarningsHolder"
     ));
 
@@ -166,23 +166,25 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     private Path javaDir;
     private Path inputDir;
 
-    @BeforeAll
+    @BeforeClass
     public static void setUpBeforeClass() throws IOException {
         simpleCheckNames = CheckUtil.getSimpleNames(CheckUtil.getCheckstyleChecks());
 
-        allowedDirectoryAndChecks = simpleCheckNames
-                .stream()
-                .collect(Collectors.toMap(id -> id.toLowerCase(Locale.ENGLISH), id -> id));
+        allowedDirectoryAndChecks = new HashMap<String, String>();
 
-        internalModules = Definitions.INTERNAL_MODULES.stream()
-            .map(moduleName -> {
-                final String[] packageTokens = moduleName.split("\\.");
-                return packageTokens[packageTokens.length - 1];
-            })
-            .collect(Collectors.toSet());
+        for (String id : simpleCheckNames) {
+            allowedDirectoryAndChecks.put(id.toLowerCase(Locale.ENGLISH), id);
+        }
+
+        internalModules = new HashSet<String>();
+
+        for (String moduleName : Definitions.INTERNAL_MODULES) {
+            final String[] packageTokens = moduleName.split("\\.");
+            internalModules.add(packageTokens[packageTokens.length - 1]);
+        }
     }
 
-    @BeforeEach
+    @Before
     public void setUp() throws Exception {
         javaDir = Paths.get("src/it/java/" + getPackageLocation());
         inputDir = Paths.get(getPath(""));
@@ -201,10 +203,12 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     @Test
     public void validateIncompatibleJavadocCheckNames() throws IOException {
         // subclasses of AbstractJavadocCheck
-        final Set<Class<?>> abstractJavadocCheckNames = CheckUtil.getCheckstyleChecks()
-                .stream()
-                .filter(AbstractJavadocCheck.class::isAssignableFrom)
-                .collect(Collectors.toSet());
+        final Set<Class<?>> abstractJavadocCheckNames = new HashSet<Class<?>>();
+        for (Class<?> check : CheckUtil.getCheckstyleChecks()) {
+            if (AbstractJavadocCheck.class.isAssignableFrom(check)) {
+                abstractJavadocCheckNames.add(check);
+            }
+        }
         // add the extra checks
         abstractJavadocCheckNames.addAll(REGEXP_JAVADOC_CHECKS);
         final Set<String> abstractJavadocCheckSimpleNames =
@@ -217,13 +221,16 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void validateIntegrationTestClassNames() throws Exception {
-        final Set<String> compatibleChecks = new HashSet<>();
-        final Pattern pattern = Pattern.compile("^XpathRegression(.+)Test\\.java$");
-        try (DirectoryStream<Path> javaPaths = Files.newDirectoryStream(javaDir)) {
-            for (Path path : javaPaths) {
-                assertTrue(Files.isRegularFile(path), path + " is not a regular file");
-                final String filename = path.toFile().getName();
+    public void validateIntegrationTestClassNames() {
+        final Set<String> compatibleChecks = new HashSet<String>();
+        final File[] javaPaths = javaDir.getFile().listFiles();
+
+        if (javaPaths != null) {
+            final Pattern pattern = Pattern.compile("^XpathRegression(.+)Test\\.java$");
+
+            for (File path : javaPaths) {
+                assertTrue(path.isFile(), path + " is not a regular file");
+                final String filename = path.getName();
                 if (filename.startsWith("Abstract")) {
                     continue;
                 }
@@ -248,7 +255,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
         }
 
         // Ensure that all lists are up to date
-        final Set<String> allChecks = new HashSet<>(simpleCheckNames);
+        final Set<String> allChecks = new HashSet<String>(simpleCheckNames);
         allChecks.removeAll(INCOMPATIBLE_JAVADOC_CHECK_NAMES);
         allChecks.removeAll(INCOMPATIBLE_CHECK_NAMES);
         allChecks.removeAll(Arrays.asList("Regexp", "RegexpSinglelineJava", "NoCodeInFile"));
@@ -258,24 +265,26 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
         allChecks.removeAll(internalModules);
 
         assertTrue(allChecks.isEmpty(), "XpathRegressionTest is missing for ["
-                + String.join(", ", allChecks)
+                + String7.join(", ", allChecks)
                 + "]. Please add them to src/it/java/org/checkstyle/suppressionxpathfilter");
     }
 
     @Test
-    public void validateInputFiles() throws Exception {
-        try (DirectoryStream<Path> dirs = Files.newDirectoryStream(inputDir)) {
-            for (Path dir : dirs) {
+    public void validateInputFiles() {
+        final File[] dirs = inputDir.getFile().listFiles();
+
+        if (dirs != null) {
+            for (File dir : dirs) {
                 // input directory must be named in lower case
-                assertTrue(Files.isDirectory(dir), dir + " is not a directory");
-                final String dirName = dir.toFile().getName();
+                assertTrue(dir.isDirectory(), dir + " is not a directory");
+                final String dirName = dir.getName();
                 assertTrue(allowedDirectoryAndChecks.containsKey(dirName),
                         "Invalid directory name: " + dirName);
 
                 // input directory must be connected to an existing test
                 final String check = allowedDirectoryAndChecks.get(dirName);
-                final Path javaPath = javaDir.resolve("XpathRegression" + check + "Test.java");
-                assertTrue(Files.exists(javaPath),
+                final File javaPath = new File(javaDir.toFile(), "XpathRegression" + check + "Test.java");
+                assertTrue(javaPath.exists(),
                         "Input directory '" + dir + "' is not connected to Java test case: "
                                 + javaPath);
 
@@ -285,13 +294,15 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
         }
     }
 
-    private static void validateInputDirectory(Path checkDir) throws IOException {
-        final Pattern pattern = Pattern.compile("^SuppressionXpathRegression(.+)\\.java$");
-        final String check = allowedDirectoryAndChecks.get(checkDir.toFile().getName());
+    private static void validateInputDirectory(File checkDir) {
+        final File[] inputPaths = checkDir.listFiles();
 
-        try (DirectoryStream<Path> inputPaths = Files.newDirectoryStream(checkDir)) {
-            for (Path inputPath : inputPaths) {
-                final String filename = inputPath.toFile().getName();
+        if (inputPaths != null) {
+            final Pattern pattern = Pattern.compile("^SuppressionXpathRegression(.+)\\.java$");
+            final String check = allowedDirectoryAndChecks.get(checkDir.getName());
+
+            for (File inputPath : inputPaths) {
+                final String filename = inputPath.getName();
                 if (filename.endsWith("java")) {
                     final Matcher matcher = pattern.matcher(filename);
                     assertTrue(matcher.matches(),

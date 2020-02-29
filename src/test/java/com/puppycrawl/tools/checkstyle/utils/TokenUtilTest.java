@@ -28,22 +28,24 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 public class TokenUtilTest {
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(TokenUtil.class, true),
                 "Constructor is not private");
     }
@@ -79,8 +81,8 @@ public class TokenUtilTest {
     public void testNameToValueMapFromPublicIntFields() {
         final Map<String, Integer> actualMap =
             TokenUtil.nameToValueMapFromPublicIntFields(Integer.class);
-        final Map<String, Integer> expectedMap = new TreeMap<>();
-        expectedMap.put("BYTES", Integer.BYTES);
+        final Map<String, Integer> expectedMap = new TreeMap<String, Integer>();
+        expectedMap.put("BYTES", Integer7.BYTES);
         expectedMap.put("SIZE", Integer.SIZE);
         expectedMap.put("MAX_VALUE", Integer.MAX_VALUE);
         expectedMap.put("MIN_VALUE", Integer.MIN_VALUE);
@@ -90,7 +92,7 @@ public class TokenUtilTest {
 
     @Test
     public void testInvertMap() {
-        final Map<String, Integer> map = new TreeMap<>();
+        final Map<String, Integer> map = new TreeMap<String, Integer>();
         map.put("ZERO", 0);
         map.put("ONE", 1);
         map.put("TWO", 2);
@@ -217,7 +219,10 @@ public class TokenUtilTest {
     @Test
     public void testGetAllTokenIds() {
         final int[] allTokenIds = TokenUtil.getAllTokenIds();
-        final int sum = Arrays.stream(allTokenIds).sum();
+        int sum = 0;
+        for (int tokenId : allTokenIds) {
+            sum += tokenId;
+        }
 
         assertEquals(184, allTokenIds.length, "Invalid token length");
         assertEquals(18737, sum, "invalid sum");
@@ -262,7 +267,12 @@ public class TokenUtilTest {
         child.setNextSibling(firstSibling);
         astForTest.setFirstChild(child);
         final Optional<DetailAST> result = TokenUtil.findFirstTokenByPredicate(astForTest,
-            ast -> "second".equals(ast.getText()));
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return "second".equals(ast.getText());
+                }
+            });
 
         assertEquals(secondSibling, result.orElse(null), "Invalid second sibling");
     }
@@ -281,8 +291,13 @@ public class TokenUtilTest {
         firstSibling.setNextSibling(secondSibling);
         child.setNextSibling(firstSibling);
         astForTest.setFirstChild(child);
-        final List<DetailAST> children = new ArrayList<>();
-        TokenUtil.forEachChild(astForTest, TokenTypes.CLASS_DEF, children::add);
+        final List<DetailAST> children = new ArrayList<DetailAST>();
+        TokenUtil.forEachChild(astForTest, TokenTypes.CLASS_DEF, new Consumer<DetailAST>() {
+            @Override
+            public boolean accept(DetailAST t) {
+                return children.add(t);
+            }
+        });
         final DetailAST firstChild = children.get(0);
 
         assertEquals(1, children.size(), "Must be one match");

@@ -20,18 +20,18 @@
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 
 /**
  * <p>
@@ -151,16 +151,16 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
 
     /** Operations which can change control variable in update part of the loop. */
     private static final Set<Integer> MUTATION_OPERATIONS =
-        Arrays.stream(new Integer[] {
-            TokenTypes.POST_INC,
-            TokenTypes.POST_DEC,
-            TokenTypes.DEC,
-            TokenTypes.INC,
-            TokenTypes.ASSIGN,
-        }).collect(Collectors.toSet());
+            Collections.unmodifiableSet(Collections7.newHashSet(
+                TokenTypes.POST_INC,
+                TokenTypes.POST_DEC,
+                TokenTypes.DEC,
+                TokenTypes.INC,
+                TokenTypes.ASSIGN
+            ));
 
     /** Stack of block parameters. */
-    private final Deque<Deque<String>> variableStack = new ArrayDeque<>();
+    private final Deque<Deque<String>> variableStack = new ArrayDeque<Deque<String>>();
 
     /**
      * Control whether to check
@@ -301,7 +301,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
      * Enters an inner class, which requires a new variable set.
      */
     private void enterBlock() {
-        variableStack.push(new ArrayDeque<>());
+        variableStack.push(new ArrayDeque<String>());
     }
 
     /**
@@ -357,8 +357,14 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
     private static Set<String> getVariablesManagedByForLoop(DetailAST ast) {
         final Set<String> initializedVariables = getForInitVariables(ast);
         final Set<String> iteratingVariables = getForIteratorVariables(ast);
-        return initializedVariables.stream().filter(iteratingVariables::contains)
-            .collect(Collectors.toSet());
+
+        final Set<String> result = new HashSet<String>();
+        for (String item : initializedVariables) {
+            if (iteratingVariables.contains(item)) {
+                result.add(item);
+            }
+        }
+        return result;
     }
 
     /**
@@ -408,7 +414,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
      * @return set of variables initialized in for loop
      */
     private static Set<String> getForInitVariables(DetailAST ast) {
-        final Set<String> initializedVariables = new HashSet<>();
+        final Set<String> initializedVariables = new HashSet<String>();
         final DetailAST forInitAST = ast.findFirstToken(TokenTypes.FOR_INIT);
 
         for (DetailAST parameterDefAST = forInitAST.findFirstToken(TokenTypes.VARIABLE_DEF);
@@ -431,17 +437,16 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
      * @return names of variables change in iterating part of for
      */
     private static Set<String> getForIteratorVariables(DetailAST ast) {
-        final Set<String> iteratorVariables = new HashSet<>();
+        final Set<String> iteratorVariables = new HashSet<String>();
         final DetailAST forIteratorAST = ast.findFirstToken(TokenTypes.FOR_ITERATOR);
         final DetailAST forUpdateListAST = forIteratorAST.findFirstToken(TokenTypes.ELIST);
 
-        findChildrenOfExpressionType(forUpdateListAST).stream()
-            .filter(iteratingExpressionAST -> {
-                return MUTATION_OPERATIONS.contains(iteratingExpressionAST.getType());
-            }).forEach(iteratingExpressionAST -> {
+        for (DetailAST iteratingExpressionAST : findChildrenOfExpressionType(forUpdateListAST)) {
+            if (MUTATION_OPERATIONS.contains(iteratingExpressionAST.getType())) {
                 final DetailAST oneVariableOperatorChild = iteratingExpressionAST.getFirstChild();
                 iteratorVariables.add(oneVariableOperatorChild.getText());
-            });
+            }
+        }
 
         return iteratorVariables;
     }
@@ -453,7 +458,7 @@ public final class ModifiedControlVariableCheck extends AbstractCheck {
      * @return all child of given ast
      */
     private static List<DetailAST> findChildrenOfExpressionType(DetailAST ast) {
-        final List<DetailAST> foundExpressions = new LinkedList<>();
+        final List<DetailAST> foundExpressions = new LinkedList<DetailAST>();
         if (ast != null) {
             for (DetailAST iteratingExpressionAST = ast.findFirstToken(TokenTypes.EXPR);
                  iteratingExpressionAST != null;

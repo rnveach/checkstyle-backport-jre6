@@ -64,12 +64,12 @@ public class TreeWalkerPowerTest extends AbstractModuleTestSupport {
         final Class<?> classAstState =
                 Class.forName("com.puppycrawl.tools.checkstyle.TreeWalker$AstState");
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<>(), Thread.currentThread().getContextClassLoader());
+                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalkerSpy.configure(createModuleConfig(TypeNameCheck.class));
         treeWalkerSpy.setModuleFactory(factory);
         treeWalkerSpy.setupChild(createModuleConfig(TypeNameCheck.class));
         final File file = temporaryFolder.newFile("file.java");
-        final List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<String>();
         lines.add("class Test {}");
         final FileText fileText = new FileText(file, lines);
         treeWalkerSpy.setFileContents(new FileContents(fileText));
@@ -86,12 +86,12 @@ public class TreeWalkerPowerTest extends AbstractModuleTestSupport {
         final Class<?> classAstState =
                 Class.forName("com.puppycrawl.tools.checkstyle.TreeWalker$AstState");
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<>(), Thread.currentThread().getContextClassLoader());
+                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalkerSpy.configure(createModuleConfig(CommentsIndentationCheck.class));
         treeWalkerSpy.setModuleFactory(factory);
         treeWalkerSpy.setupChild(createModuleConfig(CommentsIndentationCheck.class));
         final File file = temporaryFolder.newFile("file.java");
-        final List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<String>();
         lines.add("class Test {}");
         final FileText fileText = new FileText(file, lines);
         treeWalkerSpy.setFileContents(new FileContents(fileText));

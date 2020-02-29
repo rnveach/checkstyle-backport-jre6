@@ -336,7 +336,9 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
             traverseFieldFrameTree(child);
 
             currentFrame = child;
-            child.getMethodCalls().forEach(this::checkMethodCall);
+            for (DetailAST methodCall: child.getMethodCalls()) {
+                checkMethodCall(methodCall);
+            }
         }
     }
 
@@ -571,13 +573,13 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
         private final FieldFrame parent;
 
         /** Set of frame's children. */
-        private final Set<FieldFrame> children = new HashSet<>();
+        private final Set<FieldFrame> children = new HashSet<FieldFrame>();
 
         /** Set of fields. */
-        private final Set<DetailAST> fields = new HashSet<>();
+        private final Set<DetailAST> fields = new HashSet<DetailAST>();
 
         /** Set of equals calls. */
-        private final Set<DetailAST> methodCalls = new HashSet<>();
+        private final Set<DetailAST> methodCalls = new HashSet<DetailAST>();
 
         /** Name of the class, enum or enum constant declaration. */
         private String frameName;

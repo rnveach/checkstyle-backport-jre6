@@ -21,18 +21,17 @@ package com.puppycrawl.tools.checkstyle.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 /**
  * Contains utility methods for tokens.
@@ -58,7 +57,12 @@ public final class TokenUtil {
     static {
         TOKEN_NAME_TO_VALUE = nameToValueMapFromPublicIntFields(TokenTypes.class);
         TOKEN_VALUE_TO_NAME = invertMap(TOKEN_NAME_TO_VALUE);
-        TOKEN_IDS = TOKEN_NAME_TO_VALUE.values().stream().mapToInt(Integer::intValue).toArray();
+        TOKEN_IDS = new int[TOKEN_NAME_TO_VALUE.size()];
+        int index = 0;
+        for (Integer value : TOKEN_NAME_TO_VALUE.values()) {
+            TOKEN_IDS[index] = value;
+            index++;
+        }
     }
 
     /** Stop instances being created. **/
@@ -93,9 +97,16 @@ public final class TokenUtil {
      * @return unmodifiable name to value map
      */
     public static Map<String, Integer> nameToValueMapFromPublicIntFields(Class<?> cls) {
-        final Map<String, Integer> map = Arrays.stream(cls.getDeclaredFields())
-            .filter(fld -> Modifier.isPublic(fld.getModifiers()) && fld.getType() == Integer.TYPE)
-            .collect(Collectors.toMap(Field::getName, fld -> getIntFromField(fld, fld.getName())));
+        final Map<String, Integer> map = new HashMap<String, Integer>();
+        final Field[] fields = cls.getDeclaredFields();
+        for (Field fld : fields) {
+            if (Modifier.isPublic(fld.getModifiers()) && fld.getType() == Integer.TYPE) {
+                final String name = fld.getName();
+                final int tokenValue = getIntFromField(fld, name);
+
+                map.put(name, tokenValue);
+            }
+        }
         return Collections.unmodifiableMap(map);
     }
 
@@ -106,8 +117,15 @@ public final class TokenUtil {
      * @return inverted map
      */
     public static Map<Integer, String> invertMap(Map<String, Integer> map) {
-        return map.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        Map<Integer, String> inv = new HashMap<Integer, String>();
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (inv.put(entry.getValue(), entry.getKey()) != null) {
+                throw new IllegalArgumentException("Map values must be unique");
+            }
+        }
+
+        return inv;
     }
 
     /**
@@ -281,7 +299,16 @@ public final class TokenUtil {
      * @return true if type matches one of the given types.
      */
     public static boolean isOfType(int type, int... types) {
-        return Arrays.stream(types).anyMatch(tokenType -> tokenType == type);
+        boolean result = false;
+
+        for (int tokenType : types) {
+            if (tokenType == type) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**

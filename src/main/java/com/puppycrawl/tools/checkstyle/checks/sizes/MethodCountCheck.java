@@ -204,7 +204,7 @@ public final class MethodCountCheck extends AbstractCheck {
     private static final int DEFAULT_MAX_METHODS = 100;
 
     /** Maintains stack of counters, to support inner types. */
-    private final Deque<MethodCounter> counters = new ArrayDeque<>();
+    private final Deque<MethodCounter> counters = new ArrayDeque<MethodCounter>();
 
     /** Specify the maximum number of {@code private} methods allowed. */
     private int maxPrivate = DEFAULT_MAX_METHODS;
@@ -379,7 +379,7 @@ public final class MethodCountCheck extends AbstractCheck {
     private static class MethodCounter {
 
         /** Maintains the counts. */
-        private final Map<Scope, Integer> counts = new EnumMap<>(Scope.class);
+        private final Map<Scope, Integer> counts = new EnumMap<Scope, Integer>(Scope.class);
         /**
          * The surrounding scope definition (class, enum, etc.) which the method counts are connect
          * to.

@@ -29,9 +29,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -40,6 +39,8 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class ClassFanOutComplexityCheckTest extends AbstractModuleTestSupport {
@@ -284,13 +285,23 @@ public class ClassFanOutComplexityCheckTest extends AbstractModuleTestSupport {
                 new File(getPath("InputClassFanOutComplexity.java")),
                 JavaParser.Options.WITHOUT_COMMENTS);
         final Optional<DetailAST> importAst = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.IMPORT);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.IMPORT;
+                }
+            });
 
         assertTrue(importAst.isPresent(), "Ast should contain IMPORT");
         assertTrue(
                 TestUtil.isStatefulFieldClearedDuringBeginTree(check, importAst.get(),
                     "importedClassPackages",
-                    importedClssPackage -> ((Map<String, String>) importedClssPackage).isEmpty()),
+                    new Predicate<Object>() {
+                        @Override
+                        public boolean test(Object importedClssPackage) {
+                            return ((Map<String, String>) importedClssPackage).isEmpty();
+                        }
+                    }),
                     "State is not cleared on beginTree");
     }
 
@@ -308,13 +319,23 @@ public class ClassFanOutComplexityCheckTest extends AbstractModuleTestSupport {
                 new File(getPath("InputClassFanOutComplexity.java")),
                 JavaParser.Options.WITHOUT_COMMENTS);
         final Optional<DetailAST> classDef = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.CLASS_DEF);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.CLASS_DEF;
+                }
+            });
 
         assertTrue(classDef.isPresent(), "Ast should contain CLASS_DEF");
         assertTrue(
                 TestUtil.isStatefulFieldClearedDuringBeginTree(check, classDef.get(),
                     "classesContexts",
-                    classContexts -> ((Collection<?>) classContexts).size() == 1),
+                    new Predicate<Object>() {
+                        @Override
+                        public boolean test(Object classContexts) {
+                            return ((Collection<?>) classContexts).size() == 1;
+                        }
+                    }),
                     "State is not cleared on beginTree");
     }
 

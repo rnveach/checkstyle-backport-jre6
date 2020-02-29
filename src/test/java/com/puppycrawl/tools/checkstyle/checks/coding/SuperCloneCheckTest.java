@@ -25,16 +25,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class SuperCloneCheckTest
@@ -95,12 +96,22 @@ public class SuperCloneCheckTest
         final Optional<DetailAST> methodDef = TestUtil.findTokenInAstByPredicate(
             JavaParser.parseFile(new File(getPath("InputSuperCloneWithoutWarnings.java")),
                 JavaParser.Options.WITHOUT_COMMENTS),
-            ast -> ast.getType() == TokenTypes.METHOD_DEF);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.METHOD_DEF;
+                }
+            });
 
         assertTrue(methodDef.isPresent(), "Ast should contain METHOD_DEF");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, methodDef.get(), "methodStack",
-                methodStack -> ((Collection<Set<String>>) methodStack).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object methodStack) {
+                        return ((Collection<Set<String>>) methodStack).isEmpty();
+                    }
+                }),
                 "State is not cleared on beginTree");
     }
 

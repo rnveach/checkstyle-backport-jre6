@@ -23,11 +23,11 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 /**
  * Generates <b>suppressions.xml</b> file, based on violations occurred.

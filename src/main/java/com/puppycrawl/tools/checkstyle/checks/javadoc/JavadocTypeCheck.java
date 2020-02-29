@@ -33,6 +33,7 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TextBlock;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
@@ -382,13 +383,13 @@ public class JavadocTypeCheck
 
                 if (!allowMissingParamTags) {
 
-                    typeParamNames.forEach(typeParamName -> {
+                    for (String typeParamName : typeParamNames) {
                         checkTypeParamTag(ast, tags, typeParamName);
-                    });
+                    }
 
-                    recordComponentNames.forEach(componentName -> {
+                    for (String componentName : recordComponentNames) {
                         checkComponentParamTag(ast, tags, componentName);
-                    });
+                    }
                 }
 
                 checkUnusedParamTags(tags, typeParamNames, recordComponentNames);
@@ -473,10 +474,13 @@ public class JavadocTypeCheck
                                         List<JavadocTag> tags,
                                         String recordComponentName) {
 
-        final boolean found = tags
-            .stream()
-            .filter(JavadocTag::isParamTag)
-            .anyMatch(tag -> tag.getFirstArg().indexOf(recordComponentName) == 0);
+        boolean found = false;
+        for (JavadocTag tag : tags) {
+            if (tag.isParamTag() && tag.getFirstArg().indexOf(recordComponentName) == 0) {
+                found = true;
+                break;
+            }
+        }
 
         if (!found) {
             log(ast, MSG_MISSING_TAG, JavadocTagInfo.PARAM.getText()
@@ -497,10 +501,13 @@ public class JavadocTypeCheck
         final String typeParamNameWithBrackets =
             OPEN_ANGLE_BRACKET + typeParamName + CLOSE_ANGLE_BRACKET;
 
-        final boolean found = tags
-            .stream()
-            .filter(JavadocTag::isParamTag)
-            .anyMatch(tag -> tag.getFirstArg().indexOf(typeParamNameWithBrackets) == 0);
+        boolean found = false;
+        for (JavadocTag tag : tags) {
+            if (tag.isParamTag() && tag.getFirstArg().indexOf(typeParamNameWithBrackets) == 0) {
+                found = true;
+                break;
+            }
+        }
 
         if (!found) {
             log(ast, MSG_MISSING_TAG, JavadocTagInfo.PARAM.getText()
@@ -565,13 +572,18 @@ public class JavadocTypeCheck
      */
     private static List<String> getRecordComponentNames(DetailAST node) {
         final DetailAST components = node.findFirstToken(TokenTypes.RECORD_COMPONENTS);
-        final List<String> componentList = new ArrayList<>();
+        final List<String> componentList = new ArrayList<String>();
 
         if (components != null) {
             TokenUtil.forEachChild(components,
-                TokenTypes.RECORD_COMPONENT_DEF, component -> {
-                    final DetailAST ident = component.findFirstToken(TokenTypes.IDENT);
-                    componentList.add(ident.getText());
+                TokenTypes.RECORD_COMPONENT_DEF,
+                new Consumer<DetailAST>() {
+                    @Override
+                    public boolean accept(DetailAST component) {
+                        final DetailAST ident = component.findFirstToken(TokenTypes.IDENT);
+                        componentList.add(ident.getText());
+                        return true;
+                    }
                 });
         }
 

@@ -248,7 +248,7 @@ public class LineWrappingHandler {
      */
     private NavigableMap<Integer, DetailAST> collectFirstNodes(DetailAST firstNode,
             DetailAST lastNode) {
-        final NavigableMap<Integer, DetailAST> result = new TreeMap<>();
+        final NavigableMap<Integer, DetailAST> result = new TreeMap<Integer, DetailAST>();
 
         result.put(firstNode.getLineNo(), firstNode);
         DetailAST curNode = firstNode.getFirstChild();

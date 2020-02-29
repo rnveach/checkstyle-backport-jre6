@@ -19,8 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.utils;
 
-import java.util.Optional;
-
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -66,9 +64,18 @@ public final class ScopeUtil {
      * @return a {@code Scope} value
      */
     public static Scope getScope(DetailAST ast) {
-        return Optional.ofNullable(ast.findFirstToken(TokenTypes.MODIFIERS))
-                .map(ScopeUtil::getDeclaredScopeFromMods)
-                .orElseGet(() -> getDefaultScope(ast));
+        final DetailAST modifiers = ast.findFirstToken(TokenTypes.MODIFIERS);
+        Scope result = null;
+
+        if (modifiers != null) {
+            result = getDeclaredScopeFromMods(modifiers);
+        }
+
+        if (result == null) {
+            result = getDefaultScope(ast);
+        }
+
+        return result;
     }
 
     /**
@@ -80,8 +87,13 @@ public final class ScopeUtil {
      * @see #getDefaultScope(DetailAST)
      */
     public static Scope getScopeFromMods(DetailAST aMods) {
-        return Optional.ofNullable(getDeclaredScopeFromMods(aMods))
-                .orElseGet(() -> getDefaultScope(aMods.getParent()));
+        Scope result = getDeclaredScopeFromMods(aMods);
+
+        if (result == null) {
+            result = getDefaultScope(aMods.getParent());
+        }
+
+        return result;
     }
 
     /**

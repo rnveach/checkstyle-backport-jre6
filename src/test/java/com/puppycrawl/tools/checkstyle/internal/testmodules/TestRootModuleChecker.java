@@ -51,7 +51,7 @@ public class TestRootModuleChecker implements RootModule {
     @Override
     public int process(List<File> files) {
         processed = true;
-        filesToCheck = new ArrayList<>(files);
+        filesToCheck = new ArrayList<File>(files);
         return 0;
     }
 

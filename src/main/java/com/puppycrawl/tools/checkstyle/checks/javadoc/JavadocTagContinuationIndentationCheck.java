@@ -222,7 +222,7 @@ public class JavadocTagContinuationIndentationCheck extends AbstractJavadocCheck
      * @return List with NEWLINE nodes.
      */
     private static List<DetailNode> getAllNewlineNodes(DetailNode descriptionNode) {
-        final List<DetailNode> textNodes = new ArrayList<>();
+        final List<DetailNode> textNodes = new ArrayList<DetailNode>();
         DetailNode node = JavadocUtil.getFirstChild(descriptionNode);
         while (JavadocUtil.getNextSibling(node) != null) {
             if (node.getType() == JavadocTokenTypes.HTML_ELEMENT) {

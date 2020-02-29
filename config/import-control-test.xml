@@ -11,12 +11,6 @@
         |org\.checkstyle.*)"
         regex="true">
 
-  <!-- Disallow obsolete Junit API -->
-  <disallow pkg="org.junit" exact-match="true"/>
-  <disallow pkg="junit.framework" />
-  <!-- until https://github.com/checkstyle/checkstyle/issues/9142 -->
-  <disallow pkg="org.junit.jupiter.api.Assertions"/>
-
   <!-- Conflicts with normal tests and pitest.
        See examples in https://github.com/checkstyle/checkstyle/issues/6439 -->
   <allow class="org.powermock.reflect.Whitebox" />
@@ -25,12 +19,5 @@
   <disallow pkg="org\.mockito.*" regex="true" />
 
   <allow pkg=".*" regex="true" />
-
-  <!-- Till https://github.com/checkstyle/checkstyle/issues/7368 -->
-  <subpackage name="internal">
-    <subpackage name="powermock">
-      <allow pkg="org.junit" local-only="true"/>
-    </subpackage>
-  </subpackage>
 
 </import-control>

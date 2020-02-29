@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
@@ -34,7 +36,7 @@ public final class TestInputConfiguration {
 
     private static final String ROOT_MODULE_NAME = "root";
 
-    private static final Set<String> CHECKER_CHILDREN = new HashSet<>(Arrays.asList(
+    private static final Set<String> CHECKER_CHILDREN = new HashSet<String>(Arrays.asList(
             "com.puppycrawl.tools.checkstyle.filefilters.BeforeExecutionExclusionFileFilter",
             "com.puppycrawl.tools.checkstyle.filters.SeverityMatchFilter",
             "com.puppycrawl.tools.checkstyle.filters.SuppressionFilter",
@@ -124,11 +126,11 @@ public final class TestInputConfiguration {
 
     public static final class Builder {
 
-        private final List<ModuleInputConfiguration> childrenModules = new ArrayList<>();
+        private final List<ModuleInputConfiguration> childrenModules = new ArrayList<ModuleInputConfiguration>();
 
-        private final List<TestInputViolation> violations = new ArrayList<>();
+        private final List<TestInputViolation> violations = new ArrayList<TestInputViolation>();
 
-        private final List<TestInputViolation> filteredViolations = new ArrayList<>();
+        private final List<TestInputViolation> filteredViolations = new ArrayList<TestInputViolation>();
 
         public void addChildModule(ModuleInputConfiguration childModule) {
             childrenModules.add(childModule);

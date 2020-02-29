@@ -19,7 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.checks.blocks;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
@@ -670,7 +669,14 @@ public class RightCurlyCheck extends AbstractCheck {
          * @return weather provided tokenType is definition token.
          */
         private static boolean isTokenWithNoChildSlist(int tokenType) {
-            return Arrays.stream(TOKENS_WITH_NO_CHILD_SLIST).anyMatch(token -> token == tokenType);
+            boolean result = false;
+            for (int token : TOKENS_WITH_NO_CHILD_SLIST) {
+                if (token == tokenType) {
+                    result = true;
+                    break;
+                }
+            }
+            return result;
         }
 
         /**

@@ -54,7 +54,7 @@ public final class ModuleInputConfiguration {
     }
 
     public Map<String, String> getAllProperties() {
-        final Map<String, String> properties = new HashMap<>();
+        final Map<String, String> properties = new HashMap<String, String>();
         properties.putAll(defaultProperties);
         properties.putAll(nonDefaultProperties);
         return Collections.unmodifiableMap(properties);
@@ -74,8 +74,12 @@ public final class ModuleInputConfiguration {
 
     public DefaultConfiguration createConfiguration() {
         final DefaultConfiguration parsedConfig = new DefaultConfiguration(moduleName);
-        nonDefaultProperties.forEach(parsedConfig::addProperty);
-        moduleMessages.forEach(parsedConfig::addMessage);
+        for (Map.Entry<String, String> entry : nonDefaultProperties.entrySet()) {
+            parsedConfig.addProperty(entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<String, String> entry : moduleMessages.entrySet()) {
+            parsedConfig.addMessage(entry.getKey(), entry.getValue());
+        }
         return parsedConfig;
     }
 
@@ -85,11 +89,11 @@ public final class ModuleInputConfiguration {
 
     public static final class Builder {
 
-        private final Map<String, String> defaultProperties = new HashMap<>();
+        private final Map<String, String> defaultProperties = new HashMap<String, String>();
 
-        private final Map<String, String> nonDefaultProperties = new HashMap<>();
+        private final Map<String, String> nonDefaultProperties = new HashMap<String, String>();
 
-        private final Map<String, String> moduleMessages = new HashMap<>();
+        private final Map<String, String> moduleMessages = new HashMap<String, String>();
 
         private String moduleName;
 

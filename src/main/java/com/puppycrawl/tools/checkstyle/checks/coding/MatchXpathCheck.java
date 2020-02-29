@@ -19,8 +19,8 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
@@ -272,7 +272,9 @@ public class MatchXpathCheck extends AbstractCheck {
     public void beginTree(DetailAST rootAST) {
         if (xpathExpression != null) {
             final List<DetailAST> matchingNodes = findMatchingNodesByXpathQuery(rootAST);
-            matchingNodes.forEach(node -> log(node, MSG_KEY));
+            for (DetailAST node : matchingNodes) {
+                log(node, MSG_KEY);
+            }
         }
     }
 
@@ -289,9 +291,11 @@ public class MatchXpathCheck extends AbstractCheck {
             final XPathDynamicContext xpathDynamicContext =
                     xpathExpression.createDynamicContext(rootNode);
             final List<Item> matchingItems = xpathExpression.evaluate(xpathDynamicContext);
-            return matchingItems.stream()
-                    .map(item -> ((AbstractNode) item).getUnderlyingNode())
-                    .collect(Collectors.toList());
+            final List<DetailAST> results = new ArrayList<DetailAST>();
+            for (Item item : matchingItems) {
+                results.add(((AbstractNode) item).getUnderlyingNode());
+            }
+            return results;
         }
         catch (XPathException ex) {
             throw new IllegalStateException("Evaluation of Xpath query failed: " + query, ex);

@@ -45,13 +45,13 @@ public final class DefaultConfiguration implements Configuration {
     private final String name;
 
     /** The list of child Configurations. */
-    private final List<Configuration> children = new ArrayList<>();
+    private final List<Configuration> children = new ArrayList<Configuration>();
 
     /** The map from property names to property values. */
-    private final Map<String, String> propertyMap = new HashMap<>();
+    private final Map<String, String> propertyMap = new HashMap<String, String>();
 
     /** The map containing custom messages. */
-    private final Map<String, String> messages = new HashMap<>();
+    private final Map<String, String> messages = new HashMap<String, String>();
 
     /** The thread mode configuration. */
     private final ThreadModeSettings threadModeSettings;
@@ -178,7 +178,7 @@ public final class DefaultConfiguration implements Configuration {
      */
     @Override
     public Map<String, String> getMessages() {
-        return new HashMap<>(messages);
+        return new HashMap<String, String>(messages);
     }
 
     /**

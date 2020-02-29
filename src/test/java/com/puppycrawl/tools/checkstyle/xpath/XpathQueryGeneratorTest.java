@@ -24,13 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
@@ -40,6 +39,7 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class XpathQueryGeneratorTest extends AbstractModuleTestSupport {
 
@@ -54,7 +54,7 @@ public class XpathQueryGeneratorTest extends AbstractModuleTestSupport {
         return "com/puppycrawl/tools/checkstyle/xpath/xpathquerygenerator";
     }
 
-    @BeforeEach
+    @Before
     public void init() throws Exception {
         final File file = new File(getPath("InputXpathQueryGenerator.java"));
         fileText = new FileText(file,

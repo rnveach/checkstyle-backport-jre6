@@ -23,6 +23,9 @@ import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
@@ -130,10 +133,23 @@ public class NoEnumTrailingCommaCheck extends AbstractCheck {
     @Override
     public void visitToken(DetailAST detailAST) {
         final DetailAST enumBlock = detailAST.findFirstToken(TokenTypes.OBJBLOCK);
-        TokenUtil.findFirstTokenByPredicate(enumBlock,
-            node -> TokenUtil.isOfType(node, TokenTypes.SEMI, TokenTypes.RCURLY))
-            .map(DetailAST::getPreviousSibling)
-            .filter(token -> token.getType() == TokenTypes.COMMA)
-            .ifPresent(comma -> log(comma, MSG_KEY));
+        final Optional<DetailAST> token = TokenUtil.findFirstTokenByPredicate(enumBlock,
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST node) {
+                    return TokenUtil.isOfType(node, TokenTypes.SEMI, TokenTypes.RCURLY);
+                }
+            }).map(new Function<DetailAST, DetailAST>() {
+                @Override
+                public DetailAST apply(DetailAST ast) {
+                    return ast.getPreviousSibling();
+                }
+            });
+        if (token.isPresent()) {
+            final DetailAST comma = token.get();
+            if (comma.getType() == TokenTypes.COMMA) {
+                log(comma, MSG_KEY);
+            }
+        }
     }
 }

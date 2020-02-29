@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,6 +36,7 @@ import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 /**
  * Simple plain logger for text output.
@@ -224,7 +224,7 @@ public class DefaultLogger extends AutomaticBean implements AuditListener {
          * Avoids repetitive calls to ResourceBundle.getBundle().
          */
         private static final Map<String, ResourceBundle> BUNDLE_CACHE =
-                Collections.synchronizedMap(new HashMap<>());
+                Collections.synchronizedMap(new HashMap<String, ResourceBundle>());
 
         /**
          * The locale to localise messages to.
@@ -294,11 +294,14 @@ public class DefaultLogger extends AutomaticBean implements AuditListener {
          * @return a ResourceBundle.
          */
         private static ResourceBundle getBundle(String bundleName) {
-            return BUNDLE_CACHE.computeIfAbsent(bundleName, name -> {
-                return ResourceBundle.getBundle(
-                        name, LOCALE, LocalizedMessage.class.getClassLoader(),
+            ResourceBundle result = BUNDLE_CACHE.get(bundleName);
+            if (result == null) {
+                result = ResourceBundle.getBundle(
+                        bundleName, LOCALE, LocalizedMessage.class.getClassLoader(),
                         new Violation.Utf8Control());
-            });
+                BUNDLE_CACHE.put(bundleName, result);
+            }
+            return result;
         }
     }
 }

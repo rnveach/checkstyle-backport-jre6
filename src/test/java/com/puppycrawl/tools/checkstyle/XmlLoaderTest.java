@@ -30,7 +30,7 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -39,13 +39,13 @@ public class XmlLoaderTest {
 
     @Test
     public void testParserConfiguredSuccessfully() throws Exception {
-        final DummyLoader dummyLoader = new DummyLoader(new HashMap<>(1));
+        final DummyLoader dummyLoader = new DummyLoader(new HashMap<String, String>(1));
         final XMLReader parser = Whitebox.getInternalState(dummyLoader, "parser");
         assertEquals(dummyLoader, parser.getEntityResolver(), "Invalid entity resolver");
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(
                 XmlLoader.LoadExternalDtdFeatureProvider.class, true),
                 "Constructor is not private");
@@ -53,7 +53,7 @@ public class XmlLoaderTest {
 
     @Test
     public void testResolveEntityDefault() throws Exception {
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put("predefined", "/google.xml");
         final DummyLoader dummyLoader = new DummyLoader(map);
         assertNull(dummyLoader.resolveEntity("notPredefined", "BAD"), "Invalid entity");
@@ -61,7 +61,7 @@ public class XmlLoaderTest {
 
     @Test
     public void testResolveEntityMap() throws Exception {
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put("predefined", "/google.xml");
         final DummyLoader dummyLoader = new DummyLoader(map);
         assertNotNull(dummyLoader.resolveEntity("predefined", "BAD"), "Invalid entity");

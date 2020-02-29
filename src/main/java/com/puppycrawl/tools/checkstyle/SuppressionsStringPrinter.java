@@ -21,16 +21,15 @@ package com.puppycrawl.tools.checkstyle;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.xpath.XpathQueryGenerator;
 
 /**
@@ -98,7 +97,14 @@ public final class SuppressionsStringPrinter {
                 new XpathQueryGenerator(detailAST, lineNumber, columnNumber, fileText,
                         tabWidth);
         final List<String> suppressions = queryGenerator.generate();
-        return suppressions.stream().collect(Collectors.joining(LINE_SEPARATOR,
-                "", LINE_SEPARATOR));
+        String result = "";
+        for (String s : suppressions) {
+            if (result.length() > 0) {
+                result += LINE_SEPARATOR;
+            }
+            result += s;
+        }
+        result += LINE_SEPARATOR;
+        return result;
     }
 }

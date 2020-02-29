@@ -29,9 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +45,9 @@ import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.AbstractViolationReporter;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.internal.utils.BriefUtLogger;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public abstract class AbstractItModuleTestSupport extends AbstractPathTestSupport {
@@ -236,17 +236,18 @@ public abstract class AbstractItModuleTestSupport extends AbstractPathTestSuppor
             throws Exception {
         stream.flush();
         stream.reset();
-        final List<File> theFiles = new ArrayList<>();
+        final List<File> theFiles = new ArrayList<File>();
         Collections.addAll(theFiles, processedFiles);
-        final List<Integer> theWarnings = new ArrayList<>();
+        final List<Integer> theWarnings = new ArrayList<Integer>();
         Collections.addAll(theWarnings, warnsExpected);
         final int errs = checker.process(theFiles);
 
         // process each of the lines
-        try (ByteArrayInputStream inputStream =
+        final ByteArrayInputStream inputStream =
                 new ByteArrayInputStream(stream.toByteArray());
-            LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+        final LineNumberReader lnr = new LineNumberReader(
+            new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        try {
             int previousLineNumber = 0;
             for (int i = 0; i < expected.length; i++) {
                 final String expectedResult = messageFileName + ":" + expected[i];
@@ -267,6 +268,10 @@ public abstract class AbstractItModuleTestSupport extends AbstractPathTestSuppor
             assertEquals(expected.length,
                     errs, "unexpected output: " + lnr.readLine());
             assertEquals(0, theWarnings.size(), "unexpected warnings " + theWarnings);
+        }
+        finally {
+            inputStream.close();
+            lnr.close();
         }
 
         checker.destroy();
@@ -336,9 +341,10 @@ public abstract class AbstractItModuleTestSupport extends AbstractPathTestSuppor
      * @throws IOException if I/O exception occurs while reading the file.
      */
     protected Integer[] getLinesWithWarn(String fileName) throws IOException {
-        final List<Integer> result = new ArrayList<>();
-        try (BufferedReader br = Files.newBufferedReader(
-                Paths.get(fileName), StandardCharsets.UTF_8)) {
+        final List<Integer> result = new ArrayList<Integer>();
+        final BufferedReader br = Files7.newBufferedReader(
+                Paths.get(fileName), StandardCharsets.UTF_8);
+        try {
             int lineNumber = 1;
             while (true) {
                 final String line = br.readLine();
@@ -350,6 +356,9 @@ public abstract class AbstractItModuleTestSupport extends AbstractPathTestSuppor
                 }
                 lineNumber++;
             }
+        }
+        finally {
+            br.close();
         }
         return result.toArray(new Integer[0]);
     }

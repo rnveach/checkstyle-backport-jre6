@@ -19,11 +19,9 @@
 
 package com.puppycrawl.tools.checkstyle.internal.utils;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +34,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 /**
  * XdocUtil.
@@ -53,17 +54,20 @@ public final class XdocUtil {
      * Gets xdocs file paths.
      *
      * @return a list of xdocs file paths.
-     * @throws IOException if an I/O error occurs.
      */
-    public static Set<Path> getXdocsFilePaths() throws IOException {
+    public static Set<Path> getXdocsFilePaths() {
         final Path directory = Paths.get(DIRECTORY_PATH);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory, "*.xml")) {
-            final Set<Path> xdocs = new HashSet<>();
-            for (Path entry : stream) {
-                xdocs.add(entry);
+        final Set<Path> xdocs = new HashSet<Path>();
+        final File[] files = directory.getFile().listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".xml");
             }
-            return xdocs;
+        });
+        for (File file : files) {
+            xdocs.add(new Path(file.getAbsolutePath()));
         }
+        return xdocs;
     }
 
     /**
@@ -73,7 +77,7 @@ public final class XdocUtil {
      * @return a list of xdocs config file paths.
      */
     public static Set<Path> getXdocsConfigFilePaths(Set<Path> files) {
-        final Set<Path> xdocs = new HashSet<>();
+        final Set<Path> xdocs = new HashSet<Path>();
         for (Path entry : files) {
             final String fileName = entry.getFileName().toString();
             if (fileName.startsWith("config_")) {
@@ -90,7 +94,7 @@ public final class XdocUtil {
      * @return a list of xdocs style file paths.
      */
     public static Set<Path> getXdocsStyleFilePaths(Set<Path> files) {
-        final Set<Path> xdocs = new HashSet<>();
+        final Set<Path> xdocs = new HashSet<Path>();
         for (Path entry : files) {
             final String fileName = entry.getFileName().toString();
             if (fileName.endsWith("_style.xml")) {
@@ -126,7 +130,7 @@ public final class XdocUtil {
                 "http://apache.org/xml/features/nonvalidating/load-external-dtd",
                 false);
 
-        final Set<String> modulesNamesWhichHaveXdoc = new HashSet<>();
+        final Set<String> modulesNamesWhichHaveXdoc = new HashSet<String>();
 
         for (Path path : getXdocsConfigFilePaths(getXdocsFilePaths())) {
             final DocumentBuilder builder = factory.newDocumentBuilder();

@@ -29,13 +29,13 @@ import java.util.Map;
 public final class ModuleDetails {
 
     /** List of properties of the module. */
-    private final List<ModulePropertyDetails> properties = new ArrayList<>();
+    private final List<ModulePropertyDetails> properties = new ArrayList<ModulePropertyDetails>();
 
     /** Properties of the module arranged in a map where key is property name. */
-    private final Map<String, ModulePropertyDetails> modulePropertyKeyMap = new HashMap<>();
+    private final Map<String, ModulePropertyDetails> modulePropertyKeyMap = new HashMap<String, ModulePropertyDetails>();
 
     /** List of violation message keys of the module. */
-    private final List<String> violationMessageKeys = new ArrayList<>();
+    private final List<String> violationMessageKeys = new ArrayList<String>();
 
     /** Name of the module. */
     private String name;
@@ -150,9 +150,9 @@ public final class ModuleDetails {
      */
     public void addToProperties(List<ModulePropertyDetails> modulePropertyDetailsList) {
         properties.addAll(modulePropertyDetailsList);
-        modulePropertyDetailsList.forEach(modulePropertyDetails -> {
+        for (ModulePropertyDetails modulePropertyDetails : modulePropertyDetailsList) {
             modulePropertyKeyMap.put(modulePropertyDetails.getName(), modulePropertyDetails);
-        });
+        }
     }
 
     /**

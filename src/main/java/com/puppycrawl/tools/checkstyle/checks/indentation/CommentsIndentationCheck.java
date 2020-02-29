@@ -762,7 +762,7 @@ public class CommentsIndentationCheck extends AbstractCheck {
             root = root.getParent();
         }
 
-        final Deque<DetailAST> stack = new ArrayDeque<>();
+        final Deque<DetailAST> stack = new ArrayDeque<DetailAST>();
         DetailAST previousStatement = null;
         while (root != null || !stack.isEmpty()) {
             if (!stack.isEmpty()) {

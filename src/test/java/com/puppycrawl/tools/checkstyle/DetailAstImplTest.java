@@ -29,10 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.Writer;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,16 +41,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.antlr.v4.runtime.CommonToken;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -61,7 +64,7 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
 
     // Ignores file which are not meant to have root node intentionally.
     public static final Set<String> NO_ROOT_FILES =
-        Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
                  // fails with unexpected character
                  "InputGrammar.java",
                  // comment only files, no root
@@ -73,8 +76,8 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
                  "InputNoCodeInFile5.java"
         )));
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
     protected String getPackageLocation() {
@@ -300,18 +303,52 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
         parent.setFirstChild(child);
 
         final List<Consumer<DetailAstImpl>> clearBranchTokenTypesMethods = Arrays.asList(
-                child::setFirstChild,
-                child::setNextSibling,
-                child::addPreviousSibling,
-                child::addNextSibling,
-                child::addChild,
-            ast -> {
-                try {
-                    Whitebox.invokeMethod(child, "setParent", ast);
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    child.setFirstChild(ast);
+                    return false;
                 }
-                // -@cs[IllegalCatch] Cannot avoid catching it.
-                catch (Exception exception) {
-                    throw new IllegalStateException(exception);
+            },
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    child.setNextSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    child.addPreviousSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    child.addNextSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    child.addChild(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    try {
+                        Whitebox.invokeMethod(child, "setParent", ast);
+                    }
+                    // -@cs[IllegalCatch] Cannot avoid catching it.
+                    catch (Exception exception) {
+                        throw new IllegalStateException(exception);
+                    }
+                    return false;
                 }
             }
         );
@@ -343,9 +380,27 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
         parent.setFirstChild(child);
 
         final List<Consumer<DetailAstImpl>> clearChildCountCacheMethods = Arrays.asList(
-                child::setNextSibling,
-                child::addPreviousSibling,
-                child::addNextSibling
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    child.setNextSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    child.addPreviousSibling(ast);
+                    return false;
+                }
+            },
+            new Consumer<DetailAstImpl>() {
+                @Override
+                public boolean accept(DetailAstImpl ast) {
+                    child.addNextSibling(ast);
+                    return false;
+                }
+            }
         );
 
         for (Consumer<DetailAstImpl> method : clearChildCountCacheMethods) {
@@ -477,14 +532,17 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
 
     @Test
     public void testManyComments() throws Exception {
-        final File file = new File(temporaryFolder, "InputDetailASTManyComments.java");
-
-        try (Writer bw = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
+        final File file = new File(temporaryFolder.newFolder(), "InputDetailASTManyComments.java");
+        final Writer bw = Files7.newBufferedWriter(new Path(file), StandardCharsets.UTF_8);
+        try {
             bw.write("class C {\n");
             for (int i = 0; i <= 30000; i++) {
                 bw.write("// " + i + "\n");
             }
             bw.write("}\n");
+        }
+        finally {
+            bw.close();
         }
 
         final DefaultConfiguration checkConfig = createModuleConfig(TodoCommentCheck.class);
@@ -519,17 +577,21 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
     }
 
     private static List<File> getAllFiles(File dir) {
-        final List<File> result = new ArrayList<>();
+        final List<File> result = new ArrayList<File>();
 
-        dir.listFiles(file -> {
-            if (file.isDirectory()) {
-                result.addAll(getAllFiles(file));
+        dir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                if (file.isDirectory()) {
+                    result.addAll(getAllFiles(file));
+                }
+                else if (file.getName().endsWith(".java")
+                        && !NO_ROOT_FILES.contains(file.getName())) {
+                    result.add(file);
+                }
+
+                return false;
             }
-            else if (file.getName().endsWith(".java")
-                    && !NO_ROOT_FILES.contains(file.getName())) {
-                result.add(file);
-            }
-            return false;
         });
 
         return result;

@@ -37,10 +37,10 @@ public class HandlerFactory {
     /**
      * Registered handlers.
      */
-    private final Map<Integer, Constructor<?>> typeHandlers = new HashMap<>();
+    private final Map<Integer, Constructor<?>> typeHandlers = new HashMap<Integer, Constructor<?>>();
 
     /** Cache for created method call handlers. */
-    private final Map<DetailAST, AbstractExpressionHandler> createdHandlers = new HashMap<>();
+    private final Map<DetailAST, AbstractExpressionHandler> createdHandlers = new HashMap<DetailAST, AbstractExpressionHandler>();
 
     /**
      * Creates a HandlerFactory.

@@ -29,7 +29,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 
 import org.antlr.v4.runtime.CommonToken;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -426,7 +426,7 @@ public class VisibilityModifierCheckTest
         final Method method = Whitebox.getMethod(VisibilityModifierCheck.class,
             "isStarImport", DetailAST.class);
 
-        assertTrue((boolean) method.invoke(check, importAst),
+        assertTrue((Boolean) method.invoke(check, importAst),
                 "Should return true when star import is passed");
     }
 

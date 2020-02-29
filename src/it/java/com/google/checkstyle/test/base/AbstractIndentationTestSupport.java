@@ -21,9 +21,6 @@ package com.google.checkstyle.test.base;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +28,9 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public abstract class AbstractIndentationTestSupport extends AbstractGoogleModuleTestSupport {
@@ -63,9 +63,10 @@ public abstract class AbstractIndentationTestSupport extends AbstractGoogleModul
     private static Integer[] getLinesWithWarnAndCheckComments(String aFileName,
             final int tabWidth)
                     throws IOException {
-        final List<Integer> result = new ArrayList<>();
-        try (BufferedReader br = Files.newBufferedReader(
-                Paths.get(aFileName), StandardCharsets.UTF_8)) {
+        final List<Integer> result = new ArrayList<Integer>();
+        final BufferedReader br = Files7.newBufferedReader(
+                Paths.get(aFileName), StandardCharsets.UTF_8);
+        try {
             int lineNumber = 1;
             for (String line = br.readLine(); line != null; line = br.readLine()) {
                 final Matcher match = LINE_WITH_COMMENT_REGEX.matcher(line);
@@ -105,6 +106,9 @@ public abstract class AbstractIndentationTestSupport extends AbstractGoogleModul
                 }
                 lineNumber++;
             }
+        }
+        finally {
+            br.close();
         }
         return result.toArray(new Integer[0]);
     }

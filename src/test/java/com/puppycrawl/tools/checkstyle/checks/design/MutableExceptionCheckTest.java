@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.antlr.v4.runtime.CommonToken;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;

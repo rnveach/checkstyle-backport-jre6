@@ -23,27 +23,26 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public class XdocsUrlTest {
 
@@ -69,15 +68,14 @@ public class XdocsUrlTest {
     private static final Path AVAILABLE_CHECKS_PATH = Paths.get("src/xdocs/checks.xml");
 
     private static Map<String, List<String>> getXdocsMap() throws IOException {
-        final Map<String, List<String>> checksNamesMap = new HashMap<>();
+        final Map<String, List<String>> checksNamesMap = new HashMap<String, List<String>>();
         final Set<Class<?>> checkSet = CheckUtil.getCheckstyleModules();
-        final Set<Class<?>> treeWalkerOrFileSetCheckSet = checkSet.stream()
-                .filter(clazz -> {
-                    return AbstractCheck.class.isAssignableFrom(clazz)
-                            || AbstractFileSetCheck.class.isAssignableFrom(clazz);
-                })
-                .collect(Collectors.toSet());
-        for (Class<?> check : treeWalkerOrFileSetCheckSet) {
+        for (Class<?> check : checkSet) {
+            if (!AbstractCheck.class.isAssignableFrom(check)
+                    && !AbstractFileSetCheck.class.isAssignableFrom(check)) {
+                continue;
+            }
+
             final String checkName = check.getSimpleName();
             if (!TREE_WORKER.equals(checkName)) {
                 String packageName = check.getPackage().getName();
@@ -86,7 +84,7 @@ public class XdocsUrlTest {
                     packageName = MISC;
                 }
                 if (checksNamesMap.get(packageName) == null) {
-                    final List<String> arrayList = new ArrayList<>();
+                    final List<String> arrayList = new ArrayList<String>();
                     arrayList.add(checkName);
                     checksNamesMap.put(packageName, arrayList);
                 }
@@ -103,8 +101,12 @@ public class XdocsUrlTest {
         final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         final SAXParser parser = parserFactory.newSAXParser();
         final CheckTest checkHandler = new CheckTest();
-        try (InputStream input = Files.newInputStream(AVAILABLE_CHECKS_PATH)) {
+        final InputStream input = Files7.newInputStream(AVAILABLE_CHECKS_PATH);
+        try {
             parser.parse(input, checkHandler);
+        }
+        finally {
+            input.close();
         }
         final Map<String, List<String>> checksNamesMap = getXdocsMap();
         for (List<String> sub : checkHandler.checkNamesList) {
@@ -150,7 +152,7 @@ public class XdocsUrlTest {
 
         private static final String NODE_NAME = "a";
 
-        private final List<List<String>> checkNamesList = new ArrayList<>();
+        private final List<List<String>> checkNamesList = new ArrayList<List<String>>();
 
         private List<String> singleCheckNameList;
 
@@ -163,7 +165,7 @@ public class XdocsUrlTest {
                 final String[] moduleAndCheckName =
                         attributes.getValue(0).split(SPLIT_CHECK_NAME_IN_ATTRIBUTE);
                 if (moduleAndCheckName[0].startsWith(PREFIX_CONFIG)) {
-                    singleCheckNameList = new ArrayList<>();
+                    singleCheckNameList = new ArrayList<String>();
                     final String moduleName =
                             moduleAndCheckName[0].replaceAll("(.*config_)|(\\.html.*)", "");
                     singleCheckNameList.add(moduleName);

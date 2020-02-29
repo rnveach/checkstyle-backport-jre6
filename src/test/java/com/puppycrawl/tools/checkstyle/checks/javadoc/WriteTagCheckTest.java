@@ -29,16 +29,16 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -246,15 +246,16 @@ public class WriteTagCheckTest extends AbstractModuleTestSupport {
                           String... expected)
             throws Exception {
         getStream().flush();
-        final List<File> theFiles = new ArrayList<>();
+        final List<File> theFiles = new ArrayList<File>();
         Collections.addAll(theFiles, processedFiles);
         final int errs = checker.process(theFiles);
 
         // process each of the lines
-        try (ByteArrayInputStream localStream =
+        final ByteArrayInputStream localStream =
                 new ByteArrayInputStream(getStream().toByteArray());
-            LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(localStream, StandardCharsets.UTF_8))) {
+        final LineNumberReader lnr = new LineNumberReader(
+                new InputStreamReader(localStream, StandardCharsets.UTF_8));
+        try {
             for (int i = 0; i < expected.length; i++) {
                 final String expectedResult = messageFileName + ":" + expected[i];
                 final String actual = lnr.readLine();
@@ -262,6 +263,10 @@ public class WriteTagCheckTest extends AbstractModuleTestSupport {
             }
 
             assertTrue(expected.length >= errs, "unexpected output: " + lnr.readLine());
+        }
+        finally {
+            localStream.close();
+            lnr.close();
         }
         checker.destroy();
     }

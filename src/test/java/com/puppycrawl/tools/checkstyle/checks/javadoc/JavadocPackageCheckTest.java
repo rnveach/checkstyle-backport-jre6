@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.util.Collections;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -138,7 +138,7 @@ public class JavadocPackageCheckTest
     public void testCheckstyleExceptionIfFailedToGetCanonicalPathToFile() {
         final JavadocPackageCheck check = new JavadocPackageCheck();
         final File fileWithInvalidPath = new File("\u0000\u0000\u0000");
-        final FileText mockFileText = new FileText(fileWithInvalidPath, Collections.emptyList());
+        final FileText mockFileText = new FileText(fileWithInvalidPath, Collections.<String>emptyList());
         final String expectedExceptionMessage =
                 "Exception while getting canonical path to file " + fileWithInvalidPath.getPath();
         try {

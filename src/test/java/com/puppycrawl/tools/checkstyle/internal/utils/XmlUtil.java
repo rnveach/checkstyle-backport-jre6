@@ -63,7 +63,11 @@ public final class XmlUtil {
 
             rawXml = builder.parse(new InputSource(new StringReader(code)));
         }
-        catch (IOException | SAXException ex) {
+        catch (IOException ex) {
+            fail(fileName + " has invalid xml (" + ex.getMessage() + "): "
+                    + unserializedSource);
+        }
+        catch (SAXException ex) {
             fail(fileName + " has invalid xml (" + ex.getMessage() + "): "
                     + unserializedSource);
         }
@@ -72,7 +76,7 @@ public final class XmlUtil {
     }
 
     public static Set<Node> getChildrenElements(Node node) {
-        final Set<Node> result = new LinkedHashSet<>();
+        final Set<Node> result = new LinkedHashSet<Node>();
 
         for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
             if (child.getNodeType() != Node.TEXT_NODE) {
@@ -120,7 +124,7 @@ public final class XmlUtil {
     }
 
     public static Set<Node> findChildElementsByTag(Node node, String tag) {
-        final Set<Node> result = new LinkedHashSet<>();
+        final Set<Node> result = new LinkedHashSet<Node>();
 
         for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
             if (tag.equals(child.getNodeName())) {

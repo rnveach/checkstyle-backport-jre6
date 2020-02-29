@@ -20,10 +20,10 @@
 package com.puppycrawl.tools.checkstyle.checks.naming;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 
 /**
@@ -248,8 +248,16 @@ public class ParameterNameCheck extends AbstractNameCheck {
      * @return whether the method matches the expected access modifier.
      */
     private boolean matchAccessModifiers(final AccessModifierOption accessModifier) {
-        return Arrays.stream(accessModifiers)
-                .anyMatch(modifier -> modifier == accessModifier);
+        boolean result = false;
+
+        for (AccessModifierOption modifier : accessModifiers) {
+            if (modifier == accessModifier) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**

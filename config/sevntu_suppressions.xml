@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE suppressions PUBLIC
-        "-//Checkstyle//DTD SuppressionFilter Configuration 1.1//EN"
-        "https://checkstyle.org/dtds/suppressions_1_1.dtd">
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
+  <suppress checks="NewlineAtEndOfFile" files=".*" />
 
   <!-- Fixing these cases will decrease code readability -->
   <suppress checks="MultipleStringLiteralsExtended"
@@ -40,4 +41,20 @@
   <!-- No need for constructor with cause -->
   <suppress checks="CauseParameterInException" files=".*MetadataGenerationException\.java"/>
 
+  <!-- ========================================================= -->
+  <!-- backport suppressions -->
+  <!-- ========================================================= -->
+
+  <!-- separating lines causes issues with rebasing -->
+  <suppress checks="LineLengthExtended" files=".*"/>
+  <!-- result of duplicating exception handling -->
+  <suppress checks="MultipleStringLiteralsExtended" files=".*"/>
+  <!-- exception are from newer jdk -->
+  <suppress checks="IllegalCatchExtended" files=".*"/>
+  <!-- no other way to instantiate without lambdas -->
+  <suppress message="Instantiation of 'Predicate' is not allowed" files=".*"/>
+  <!-- old code is more complex then new and fixing would cause issues with rebasing -->
+  <suppress checks="ChildBlockLength|SingleBreakOrContinue|LogicConditionNeedOptimization" files=".*"/>
+  <!-- can relax more on this package -->
+  <suppress checks="ConstructorWithoutParams|ForbidInstantiation|ForbidCCommentsInMethods" files="[\\/]jre6[\\/]"/>
 </suppressions>

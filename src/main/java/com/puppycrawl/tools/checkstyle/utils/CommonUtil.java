@@ -28,14 +28,14 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * Contains utility methods.
@@ -348,7 +348,13 @@ public final class CommonUtil {
         try {
             return constructor.newInstance(parameters);
         }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+        catch (InstantiationException ex) {
+            throw new IllegalStateException(ex);
+        }
+        catch (IllegalAccessException ex) {
+            throw new IllegalStateException(ex);
+        }
+        catch (InvocationTargetException ex) {
             throw new IllegalStateException(ex);
         }
     }
@@ -401,7 +407,10 @@ public final class CommonUtil {
             final URL url = new URL(filename);
             uri = url.toURI();
         }
-        catch (URISyntaxException | MalformedURLException ignored) {
+        catch (URISyntaxException ignored) {
+            uri = null;
+        }
+        catch (MalformedURLException ignored) {
             uri = null;
         }
         return uri;

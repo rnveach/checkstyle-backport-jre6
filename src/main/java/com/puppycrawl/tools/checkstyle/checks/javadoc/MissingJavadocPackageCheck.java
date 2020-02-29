@@ -19,8 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
-import java.util.Optional;
-
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -130,16 +128,21 @@ public class MissingJavadocPackageCheck extends AbstractCheck {
      * @return true if there is a javadoc, false otherwise
      */
     private static boolean hasJavadocAboveAnnotation(DetailAST ast) {
-        final Optional<DetailAST> firstAnnotationChild = Optional.of(ast.getFirstChild())
-            .map(DetailAST::getFirstChild)
-            .map(DetailAST::getFirstChild);
         boolean result = false;
-        if (firstAnnotationChild.isPresent()) {
-            for (DetailAST child = firstAnnotationChild.get(); child != null;
-                 child = child.getNextSibling()) {
-                if (isJavadoc(child)) {
-                    result = true;
-                    break;
+
+        final DetailAST firstChild = ast.getFirstChild();
+        if (firstChild != null) {
+            final DetailAST nextChild = firstChild.getFirstChild();
+            if (nextChild != null) {
+                final DetailAST firstAnnotationChild = nextChild.getFirstChild();
+                if (firstAnnotationChild != null) {
+                    for (DetailAST child = firstAnnotationChild; child != null;
+                         child = child.getNextSibling()) {
+                        if (isJavadoc(child)) {
+                            result = true;
+                            break;
+                        }
+                    }
                 }
             }
         }

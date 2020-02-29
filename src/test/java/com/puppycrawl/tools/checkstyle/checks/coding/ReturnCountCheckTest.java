@@ -26,10 +26,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
@@ -37,6 +36,8 @@ import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class ReturnCountCheckTest extends AbstractModuleTestSupport {
@@ -163,12 +164,22 @@ public class ReturnCountCheckTest extends AbstractModuleTestSupport {
         final Optional<DetailAST> methodDef = TestUtil.findTokenInAstByPredicate(
             JavaParser.parseFile(new File(getPath("InputReturnCountVoid.java")),
                 JavaParser.Options.WITHOUT_COMMENTS),
-            ast -> ast.getType() == TokenTypes.METHOD_DEF);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.METHOD_DEF;
+                }
+            });
 
         assertTrue(methodDef.isPresent(), "Ast should contain METHOD_DEF");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, methodDef.get(), "contextStack",
-                contextStack -> ((Collection<Set<String>>) contextStack).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object contextStack) {
+                        return ((Collection<Set<String>>) contextStack).isEmpty();
+                    }
+                }),
                 "State is not cleared on beginTree");
     }
 

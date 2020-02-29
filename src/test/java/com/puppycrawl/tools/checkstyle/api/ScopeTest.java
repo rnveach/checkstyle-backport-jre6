@@ -25,8 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.DefaultLocale;
+import java.util.Locale;
+
+import org.junit.Test;
 
 /**
  * Test cases for {@link Scope} enumeration.
@@ -71,15 +72,21 @@ public class ScopeTest {
         assertEquals(Scope.ANONINNER, Scope.getInstance("AnonInner"), "Invalid scope");
     }
 
-    @DefaultLocale(language = "tr", country = "TR")
     @Test
     public void testMixedCaseSpacesWithDifferentLocale() {
-        assertEquals(Scope.NOTHING, Scope.getInstance("NothinG "), "Invalid scope");
-        assertEquals(Scope.PUBLIC, Scope.getInstance(" PuBlic"), "Invalid scope");
-        assertEquals(Scope.PROTECTED, Scope.getInstance(" ProteCted"), "Invalid scope");
-        assertEquals(Scope.PACKAGE, Scope.getInstance("    PackAge "), "Invalid scope");
-        assertEquals(Scope.PRIVATE, Scope.getInstance("privaTe   "), "Invalid scope");
-        assertEquals(Scope.ANONINNER, Scope.getInstance("AnonInner"), "Invalid scope");
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(new Locale("TR", "tr"));
+            assertEquals(Scope.NOTHING, Scope.getInstance("NothinG "), "Invalid scope");
+            assertEquals(Scope.PUBLIC, Scope.getInstance(" PuBlic"), "Invalid scope");
+            assertEquals(Scope.PROTECTED, Scope.getInstance(" ProteCted"), "Invalid scope");
+            assertEquals(Scope.PACKAGE, Scope.getInstance("    PackAge "), "Invalid scope");
+            assertEquals(Scope.PRIVATE, Scope.getInstance("privaTe   "), "Invalid scope");
+            assertEquals(Scope.ANONINNER, Scope.getInstance("AnonInner"), "Invalid scope");
+        }
+        finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
     @Test

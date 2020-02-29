@@ -41,10 +41,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -65,7 +64,7 @@ public class PackageObjectFactoryTest {
     @Test
     public void testCtorNullLoaderException1() {
         try {
-            final Object test = new PackageObjectFactory(new HashSet<>(), null);
+            final Object test = new PackageObjectFactory(new HashSet<String>(), null);
             fail("Exception is expected but got " + test);
         }
         catch (IllegalArgumentException ex) {
@@ -88,7 +87,7 @@ public class PackageObjectFactoryTest {
     public void testCtorNullPackageException1() {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
-            final Object test = new PackageObjectFactory(Collections.singleton(null), classLoader);
+            final Object test = new PackageObjectFactory(Collections.<String>singleton(null), classLoader);
             fail("Exception is expected but got " + test);
         }
         catch (IllegalArgumentException ex) {
@@ -112,7 +111,7 @@ public class PackageObjectFactoryTest {
     public void testCtorNullPackageException3() {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
-            final Object test = new PackageObjectFactory(Collections.singleton(null), classLoader,
+            final Object test = new PackageObjectFactory(Collections.<String>singleton(null), classLoader,
                     TRY_IN_ALL_REGISTERED_PACKAGES);
             fail("Exception is expected but got " + test);
         }
@@ -171,7 +170,7 @@ public class PackageObjectFactoryTest {
     public void testCreateObjectFromMap() throws Exception {
         final String moduleName = "Foo";
         final String name = moduleName + CHECK_SUFFIX;
-        final String packageName = BASE_PACKAGE + ".packageobjectfactory.bar";
+        final String packageName = BASE_PACKAGE + ".internal.testmodules.packageobjectfactory.bar";
         final String fullName = packageName + PACKAGE_SEPARATOR + name;
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final PackageObjectFactory objectFactory =
@@ -209,11 +208,11 @@ public class PackageObjectFactoryTest {
 
     @Test
     public void testCreateObjectFromFullModuleNamesWithAmbiguousException() {
-        final String barPackage = BASE_PACKAGE + ".packageobjectfactory.bar";
-        final String fooPackage = BASE_PACKAGE + ".packageobjectfactory.foo";
+        final String barPackage = BASE_PACKAGE + ".internal.testmodules.packageobjectfactory.bar";
+        final String fooPackage = BASE_PACKAGE + ".internal.testmodules.packageobjectfactory.foo";
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final PackageObjectFactory objectFactory = new PackageObjectFactory(
-                new LinkedHashSet<>(Arrays.asList(barPackage, fooPackage)), classLoader);
+                new LinkedHashSet<String>(Arrays.asList(barPackage, fooPackage)), classLoader);
         final String name = "FooCheck";
         try {
             objectFactory.createModule(name);
@@ -236,7 +235,7 @@ public class PackageObjectFactoryTest {
         final String package2 = BASE_PACKAGE + ".wrong2";
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final PackageObjectFactory objectFactory = new PackageObjectFactory(
-                new LinkedHashSet<>(Arrays.asList(package1, package2)), classLoader);
+                new LinkedHashSet<String>(Arrays.asList(package1, package2)), classLoader);
         final String name = "FooCheck";
         final String checkName = name + CHECK_SUFFIX;
         try {
@@ -263,7 +262,7 @@ public class PackageObjectFactoryTest {
         final String package2 = BASE_PACKAGE + ".wrong2";
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final PackageObjectFactory objectFactory = new PackageObjectFactory(
-                new LinkedHashSet<>(Arrays.asList(package1, package2)), classLoader,
+                new LinkedHashSet<String>(Arrays.asList(package1, package2)), classLoader,
                 TRY_IN_ALL_REGISTERED_PACKAGES);
         final String name = "FooCheck";
         final String checkName = name + CHECK_SUFFIX;
@@ -301,7 +300,7 @@ public class PackageObjectFactoryTest {
         final Method createModuleByBruteForce = PackageObjectFactory.class.getDeclaredMethod(
                 "createModuleByTryInEachPackage", String.class);
         final PackageObjectFactory packageObjectFactory = new PackageObjectFactory(
-            new HashSet<>(Arrays.asList(BASE_PACKAGE, BASE_PACKAGE + ".checks.annotation")),
+            new HashSet<String>(Arrays.asList(BASE_PACKAGE, BASE_PACKAGE + ".checks.annotation")),
             Thread.currentThread().getContextClassLoader(), TRY_IN_ALL_REGISTERED_PACKAGES);
         createModuleByBruteForce.setAccessible(true);
         final AnnotationLocationCheck check = (AnnotationLocationCheck) createModuleByBruteForce
@@ -313,7 +312,7 @@ public class PackageObjectFactoryTest {
     public void testCreateCheckWithPartialPackageNameByBruteForce() throws Exception {
         final String checkName = "checks.annotation.AnnotationLocation";
         final PackageObjectFactory packageObjectFactory = new PackageObjectFactory(
-            new HashSet<>(Collections.singletonList(BASE_PACKAGE)),
+            new HashSet<String>(Collections.singletonList(BASE_PACKAGE)),
             Thread.currentThread().getContextClassLoader(), TRY_IN_ALL_REGISTERED_PACKAGES);
         final AnnotationLocationCheck check = (AnnotationLocationCheck) packageObjectFactory
                 .createModule(checkName);
@@ -342,20 +341,34 @@ public class PackageObjectFactoryTest {
         field.setAccessible(true);
         final Collection<String> canonicalNames = ((Map<String, String>) field.get(null)).values();
 
-        final Optional<Class<?>> optional1 = classes.stream()
-                .filter(clazz -> {
-                    return !canonicalNames.contains(clazz.getCanonicalName())
-                            && !Definitions.INTERNAL_MODULES.contains(clazz.getName());
-                }).findFirst();
-        if (optional1.isPresent()) {
-            fail("Invalid canonical name: " + optional1.get());
+        Class<?> optional1 = null;
+        for (Class<?> clazz : classes) {
+            if (!canonicalNames.contains(clazz.getCanonicalName())
+                    && !Definitions.INTERNAL_MODULES.contains(clazz.getName())) {
+                optional1 = clazz;
+                break;
+            }
         }
-        final Optional<String> optional2 = canonicalNames.stream().filter(canonicalName -> {
-            return classes.stream().map(Class::getCanonicalName)
-                    .noneMatch(clssCanonicalName -> clssCanonicalName.equals(canonicalName));
-        }).findFirst();
-        if (optional2.isPresent()) {
-            fail("Invalid class: " + optional2.get());
+        if (optional1 != null) {
+            fail("Invalid canonical name: " + optional1);
+        }
+        String optional2 = null;
+        for (String canonicalName : canonicalNames) {
+            boolean found = false;
+            for (Class<?> clazz : classes) {
+                final String clssCanonicalName = clazz.getCanonicalName();
+                if (clssCanonicalName.equals(canonicalName)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                optional2 = canonicalName;
+                break;
+            }
+        }
+        if (optional2 != null) {
+            fail("Invalid class: " + optional2);
         }
     }
 

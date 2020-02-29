@@ -31,10 +31,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -54,6 +53,8 @@ import com.puppycrawl.tools.checkstyle.checks.whitespace.AbstractParenPadCheck;
 import com.puppycrawl.tools.checkstyle.checks.whitespace.TypecastParenPadCheck;
 import com.puppycrawl.tools.checkstyle.filters.SuppressWarningsFilter;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
@@ -63,7 +64,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
         return "com/puppycrawl/tools/checkstyle/checks/suppresswarningsholder";
     }
 
-    @AfterEach
+    @After
     public void cleanUp() {
         // clear cache that may have been set by tests
 
@@ -275,7 +276,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testGetAllAnnotationValuesWrongArg() throws ReflectiveOperationException {
+    public void testGetAllAnnotationValuesWrongArg() throws Exception {
         final SuppressWarningsHolder holder = new SuppressWarningsHolder();
         final Method getAllAnnotationValues = holder.getClass()
                 .getDeclaredMethod("getAllAnnotationValues", DetailAST.class);
@@ -307,7 +308,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testGetAnnotationValuesWrongArg() throws ReflectiveOperationException {
+    public void testGetAnnotationValuesWrongArg() throws Exception {
         final SuppressWarningsHolder holder = new SuppressWarningsHolder();
         final Method getAllAnnotationValues = holder.getClass()
                 .getDeclaredMethod("getAnnotationValues", DetailAST.class);
@@ -332,7 +333,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testGetAnnotationTargetWrongArg() throws ReflectiveOperationException {
+    public void testGetAnnotationTargetWrongArg() throws Exception {
         final SuppressWarningsHolder holder = new SuppressWarningsHolder();
         final Method getAnnotationTarget = holder.getClass()
                 .getDeclaredMethod("getAnnotationTarget", DetailAST.class);
@@ -404,13 +405,23 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
                 JavaParser.parseFile(
                     new File(getPath("InputSuppressWarningsHolder.java")),
                     JavaParser.Options.WITHOUT_COMMENTS),
-            ast -> ast.getType() == TokenTypes.ANNOTATION);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.ANNOTATION;
+                }
+            });
 
         assertTrue(annotationDef.isPresent(), "Ast should contain ANNOTATION");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, annotationDef.get(),
                 "ENTRIES",
-                entries -> ((ThreadLocal<List<Object>>) entries).get().isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object entries) {
+                        return ((ThreadLocal<List<Object>>) entries).get().isEmpty();
+                    }
+                }),
                 "State is not cleared on beginTree");
     }
 

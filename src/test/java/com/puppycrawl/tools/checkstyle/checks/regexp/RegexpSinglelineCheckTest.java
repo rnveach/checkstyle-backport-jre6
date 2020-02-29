@@ -24,13 +24,13 @@ import static com.puppycrawl.tools.checkstyle.checks.regexp.SinglelineDetector.M
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.internal.testmodules.TestLoggingReporter;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class RegexpSinglelineCheckTest extends AbstractModuleTestSupport {

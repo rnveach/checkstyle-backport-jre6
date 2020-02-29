@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,8 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Violation;
@@ -46,6 +48,7 @@ import com.puppycrawl.tools.checkstyle.bdd.TestInputConfiguration;
 import com.puppycrawl.tools.checkstyle.bdd.TestInputViolation;
 import com.puppycrawl.tools.checkstyle.internal.utils.BriefUtLogger;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtil;
 
 public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport {
@@ -223,7 +226,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
         final DefaultConfiguration configWithoutFilters =
                 testInputConfiguration.createConfigurationWithoutFilters();
         final List<TestInputViolation> violationsWithoutFilters =
-                new ArrayList<>(testInputConfiguration.getViolations());
+                new ArrayList<TestInputViolation>(testInputConfiguration.getViolations());
         violationsWithoutFilters.addAll(testInputConfiguration.getFilteredViolations());
         Collections.sort(violationsWithoutFilters);
         verifyViolations(configWithoutFilters, filePath, violationsWithoutFilters);
@@ -324,7 +327,7 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                           String messageFileName,
                           String... expected)
             throws Exception {
-        final Map<String, List<String>> expectedViolations = new HashMap<>();
+        final Map<String, List<String>> expectedViolations = new HashMap<String, List<String>>();
         expectedViolations.put(messageFileName, Arrays.asList(expected));
         verify(checker, processedFiles, expectedViolations);
     }
@@ -343,24 +346,29 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
             throws Exception {
         stream.flush();
         stream.reset();
-        final List<File> theFiles = new ArrayList<>();
+        final List<File> theFiles = new ArrayList<File>();
         Collections.addAll(theFiles, processedFiles);
         final int errs = checker.process(theFiles);
 
         // process each of the lines
         final Map<String, List<String>> actualViolations = getActualViolations(errs);
         final Map<String, List<String>> realExpectedViolations =
-                Maps.filterValues(expectedViolations, input -> !input.isEmpty());
+                Maps.filterValues(expectedViolations, new Predicate<List<String>>() {
+                    @Override
+                    public boolean apply(List<String> input) {
+                        return !input.isEmpty();
+                    }
+                });
 
         assertWithMessage("Files with expected violations and actual violations differ.")
             .that(actualViolations.keySet())
             .isEqualTo(realExpectedViolations.keySet());
 
-        realExpectedViolations.forEach((fileName, violationList) -> {
-            assertWithMessage("Violations for %s differ.", fileName)
-                .that(actualViolations.get(fileName))
-                .containsExactlyElementsIn(violationList);
-        });
+        for (Entry<String, List<String>> entry : realExpectedViolations.entrySet()) {
+            assertWithMessage("Violations for %s differ.", entry.getKey())
+                .that(actualViolations.get(entry.getKey()))
+                .containsExactlyElementsIn(entry.getValue());
+        }
 
         checker.destroy();
     }
@@ -374,13 +382,17 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
      * @throws Exception if exception occurs during verification process.
      */
     protected final void verifyWithLimitedResources(Configuration aConfig,
-                                                    String fileName, String... expected)
+                                                    final String fileName, final String... expected)
             throws Exception {
         // We return null here, which gives us a result to make an assertion about
-        final Void result = TestUtil.getResultWithLimitedResources(() -> {
-            verifyWithInlineConfigParser(fileName, expected);
-            return null;
-        });
+        final Void result = TestUtil.getResultWithLimitedResources(
+            new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    verifyWithInlineConfigParser(fileName, expected);
+                    return null;
+                }
+            });
         assertWithMessage("Verify should complete successfully.")
                 .that(result)
                 .isNull();
@@ -426,16 +438,21 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
         final Map<String, List<String>> actualViolations =
                 getActualViolations(checker.process(files));
         checker.destroy();
-        return actualViolations.getOrDefault(file, new ArrayList<>());
+        List<String> result = actualViolations.get(file);
+        if (result == null) {
+            result = new ArrayList<String>();
+        }
+        return result;
     }
 
     private Map<String, List<String>> getActualViolations(int errorCount) throws IOException {
         // process each of the lines
-        try (ByteArrayInputStream inputStream =
+        final ByteArrayInputStream inputStream =
                 new ByteArrayInputStream(stream.toByteArray());
-            LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-            final Map<String, List<String>> actualViolations = new HashMap<>();
+        final LineNumberReader lnr = new LineNumberReader(
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        try {
+            final Map<String, List<String>> actualViolations = new HashMap<String, List<String>>();
             for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= errorCount;
                  line = lnr.readLine()) {
                 // have at least 2 characters before the splitting colon,
@@ -447,13 +464,17 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                 List<String> actualViolationsPerFile =
                         actualViolations.get(actualViolationFileName);
                 if (actualViolationsPerFile == null) {
-                    actualViolationsPerFile = new ArrayList<>();
+                    actualViolationsPerFile = new ArrayList<String>();
                     actualViolations.put(actualViolationFileName, actualViolationsPerFile);
                 }
                 actualViolationsPerFile.add(actualViolationMessage);
             }
 
             return actualViolations;
+        }
+        finally {
+            inputStream.close();
+            lnr.close();
         }
     }
 

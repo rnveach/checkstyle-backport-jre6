@@ -230,8 +230,7 @@ public abstract class AutomaticBean
             // finally we can set the bean property
             beanUtils.copyProperty(this, key, value);
         }
-        catch (final InvocationTargetException | IllegalAccessException
-                | NoSuchMethodException ex) {
+        catch (final InvocationTargetException ex) {
             // There is no way to catch IllegalAccessException | NoSuchMethodException
             // as we do PropertyUtils.getPropertyDescriptor before beanUtils.copyProperty
             // so we have to join these exceptions with InvocationTargetException
@@ -240,7 +239,22 @@ public abstract class AutomaticBean
                     "Cannot set property '%s' to '%s'", key, value);
             throw new CheckstyleException(message, ex);
         }
-        catch (final IllegalArgumentException | ConversionException ex) {
+        catch (final IllegalAccessException ex) {
+            final String message = String.format(Locale.ROOT,
+                    "Cannot set property '%s' to '%s'", key, value);
+            throw new CheckstyleException(message, ex);
+        }
+        catch (final NoSuchMethodException ex) {
+            final String message = String.format(Locale.ROOT,
+                    "Cannot set property '%s' to '%s'", key, value);
+            throw new CheckstyleException(message, ex);
+        }
+        catch (final IllegalArgumentException ex) {
+            final String message = String.format(Locale.ROOT, "illegal value '%s' for property "
+                    + "'%s'", value, key);
+            throw new CheckstyleException(message, ex);
+        }
+        catch (final ConversionException ex) {
             final String message = String.format(Locale.ROOT, "illegal value '%s' for property "
                     + "'%s'", value, key);
             throw new CheckstyleException(message, ex);
@@ -363,7 +377,7 @@ public abstract class AutomaticBean
             // Convert to a String and trim it for the tokenizer.
             final StringTokenizer tokenizer = new StringTokenizer(
                 value.toString().trim(), COMMA_SEPARATOR);
-            final List<String> result = new ArrayList<>();
+            final List<String> result = new ArrayList<String>();
 
             while (tokenizer.hasMoreTokens()) {
                 final String token = tokenizer.nextToken();
@@ -392,7 +406,7 @@ public abstract class AutomaticBean
             // Converts to a String and trims it for the tokenizer.
             final StringTokenizer tokenizer = new StringTokenizer(
                 value.toString().trim(), COMMA_SEPARATOR);
-            final List<AccessModifierOption> result = new ArrayList<>();
+            final List<AccessModifierOption> result = new ArrayList<AccessModifierOption>();
 
             while (tokenizer.hasMoreTokens()) {
                 final String token = tokenizer.nextToken();

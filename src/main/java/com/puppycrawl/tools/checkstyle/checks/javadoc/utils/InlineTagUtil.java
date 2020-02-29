@@ -75,7 +75,7 @@ public final class InlineTagUtil {
         final String commentText = convertLinesToString(lines);
         final Matcher inlineTagMatcher = INLINE_TAG_PATTERN.matcher(commentText);
 
-        final List<TagInfo> tags = new ArrayList<>();
+        final List<TagInfo> tags = new ArrayList<TagInfo>();
 
         while (inlineTagMatcher.find()) {
             final String tagName = inlineTagMatcher.group(1);

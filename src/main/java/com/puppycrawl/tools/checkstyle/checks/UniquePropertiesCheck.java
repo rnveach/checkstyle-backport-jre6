@@ -22,7 +22,6 @@ package com.puppycrawl.tools.checkstyle.checks;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,6 +33,8 @@ import java.util.regex.Pattern;
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 
 /**
  * <p>
@@ -133,8 +134,14 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
     @Override
     protected void processFiltered(File file, FileText fileText) {
         final UniqueProperties properties = new UniqueProperties();
-        try (InputStream inputStream = Files.newInputStream(file.toPath())) {
-            properties.load(inputStream);
+        try {
+            final InputStream inputStream = Files7.newInputStream(new Path(file));
+            try {
+                properties.load(inputStream);
+            }
+            finally {
+                inputStream.close();
+            }
         }
         catch (IOException ex) {
             log(1, MSG_IO_EXCEPTION_KEY, file.getPath(),
@@ -206,7 +213,7 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
          * Map, holding duplicated keys and their count. Keys are added here only if they
          * already exist in Properties' inner map.
          */
-        private final Map<String, AtomicInteger> duplicatedKeys = new HashMap<>();
+        private final Map<String, AtomicInteger> duplicatedKeys = new HashMap<String, AtomicInteger>();
 
         /**
          * Puts the value into properties by the key specified.
@@ -218,9 +225,14 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
             final Object oldValue = super.put(key, value);
             if (oldValue != null && key instanceof String) {
                 final String keyString = (String) key;
+                AtomicInteger duplicatedValue = duplicatedKeys.get(keyString);
 
-                duplicatedKeys.computeIfAbsent(keyString, empty -> new AtomicInteger(0))
-                        .incrementAndGet();
+                if (duplicatedValue == null) {
+                    duplicatedValue = new AtomicInteger(0);
+                    duplicatedKeys.put(keyString, duplicatedValue);
+                }
+
+                duplicatedValue.incrementAndGet();
             }
             return oldValue;
         }
@@ -231,7 +243,7 @@ public class UniquePropertiesCheck extends AbstractFileSetCheck {
          * @return A collection of duplicated keys.
          */
         public Map<String, AtomicInteger> getDuplicatedKeys() {
-            return new HashMap<>(duplicatedKeys);
+            return new HashMap<String, AtomicInteger>(duplicatedKeys);
         }
 
     }

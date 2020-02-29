@@ -5,6 +5,14 @@
 
 <import-control pkg="com.puppycrawl.tools.checkstyle">
 
+  <!-- ========================================================= -->
+  <!-- backport imports -->
+  <!-- ========================================================= -->
+  <allow pkg="com.puppycrawl.tools.checkstyle.jre6.charset"/>
+  <allow pkg="com.puppycrawl.tools.checkstyle.jre6.file"/>
+  <allow pkg="com.puppycrawl.tools.checkstyle.jre6.lang"/>
+  <allow pkg="com.puppycrawl.tools.checkstyle.jre6.util"/>
+
   <!-- java.io.FileInputStream and java.io.FileOutputStream are disallowed in favor of
          Files.newInputStream and Files.newOutputStream.
          See https://github.com/checkstyle/checkstyle/issues/5638 -->
@@ -171,6 +179,14 @@
   </subpackage>
 
   <subpackage name="gui" strategyOnMismatch="disallowed">
+    <!-- ========================================================= -->
+    <!-- backport imports -->
+    <!-- ========================================================= -->
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.charset"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.file"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.lang"/>
+    <allow pkg="com.puppycrawl.tools.checkstyle.jre6.util"/>
+
     <allow class="com.puppycrawl.tools.checkstyle.xpath.XpathQueryGenerator" />
 
 
@@ -220,5 +236,11 @@
     <file name="CrAwareLexerSimulator">
       <allow pkg="org.antlr.v4.runtime"/>
     </file>
+  </subpackage>
+
+  <!-- ========================================================= -->
+  <!-- backport imports -->
+  <!-- ========================================================= -->
+  <subpackage name="jre6" strategyOnMismatch="allowed">
   </subpackage>
 </import-control>

@@ -27,13 +27,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.Collection;
 
 import org.antlr.v4.runtime.CommonToken;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.api.Context;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class ExecutableStatementCountCheckTest
@@ -52,7 +53,12 @@ public class ExecutableStatementCountCheckTest
         final ExecutableStatementCountCheck check = new ExecutableStatementCountCheck();
         assertTrue(
                 TestUtil.isStatefulFieldClearedDuringBeginTree(check, ast, "contextStack",
-                    contextStack -> ((Collection<Context>) contextStack).isEmpty()),
+                    new Predicate<Object>() {
+                        @Override
+                        public boolean test(Object contextStack) {
+                            return ((Collection<Context>) contextStack).isEmpty();
+                        }
+                    }),
                 "Stateful field is not cleared after beginTree");
     }
 

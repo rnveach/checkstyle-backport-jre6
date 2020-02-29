@@ -19,16 +19,15 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 
@@ -160,13 +159,12 @@ public final class IllegalThrowsCheck extends AbstractCheck {
 
     /** Specify names of methods to ignore. */
     private final Set<String> ignoredMethodNames =
-        Arrays.stream(new String[] {"finalize", }).collect(Collectors.toSet());
+        Collections7.newHashSet("finalize");
 
     /** Specify throw class names to reject. */
-    private final Set<String> illegalClassNames = Arrays.stream(
-        new String[] {"Error", "RuntimeException", "Throwable", "java.lang.Error",
-                      "java.lang.RuntimeException", "java.lang.Throwable", })
-        .collect(Collectors.toSet());
+    private final Set<String> illegalClassNames = Collections7.newHashSet(
+        "Error", "RuntimeException", "Throwable", "java.lang.Error",
+                      "java.lang.RuntimeException", "java.lang.Throwable");
 
     /**
      * Allow to ignore checking overridden methods (marked with {@code Override}

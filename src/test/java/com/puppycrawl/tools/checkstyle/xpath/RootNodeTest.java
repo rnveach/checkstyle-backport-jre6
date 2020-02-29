@@ -29,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
@@ -51,7 +51,7 @@ public class RootNodeTest extends AbstractPathTestSupport {
         return "com/puppycrawl/tools/checkstyle/xpath/xpathmapper";
     }
 
-    @BeforeEach
+    @Before
     public void init() throws Exception {
         final File file = new File(getPath("InputXpathMapperAst.java"));
         final DetailAST rootAst = JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS);
@@ -110,29 +110,53 @@ public class RootNodeTest extends AbstractPathTestSupport {
 
     @Test
     public void testIterate() {
-        try (AxisIterator following = rootNode.iterateAxis(AxisInfo.FOLLOWING)) {
-            assertEquals(EmptyIterator.ofNodes(), following,
+        final AxisIterator following = rootNode.iterateAxis(AxisInfo.FOLLOWING);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, following,
                     "Result iterator does not match expected");
         }
-        try (AxisIterator followingSibling = rootNode.iterateAxis(AxisInfo.FOLLOWING_SIBLING)) {
-            assertEquals(EmptyIterator.ofNodes(), followingSibling,
+        finally {
+            following.close();
+        }
+        final AxisIterator followingSibling = rootNode.iterateAxis(AxisInfo.FOLLOWING_SIBLING);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, followingSibling,
                     "Result iterator does not match expected");
         }
-        try (AxisIterator preceding = rootNode.iterateAxis(AxisInfo.PRECEDING)) {
-            assertEquals(EmptyIterator.ofNodes(), preceding,
+        finally {
+            followingSibling.close();
+        }
+        final AxisIterator preceding = rootNode.iterateAxis(AxisInfo.PRECEDING);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, preceding,
                     "Result iterator does not match expected");
         }
-        try (AxisIterator precedingSibling = rootNode.iterateAxis(AxisInfo.PRECEDING_SIBLING)) {
-            assertEquals(EmptyIterator.ofNodes(), precedingSibling,
+        finally {
+            preceding.close();
+        }
+        final AxisIterator precedingSibling = rootNode.iterateAxis(AxisInfo.PRECEDING_SIBLING);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, precedingSibling,
                     "Result iterator does not match expected");
         }
-        try (AxisIterator parent = rootNode.iterateAxis(AxisInfo.PARENT)) {
-            assertEquals(EmptyIterator.ofNodes(), parent,
+        finally {
+            precedingSibling.close();
+        }
+        final AxisIterator parent = rootNode.iterateAxis(AxisInfo.PARENT);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, parent,
                     "Result iterator does not match expected");
         }
-        try (AxisIterator parentNull = rootNode.iterateAxis(AxisInfo.PARENT, null)) {
-            assertEquals(EmptyIterator.ofNodes(), parentNull,
+        finally {
+            parent.close();
+        }
+        final AxisIterator parentNull = rootNode.iterateAxis(AxisInfo.PARENT, null);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, parentNull,
                     "Result iterator does not match expected");
+        }
+        finally {
+            parentNull.close();
         }
     }
 
@@ -141,13 +165,34 @@ public class RootNodeTest extends AbstractPathTestSupport {
         final RootNode emptyRootNode = new RootNode(null);
         assertFalse(emptyRootNode.hasChildNodes(), "Empty node should not have children");
 
-        try (AxisIterator iterator = emptyRootNode.iterateAxis(AxisInfo.DESCENDANT)) {
-            assertEquals(EmptyIterator.ofNodes(), iterator,
+        final AxisIterator descendant = emptyRootNode.iterateAxis(AxisInfo.DESCENDANT);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, descendant,
                     "Result iterator does not match expected");
         }
-        try (AxisIterator iterator = emptyRootNode.iterateAxis(AxisInfo.CHILD)) {
-            assertEquals(EmptyIterator.ofNodes(), iterator,
+        finally {
+            descendant.close();
+        }
+        final AxisIterator child = emptyRootNode.iterateAxis(AxisInfo.CHILD);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, child,
                     "Result iterator does not match expected");
+        }
+        finally {
+            child.close();
+        }
+    }
+
+    @Test
+    public void testIterateWithoutArgument() {
+        try {
+            rootNode.iterate();
+            fail("Exception is excepted");
+        }
+        catch (UnsupportedOperationException ex) {
+            assertEquals("Operation is not supported",
+                    ex.getMessage(),
+                    "Invalid exception message");
         }
     }
 
@@ -309,6 +354,34 @@ public class RootNodeTest extends AbstractPathTestSupport {
     }
 
     @Test
+    public void testComparePosition() {
+        try {
+            rootNode.comparePosition(null);
+            fail("Exception is excepted");
+        }
+        catch (UnsupportedOperationException ex) {
+            assertEquals(
+                "Operation is not supported",
+                ex.getMessage(),
+                "Invalid exception message");
+        }
+    }
+
+    @Test
+    public void testHead() {
+        try {
+            rootNode.head();
+            fail("Exception is excepted");
+        }
+        catch (UnsupportedOperationException ex) {
+            assertEquals(
+                "Operation is not supported",
+                ex.getMessage(),
+                "Invalid exception message");
+        }
+    }
+
+    @Test
     public void testGetStringValueCs() {
         try {
             rootNode.getStringValueCS();
@@ -401,18 +474,6 @@ public class RootNodeTest extends AbstractPathTestSupport {
         catch (UnsupportedOperationException ex) {
             assertEquals("Operation is not supported",
                 ex.getMessage(), "Invalid exception message");
-        }
-    }
-
-    @Test
-    public void testGetAllNamespaces() {
-        try {
-            rootNode.getAllNamespaces();
-            fail("Exception is excepted");
-        }
-        catch (UnsupportedOperationException ex) {
-            assertEquals("Operation is not supported",
-                    ex.getMessage(), "Invalid exception message");
         }
     }
 

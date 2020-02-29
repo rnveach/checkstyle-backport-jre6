@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +34,8 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
 
 /**
  * Simple SARIF logger.
@@ -83,7 +84,7 @@ public class SarifLogger extends AutomaticBean implements AuditListener {
     private final boolean closeStream;
 
     /** The results. */
-    private final List<String> results = new ArrayList<>();
+    private final List<String> results = new ArrayList<String>();
 
     /** Content for the entire report. */
     private final String report;
@@ -148,7 +149,7 @@ public class SarifLogger extends AutomaticBean implements AuditListener {
         final String version = SarifLogger.class.getPackage().getImplementationVersion();
         final String rendered = report
             .replace(VERSION_PLACEHOLDER, String.valueOf(version))
-            .replace(RESULTS_PLACEHOLDER, String.join(",\n", results));
+            .replace(RESULTS_PLACEHOLDER, String7.join(",\n", results));
         writer.print(rendered);
         if (closeStream) {
             writer.close();
@@ -323,8 +324,9 @@ public class SarifLogger extends AutomaticBean implements AuditListener {
      * @throws IOException if there is reading errors
      */
     public static String readResource(String name) throws IOException {
-        try (InputStream inputStream = SarifLogger.class.getResourceAsStream(name);
-             ByteArrayOutputStream result = new ByteArrayOutputStream()) {
+        final InputStream inputStream = SarifLogger.class.getResourceAsStream(name);
+        final ByteArrayOutputStream result = new ByteArrayOutputStream();
+        try {
             if (inputStream == null) {
                 throw new IOException("Cannot find the resource " + name);
             }
@@ -335,6 +337,12 @@ public class SarifLogger extends AutomaticBean implements AuditListener {
                 length = inputStream.read(buffer);
             }
             return result.toString(StandardCharsets.UTF_8.name());
+        }
+        finally {
+            result.close();
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
     }
 }

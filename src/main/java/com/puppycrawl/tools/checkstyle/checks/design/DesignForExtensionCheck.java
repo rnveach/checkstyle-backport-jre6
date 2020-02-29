@@ -19,19 +19,20 @@
 
 package com.puppycrawl.tools.checkstyle.checks.design;
 
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.Scope;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
@@ -293,8 +294,8 @@ public class DesignForExtensionCheck extends AbstractCheck {
     /**
      * Specify annotations which allow the check to skip the method from validation.
      */
-    private Set<String> ignoredAnnotations = Arrays.stream(new String[] {"Test", "Before", "After",
-        "BeforeClass", "AfterClass", }).collect(Collectors.toSet());
+    private Set<String> ignoredAnnotations = Collections7.newHashSet("Test", "Before", "After",
+        "BeforeClass", "AfterClass");
 
     /**
      * Specify the comment text pattern which qualifies a method as designed for extension.
@@ -308,7 +309,8 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @param ignoredAnnotations method annotations.
      */
     public void setIgnoredAnnotations(String... ignoredAnnotations) {
-        this.ignoredAnnotations = Arrays.stream(ignoredAnnotations).collect(Collectors.toSet());
+        this.ignoredAnnotations = new HashSet<String>();
+        Collections.addAll(this.ignoredAnnotations, ignoredAnnotations);
     }
 
     /**
@@ -454,9 +456,12 @@ public class DesignForExtensionCheck extends AbstractCheck {
         boolean hasEmptyBody = true;
         final DetailAST methodImplOpenBrace = ast.findFirstToken(TokenTypes.SLIST);
         final DetailAST methodImplCloseBrace = methodImplOpenBrace.getLastChild();
-        final Predicate<DetailAST> predicate = currentNode -> {
-            return currentNode != methodImplCloseBrace
-                && !TokenUtil.isCommentType(currentNode.getType());
+        final Predicate<DetailAST> predicate = new Predicate<DetailAST>() {
+            @Override
+            public boolean test(DetailAST currentNode) {
+                return currentNode != methodImplCloseBrace
+                        && !TokenUtil.isCommentType(currentNode.getType());
+            }
         };
         final Optional<DetailAST> methodBody =
             TokenUtil.findFirstTokenByPredicate(methodImplOpenBrace, predicate);
@@ -491,12 +496,15 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @param annotations a set of ignored annotations.
      * @return true if a method has any of ignored annotations.
      */
-    private static boolean hasIgnoredAnnotation(DetailAST methodDef, Set<String> annotations) {
+    private static boolean hasIgnoredAnnotation(DetailAST methodDef, final Set<String> annotations) {
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
         final Optional<DetailAST> annotation = TokenUtil.findFirstTokenByPredicate(modifiers,
-            currentToken -> {
-                return currentToken.getType() == TokenTypes.ANNOTATION
-                    && annotations.contains(getAnnotationName(currentToken));
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST currentToken) {
+                    return currentToken.getType() == TokenTypes.ANNOTATION
+                            && annotations.contains(getAnnotationName(currentToken));
+                }
             });
         return annotation.isPresent();
     }

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 
@@ -83,7 +83,7 @@ public class DefaultConfigurationTest {
     public void testAddMessageAndGetMessages() {
         final DefaultConfiguration config = new DefaultConfiguration("MyConfig");
         config.addMessage("key", "value");
-        final Map<String, String> expected = new TreeMap<>();
+        final Map<String, String> expected = new TreeMap<String, String>();
         expected.put("key", "value");
         assertEquals(expected, config.getMessages(), "Invalid message map");
     }

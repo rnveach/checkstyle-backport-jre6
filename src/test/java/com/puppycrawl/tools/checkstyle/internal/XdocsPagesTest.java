@@ -20,8 +20,8 @@
 package com.puppycrawl.tools.checkstyle.internal;
 
 import static com.google.common.truth.Truth.assertWithMessage;
+import static com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets.UTF_8;
 import static java.lang.Integer.parseInt;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.CoreMatchers.describedAs;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,9 +41,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -61,12 +58,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -88,6 +82,9 @@ import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.internal.utils.XdocUtil;
 import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 public class XdocsPagesTest {
@@ -160,7 +157,7 @@ public class XdocsPagesTest {
     );
 
     private static final Set<String> SUN_MODULES = Collections.unmodifiableSet(
-        new HashSet<>(CheckUtil.getConfigSunStyleModules()));
+        new HashSet<String>(CheckUtil.getConfigSunStyleModules()));
     // ignore the not yet properly covered modules while testing newly added ones
     // add proper sections to the coverage report and integration tests
     // and then remove this list eventually
@@ -229,21 +226,19 @@ public class XdocsPagesTest {
             "WhitespaceAround"
     );
     private static final Set<String> GOOGLE_MODULES = Collections.unmodifiableSet(
-        new HashSet<>(CheckUtil.getConfigGoogleStyleModules()));
+        new HashSet<String>(CheckUtil.getConfigGoogleStyleModules()));
 
     @Test
     public void testAllChecksPresentOnAvailableChecksPage() throws Exception {
-        final String availableChecks = new String(Files.readAllBytes(AVAILABLE_CHECKS_PATH), UTF_8);
+        final String availableChecks = new String(Files7.readAllBytes(AVAILABLE_CHECKS_PATH), UTF_8);
 
-        CheckUtil.getSimpleNames(CheckUtil.getCheckstyleChecks())
-            .stream()
-            .filter(checkName -> !"JavadocMetadataScraper".equals(checkName))
-            .forEach(checkName -> {
-                if (!isPresent(availableChecks, checkName)) {
-                    fail(checkName + " is not correctly listed on Available Checks page"
-                        + " - add it to " + AVAILABLE_CHECKS_PATH);
-                }
-            });
+        for (String checkName : CheckUtil.getSimpleNames(CheckUtil.getCheckstyleChecks())) {
+            if (!"JavadocMetadataScraper".equals(checkName)
+                    && !isPresent(availableChecks, checkName)) {
+                fail(checkName + " is not correctly listed on Available Checks page"
+                    + " - add it to " + AVAILABLE_CHECKS_PATH);
+            }
+        }
     }
 
     private static boolean isPresent(String availableChecks, String checkName) {
@@ -264,7 +259,7 @@ public class XdocsPagesTest {
                 continue;
             }
 
-            final String input = new String(Files.readAllBytes(path), UTF_8);
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("subsection");
 
@@ -294,10 +289,10 @@ public class XdocsPagesTest {
 
     private static Map<String, String> readSummaries() throws Exception {
         final String fileName = AVAILABLE_CHECKS_PATH.getFileName().toString();
-        final String input = new String(Files.readAllBytes(AVAILABLE_CHECKS_PATH), UTF_8);
+        final String input = new String(Files7.readAllBytes(AVAILABLE_CHECKS_PATH), UTF_8);
         final Document document = XmlUtil.getRawXml(fileName, input, input);
         final NodeList rows = document.getElementsByTagName("tr");
-        final Map<String, String> result = new HashMap<>();
+        final Map<String, String> result = new HashMap<String, String>();
 
         for (int position = 0; position < rows.getLength(); position++) {
             final Node row = rows.item(position);
@@ -314,7 +309,7 @@ public class XdocsPagesTest {
     @Test
     public void testAllSubSections() throws Exception {
         for (Path path : XdocUtil.getXdocsFilePaths()) {
-            final String input = new String(Files.readAllBytes(path), UTF_8);
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
             final String fileName = path.getFileName().toString();
 
             final Document document = XmlUtil.getRawXml(fileName, input, input);
@@ -355,7 +350,7 @@ public class XdocsPagesTest {
     @Test
     public void testAllXmlExamples() throws Exception {
         for (Path path : XdocUtil.getXdocsFilePaths()) {
-            final String input = new String(Files.readAllBytes(path), UTF_8);
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
             final String fileName = path.getFileName().toString();
 
             final Document document = XmlUtil.getRawXml(fileName, input, input);
@@ -472,7 +467,7 @@ public class XdocsPagesTest {
                 continue;
             }
 
-            final String input = new String(Files.readAllBytes(path), UTF_8);
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("section");
             String lastSectionName = null;
@@ -515,7 +510,7 @@ public class XdocsPagesTest {
         final Path path = Paths.get(XdocUtil.DIRECTORY_PATH + "/config.xml");
         final String fileName = path.getFileName().toString();
 
-        final String input = new String(Files.readAllBytes(path), UTF_8);
+        final String input = new String(Files7.readAllBytes(path), UTF_8);
         final Document document = XmlUtil.getRawXml(fileName, input, input);
         final NodeList sources = document.getElementsByTagName("section");
 
@@ -729,9 +724,11 @@ public class XdocsPagesTest {
         }
 
         // remove undocumented properties
-        new HashSet<>(properties).stream()
-            .filter(prop -> UNDOCUMENTED_PROPERTIES.contains(clss.getSimpleName() + "." + prop))
-            .forEach(properties::remove);
+        for (String prop : new HashSet<String>(properties)) {
+            if (UNDOCUMENTED_PROPERTIES.contains(clss.getSimpleName() + "." + prop)) {
+                properties.remove(prop);
+            }
+        }
 
         if (AbstractCheck.class.isAssignableFrom(clss)) {
             final AbstractCheck check = (AbstractCheck) instance;
@@ -773,7 +770,7 @@ public class XdocsPagesTest {
         boolean didTokens = false;
 
         for (Node row : XmlUtil.getChildrenElements(table)) {
-            final List<Node> columns = new ArrayList<>(XmlUtil.getChildrenElements(row));
+            final List<Node> columns = new ArrayList<Node>(XmlUtil.getChildrenElements(row));
 
             assertEquals(5, columns.size(), fileName + " section '" + sectionName
                     + "' should have the requested columns");
@@ -1168,7 +1165,7 @@ public class XdocsPagesTest {
                                 sb.append(", ");
                             }
 
-                            sb.append(TokenUtil.getTokenName((int) Array.get(value, i)));
+                            sb.append(TokenUtil.getTokenName((Integer) Array.get(value, i)));
                         }
 
                         result = sb.toString();
@@ -1193,19 +1190,36 @@ public class XdocsPagesTest {
                     result = "";
                 }
                 else {
-                    final Stream<?> valuesStream;
+                    final List<String> valuesStream = new ArrayList<String>();
                     if (value instanceof Collection) {
                         final Collection<?> collection = (Collection<?>) value;
-                        valuesStream = collection.stream();
+
+                        for (Object o : collection) {
+                            valuesStream.add(o.toString());
+                        }
                     }
                     else {
                         final Object[] array = (Object[]) value;
-                        valuesStream = Arrays.stream(array);
+
+                        for (Object o : array) {
+                            valuesStream.add(o.toString());
+                        }
                     }
-                    result = valuesStream
-                        .map(String.class::cast)
-                        .sorted()
-                        .collect(Collectors.joining(", "));
+
+                    Collections.sort(valuesStream);
+
+                    boolean first = true;
+                    result = "";
+
+                    for (String s : valuesStream) {
+                        if (first) {
+                            first = false;
+                        }
+                        else {
+                            result += ", ";
+                        }
+                        result += s;
+                    }
                 }
 
                 if (result.isEmpty()) {
@@ -1362,10 +1376,11 @@ public class XdocsPagesTest {
         Set<String> result = null;
         final Node node = XmlUtil.findChildElementById(subSection, id);
         if (node != null) {
-            result = XmlUtil.getChildrenElements(node)
-                    .stream()
-                    .map(Node::getTextContent)
-                    .collect(Collectors.toSet());
+            result = new HashSet<String>();
+
+            for (Node child : XmlUtil.getChildrenElements(node)) {
+                result.add(child.getTextContent());
+            }
         }
         return result;
     }
@@ -1375,7 +1390,7 @@ public class XdocsPagesTest {
                                                  Object instance) throws Exception {
         final Class<?> clss = instance.getClass();
         final Set<Field> fields = CheckUtil.getCheckMessages(clss);
-        final Set<String> list = new TreeSet<>();
+        final Set<String> list = new TreeSet<String>();
 
         for (Field field : fields) {
             // below is required for package/private classes
@@ -1526,7 +1541,7 @@ public class XdocsPagesTest {
     }
 
     private static Set<String> getProperties(Class<?> clss) {
-        final Set<String> result = new TreeSet<>();
+        final Set<String> result = new TreeSet<String>();
         final PropertyDescriptor[] map = PropertyUtils.getPropertyDescriptors(clss);
 
         for (PropertyDescriptor p : map) {
@@ -1543,24 +1558,21 @@ public class XdocsPagesTest {
         for (Path path : XdocUtil.getXdocsStyleFilePaths(XdocUtil.getXdocsFilePaths())) {
             final String fileName = path.getFileName().toString();
             final String styleName = fileName.substring(0, fileName.lastIndexOf('_'));
-            final String input = new String(Files.readAllBytes(path), UTF_8);
+            final String input = new String(Files7.readAllBytes(path), UTF_8);
             final Document document = XmlUtil.getRawXml(fileName, input, input);
             final NodeList sources = document.getElementsByTagName("tr");
 
             final Set<String> styleChecks;
-            switch (styleName) {
-                case "google":
-                    styleChecks = new HashSet<>(GOOGLE_MODULES);
-                    break;
-
-                case "sun":
-                    styleChecks = new HashSet<>(SUN_MODULES);
-                    styleChecks.removeAll(IGNORED_SUN_MODULES);
-                    break;
-
-                default:
-                    fail("Missing modules list for style file '" + fileName + "'");
-                    styleChecks = null;
+            if ("google".equals(styleName)) {
+                styleChecks = new HashSet<String>(GOOGLE_MODULES);
+            }
+            else if ("sun".equals(styleName)) {
+                styleChecks = new HashSet<String>(SUN_MODULES);
+                styleChecks.removeAll(IGNORED_SUN_MODULES);
+            }
+            else {
+                fail("Missing modules list for style file '" + fileName + "'");
+                styleChecks = null;
             }
 
             String lastRuleName = null;
@@ -1568,7 +1580,7 @@ public class XdocsPagesTest {
 
             for (int position = 0; position < sources.getLength(); position++) {
                 final Node row = sources.item(position);
-                final List<Node> columns = new ArrayList<>(
+                final List<Node> columns = new ArrayList<Node>(
                         XmlUtil.findChildElementsByTag(row, "td"));
 
                 if (columns.isEmpty()) {
@@ -1624,10 +1636,22 @@ public class XdocsPagesTest {
 
                 final String ruleNumberPart = ruleNumberParts[partIndex];
                 final String lastRuleNumberPart = lastRuleNumberParts[partIndex];
-                final boolean ruleNumberPartsAreNumeric = IntStream.concat(
-                        ruleNumberPart.chars(),
-                        lastRuleNumberPart.chars()
-                ).allMatch(Character::isDigit);
+                boolean ruleNumberPartsAreNumeric = true;
+
+                for (char c : ruleNumberPart.toCharArray()) {
+                    if (!Character.isDigit(c)) {
+                        ruleNumberPartsAreNumeric = false;
+                        break;
+                    }
+                }
+                if (!ruleNumberPartsAreNumeric) {
+                    for (char c : lastRuleNumberPart.toCharArray()) {
+                        if (!Character.isDigit(c)) {
+                            ruleNumberPartsAreNumeric = false;
+                            break;
+                        }
+                    }
+                }
 
                 if (ruleNumberPartsAreNumeric) {
                     final int numericRuleNumberPart = parseInt(ruleNumberPart);

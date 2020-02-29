@@ -19,10 +19,9 @@
 
 package com.puppycrawl.tools.checkstyle.checks.coding;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
@@ -211,16 +210,16 @@ public class IllegalInstantiationCheck
     private static final String JAVA_LANG = "java.lang.";
 
     /** The imports for the file. */
-    private final Set<FullIdent> imports = new HashSet<>();
+    private final Set<FullIdent> imports = new HashSet<FullIdent>();
 
     /** The class names defined in the file. */
-    private final Set<String> classNames = new HashSet<>();
+    private final Set<String> classNames = new HashSet<String>();
 
     /** The instantiations in the file. */
-    private final Set<DetailAST> instantiations = new HashSet<>();
+    private final Set<DetailAST> instantiations = new HashSet<DetailAST>();
 
     /** Specify fully qualified class names that should not be instantiated. */
-    private Set<String> classes = new HashSet<>();
+    private Set<String> classes = new HashSet<String>();
 
     /** Name of the package. */
     private String pkgName;
@@ -279,7 +278,9 @@ public class IllegalInstantiationCheck
 
     @Override
     public void finishTree(DetailAST rootAST) {
-        instantiations.forEach(this::postProcessLiteralNew);
+        for (DetailAST literalNewAST : instantiations) {
+            postProcessLiteralNew(literalNewAST);
+        }
     }
 
     /**
@@ -471,7 +472,8 @@ public class IllegalInstantiationCheck
      * @param names a comma separate list of class names
      */
     public void setClasses(String... names) {
-        classes = Arrays.stream(names).collect(Collectors.toSet());
+        classes = new HashSet<String>();
+        Collections.addAll(classes, names);
     }
 
 }

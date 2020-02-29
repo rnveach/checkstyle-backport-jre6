@@ -24,10 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -38,6 +37,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 
 public class XpathFileGeneratorAstFilterTest {
 
@@ -137,7 +138,12 @@ public class XpathFileGeneratorAstFilterTest {
 
         assertTrue(TestUtil
                 .isStatefulFieldClearedDuringLocalSetup(filter, event, "MESSAGE_QUERY_MAP",
-                    variableStack -> ((Map<Violation, String>) variableStack).isEmpty()),
+                    new Predicate<Object>() {
+                        @Override
+                        public boolean test(Object variableStack) {
+                            return ((Map<Violation, String>) variableStack).isEmpty();
+                        }
+                    }),
                 "State is not cleared on finishLocalSetup");
     }
 

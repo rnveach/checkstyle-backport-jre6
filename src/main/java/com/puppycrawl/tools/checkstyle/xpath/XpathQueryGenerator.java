@@ -21,11 +21,11 @@ package com.puppycrawl.tools.checkstyle.xpath;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileText;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 import com.puppycrawl.tools.checkstyle.utils.XpathUtil;
@@ -140,10 +140,11 @@ public class XpathQueryGenerator {
      * @return list of xpath queries of nodes, matching line number, column number and token type
      */
     public List<String> generate() {
-        return getMatchingAstElements()
-            .stream()
-            .map(XpathQueryGenerator::generateXpathQuery)
-            .collect(Collectors.toList());
+        final List<String> result = new ArrayList<String>();
+        for (DetailAST ast : getMatchingAstElements()) {
+            result.add(generateXpathQuery(ast));
+        }
+        return result;
     }
 
     /**
@@ -154,7 +155,12 @@ public class XpathQueryGenerator {
      */
     private static DetailAST findChildWithTextAttribute(DetailAST root) {
         return TokenUtil.findFirstTokenByPredicate(root,
-                XpathUtil::supportsTextAttribute).orElse(null);
+                new Predicate<DetailAST>() {
+                    @Override
+                    public boolean test(DetailAST ast) {
+                        return XpathUtil.supportsTextAttribute(ast);
+                    }
+                }).orElse(null);
     }
 
     /**
@@ -231,7 +237,7 @@ public class XpathQueryGenerator {
      * @return list of nodes matching defined line number, column number and token type
      */
     private List<DetailAST> getMatchingAstElements() {
-        final List<DetailAST> result = new ArrayList<>();
+        final List<DetailAST> result = new ArrayList<DetailAST>();
         DetailAST curNode = rootAst;
         while (curNode != null) {
             if (isMatchingByLineAndColumnAndTokenType(curNode)) {
@@ -351,11 +357,9 @@ public class XpathQueryGenerator {
      */
     private static String encode(String value) {
         final StringBuilder sb = new StringBuilder(256);
-        value.codePoints().forEach(
-            chr -> {
-                sb.append(encodeCharacter(Character.toChars(chr)[0]));
-            }
-        );
+        for (int i = 0; i < value.length(); i++) {
+            sb.append(encodeCharacter(Character.toChars(value.codePointAt(i))[0]));
+        }
         return sb.toString();
     }
 

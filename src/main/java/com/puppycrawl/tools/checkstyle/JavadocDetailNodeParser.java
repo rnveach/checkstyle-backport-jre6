@@ -23,9 +23,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.BufferedTokenStream;
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.FailedPredicateException;
@@ -124,7 +124,32 @@ public class JavadocDetailNodeParser {
             result.firstNonTightHtmlTag = getFirstNonTightHtmlTag(javadocParser,
                     errorListener.offset);
         }
-        catch (ParseCancellationException | IllegalArgumentException ex) {
+        catch (ParseCancellationException ex) {
+            ParseErrorMessage parseErrorMessage = null;
+
+            if (ex.getCause() instanceof FailedPredicateException
+                    || ex.getCause() instanceof NoViableAltException) {
+                final RecognitionException recognitionEx = (RecognitionException) ex.getCause();
+                if (recognitionEx.getCtx() instanceof JavadocParser.HtmlTagContext) {
+                    final Token htmlTagNameStart = getMissedHtmlTag(recognitionEx);
+                    parseErrorMessage = new ParseErrorMessage(
+                            errorListener.offset + htmlTagNameStart.getLine(),
+                            MSG_JAVADOC_MISSED_HTML_CLOSE,
+                            htmlTagNameStart.getCharPositionInLine(),
+                            htmlTagNameStart.getText());
+                }
+            }
+
+            if (parseErrorMessage == null) {
+                // If syntax error occurs then message is printed by error listener
+                // and parser throws this runtime exception to stop parsing.
+                // Just stop processing current Javadoc comment.
+                parseErrorMessage = errorListener.getErrorMessage();
+            }
+
+            result.setParseErrorMessage(parseErrorMessage);
+        }
+        catch (IllegalArgumentException ex) {
             ParseErrorMessage parseErrorMessage = null;
 
             if (ex.getCause() instanceof FailedPredicateException
@@ -163,7 +188,7 @@ public class JavadocDetailNodeParser {
      */
     private static JavadocParser createJavadocParser(String blockComment,
             DescriptiveErrorListener errorListener) {
-        final JavadocLexer lexer = new JavadocLexer(CharStreams.fromString(blockComment), true);
+        final JavadocLexer lexer = new JavadocLexer(new ANTLRInputStream(blockComment), true);
 
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -482,7 +507,7 @@ public class JavadocDetailNodeParser {
         final Interval sourceInterval = exception.getCtx().getSourceInterval();
         final List<Token> tokenList = ((BufferedTokenStream) exception.getInputStream())
                 .getTokens(sourceInterval.a, sourceInterval.b);
-        final Deque<Token> stack = new ArrayDeque<>();
+        final Deque<Token> stack = new ArrayDeque<Token>();
         int prevTokenType = JavadocTokenTypes.EOF;
         for (final Token token : tokenList) {
             final int tokenType = token.getType();

@@ -152,7 +152,7 @@ public class CovariantEqualsCheck extends AbstractCheck {
     public static final String MSG_KEY = "covariant.equals";
 
     /** Set of equals method definitions. */
-    private final Set<DetailAST> equalsMethods = new HashSet<>();
+    private final Set<DetailAST> equalsMethods = new HashSet<DetailAST>();
 
     @Override
     public int[] getDefaultTokens() {

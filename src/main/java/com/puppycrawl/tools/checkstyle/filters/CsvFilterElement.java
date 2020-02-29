@@ -21,9 +21,10 @@ package com.puppycrawl.tools.checkstyle.filters;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * <p>
@@ -34,7 +35,7 @@ import java.util.StringTokenizer;
 class CsvFilterElement implements IntFilterElement {
 
     /** Filter set. */
-    private final Set<IntFilterElement> filters = new HashSet<>();
+    private final Set<IntFilterElement> filters = new HashSet<IntFilterElement>();
 
     /**
      * Constructs a {@code CsvFilterElement} from a CSV, Comma-Separated Values,

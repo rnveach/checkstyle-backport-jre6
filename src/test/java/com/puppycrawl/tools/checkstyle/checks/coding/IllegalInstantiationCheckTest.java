@@ -26,9 +26,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
@@ -36,6 +35,8 @@ import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class IllegalInstantiationCheckTest
@@ -152,12 +153,22 @@ public class IllegalInstantiationCheckTest
                 new File(getPath("InputIllegalInstantiationSemantic.java")),
                 JavaParser.Options.WITHOUT_COMMENTS);
         final Optional<DetailAST> classDef = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.CLASS_DEF);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.CLASS_DEF;
+                }
+            });
 
         assertTrue(classDef.isPresent(), "Ast should contain CLASS_DEF");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, classDef.get(), "classNames",
-                classNames -> ((Collection<String>) classNames).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object classNames) {
+                        return ((Collection<String>) classNames).isEmpty();
+                    }
+                }),
                 "State is not cleared on beginTree");
     }
 
@@ -175,12 +186,22 @@ public class IllegalInstantiationCheckTest
                 getPath("InputIllegalInstantiationSemantic.java")),
                 JavaParser.Options.WITHOUT_COMMENTS);
         final Optional<DetailAST> importDef = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.IMPORT);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.IMPORT;
+                }
+            });
 
         assertTrue(importDef.isPresent(), "Ast should contain IMPORT_DEF");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, importDef.get(), "imports",
-                imports -> ((Collection<?>) imports).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object imports) {
+                        return ((Collection<?>) imports).isEmpty();
+                    }
+                }),
                 "State is not cleared on beginTree");
     }
 
@@ -199,13 +220,23 @@ public class IllegalInstantiationCheckTest
                 getNonCompilablePath("InputIllegalInstantiationLang.java")),
                 JavaParser.Options.WITHOUT_COMMENTS);
         final Optional<DetailAST> literalNew = TestUtil.findTokenInAstByPredicate(root,
-            ast -> ast.getType() == TokenTypes.LITERAL_NEW);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.LITERAL_NEW;
+                }
+            });
 
         assertTrue(literalNew.isPresent(), "Ast should contain LITERAL_NEW");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, literalNew.get(),
                 "instantiations",
-                instantiations -> ((Collection<DetailAST>) instantiations).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object instantiations) {
+                        return ((Collection<DetailAST>) instantiations).isEmpty();
+                    }
+                }),
             "State is not cleared on beginTree");
     }
 }

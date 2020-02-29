@@ -103,7 +103,7 @@ public final class ImportControlLoader extends XmlLoader {
         "com/puppycrawl/tools/checkstyle/checks/imports/import_control_1_4.dtd";
 
     /** The map to lookup the resource name by the id. */
-    private static final Map<String, String> DTD_RESOURCE_BY_ID = new HashMap<>();
+    private static final Map<String, String> DTD_RESOURCE_BY_ID = new HashMap<String, String>();
 
     /** Name for attribute 'pkg'. */
     private static final String PKG_ATTRIBUTE_NAME = "pkg";
@@ -130,7 +130,7 @@ public final class ImportControlLoader extends XmlLoader {
     private static final String ALLOW_ELEMENT_NAME = "allow";
 
     /** Used to hold the {@link AbstractImportControl} objects. */
-    private final Deque<AbstractImportControl> stack = new ArrayDeque<>();
+    private final Deque<AbstractImportControl> stack = new ArrayDeque<AbstractImportControl>();
 
     static {
         DTD_RESOURCE_BY_ID.put(DTD_PUBLIC_ID_1_0, DTD_RESOURCE_NAME_1_0);
@@ -270,7 +270,11 @@ public final class ImportControlLoader extends XmlLoader {
             loader.parseInputSource(source);
             return loader.getRoot();
         }
-        catch (ParserConfigurationException | SAXException ex) {
+        catch (ParserConfigurationException ex) {
+            throw new CheckstyleException("unable to parse " + uri
+                    + " - " + ex.getMessage(), ex);
+        }
+        catch (SAXException ex) {
             throw new CheckstyleException("unable to parse " + uri
                     + " - " + ex.getMessage(), ex);
         }
@@ -287,9 +291,15 @@ public final class ImportControlLoader extends XmlLoader {
      * @throws CheckstyleException if an error occurs.
      */
     private static PkgImportControl loadUri(URI uri) throws CheckstyleException {
-        try (InputStream inputStream = uri.toURL().openStream()) {
-            final InputSource source = new InputSource(inputStream);
-            return load(source, uri);
+        try {
+            final InputStream inputStream = uri.toURL().openStream();
+            try {
+                final InputSource source = new InputSource(inputStream);
+                return load(source, uri);
+            }
+            finally {
+                inputStream.close();
+            }
         }
         catch (MalformedURLException ex) {
             throw new CheckstyleException("syntax error in url " + uri, ex);

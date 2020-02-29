@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

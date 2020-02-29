@@ -24,18 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
 /**
  * AllTestsTest.
@@ -45,42 +42,74 @@ import org.junit.jupiter.api.Test;
 public class AllTestsTest {
 
     @Test
-    public void testAllInputsHaveTest() throws Exception {
-        final Map<String, List<String>> allTests = new HashMap<>();
+    public void testAllInputsHaveTest() {
+        final Map<String, List<String>> allTests = new HashMap<String, List<String>>();
 
-        walk(Paths.get("src/test/java"), filePath -> {
-            grabAllTests(allTests, filePath.toFile());
-        });
+        walk(new File("src/test/java"),
+            new Function<File, Object>() {
+                @Override
+                public Object apply(File file) {
+                    grabAllTests(allTests, file);
+                    return null;
+                }
+            });
 
         assertFalse(allTests.keySet().isEmpty(), "found tests");
 
-        walk(Paths.get("src/test/resources/com/puppycrawl"), filePath -> {
-            verifyInputFile(allTests, filePath.toFile());
-        });
-        walk(Paths.get("src/test/resources-noncompilable/com/puppycrawl"), filePath -> {
-            verifyInputFile(allTests, filePath.toFile());
-        });
+        walk(new File("src/test/resources/com/puppycrawl"),
+                new Function<File, Object>() {
+                    @Override
+                    public Object apply(File file) {
+                        verifyInputFile(allTests, file);
+                        return null;
+                    }
+                });
+        walk(new File("src/test/resources-noncompilable/com/puppycrawl"),
+                new Function<File, Object>() {
+                    @Override
+                    public Object apply(File file) {
+                        verifyInputFile(allTests, file);
+                        return null;
+                    }
+                });
+    }
+
+    private static void walk(File dir, Function<File, Object> func) {
+        final File[] list = dir.listFiles();
+
+        if (list != null) {
+            for (File f : list) {
+                func.apply(f);
+                if (f.isDirectory()) {
+                    walk(f, func);
+                }
+            }
+        }
     }
 
     @Test
-    public void testAllTestsHaveProductionCode() throws Exception {
-        final Map<String, List<String>> allTests = new HashMap<>();
+    public void testAllTestsHaveProductionCode() {
+        final Map<String, List<String>> allTests = new HashMap<String, List<String>>();
 
-        walk(Paths.get("src/main/java"), filePath -> {
-            grabAllFiles(allTests, filePath.toFile());
-        });
+        walk(new File("src/main/java"),
+               new Function<File, Object>() {
+                    @Override
+                    public Object apply(File file) {
+                        grabAllFiles(allTests, file);
+                        return null;
+                    }
+                });
 
         assertFalse(allTests.keySet().isEmpty(), "found tests");
 
-        walk(Paths.get("src/test/java"), filePath -> {
-            verifyHasProductionFile(allTests, filePath.toFile());
-        });
-    }
-
-    private static void walk(Path path, Consumer<Path> action) throws IOException {
-        try (Stream<Path> walk = Files.walk(path)) {
-            walk.forEach(action);
-        }
+        walk(new File("src/test/java"),
+                new Function<File, Object>() {
+                    @Override
+                    public Object apply(File file) {
+                        verifyHasProductionFile(allTests, file);
+                        return null;
+                    }
+                });
     }
 
     private static void grabAllTests(Map<String, List<String>> allTests, File file) {
@@ -102,7 +131,14 @@ public class AllTestsTest {
 
             final int slash = path.lastIndexOf(File.separatorChar);
             final String packge = path.substring(0, slash);
-            final List<String> classes = allTests.computeIfAbsent(packge, key -> new ArrayList<>());
+
+            List<String> classes = allTests.get(packge);
+
+            if (classes == null) {
+                classes = new ArrayList<String>();
+
+                allTests.put(packge, classes);
+            }
 
             classes.add(path.substring(slash + 1));
         }
@@ -121,7 +157,14 @@ public class AllTestsTest {
 
             final int slash = path.lastIndexOf(File.separatorChar);
             final String packge = path.substring(0, slash);
-            final List<String> classes = allTests.computeIfAbsent(packge, key -> new ArrayList<>());
+
+            List<String> classes = allTests.get(packge);
+
+            if (classes == null) {
+                classes = new ArrayList<String>();
+
+                allTests.put(packge, classes);
+            }
 
             classes.add(path.substring(slash + 1));
         }

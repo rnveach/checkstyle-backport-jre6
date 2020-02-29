@@ -19,20 +19,19 @@
 
 package com.puppycrawl.tools.checkstyle.filters;
 
-import static com.google.common.truth.Truth.assertWithMessage;
 import static com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck.MSG_INVALID_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -50,7 +49,6 @@ import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.EqualsVerifierReport;
 
 public class SuppressWithNearbyCommentFilterTest
     extends AbstractModuleTestSupport {
@@ -306,11 +304,8 @@ public class SuppressWithNearbyCommentFilterTest
         final SuppressWithNearbyCommentFilter filter = new SuppressWithNearbyCommentFilter();
         final Object tag =
                 getTagsAfterExecution(filter, "filename", "//SUPPRESS CHECKSTYLE ignore").get(0);
-        final EqualsVerifierReport ev = EqualsVerifier
-                .forClass(tag.getClass()).usingGetClass().report();
-        assertWithMessage("Error: " + ev.getMessage())
-                .that(ev.isSuccessful())
-                .isTrue();
+        EqualsVerifier
+                .forClass(tag.getClass()).usingGetClass().verify();
     }
 
     private void verifySuppressed(Configuration moduleConfig,
@@ -347,7 +342,8 @@ public class SuppressWithNearbyCommentFilterTest
     }
 
     private static String[] removeSuppressed(String[] from, String... remove) {
-        final Collection<String> coll = Arrays.stream(from).collect(Collectors.toList());
+        final Collection<String> coll = new ArrayList<String>();
+        Collections.addAll(coll, from);
         coll.removeAll(Arrays.asList(remove));
         return coll.toArray(CommonUtil.EMPTY_STRING_ARRAY);
     }

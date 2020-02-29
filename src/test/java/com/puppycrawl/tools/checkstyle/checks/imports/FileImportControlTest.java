@@ -21,8 +21,8 @@ package com.puppycrawl.tools.checkstyle.checks.imports;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FileImportControlTest {
 
@@ -34,7 +34,7 @@ public class FileImportControlTest {
     private final FileImportControl fileRegexpNode = new FileImportControl(root, ".*Other.*",
             true);
 
-    @BeforeEach
+    @Before
     public void setUp() {
         root.addChild(fileNode);
         root.addChild(fileRegexpNode);

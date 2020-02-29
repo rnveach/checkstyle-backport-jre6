@@ -131,7 +131,7 @@ public class ModifierOrderCheck
 
     @Override
     public void visitToken(DetailAST ast) {
-        final List<DetailAST> mods = new ArrayList<>();
+        final List<DetailAST> mods = new ArrayList<DetailAST>();
         DetailAST modifier = ast.getFirstChild();
         while (modifier != null) {
             mods.add(modifier);

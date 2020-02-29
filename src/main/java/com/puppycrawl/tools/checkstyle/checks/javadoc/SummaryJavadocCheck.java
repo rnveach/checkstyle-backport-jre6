@@ -22,7 +22,6 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -265,7 +264,7 @@ public class SummaryJavadocCheck extends AbstractJavadocCheck {
 
     /** Set of allowed Tokens tags in summary java doc. */
     private static final Set<Integer> ALLOWED_TYPES = Collections.unmodifiableSet(
-            new HashSet<>(Arrays.asList(
+            new HashSet<Integer>(Arrays.asList(
                     JavadocTokenTypes.WS,
                     JavadocTokenTypes.DESCRIPTION,
                     JavadocTokenTypes.TEXT))
@@ -342,12 +341,16 @@ public class SummaryJavadocCheck extends AbstractJavadocCheck {
      * @return {@code true} if first sentence contains @summary tag.
      */
     private static boolean containsSummaryTag(DetailNode javadoc) {
-        final Optional<DetailNode> node = Arrays.stream(javadoc.getChildren())
-                .filter(SummaryJavadocCheck::isInlineTagPresent)
-                .findFirst()
-                .map(SummaryJavadocCheck::getInlineTagNodeWithinHtmlElement);
+        boolean result = false;
+        for (DetailNode child : javadoc.getChildren()) {
+            if (isInlineTagPresent(child)) {
+                final DetailNode node = getInlineTagNodeWithinHtmlElement(child);
+                result = isSummaryTag(node);
+                break;
+            }
+        }
 
-        return node.isPresent() && isSummaryTag(node.get());
+        return result;
     }
 
     /**

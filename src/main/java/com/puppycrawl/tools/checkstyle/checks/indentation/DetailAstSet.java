@@ -39,7 +39,7 @@ public class DetailAstSet {
     /**
      * Maps line numbers to their ast.
      */
-    private final SortedMap<Integer, DetailAST> astLines = new TreeMap<>();
+    private final SortedMap<Integer, DetailAST> astLines = new TreeMap<Integer, DetailAST>();
 
     /**
      * Construct an instance of this class with {@code IndentationCheck} parameters.

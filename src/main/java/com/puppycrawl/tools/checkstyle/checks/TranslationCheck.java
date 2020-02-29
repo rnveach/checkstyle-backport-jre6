@@ -20,16 +20,13 @@
 package com.puppycrawl.tools.checkstyle.checks;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
@@ -38,7 +35,6 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,6 +45,9 @@ import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -263,7 +262,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
     private final Log log;
 
     /** The files to process. */
-    private final Set<File> filesToProcess = ConcurrentHashMap.newKeySet();
+    private final Set<File> filesToProcess = Collections.newSetFromMap(new ConcurrentHashMap<File, Boolean>());
 
     /**
      * Specify
@@ -276,7 +275,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
     /**
      * Specify language codes of required translations which must exist in project.
      */
-    private Set<String> requiredTranslations = new HashSet<>();
+    private Set<String> requiredTranslations = new HashSet<String>();
 
     /**
      * Creates a new {@code TranslationCheck} instance.
@@ -305,7 +304,8 @@ public class TranslationCheck extends AbstractFileSetCheck {
      * @param translationCodes a comma separated list of language codes.
      */
     public void setRequiredTranslations(String... translationCodes) {
-        requiredTranslations = Arrays.stream(translationCodes).collect(Collectors.toSet());
+        requiredTranslations = new HashSet<String>();
+        Collections.addAll(requiredTranslations, translationCodes);
         validateUserSpecifiedLanguageCodes(requiredTranslations);
     }
 
@@ -372,8 +372,10 @@ public class TranslationCheck extends AbstractFileSetCheck {
      * @param bundle resource bundle.
      */
     private void checkExistenceOfDefaultTranslation(ResourceBundle bundle) {
-        getMissingFileName(bundle, null)
-            .ifPresent(fileName -> logMissingTranslation(bundle.getPath(), fileName));
+        final Optional<String> fileName = getMissingFileName(bundle, null);
+        if (fileName.isPresent()) {
+            logMissingTranslation(bundle.getPath(), fileName.get());
+        }
     }
 
     /**
@@ -386,8 +388,10 @@ public class TranslationCheck extends AbstractFileSetCheck {
      */
     private void checkExistenceOfRequiredTranslations(ResourceBundle bundle) {
         for (String languageCode : requiredTranslations) {
-            getMissingFileName(bundle, languageCode)
-                .ifPresent(fileName -> logMissingTranslation(bundle.getPath(), fileName));
+            final Optional<String> fileName = getMissingFileName(bundle, languageCode);
+            if (fileName.isPresent()) {
+                logMissingTranslation(bundle.getPath(), fileName.get());
+            }
         }
     }
 
@@ -453,7 +457,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
      */
     private static Set<ResourceBundle> groupFilesIntoBundles(Set<File> files,
                                                              Pattern baseNameRegexp) {
-        final Set<ResourceBundle> resourceBundles = new HashSet<>();
+        final Set<ResourceBundle> resourceBundles = new HashSet<ResourceBundle>();
         for (File currentFile : files) {
             final String fileName = currentFile.getName();
             final String baseName = extractBaseName(fileName);
@@ -551,8 +555,8 @@ public class TranslationCheck extends AbstractFileSetCheck {
     private void checkTranslationKeys(ResourceBundle bundle) {
         final Set<File> filesInBundle = bundle.getFiles();
         // build a map from files to the keys they contain
-        final Set<String> allTranslationKeys = new HashSet<>();
-        final Map<File, Set<String>> filesAssociatedWithKeys = new TreeMap<>();
+        final Set<String> allTranslationKeys = new HashSet<String>();
+        final Map<File, Set<String>> filesAssociatedWithKeys = new TreeMap<File, Set<String>>();
         for (File currentFile : filesInBundle) {
             final Set<String> keysInCurrentFile = getTranslationKeys(currentFile);
             allTranslationKeys.addAll(keysInCurrentFile);
@@ -572,8 +576,12 @@ public class TranslationCheck extends AbstractFileSetCheck {
                                                             Set<String> keysThatMustExist) {
         for (Entry<File, Set<String>> fileKey : fileKeys.entrySet()) {
             final Set<String> currentFileKeys = fileKey.getValue();
-            final Set<String> missingKeys = keysThatMustExist.stream()
-                .filter(key -> !currentFileKeys.contains(key)).collect(Collectors.toSet());
+            final Set<String> missingKeys = new HashSet<String>();
+            for (String e : keysThatMustExist) {
+                if (!currentFileKeys.contains(e)) {
+                    missingKeys.add(e);
+                }
+            }
             if (!missingKeys.isEmpty()) {
                 final MessageDispatcher dispatcher = getMessageDispatcher();
                 final String path = fileKey.getKey().getAbsolutePath();
@@ -594,11 +602,17 @@ public class TranslationCheck extends AbstractFileSetCheck {
      * @return a Set object which holds the loaded keys.
      */
     private Set<String> getTranslationKeys(File file) {
-        Set<String> keys = new HashSet<>();
-        try (InputStream inStream = Files.newInputStream(file.toPath())) {
-            final Properties translations = new Properties();
-            translations.load(inStream);
-            keys = translations.stringPropertyNames();
+        Set<String> keys = new HashSet<String>();
+        try {
+            final InputStream inStream = Files7.newInputStream(new Path(file));
+            try {
+                final Properties translations = new Properties();
+                translations.load(inStream);
+                keys = translations.stringPropertyNames();
+            }
+            finally {
+                inStream.close();
+            }
         }
         // -@cs[IllegalCatch] It is better to catch all exceptions since it can throw
         // a runtime exception.
@@ -617,7 +631,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
     private void logException(Exception exception, File file) {
         final String[] args;
         final String key;
-        if (exception instanceof NoSuchFileException) {
+        if (exception instanceof FileNotFoundException) {
             args = null;
             key = "general.fileNotFound";
         }
@@ -633,7 +647,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
                 args,
                 getId(),
                 getClass(), null);
-        final SortedSet<Violation> messages = new TreeSet<>();
+        final SortedSet<Violation> messages = new TreeSet<Violation>();
         messages.add(message);
         getMessageDispatcher().fireErrors(file.getPath(), messages);
         log.debug("Exception occurred.", exception);
@@ -662,7 +676,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
             this.baseName = baseName;
             this.path = path;
             this.extension = extension;
-            files = new HashSet<>();
+            files = new HashSet<File>();
         }
 
         public String getBaseName() {

@@ -19,7 +19,6 @@
 
 package com.puppycrawl.tools.checkstyle.filters;
 
-import static com.google.common.truth.Truth.assertWithMessage;
 import static com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck.MSG_CONTAINS_TAB;
 import static com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck.MSG_FILE_CONTAINS_TAB;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,11 +28,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -48,7 +47,6 @@ import com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck;
 import com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.EqualsVerifierReport;
 
 public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSupport {
 
@@ -365,12 +363,9 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testEqualsAndHashCodeOfSuppressionClass() throws ClassNotFoundException {
         final Class<?> suppressionClass = Whitebox.getInnerClassType(
                 SuppressWithPlainTextCommentFilter.class, "Suppression");
-        final EqualsVerifierReport ev = EqualsVerifier
+        EqualsVerifier
                 .forClass(suppressionClass).usingGetClass()
-                .report();
-        assertWithMessage("Error: " + ev.getMessage())
-                .that(ev.isSuccessful())
-                .isTrue();
+                .verify();
     }
 
     @Test
@@ -729,7 +724,9 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
                                   Configuration... childConfigs) throws Exception {
         final DefaultConfiguration checkerConfig = createRootConfig(null);
 
-        Arrays.stream(childConfigs).forEach(checkerConfig::addChild);
+        for (Configuration childConfig : childConfigs) {
+            checkerConfig.addChild(childConfig);
+        }
 
         final String fileExtension = CommonUtil.getFileExtension(fileNameWithExtension);
         checkerConfig.addProperty("fileExtensions", fileExtension);
@@ -738,7 +735,7 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     }
 
     private static String[] removeSuppressed(String[] from, String... remove) {
-        final Collection<String> coll = Arrays.stream(from).collect(Collectors.toList());
+        final Collection<String> coll = new ArrayList<String>(Arrays.asList(from));
         coll.removeAll(Arrays.asList(remove));
         return coll.toArray(CommonUtil.EMPTY_STRING_ARRAY);
     }

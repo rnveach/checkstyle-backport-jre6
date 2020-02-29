@@ -118,7 +118,7 @@ public final class SuppressionsLoader
     /**
      * The set of the {@code TreeWalkerFilter} filters. Being filled during parsing.
      */
-    private final Set<TreeWalkerFilter> treeWalkerFilters = new HashSet<>();
+    private final Set<TreeWalkerFilter> treeWalkerFilters = new HashSet<TreeWalkerFilter>();
 
     /**
      * Creates a new {@code SuppressionsLoader} instance.
@@ -286,7 +286,12 @@ public final class SuppressionsLoader
         catch (final FileNotFoundException ex) {
             throw new CheckstyleException(UNABLE_TO_FIND_ERROR_MESSAGE + sourceName, ex);
         }
-        catch (final ParserConfigurationException | SAXException ex) {
+        catch (final ParserConfigurationException ex) {
+            final String message = String.format(Locale.ROOT, "Unable to parse %s - %s",
+                    sourceName, ex.getMessage());
+            throw new CheckstyleException(message, ex);
+        }
+        catch (final SAXException ex) {
             final String message = String.format(Locale.ROOT, "Unable to parse %s - %s",
                     sourceName, ex.getMessage());
             throw new CheckstyleException(message, ex);
@@ -307,7 +312,7 @@ public final class SuppressionsLoader
      * @return map between local resources and dtd ids.
      */
     private static Map<String, String> createIdToResourceNameMap() {
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put(DTD_PUBLIC_ID_1_0, DTD_SUPPRESSIONS_NAME_1_0);
         map.put(DTD_PUBLIC_ID_1_1, DTD_SUPPRESSIONS_NAME_1_1);
         map.put(DTD_PUBLIC_ID_1_2, DTD_SUPPRESSIONS_NAME_1_2);

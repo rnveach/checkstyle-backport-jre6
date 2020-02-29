@@ -30,9 +30,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +37,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
@@ -48,6 +45,9 @@ import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -64,9 +64,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     private static IndentComment[] getLinesWithWarnAndCheckComments(String aFileName,
             final int tabWidth)
                     throws IOException {
-        final List<IndentComment> result = new ArrayList<>();
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(aFileName),
-                StandardCharsets.UTF_8)) {
+        final List<IndentComment> result = new ArrayList<IndentComment>();
+        final BufferedReader br = Files7.newBufferedReader(Paths.get(aFileName),
+                StandardCharsets.UTF_8);
+        try {
             int lineNumber = 1;
             for (String line = br.readLine(); line != null; line = br.readLine()) {
                 final Matcher match = LINE_WITH_COMMENT_REGEX.matcher(line);
@@ -104,6 +105,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
                 }
                 lineNumber++;
             }
+        }
+        finally {
+            br.close();
         }
         return result.toArray(EMPTY_INDENT_COMMENT_ARRAY);
     }
@@ -2597,20 +2601,26 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
      */
     @Test
     public void testArgumentOrderOfErrorMessages() {
-        final Object[] arguments = {"##0##", "##1##", "##2##"};
+        final String[] arguments = {"##0##", "##1##", "##2##"};
         final String[] messages = {
             getCheckMessage(MSG_ERROR, arguments),
             getCheckMessage(MSG_CHILD_ERROR, arguments),
             getCheckMessage(MSG_ERROR_MULTI, arguments),
             getCheckMessage(MSG_CHILD_ERROR_MULTI, arguments),
         };
-        final boolean isInOrder = Arrays.stream(messages).allMatch(msg -> {
-            final int indexOfArgumentZero = msg.indexOf((String) arguments[0]);
-            return Arrays.stream(arguments)
-                    .map(String.class::cast)
-                    .mapToInt(msg::indexOf)
-                    .allMatch(index -> index >= indexOfArgumentZero);
-        });
+        boolean isInOrder = true;
+        for (String msg : messages) {
+            final int indexOfArgumentZero = msg.indexOf(arguments[0]);
+            for (String argument : arguments) {
+                if (msg.indexOf(argument) < indexOfArgumentZero) {
+                    isInOrder = false;
+                    break;
+                }
+            }
+            if (!isInOrder) {
+                break;
+            }
+        }
         assertTrue(isInOrder,
                 "the argument 0 of error messages (indentation.error, indentation.child.error,"
                         + " indentation.error.multi, indentation.child.error.multi)"
@@ -2942,15 +2952,24 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             final IndentComment comment = comments[position];
             position++;
 
-            final String possibleExceptedMessages = Arrays.stream(comment.getExpectedMessages())
-                    .reduce("", (cur, next) -> cur + "\"" + next + "\", ");
+            String possibleExceptedMessages = "";
+            for (String next : comment.getExpectedMessages()) {
+                possibleExceptedMessages += "\"" + next + "\", ";
+            }
             final String assertMessage = String.format(
                     Locale.ROOT,
                     "input expected warning #%d at line %d to report one of the following: %s"
                             + "but got instead: %d: %s",
                     position, comment.getLineNumber(), possibleExceptedMessages, line, message);
+            boolean anyMatch = false;
+            for (String s : comment.getExpectedMessages()) {
+                if (message.endsWith(s)) {
+                    anyMatch = true;
+                    break;
+                }
+            }
             assertTrue(line == comment.getLineNumber()
-                    && Arrays.stream(comment.getExpectedMessages()).anyMatch(message::endsWith),
+                    && anyMatch,
                     assertMessage);
         }
 

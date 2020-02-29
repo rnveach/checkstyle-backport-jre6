@@ -34,7 +34,7 @@ public final class Definitions {
 
     /** Name of modules which are not checks, but are internal modules. */
     public static final Set<String> INTERNAL_MODULES = Collections.unmodifiableSet(
-            new HashSet<>(Collections.singletonList(
+            new HashSet<String>(Collections.singletonList(
                     "com.puppycrawl.tools.checkstyle.meta.JavadocMetadataScraper"
     )));
 

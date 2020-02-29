@@ -1534,7 +1534,7 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
 
         // To improve performance, we iterate through binary operations
         // since they are frequently deeply nested.
-        final List<JavaLanguageParser.BinOpContext> binOpList = new ArrayList<>();
+        final List<JavaLanguageParser.BinOpContext> binOpList = new ArrayList<JavaLanguageParser.BinOpContext>();
         ParseTree firstExpression = ctx.expr(0);
         while (firstExpression instanceof JavaLanguageParser.BinOpContext) {
             // Get all nested binOps

@@ -27,7 +27,7 @@ import com.puppycrawl.tools.checkstyle.ant.CheckstyleAntTask;
 
 public final class CheckstyleAntTaskLogStub extends CheckstyleAntTask {
 
-    private final List<MessageLevelPair> loggedMessages = new ArrayList<>();
+    private final List<MessageLevelPair> loggedMessages = new ArrayList<MessageLevelPair>();
 
     @Override
     public void log(String msg, int msgLevel) {

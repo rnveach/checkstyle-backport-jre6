@@ -21,7 +21,7 @@ package com.puppycrawl.tools.checkstyle.api;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class SeverityLevelCounterTest {
 
@@ -35,8 +35,7 @@ public class SeverityLevelCounterTest {
         catch (IllegalArgumentException ex) {
             assertWithMessage("Invalid exception message")
                     .that(ex)
-                    .hasMessageThat()
-                    .isEqualTo("'level' cannot be null");
+                    .hasMessage("'level' cannot be null");
         }
     }
 

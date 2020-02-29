@@ -42,6 +42,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.tree.TreePath;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Math7;
 import com.puppycrawl.tools.checkstyle.xpath.XpathQueryGenerator;
 
 /**
@@ -183,7 +184,7 @@ public final class TreeTable extends JTable {
         getColumn("Line").setMaxWidth(widthOfColumnContainingSixCharacterString);
         getColumn("Column").setMaxWidth(widthOfColumnContainingSixCharacterString);
         final int preferredTreeColumnWidth =
-                Math.toIntExact(Math.round(getPreferredSize().getWidth() * 0.6));
+                Math7.toIntExact(Math.round(getPreferredSize().getWidth() * 0.6));
         getColumn("Tree").setPreferredWidth(preferredTreeColumnWidth);
         // Twenty eight character string to contain "Type" column
         final int widthOfTwentyEightCharacterString =
@@ -227,7 +228,7 @@ public final class TreeTable extends JTable {
         final DetailAST rootAST = (DetailAST) tree.getModel().getRoot();
         if (rootAST.hasChildren()) {
             final String xpath = "/EOF" + xpathEditor.getText();
-            final Deque<DetailAST> nodes = new ArrayDeque<>();
+            final Deque<DetailAST> nodes = new ArrayDeque<DetailAST>();
             if (search(rootAST, xpath, nodes)) {
                 TreePath path = new TreePath(nodes.pop());
                 while (!nodes.isEmpty()) {
@@ -325,7 +326,7 @@ public final class TreeTable extends JTable {
      * @param linePositionMap Line position map.
      */
     public void setLinePositionMap(List<Integer> linePositionMap) {
-        this.linePositionMap = new ArrayList<>(linePositionMap);
+        this.linePositionMap = new ArrayList<Integer>(linePositionMap);
     }
 
     /**

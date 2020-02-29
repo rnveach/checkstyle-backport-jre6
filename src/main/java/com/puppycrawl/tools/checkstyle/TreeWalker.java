@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
@@ -56,11 +54,11 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
     /** Maps from token name to ordinary checks. */
     private final Map<Integer, Set<AbstractCheck>> tokenToOrdinaryChecks =
-        new HashMap<>();
+        new HashMap<Integer, Set<AbstractCheck>>();
 
     /** Maps from token name to comment checks. */
     private final Map<Integer, Set<AbstractCheck>> tokenToCommentChecks =
-            new HashMap<>();
+            new HashMap<Integer, Set<AbstractCheck>>();
 
     /** Registered ordinary checks, that don't use comment nodes. */
     private final Set<AbstractCheck> ordinaryChecks = createNewCheckSortedSet();
@@ -69,10 +67,10 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
     private final Set<AbstractCheck> commentChecks = createNewCheckSortedSet();
 
     /** The ast filters. */
-    private final Set<TreeWalkerFilter> filters = new HashSet<>();
+    private final Set<TreeWalkerFilter> filters = new HashSet<TreeWalkerFilter>();
 
     /** The sorted set of violations. */
-    private final SortedSet<Violation> violations = new TreeSet<>();
+    private final SortedSet<Violation> violations = new TreeSet<Violation>();
 
     /** Context of child components. */
     private Context childContext;
@@ -179,7 +177,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      */
     private SortedSet<Violation> getFilteredViolations(
             String fileName, FileContents fileContents, DetailAST rootAST) {
-        final SortedSet<Violation> result = new TreeSet<>(violations);
+        final SortedSet<Violation> result = new TreeSet<Violation>(violations);
         for (Violation element : violations) {
             final TreeWalkerAuditEvent event =
                     new TreeWalkerAuditEvent(fileContents, fileName, element, rootAST);
@@ -244,8 +242,14 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      */
     private void registerCheck(int tokenId, AbstractCheck check) throws CheckstyleException {
         if (check.isCommentNodesRequired()) {
-            tokenToCommentChecks.computeIfAbsent(tokenId, empty -> createNewCheckSortedSet())
-                    .add(check);
+            Set<AbstractCheck> checks = tokenToCommentChecks.get(tokenId);
+
+            if (checks == null) {
+                checks = createNewCheckSortedSet();
+                tokenToCommentChecks.put(tokenId, checks);
+            }
+
+            checks.add(check);
         }
         else if (TokenUtil.isCommentType(tokenId)) {
             final String message = String.format(Locale.ROOT, "Check '%s' waits for comment type "
@@ -255,8 +259,14 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
             throw new CheckstyleException(message);
         }
         else {
-            tokenToOrdinaryChecks.computeIfAbsent(tokenId, empty -> createNewCheckSortedSet())
-                    .add(check);
+            Set<AbstractCheck> checks = tokenToOrdinaryChecks.get(tokenId);
+
+            if (checks == null) {
+                checks = createNewCheckSortedSet();
+                tokenToOrdinaryChecks.put(tokenId, checks);
+            }
+
+            checks.add(check);
         }
     }
 
@@ -378,19 +388,37 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
     @Override
     public void destroy() {
-        ordinaryChecks.forEach(AbstractCheck::destroy);
-        commentChecks.forEach(AbstractCheck::destroy);
+        for (AbstractCheck check : ordinaryChecks) {
+            check.destroy();
+        }
+        for (AbstractCheck check : commentChecks) {
+            check.destroy();
+        }
         super.destroy();
     }
 
     @Override
     public Set<String> getExternalResourceLocations() {
-        return Stream.concat(filters.stream(),
-                Stream.concat(ordinaryChecks.stream(), commentChecks.stream()))
-            .filter(ExternalResourceHolder.class::isInstance)
-            .map(ExternalResourceHolder.class::cast)
-            .flatMap(resource -> resource.getExternalResourceLocations().stream())
-            .collect(Collectors.toSet());
+        final Set<String> results = new HashSet<String>();
+        populateExternalResourceLocations(results, filters);
+        populateExternalResourceLocations(results, ordinaryChecks);
+        populateExternalResourceLocations(results, commentChecks);
+        return results;
+    }
+
+    /**
+     * Populates a set of external configuration resource locations.
+     *
+     * @param results The set to add the results to.
+     * @param list The list of possible external resources to examine.
+     */
+    private static void populateExternalResourceLocations(Set<String> results,
+            Collection<?> list) {
+        for (Object item : list) {
+            if (item instanceof ExternalResourceHolder) {
+                results.addAll(((ExternalResourceHolder) item).getExternalResourceLocations());
+            }
+        }
     }
 
     /**
@@ -421,11 +449,38 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * @return The new {@link SortedSet}.
      */
     private static SortedSet<AbstractCheck> createNewCheckSortedSet() {
-        return new TreeSet<>(
-                Comparator.<AbstractCheck, String>comparing(check -> check.getClass().getName())
-                        .thenComparing(AbstractCheck::getId,
-                                Comparator.nullsLast(Comparator.naturalOrder()))
-                        .thenComparing(AbstractCheck::hashCode));
+        return new TreeSet<AbstractCheck>(new Comparator<AbstractCheck>() {
+            @Override
+            public int compare(AbstractCheck o1, AbstractCheck o2) {
+                int result = o1.getClass().getName().compareTo(o2.getClass().getName());
+
+                if (result == 0) {
+                    final String id1 = o1.getId();
+                    final String id2 = o2.getId();
+
+                    if (id1 == null) {
+                        if (id2 == null) {
+                            result = 0;
+                        }
+                        else {
+                            result = 1;
+                        }
+                    }
+                    else if (id2 == null) {
+                        result = -1;
+                    }
+                    else {
+                        result = id1.compareTo(id2);
+                    }
+
+                    if (result == 0) {
+                        result = o1.hashCode() - o2.hashCode();
+                    }
+                }
+
+                return result;
+            }
+        });
     }
 
     /**

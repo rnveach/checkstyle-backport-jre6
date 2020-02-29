@@ -23,14 +23,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -131,7 +129,7 @@ public final class ConfigurationLoader {
     /** Property resolver. **/
     private final PropertyResolver overridePropsResolver;
     /** The loaded configurations. **/
-    private final Deque<DefaultConfiguration> configStack = new ArrayDeque<>();
+    private final Deque<DefaultConfiguration> configStack = new ArrayDeque<DefaultConfiguration>();
 
     /** Flags if modules with the severity 'ignore' should be omitted. */
     private final boolean omitIgnoredModules;
@@ -171,7 +169,7 @@ public final class ConfigurationLoader {
      * @noinspection MethodOnlyUsedFromInnerClass
      */
     private static Map<String, String> createIdToResourceNameMap() {
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put(DTD_PUBLIC_ID_1_0, DTD_CONFIGURATION_NAME_1_0);
         map.put(DTD_PUBLIC_ID_1_1, DTD_CONFIGURATION_NAME_1_1);
         map.put(DTD_PUBLIC_ID_1_2, DTD_CONFIGURATION_NAME_1_2);
@@ -321,7 +319,13 @@ public final class ConfigurationLoader {
                     ex.getMessage(), ex.getLineNumber(), ex.getColumnNumber());
             throw new CheckstyleException(message, ex);
         }
-        catch (final ParserConfigurationException | IOException | SAXException ex) {
+        catch (final ParserConfigurationException ex) {
+            throw new CheckstyleException(UNABLE_TO_PARSE_EXCEPTION_PREFIX, ex);
+        }
+        catch (final IOException ex) {
+            throw new CheckstyleException(UNABLE_TO_PARSE_EXCEPTION_PREFIX, ex);
+        }
+        catch (final SAXException ex) {
             throw new CheckstyleException(UNABLE_TO_PARSE_EXCEPTION_PREFIX, ex);
         }
     }
@@ -356,8 +360,8 @@ public final class ConfigurationLoader {
             return null;
         }
 
-        final List<String> fragments = new ArrayList<>();
-        final List<String> propertyRefs = new ArrayList<>();
+        final List<String> fragments = new ArrayList<String>();
+        final List<String> propertyRefs = new ArrayList<String>();
         parsePropertyString(value, fragments, propertyRefs);
 
         final StringBuilder sb = new StringBuilder(256);
@@ -598,9 +602,14 @@ public final class ConfigurationLoader {
          */
         private boolean containsAttribute(Configuration module, String attributeName) {
             final String[] names = module.getPropertyNames();
-            final Optional<String> result = Arrays.stream(names)
-                    .filter(name -> name.equals(attributeName)).findFirst();
-            return result.isPresent();
+            boolean result = false;
+            for (String name : names) {
+                if (name.equals(attributeName)) {
+                    result = true;
+                    break;
+                }
+            }
+            return result;
         }
 
     }

@@ -28,7 +28,6 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +37,7 @@ import java.util.regex.Pattern;
 import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -51,7 +51,7 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
     private static final Pattern ESCAPED_LINE_FEED_PATTERN = Pattern.compile("\\\\n");
 
     /** The lines of the header file. */
-    private final List<String> readerLines = new ArrayList<>();
+    private final List<String> readerLines = new ArrayList<String>();
 
     /** Specify the name of the file containing the required header. */
     private URI headerFile;
@@ -71,7 +71,7 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
      * @return the header lines to check against.
      */
     protected List<String> getHeaderLines() {
-        final List<String> copy = new ArrayList<>(readerLines);
+        final List<String> copy = new ArrayList<String>(readerLines);
         return Collections.unmodifiableList(copy);
     }
 
@@ -112,9 +112,15 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
      */
     private void loadHeaderFile() throws CheckstyleException {
         checkHeaderNotInitialized();
-        try (Reader headerReader = new InputStreamReader(new BufferedInputStream(
-                    headerFile.toURL().openStream()), charset)) {
-            loadHeader(headerReader);
+        try {
+            final Reader headerReader = new InputStreamReader(new BufferedInputStream(
+                    headerFile.toURL().openStream()), charset);
+            try {
+                loadHeader(headerReader);
+            }
+            finally {
+                headerReader.close();
+            }
         }
         catch (final IOException ex) {
             throw new CheckstyleException(
@@ -149,8 +155,14 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
             final String headerExpandedNewLines = ESCAPED_LINE_FEED_PATTERN
                     .matcher(header).replaceAll("\n");
 
-            try (Reader headerReader = new StringReader(headerExpandedNewLines)) {
-                loadHeader(headerReader);
+            try {
+                final Reader headerReader = new StringReader(headerExpandedNewLines);
+                try {
+                    loadHeader(headerReader);
+                }
+                finally {
+                    headerReader.close();
+                }
             }
             catch (final IOException ex) {
                 throw new IllegalArgumentException("unable to load header", ex);
@@ -165,7 +177,8 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
      * @throws IOException if
      */
     private void loadHeader(final Reader headerReader) throws IOException {
-        try (LineNumberReader lnr = new LineNumberReader(headerReader)) {
+        final LineNumberReader lnr = new LineNumberReader(headerReader);
+        try {
             String line;
             do {
                 line = lnr.readLine();
@@ -174,6 +187,9 @@ public abstract class AbstractHeaderCheck extends AbstractFileSetCheck
                 }
             } while (line != null);
             postProcessHeaderLines();
+        }
+        finally {
+            lnr.close();
         }
     }
 

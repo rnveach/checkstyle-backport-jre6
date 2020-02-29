@@ -310,7 +310,7 @@ public class IndentationCheck extends AbstractCheck {
     private static final int DEFAULT_INDENTATION = 4;
 
     /** Handlers currently in use. */
-    private final Deque<AbstractExpressionHandler> handlers = new ArrayDeque<>();
+    private final Deque<AbstractExpressionHandler> handlers = new ArrayDeque<AbstractExpressionHandler>();
 
     /** Instance of line wrapping handler to use. */
     private final LineWrappingHandler lineWrappingHandler = new LineWrappingHandler(this);
@@ -523,7 +523,7 @@ public class IndentationCheck extends AbstractCheck {
         final PrimordialHandler primordialHandler = new PrimordialHandler(this);
         handlers.push(primordialHandler);
         primordialHandler.checkIndentation();
-        incorrectIndentationLines = new HashSet<>();
+        incorrectIndentationLines = new HashSet<Integer>();
     }
 
     @Override

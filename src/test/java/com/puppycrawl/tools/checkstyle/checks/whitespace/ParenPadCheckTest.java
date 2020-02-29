@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Method;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
@@ -517,7 +517,7 @@ public class ParenPadCheckTest
 
         for (int token : check.getAcceptableTokens()) {
             ast.setType(token);
-            assertTrue((boolean) method.invoke(check, ast),
+            assertTrue((Boolean) method.invoke(check, ast),
                     message + TokenUtil.getTokenName(token));
         }
     }

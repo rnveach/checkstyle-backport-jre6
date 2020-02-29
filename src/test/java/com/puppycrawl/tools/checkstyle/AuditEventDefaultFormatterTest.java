@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Method;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
@@ -79,7 +79,7 @@ public class AuditEventDefaultFormatterTest {
                 "messages.properties", "key", null, SeverityLevel.ERROR, null,
                 getClass(), null);
         final AuditEvent auditEvent = new AuditEvent(new Object(), "fileName", violation);
-        final int result = (int) calculateBufferLengthMethod.invoke(null,
+        final int result = (Integer) calculateBufferLengthMethod.invoke(null,
                 auditEvent, SeverityLevel.ERROR.ordinal());
 
         assertEquals(54, result, "Buffer length is not expected");

@@ -21,12 +21,11 @@ package com.puppycrawl.tools.checkstyle.checks.sizes;
 
 import static com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck.MSG_KEY;
 
-import java.nio.charset.StandardCharsets;
-
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class LineLengthCheckTest extends AbstractModuleTestSupport {
 

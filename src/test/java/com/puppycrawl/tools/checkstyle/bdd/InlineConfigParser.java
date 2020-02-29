@@ -23,9 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +32,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public final class InlineConfigParser {
 
@@ -182,7 +182,7 @@ public final class InlineConfigParser {
 
     private static List<String> readFile(Path filePath) throws CheckstyleException {
         try {
-            return Files.readAllLines(filePath);
+            return Files7.readAllLines(filePath);
         }
         catch (IOException ex) {
             throw new CheckstyleException("Failed to read " + filePath, ex);
@@ -207,8 +207,12 @@ public final class InlineConfigParser {
             stringBuilder.append(line).append('\n');
         }
         final Properties properties = new Properties();
-        try (Reader reader = new StringReader(stringBuilder.toString())) {
+        final Reader reader = new StringReader(stringBuilder.toString());
+        try {
             properties.load(reader);
+        }
+        finally {
+            reader.close();
         }
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String key = entry.getKey().toString();

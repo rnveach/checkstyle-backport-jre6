@@ -21,23 +21,23 @@ package com.puppycrawl.tools.checkstyle.checks.metrics;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
@@ -54,7 +54,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
 
     /** Class names to ignore. */
     private static final Set<String> DEFAULT_EXCLUDED_CLASSES = Collections.unmodifiableSet(
-        Arrays.stream(new String[] {
+        Collections7.newHashSet(
             // reserved type name
             "var",
             // primitives
@@ -80,8 +80,8 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
             "Collection", "EnumSet", "LinkedHashMap", "LinkedHashSet", "Optional",
             "OptionalDouble", "OptionalInt", "OptionalLong",
             // java.util.stream.*
-            "DoubleStream", "IntStream", "LongStream", "Stream",
-        }).collect(Collectors.toSet()));
+            "DoubleStream", "IntStream", "LongStream", "Stream"
+        ));
 
     /** Package names to ignore. */
     private static final Set<String> DEFAULT_EXCLUDED_PACKAGES = Collections.emptySet();
@@ -90,13 +90,13 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     private static final Pattern BRACKET_PATTERN = Pattern.compile("\\[[^]]*]");
 
     /** Specify user-configured regular expressions to ignore classes. */
-    private final List<Pattern> excludeClassesRegexps = new ArrayList<>();
+    private final List<Pattern> excludeClassesRegexps = new ArrayList<Pattern>();
 
     /** A map of (imported class name -> class name with package) pairs. */
-    private final Map<String, String> importedClassPackages = new HashMap<>();
+    private final Map<String, String> importedClassPackages = new HashMap<String, String>();
 
     /** Stack of class contexts. */
-    private final Deque<ClassContext> classesContexts = new ArrayDeque<>();
+    private final Deque<ClassContext> classesContexts = new ArrayDeque<ClassContext>();
 
     /** Specify user-configured class names to ignore. */
     private Set<String> excludedClasses = DEFAULT_EXCLUDED_CLASSES;
@@ -150,8 +150,8 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      * @param excludedClasses the list of classes to ignore.
      */
     public final void setExcludedClasses(String... excludedClasses) {
-        this.excludedClasses =
-            Collections.unmodifiableSet(Arrays.stream(excludedClasses).collect(Collectors.toSet()));
+        this.excludedClasses = new HashSet<String>();
+        Collections.addAll(this.excludedClasses, excludedClasses);
     }
 
     /**
@@ -160,9 +160,9 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      * @param from array representing regular expressions of classes to ignore.
      */
     public void setExcludeClassesRegexps(String... from) {
-        excludeClassesRegexps.addAll(Arrays.stream(from.clone())
-                .map(CommonUtil::createPattern)
-                .collect(Collectors.toSet()));
+        for (String s : from) {
+            excludeClassesRegexps.add(CommonUtil.createPattern(s));
+        }
     }
 
     /**
@@ -173,17 +173,27 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
      * @throws IllegalArgumentException if there are invalid identifiers among the packages.
      */
     public final void setExcludedPackages(String... excludedPackages) {
-        final List<String> invalidIdentifiers = Arrays.stream(excludedPackages)
-            .filter(excludedPackageName -> !CommonUtil.isName(excludedPackageName))
-            .collect(Collectors.toList());
+        final List<String> invalidIdentifiers = new ArrayList<String>();
+        for (String excludedPackageName : excludedPackages) {
+            if (!CommonUtil.isName(excludedPackageName)) {
+                invalidIdentifiers.add(excludedPackageName);
+            }
+        }
         if (!invalidIdentifiers.isEmpty()) {
+            String error = "[";
+            for (String s : invalidIdentifiers) {
+                if (error.length() > 1) {
+                    error += ", ";
+                }
+                error += s;
+            }
+            error += "]";
             throw new IllegalArgumentException(
                 "the following values are not valid identifiers: "
-                    + invalidIdentifiers.stream().collect(Collectors.joining(", ", "[", "]")));
+                    + error);
         }
 
-        this.excludedPackages = Collections.unmodifiableSet(
-            Arrays.stream(excludedPackages).collect(Collectors.toSet()));
+        this.excludedPackages = Collections.unmodifiableSet(Collections7.newHashSet(excludedPackages));
     }
 
     @Override
@@ -337,7 +347,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
          * Set of referenced classes.
          * Sorted by name for predictable violation messages in unit tests.
          */
-        private final Set<String> referencedClassNames = new TreeSet<>();
+        private final Set<String> referencedClassNames = new TreeSet<String>();
         /** Own class name. */
         private final String className;
         /* Location of own class. (Used to log violations) */

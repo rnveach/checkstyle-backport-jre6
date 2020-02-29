@@ -170,7 +170,7 @@ public final class BooleanExpressionComplexityCheck extends AbstractCheck {
     private static final int DEFAULT_MAX = 3;
 
     /** Stack of contexts. */
-    private final Deque<Context> contextStack = new ArrayDeque<>();
+    private final Deque<Context> contextStack = new ArrayDeque<Context>();
     /** Specify the maximum number of boolean operations allowed in one expression. */
     private int max;
     /** Current context. */

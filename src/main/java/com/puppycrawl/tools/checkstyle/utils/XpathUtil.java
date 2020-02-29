@@ -22,18 +22,19 @@ package com.puppycrawl.tools.checkstyle.utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.puppycrawl.tools.checkstyle.AstTreeStringPrinter;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.xpath.AbstractNode;
 import com.puppycrawl.tools.checkstyle.xpath.ElementNode;
 import com.puppycrawl.tools.checkstyle.xpath.RootNode;
@@ -103,11 +104,11 @@ public final class XpathUtil {
      * These token types are listed below.
      * */
     private static final Set<Integer> TOKEN_TYPES_WITH_TEXT_ATTRIBUTE =
-        Stream.of(
+        Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.IDENT, TokenTypes.STRING_LITERAL, TokenTypes.CHAR_LITERAL,
             TokenTypes.NUM_LONG, TokenTypes.NUM_INT, TokenTypes.NUM_DOUBLE, TokenTypes.NUM_FLOAT,
             TokenTypes.TEXT_BLOCK_CONTENT, TokenTypes.COMMENT_CONTENT)
-        .collect(Collectors.toSet());
+        );
 
     /**
      * This regexp is used to convert new line to newline tag.
@@ -120,7 +121,7 @@ public final class XpathUtil {
     private static final Pattern CARRIAGE_RETURN_TO_TAG = Pattern.compile("[\r]");
 
     /** Delimiter to separate xpath results. */
-    private static final String DELIMITER = "---------" + System.lineSeparator();
+    private static final String DELIMITER = "---------" + System7.lineSeparator();
 
     /** Stop instances being created. **/
     private XpathUtil() {
@@ -138,7 +139,7 @@ public final class XpathUtil {
                                                     DetailAST firstChild) {
         DetailAST currentChild = firstChild;
         final int depth = parent.getDepth() + 1;
-        final List<AbstractNode> result = new ArrayList<>();
+        final List<AbstractNode> result = new ArrayList<AbstractNode>();
         while (currentChild != null) {
             final int index = result.size();
             final ElementNode child = new ElementNode(root, parent, currentChild, depth, index);
@@ -193,10 +194,18 @@ public final class XpathUtil {
             final XPathDynamicContext xpathDynamicContext =
                 xpathExpression.createDynamicContext(rootNode);
             final List<Item> matchingItems = xpathExpression.evaluate(xpathDynamicContext);
-            return matchingItems.stream()
-                .map(item -> ((AbstractNode) item).getUnderlyingNode())
-                .map(AstTreeStringPrinter::printBranch)
-                .collect(Collectors.joining(DELIMITER));
+            final StringBuilder result = new StringBuilder();
+            boolean first = true;
+            for (Item item : matchingItems) {
+                if (first) {
+                    first = false;
+                }
+                else {
+                    result.append(DELIMITER);
+                }
+                result.append(AstTreeStringPrinter.printBranch(((AbstractNode) item).getUnderlyingNode()));
+            }
+            return result.toString();
         }
         catch (XPathException ex) {
             final String errMsg = String.format(Locale.ROOT,

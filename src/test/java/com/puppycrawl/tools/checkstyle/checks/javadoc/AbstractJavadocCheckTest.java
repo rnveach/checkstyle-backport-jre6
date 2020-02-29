@@ -39,13 +39,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.itsallcode.io.Capturable;
-import org.itsallcode.junit.sysextensions.SystemErrGuard;
-import org.itsallcode.junit.sysextensions.SystemErrGuard.SysErr;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.rules.TemporaryFolder;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
@@ -54,28 +52,17 @@ import com.puppycrawl.tools.checkstyle.api.JavadocTokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 
-@ExtendWith(SystemErrGuard.class)
 public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final SystemErrRule systemErr = new SystemErrRule().enableLog().mute();
+
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
     protected String getPackageLocation() {
         return "com/puppycrawl/tools/checkstyle/checks/javadoc/abstractjavadoc";
-    }
-
-    /**
-     * <p>Configures the environment for each test.</p>
-     * <ul>
-     * <li>Start output capture for {@link System#err}</li>
-     * </ul>
-     *
-     * @param systemErr wrapper for {@code System.err}
-     */
-    @BeforeEach
-    public void setUp(@SysErr Capturable systemErr) {
-        systemErr.captureMuted();
     }
 
     @Test
@@ -125,14 +112,14 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testParsingErrors(@SysErr Capturable systemErr) throws Exception {
+    public void testParsingErrors() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TempCheck.class);
         final String[] expected = {
             "8: " + getCheckMessage(MSG_JAVADOC_MISSED_HTML_CLOSE, 4, "unclosedTag"),
             "12: " + getCheckMessage(MSG_JAVADOC_WRONG_SINGLETON_TAG, 35, "img"),
         };
         verify(checkConfig, getPath("InputAbstractJavadocParsingErrors.java"), expected);
-        assertEquals("", systemErr.getCapturedData(), "Error is unexpected");
+        assertEquals("", systemErr.getLog(), "Error is unexpected");
     }
 
     @Test
@@ -143,21 +130,20 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testAntlrError(@SysErr Capturable systemErr) throws Exception {
+    public void testAntlrError() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TempCheck.class);
         final String[] expected = {
             "8: " + getCheckMessage(MSG_JAVADOC_PARSE_RULE_ERROR, 78,
                     "mismatched input '(' expecting <EOF>", "JAVADOC"),
         };
         verify(checkConfig, getPath("InputAbstractJavadocInvalidAtSeeReference.java"), expected);
-        assertEquals("", systemErr.getCapturedData(), "Error is unexpected");
+        assertEquals("", systemErr.getLog(), "Error is unexpected");
     }
 
     @Test
-    public void testCheckReuseAfterParseErrorWithFollowingAntlrErrorInTwoFiles(
-            @SysErr Capturable systemErr) throws Exception {
+    public void testCheckReuseAfterParseErrorWithFollowingAntlrErrorInTwoFiles() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TempCheck.class);
-        final Map<String, List<String>> expectedMessages = new LinkedHashMap<>(2);
+        final Map<String, List<String>> expectedMessages = new LinkedHashMap<String, List<String>>(2);
         expectedMessages.put(getPath("InputAbstractJavadocParsingErrors2.java"), asList(
             "8: " + getCheckMessage(MSG_JAVADOC_MISSED_HTML_CLOSE, 4, "unclosedTag"),
             "12: " + getCheckMessage(MSG_JAVADOC_WRONG_SINGLETON_TAG, 35, "img")
@@ -170,7 +156,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
             new File(getPath("InputAbstractJavadocParsingErrors2.java")),
             new File(getPath("InputAbstractJavadocInvalidAtSeeReference2.java")), },
                 expectedMessages);
-        assertEquals("", systemErr.getCapturedData(), "Error is unexpected");
+        assertEquals("", systemErr.getLog(), "Error is unexpected");
     }
 
     @Test
@@ -265,7 +251,12 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
             }
         };
         check.setJavadocTokens("RETURN_LITERAL");
-        assertDoesNotThrow(check::init);
+        assertDoesNotThrow(new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                check.init();
+            }
+        });
     }
 
     @Test
@@ -306,7 +297,7 @@ public class AbstractJavadocCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig =
             createModuleConfig(RequiredTokenIsNotInDefaultsJavadocCheck.class);
         final String pathToEmptyFile =
-                File.createTempFile("empty", ".java", temporaryFolder).getPath();
+                File.createTempFile("empty", ".java", temporaryFolder.newFolder()).getPath();
 
         try {
             final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;

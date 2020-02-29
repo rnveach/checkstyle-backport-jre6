@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,8 +35,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.internal.util.Checks;
 import org.powermock.reflect.Whitebox;
 
@@ -63,6 +62,9 @@ import com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck;
 import com.puppycrawl.tools.checkstyle.filters.SuppressWithNearbyCommentFilter;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionCommentFilter;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionXpathFilter;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -72,8 +74,8 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  */
 public class TreeWalkerTest extends AbstractModuleTestSupport {
 
-    @TempDir
-    public File temporaryFolder;
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Override
     protected String getPackageLocation() {
@@ -84,10 +86,14 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testProperFileExtension() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(ConstantNameCheck.class);
-        final File file = new File(temporaryFolder, "file.java");
-        try (Writer writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
+        final File file = new File(temporaryFolder.newFolder(), "file.java");
+        final Writer writer = Files7.newBufferedWriter(new Path(file), StandardCharsets.UTF_8);
+        try {
             final String content = "public class Main { public static final int k = 5 + 4; }";
             writer.write(content);
+        }
+        finally {
+            writer.close();
         }
         final String[] expected1 = {
             "1:45: " + getCheckMessage(ConstantNameCheck.class,
@@ -100,10 +106,14 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testImproperFileExtension() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(ConstantNameCheck.class);
-        final File file = new File(temporaryFolder, "file.pdf");
-        try (Writer writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
+        final File file = new File(temporaryFolder.newFolder(), "file.pdf");
+        final Writer writer = Files7.newBufferedWriter(new Path(file), StandardCharsets.UTF_8);
+        try {
             final String content = "public class Main { public static final int k = 5 + 4; }";
             writer.write(content);
+        }
+        finally {
+            writer.close();
         }
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
@@ -138,7 +148,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testOnEmptyFile() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(HiddenFieldCheck.class);
         final String pathToEmptyFile =
-                File.createTempFile("file", ".java", temporaryFolder).getPath();
+                File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, pathToEmptyFile, expected);
@@ -151,7 +161,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         try {
             final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
             verify(createChecker(checkConfig, ModuleCreationOption.IN_TREEWALKER),
-                    File.createTempFile("junit", null, temporaryFolder).getPath(), expected);
+                    File.createTempFile("junit", null, temporaryFolder.newFolder()).getPath(), expected);
             fail("CheckstyleException is expected");
         }
         catch (CheckstyleException exception) {
@@ -164,7 +174,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testSetupChildExceptions() {
         final TreeWalker treeWalker = new TreeWalker();
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<>(), Thread.currentThread().getContextClassLoader());
+                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
 
         final Configuration config = new DefaultConfiguration("java.lang.String");
@@ -196,7 +206,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testForInvalidCheckImplementation() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(BadJavaDocCheck.class);
         final String pathToEmptyFile =
-                File.createTempFile("file", ".java", temporaryFolder).getPath();
+                File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
 
         try {
             final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
@@ -213,14 +223,14 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testProcessNonJavaFiles() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
         final PackageObjectFactory factory = new PackageObjectFactory(
-            new HashSet<>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.configure(new DefaultConfiguration("default config"));
         final DefaultConfiguration childConfig = createModuleConfig(JavadocParagraphCheck.class);
         treeWalker.setupChild(childConfig);
         final File file = new File("input.java");
         final List<String> lines =
-            new ArrayList<>(Arrays.asList("package com.puppycrawl.tools.checkstyle;", "",
+            new ArrayList<String>(Arrays.asList("package com.puppycrawl.tools.checkstyle;", "",
                 "error public class InputTreeWalkerFileWithViolation {}"));
         final FileText fileText = new FileText(file, lines);
         treeWalker.setFileContents(new FileContents(fileText));
@@ -251,9 +261,9 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig = createModuleConfig(HiddenFieldCheck.class);
         final Checker checker = createChecker(checkConfig);
         final PackageObjectFactory factory = new PackageObjectFactory(
-            new HashSet<>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         checker.setModuleFactory(factory);
-        final File file = File.createTempFile("file", ".java", temporaryFolder);
+        final File file = File.createTempFile("file", ".java", temporaryFolder.newFolder());
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checker, file.getPath(), expected);
@@ -264,11 +274,11 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final TreeWalker treeWalker = new TreeWalker();
         treeWalker.configure(createModuleConfig(TypeNameCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
-            new HashSet<>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createModuleConfig(TypeNameCheck.class));
-        final File file = new File(temporaryFolder, "file.java");
-        final List<String> lines = new ArrayList<>();
+        final File file = new File(temporaryFolder.newFolder(), "file.java");
+        final List<String> lines = new ArrayList<String>();
         lines.add(" classD a {} ");
         final FileText fileText = new FileText(file, lines);
         treeWalker.setFileContents(new FileContents(fileText));
@@ -287,11 +297,11 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final TreeWalker treeWalker = new TreeWalker();
         treeWalker.configure(createModuleConfig(TypeNameCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
-            new HashSet<>(), Thread.currentThread().getContextClassLoader());
+            new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createModuleConfig(TypeNameCheck.class));
-        final File file = new File(temporaryFolder, "file.java");
-        final List<String> lines = new ArrayList<>();
+        final File file = new File(temporaryFolder.newFolder(), "file.java");
+        final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
         final FileText fileText = new FileText(file, lines);
         treeWalker.setFileContents(new FileContents(fileText));
@@ -311,7 +321,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig =
             createModuleConfig(RequiredTokenIsEmptyIntArray.class);
         final String pathToEmptyFile =
-                File.createTempFile("file", ".java", temporaryFolder).getPath();
+                File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
 
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, pathToEmptyFile, expected);
@@ -321,11 +331,11 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testBehaviourWithZeroChecks() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<>(), Thread.currentThread().getContextClassLoader());
+                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         // create file that should throw exception
-        final File file = new File(temporaryFolder, "file.java");
-        final FileText fileText = new FileText(file, new ArrayList<>());
+        final File file = new File(temporaryFolder.newFolder(), "file.java");
+        final FileText fileText = new FileText(file, new ArrayList<String>());
 
         treeWalker.processFiltered(file, fileText);
         final Collection<Checks> checks = Whitebox.getInternalState(treeWalker, "ordinaryChecks");
@@ -338,12 +348,12 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         treeWalker.configure(createModuleConfig(TypeNameCheck.class));
         treeWalker.configure(createModuleConfig(CommentsIndentationCheck.class));
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<>(), Thread.currentThread().getContextClassLoader());
+                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.setupChild(createModuleConfig(TypeNameCheck.class));
         treeWalker.setupChild(createModuleConfig(CommentsIndentationCheck.class));
-        final File file = new File(temporaryFolder, "file.java");
-        final List<String> lines = new ArrayList<>();
+        final File file = new File(temporaryFolder.newFolder(), "file.java");
+        final List<String> lines = new ArrayList<String>();
         lines.add(" class a%$# {} ");
         final FileText fileText = new FileText(file, lines);
         treeWalker.setFileContents(new FileContents(fileText));
@@ -363,7 +373,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testSetupChild() throws Exception {
         final TreeWalker treeWalker = new TreeWalker();
         final PackageObjectFactory factory = new PackageObjectFactory(
-                new HashSet<>(), Thread.currentThread().getContextClassLoader());
+                new HashSet<String>(), Thread.currentThread().getContextClassLoader());
         treeWalker.setModuleFactory(factory);
         treeWalker.setTabWidth(99);
         treeWalker.finishLocalSetup();
@@ -437,7 +447,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
     public void testCheckInitIsCalledInTreeWalker() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(VerifyInitCheck.class);
-        final File file = File.createTempFile("file", ".pdf", temporaryFolder);
+        final File file = File.createTempFile("file", ".pdf", temporaryFolder.newFolder());
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
         assertTrue(VerifyInitCheck.isInitWasCalled(), "Init was not called");
@@ -448,7 +458,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         VerifyDestroyCheck.resetDestroyWasCalled();
         final DefaultConfiguration checkConfig =
                 createModuleConfig(VerifyDestroyCheck.class);
-        final File file = File.createTempFile("file", ".pdf", temporaryFolder);
+        final File file = File.createTempFile("file", ".pdf", temporaryFolder.newFolder());
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
         assertTrue(VerifyDestroyCheck.isDestroyWasCalled(), "Destroy was not called");
@@ -459,7 +469,7 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         VerifyDestroyCheck.resetDestroyWasCalled();
         final DefaultConfiguration checkConfig =
                 createModuleConfig(VerifyDestroyCommentCheck.class);
-        final File file = File.createTempFile("file", ".pdf", temporaryFolder);
+        final File file = File.createTempFile("file", ".pdf", temporaryFolder.newFolder());
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, file.getPath(), expected);
         assertTrue(VerifyDestroyCheck.isDestroyWasCalled(), "Destroy was not called");
@@ -473,17 +483,17 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         treeWalkerConfig.addChild(filterConfig);
 
         final DefaultConfiguration checkerConfig = createRootConfig(treeWalkerConfig);
-        final File cacheFile = File.createTempFile("junit", null, temporaryFolder);
+        final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
         checkerConfig.addProperty("cacheFile", cacheFile.getPath());
 
-        final String filePath = File.createTempFile("file", ".java", temporaryFolder).getPath();
+        final String filePath = File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkerConfig, filePath, expected);
         // One more time to use cache.
         verify(checkerConfig, filePath, expected);
 
-        assertTrue(new String(Files.readAllBytes(cacheFile.toPath()), StandardCharsets.UTF_8)
+        assertTrue(new String(Files7.readAllBytes(new Path(cacheFile)), StandardCharsets.UTF_8)
                         .contains("InputTreeWalkerSuppressionXpathFilter.xml"),
                 "External resource is not present in cache");
     }
@@ -519,10 +529,10 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         treeWalkerConfig.addChild(filterConfig);
 
         final DefaultConfiguration checkerConfig = createRootConfig(treeWalkerConfig);
-        final File cacheFile = File.createTempFile("junit", null, temporaryFolder);
+        final File cacheFile = File.createTempFile("junit", null, temporaryFolder.newFolder());
         checkerConfig.addProperty("cacheFile", cacheFile.getPath());
 
-        final String filePath = File.createTempFile("file", ".java", temporaryFolder).getPath();
+        final String filePath = File.createTempFile("file", ".java", temporaryFolder.newFolder()).getPath();
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkerConfig, filePath, expected);

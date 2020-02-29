@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -34,6 +33,8 @@ import com.puppycrawl.tools.checkstyle.TreeWalkerFilter;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.TextBlock;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -356,7 +357,7 @@ public class SuppressionCommentFilter
     private static final String DEFAULT_CHECK_FORMAT = ".*";
 
     /** Tagged comments. */
-    private final List<Tag> tags = new ArrayList<>();
+    private final List<Tag> tags = new ArrayList<Tag>();
 
     /** Control whether to check C style comments ({@code &#47;* ... *&#47;}). */
     private boolean checkC = true;
@@ -388,7 +389,7 @@ public class SuppressionCommentFilter
      * are reassigned to the next FileContents, at which time filtering for
      * the current FileContents is finished.
      */
-    private WeakReference<FileContents> fileContentsReference = new WeakReference<>(null);
+    private WeakReference<FileContents> fileContentsReference = new WeakReference<FileContents>(null);
 
     /**
      * Setter to specify comment pattern to trigger filter to begin suppression.
@@ -424,7 +425,7 @@ public class SuppressionCommentFilter
      * @noinspection WeakerAccess
      */
     public void setFileContents(FileContents fileContents) {
-        fileContentsReference = new WeakReference<>(fileContents);
+        fileContentsReference = new WeakReference<FileContents>(fileContents);
     }
 
     /**
@@ -533,7 +534,9 @@ public class SuppressionCommentFilter
         if (checkC) {
             final Collection<List<TextBlock>> cComments = contents
                     .getBlockComments().values();
-            cComments.forEach(this::tagSuppressions);
+            for (List<TextBlock> element : cComments) {
+                tagSuppressions(element);
+            }
         }
         Collections.sort(tags);
     }
@@ -717,10 +720,10 @@ public class SuppressionCommentFilter
         public int compareTo(Tag object) {
             final int result;
             if (line == object.line) {
-                result = Integer.compare(column, object.column);
+                result = Integer7.compare(column, object.column);
             }
             else {
-                result = Integer.compare(line, object.line);
+                result = Integer7.compare(line, object.line);
             }
             return result;
         }

@@ -19,10 +19,10 @@
 
 package com.puppycrawl.tools.checkstyle.checks.regexp;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractViolationReporter;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 
 /**
  * Options for a detector.
@@ -237,7 +237,12 @@ public final class DetectorOptions {
         public DetectorOptions build() {
             message = Optional.ofNullable(message).orElse("");
             suppressor = Optional.ofNullable(suppressor).orElse(NeverSuppress.INSTANCE);
-            pattern = Optional.ofNullable(format).map(this::createPattern).orElse(null);
+            if (format == null) {
+                pattern = null;
+            }
+            else {
+                pattern = createPattern(format);
+            }
             return DetectorOptions.this;
         }
 

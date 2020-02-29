@@ -21,6 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -98,7 +99,7 @@ public class JavadocPackageCheck extends AbstractFileSetCheck {
     public static final String MSG_PACKAGE_INFO = "javadoc.packageInfo";
 
     /** The directories checked. */
-    private final Set<File> directoriesChecked = ConcurrentHashMap.newKeySet();
+    private final Set<File> directoriesChecked = Collections.newSetFromMap(new ConcurrentHashMap<File, Boolean>());
 
     /** Allow legacy {@code package.html} file to be used. */
     private boolean allowLegacy;

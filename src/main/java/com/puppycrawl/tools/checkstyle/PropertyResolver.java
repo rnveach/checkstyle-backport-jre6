@@ -28,7 +28,6 @@ package com.puppycrawl.tools.checkstyle;
  *
  * @see ConfigurationLoader
  */
-@FunctionalInterface
 public interface PropertyResolver {
 
     /**

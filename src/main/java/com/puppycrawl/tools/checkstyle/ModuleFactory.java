@@ -30,7 +30,6 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
  * conventions, fallback strategies, etc.
  *
  */
-@FunctionalInterface
 public interface ModuleFactory {
 
     /**

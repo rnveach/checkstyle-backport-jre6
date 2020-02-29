@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.lang.reflect.Method;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.puppycrawl.tools.checkstyle.JavadocDetailNodeParser.ParseErrorMessage;
@@ -50,7 +50,7 @@ public class DetailNodeTreeStringPrinterTest extends AbstractTreeTestSupport {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(DetailNodeTreeStringPrinter.class, true),
                 "Constructor is not private");
     }

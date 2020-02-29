@@ -70,10 +70,10 @@ public final class PackageNamesLoader
     private static final String PACKAGE_ELEMENT_NAME = "package";
 
     /** The temporary stack of package name parts. */
-    private final Deque<String> packageStack = new ArrayDeque<>();
+    private final Deque<String> packageStack = new ArrayDeque<String>();
 
     /** The fully qualified package names. */
-    private final Set<String> packageNames = new LinkedHashSet<>();
+    private final Set<String> packageNames = new LinkedHashSet<String>();
 
     /**
      * Creates a new {@code PackageNamesLoader} instance.
@@ -155,7 +155,10 @@ public final class PackageNamesLoader
         catch (IOException ex) {
             throw new CheckstyleException("unable to get package file resources", ex);
         }
-        catch (ParserConfigurationException | SAXException ex) {
+        catch (ParserConfigurationException ex) {
+            throw new CheckstyleException("unable to open one of package files", ex);
+        }
+        catch (SAXException ex) {
             throw new CheckstyleException("unable to open one of package files", ex);
         }
 
@@ -172,9 +175,15 @@ public final class PackageNamesLoader
      */
     private static void processFile(URL packageFile, PackageNamesLoader namesLoader)
             throws SAXException, CheckstyleException {
-        try (InputStream stream = new BufferedInputStream(packageFile.openStream())) {
-            final InputSource source = new InputSource(stream);
-            namesLoader.parseInputSource(source);
+        try {
+            final InputStream stream = new BufferedInputStream(packageFile.openStream());
+            try {
+                final InputSource source = new InputSource(stream);
+                namesLoader.parseInputSource(source);
+            }
+            finally {
+                stream.close();
+            }
         }
         catch (IOException ex) {
             throw new CheckstyleException("unable to open " + packageFile, ex);
@@ -187,7 +196,7 @@ public final class PackageNamesLoader
      * @return map between local resources and dtd ids.
      */
     private static Map<String, String> createIdToResourceNameMap() {
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<String, String>();
         map.put(DTD_PUBLIC_ID, DTD_RESOURCE_NAME);
         map.put(DTD_PUBLIC_CS_ID, DTD_RESOURCE_NAME);
         return map;

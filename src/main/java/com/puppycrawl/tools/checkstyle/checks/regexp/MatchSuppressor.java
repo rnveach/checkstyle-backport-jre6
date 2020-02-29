@@ -22,7 +22,6 @@ package com.puppycrawl.tools.checkstyle.checks.regexp;
 /**
  * Represents a suppressor for matches.
  */
-@FunctionalInterface
 public interface MatchSuppressor {
 
     /**

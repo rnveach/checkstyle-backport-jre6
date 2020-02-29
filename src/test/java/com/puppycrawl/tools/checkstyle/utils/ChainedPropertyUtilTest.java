@@ -21,19 +21,22 @@ package com.puppycrawl.tools.checkstyle.utils;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsClassHasPrivateConstructor;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Properties;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.PropertiesExpander;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 
 public class ChainedPropertyUtilTest extends AbstractModuleTestSupport {
 
@@ -43,7 +46,7 @@ public class ChainedPropertyUtilTest extends AbstractModuleTestSupport {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertWithMessage("Constructor is not private.")
             .that(isUtilsClassHasPrivateConstructor(ChainedPropertyUtil.class, true))
             .isTrue();
@@ -90,12 +93,16 @@ public class ChainedPropertyUtilTest extends AbstractModuleTestSupport {
 
         final CheckstyleException exception =
             assertThrows(CheckstyleException.class,
-                () -> ChainedPropertyUtil.getResolvedProperties(properties));
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        ChainedPropertyUtil.getResolvedProperties(properties);
+                    }
+                }
+            );
 
         assertWithMessage(message)
-            .that(exception)
-            .hasMessageThat()
-            .isEqualTo(expected);
+            .that(exception).hasMessage(expected);
     }
 
     @Test
@@ -108,12 +115,15 @@ public class ChainedPropertyUtilTest extends AbstractModuleTestSupport {
 
         final CheckstyleException exception =
             assertThrows(CheckstyleException.class,
-                () -> ChainedPropertyUtil.getResolvedProperties(properties));
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        ChainedPropertyUtil.getResolvedProperties(properties);
+                    }
+                }
+            );
 
-        assertWithMessage(message)
-            .that(exception)
-            .hasMessageThat()
-            .contains(expected);
+        assertTrue(message, exception.getMessage().contains(expected));
     }
 
     /**
@@ -130,7 +140,8 @@ public class ChainedPropertyUtilTest extends AbstractModuleTestSupport {
     private static Properties loadProperties(File file) throws CheckstyleException {
         final Properties properties = new Properties();
 
-        try (InputStream stream = Files.newInputStream(file.toPath())) {
+        try {
+            final InputStream stream = Files7.newInputStream(new Path(file));
             properties.load(stream);
         }
         catch (final IOException ex) {

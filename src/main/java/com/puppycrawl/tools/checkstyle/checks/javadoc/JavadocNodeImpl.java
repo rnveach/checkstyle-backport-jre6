@@ -20,9 +20,9 @@
 package com.puppycrawl.tools.checkstyle.checks.javadoc;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 
 /**

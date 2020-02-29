@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Method;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -91,7 +91,7 @@ public class JavadocTagInfoTest {
     }
 
     @Test
-    public void testOthers() throws ReflectiveOperationException {
+    public void testOthers() throws Exception {
         final JavadocTagInfo[] tags = {
             JavadocTagInfo.CODE,
             JavadocTagInfo.DOC_ROOT,
@@ -140,7 +140,7 @@ public class JavadocTagInfoTest {
     }
 
     @Test
-    public void testDeprecated() throws ReflectiveOperationException {
+    public void testDeprecated() throws Exception {
         final DetailAstImpl ast = new DetailAstImpl();
         final DetailAstImpl astParent = new DetailAstImpl();
         astParent.setType(TokenTypes.LITERAL_CATCH);
@@ -176,7 +176,7 @@ public class JavadocTagInfoTest {
     }
 
     @Test
-    public void testSerial() throws ReflectiveOperationException {
+    public void testSerial() throws Exception {
         final DetailAstImpl ast = new DetailAstImpl();
         final DetailAstImpl astParent = new DetailAstImpl();
         astParent.setType(TokenTypes.LITERAL_CATCH);

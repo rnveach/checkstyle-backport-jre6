@@ -21,7 +21,6 @@ package com.puppycrawl.tools.checkstyle.filters;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
@@ -29,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.TreeWalkerFilter;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.ExternalResourceHolder;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
 
 /**
@@ -518,7 +518,7 @@ public class SuppressionXpathFilter extends AutomaticBean implements
      */
     private boolean optional;
     /** Set of individual xpath suppresses. */
-    private Set<TreeWalkerFilter> filters = new HashSet<>();
+    private Set<TreeWalkerFilter> filters = new HashSet<TreeWalkerFilter>();
 
     /**
      * Setter to specify the location of the <em>suppressions XML document</em> file.
@@ -583,7 +583,7 @@ public class SuppressionXpathFilter extends AutomaticBean implements
                     filters = SuppressionsLoader.loadXpathSuppressions(file);
                 }
                 else {
-                    filters = new HashSet<>();
+                    filters = new HashSet<TreeWalkerFilter>();
                 }
             }
             else {

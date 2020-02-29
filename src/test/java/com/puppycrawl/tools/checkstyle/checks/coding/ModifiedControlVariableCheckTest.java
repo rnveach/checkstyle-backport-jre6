@@ -26,10 +26,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DetailAstImpl;
@@ -37,6 +36,8 @@ import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class ModifiedControlVariableCheckTest
@@ -142,13 +143,23 @@ public class ModifiedControlVariableCheckTest
             JavaParser.parseFile(
                 new File(getPath("InputModifiedControlVariableEnhancedForLoopVariable.java")),
                 JavaParser.Options.WITHOUT_COMMENTS),
-            ast -> ast.getType() == TokenTypes.OBJBLOCK);
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.OBJBLOCK;
+                }
+            });
 
         assertTrue(methodDef.isPresent(), "Ast should contain METHOD_DEF");
         assertTrue(
             TestUtil.isStatefulFieldClearedDuringBeginTree(check, methodDef.get(),
                 "variableStack",
-                variableStack -> ((Collection<Set<String>>) variableStack).isEmpty()),
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object variableStack) {
+                        return ((Collection<Set<String>>) variableStack).isEmpty();
+                    }
+                }),
                 "State is not cleared on beginTree");
     }
 

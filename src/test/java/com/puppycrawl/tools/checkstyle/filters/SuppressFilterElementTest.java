@@ -19,27 +19,25 @@
 
 package com.puppycrawl.tools.checkstyle.filters;
 
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.TreeWalkerTest;
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.Violation;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.EqualsVerifierReport;
 import nl.jqno.equalsverifier.Warning;
 
 public class SuppressFilterElementTest {
 
     private SuppressFilterElement filter;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         filter = new SuppressFilterElement("Test", "Test", null, null, null, null);
     }
@@ -232,15 +230,10 @@ public class SuppressFilterElementTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        final EqualsVerifierReport ev = EqualsVerifier.forClass(SuppressFilterElement.class)
+        EqualsVerifier.forClass(SuppressFilterElement.class)
                 .usingGetClass()
-                .withIgnoredFields("fileRegexp", "checkRegexp", "messageRegexp", "columnFilter",
-                        "lineFilter")
                 .suppress(Warning.NONFINAL_FIELDS)
-                .report();
-        assertWithMessage("Error: " + ev.getMessage())
-                .that(ev.isSuccessful())
-                .isTrue();
+                .verify();
     }
 
 }

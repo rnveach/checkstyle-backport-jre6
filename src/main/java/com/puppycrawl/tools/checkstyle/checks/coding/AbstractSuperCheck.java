@@ -45,7 +45,7 @@ public abstract class AbstractSuperCheck
     public static final String MSG_KEY = "missing.super.call";
 
     /** Stack of methods. */
-    private final Deque<MethodNode> methodStack = new LinkedList<>();
+    private final Deque<MethodNode> methodStack = new LinkedList<MethodNode>();
 
     /**
      * Returns the name of the overriding method.

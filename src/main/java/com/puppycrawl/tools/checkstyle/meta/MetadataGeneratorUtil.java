@@ -20,21 +20,17 @@
 package com.puppycrawl.tools.checkstyle.meta;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
 /** Class which handles all the metadata generation and writing calls. */
 public final class MetadataGeneratorUtil {
@@ -47,10 +43,9 @@ public final class MetadataGeneratorUtil {
      * Generate metadata from the module source files available in the input argument path.
      *
      * @param args arguments
-     * @throws IOException ioException
      * @throws CheckstyleException checkstyleException
      */
-    public static void generate(String... args) throws IOException, CheckstyleException {
+    public static void generate(String... args) throws CheckstyleException {
         final Checker checker = new Checker();
         checker.setModuleClassLoader(Checker.class.getClassLoader());
         final DefaultConfiguration scraperCheckConfig =
@@ -71,31 +66,50 @@ public final class MetadataGeneratorUtil {
      * @param checker checker
      * @param path rootPath
      * @throws CheckstyleException checkstyleException
-     * @throws IOException ioException
      */
-    private static void dumpMetadata(Checker checker, String path) throws CheckstyleException,
-            IOException {
-        final List<File> validFiles = new ArrayList<>();
+    private static void dumpMetadata(Checker checker, String path) throws CheckstyleException {
+        final List<File> validFiles = new ArrayList<File>();
         if (path.endsWith(".java")) {
             validFiles.add(new File(path));
         }
         else {
             final List<String> moduleFolders = Arrays.asList("checks", "filters", "filefilters");
             for (String folder : moduleFolders) {
-                try (Stream<Path> files = Files.walk(Paths.get(path
-                        + "/" + folder))) {
-                    validFiles.addAll(
-                            files.map(Path::toFile)
-                            .filter(file -> {
-                                return file.getName().endsWith("SuppressWarningsHolder.java")
+                walk(Paths.get(path + "/" + folder).getFile(),
+                    new Function<File, Object>() {
+                        @Override
+                        public Object apply(File file) {
+                            if (file.getName().endsWith("SuppressWarningsHolder.java")
                                         || file.getName().endsWith("Check.java")
-                                        || file.getName().endsWith("Filter.java");
-                            })
-                            .collect(Collectors.toList()));
-                }
+                                        || file.getName().endsWith("Filter.java")) {
+                                validFiles.add(file);
+                            }
+                            return null;
+                        }
+                    });
             }
         }
 
         checker.process(validFiles);
+    }
+
+    /**
+     * Walks the files in the directory, and sub-directories, and executes the
+     * provided function for each file.
+     *
+     * @param dir The directory to walk.
+     * @param func The function to execute for each file.
+     */
+    private static void walk(File dir, Function<File, Object> func) {
+        final File[] list = dir.listFiles();
+
+        if (list != null) {
+            for (File f : list) {
+                func.apply(f);
+                if (f.isDirectory()) {
+                    walk(f, func);
+                }
+            }
+        }
     }
 }

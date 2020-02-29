@@ -136,7 +136,7 @@ public class AttributeNode extends AbstractNode {
      * @return {@code AxisIterator} object
      */
     @Override
-    public AxisIterator iterateAxis(int axisNumber) {
+    public AxisIterator iterateAxis(byte axisNumber) {
         throw throwUnsupportedOperationException();
     }
 

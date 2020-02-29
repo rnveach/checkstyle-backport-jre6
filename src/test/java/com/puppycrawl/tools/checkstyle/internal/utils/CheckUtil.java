@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,6 +39,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.checks.regexp.RegexpMultilineCheck;
 import com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck;
@@ -75,15 +75,19 @@ public final class CheckUtil {
      * @return a set of simple names.
      */
     public static Set<String> getSimpleNames(Set<Class<?>> checks) {
-        return checks.stream().map(check -> {
+        final Set<String> result = new HashSet<String>();
+
+        for (Class<?> check : checks) {
             String name = check.getSimpleName();
 
             if (name.endsWith("Check")) {
                 name = name.substring(0, name.length() - 5);
             }
 
-            return name;
-        }).collect(Collectors.toSet());
+            result.add(name);
+        }
+
+        return result;
     }
 
     /**
@@ -119,7 +123,7 @@ public final class CheckUtil {
 
             final NodeList nodeList = document.getElementsByTagName("module");
 
-            final Set<String> checksReferencedInCheckstyleChecksXml = new HashSet<>();
+            final Set<String> checksReferencedInCheckstyleChecksXml = new HashSet<String>();
             for (int i = 0; i < nodeList.getLength(); i++) {
                 final Node currentNode = nodeList.item(i);
                 if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -145,9 +149,13 @@ public final class CheckUtil {
         final ClassLoader loader = Thread.currentThread()
                 .getContextClassLoader();
         final String packageName = "com.puppycrawl.tools.checkstyle";
-        return getCheckstyleModulesRecursive(packageName, loader).stream()
-                .filter(ModuleReflectionUtil::isCheckstyleTreeWalkerCheck)
-                .collect(Collectors.toSet());
+        final Set<Class<?>> checkstyleChecks = new HashSet<Class<?>>();
+        for (Class<?> clzz : getCheckstyleModulesRecursive(packageName, loader)) {
+            if (ModuleReflectionUtil.isCheckstyleTreeWalkerCheck(clzz)) {
+                checkstyleChecks.add(clzz);
+            }
+        }
+        return checkstyleChecks;
     }
 
     /**
@@ -175,11 +183,16 @@ public final class CheckUtil {
     private static Set<Class<?>> getCheckstyleModulesRecursive(
             String packageName, ClassLoader loader) throws IOException {
         final ClassPath classPath = ClassPath.from(loader);
-        return classPath.getTopLevelClassesRecursive(packageName).stream()
-                .map(ClassPath.ClassInfo::load)
-                .filter(ModuleReflectionUtil::isCheckstyleModule)
-                .filter(CheckUtil::isFromAllowedPackages)
-                .collect(Collectors.toSet());
+        final Set<Class<?>> result = new HashSet<Class<?>>();
+        for (ClassInfo clsInfo : classPath.getTopLevelClassesRecursive(packageName)) {
+            final Class<?> cls = clsInfo.load();
+
+            if (ModuleReflectionUtil.isCheckstyleModule(cls)
+                    && CheckUtil.isFromAllowedPackages(cls)) {
+                result.add(cls);
+            }
+        }
+        return result;
     }
 
     /**
@@ -191,7 +204,9 @@ public final class CheckUtil {
     private static boolean isFromAllowedPackages(Class<?> cls) {
         final String canonicalName = cls.getCanonicalName();
         return !canonicalName.startsWith("com.puppycrawl.tools.checkstyle.packageobjectfactory")
-            && !canonicalName.startsWith("com.puppycrawl.tools.checkstyle.internal.testmodules");
+            && !canonicalName.startsWith("com.puppycrawl.tools.checkstyle.internal.testmodules")
+            // added by backport
+            && !cls.getName().endsWith("Stub");
     }
 
     /**
@@ -202,7 +217,7 @@ public final class CheckUtil {
      * @throws ClassNotFoundException if the attempt to read a protected class fails.
      */
     public static Set<Field> getCheckMessages(Class<?> module) throws ClassNotFoundException {
-        final Set<Field> checkstyleMessages = new HashSet<>();
+        final Set<Field> checkstyleMessages = new HashSet<Field>();
 
         // get all fields from current class
         final Field[] fields = module.getDeclaredFields();
@@ -308,7 +323,7 @@ public final class CheckUtil {
     }
 
     public static Set<String> getTokenNameSet(int... tokens) {
-        final Set<String> result = new HashSet<>();
+        final Set<String> result = new HashSet<String>();
 
         for (int token : tokens) {
             result.add(TokenUtil.getTokenName(token));
@@ -355,16 +370,19 @@ public final class CheckUtil {
     public static String getLineSeparatorForFile(String filepath, Charset charset)
             throws IOException {
         final boolean[] crFound = {false};
-        new FileText(new File(filepath), charset.name())
-                .getFullText()
-                .chars()
-                .peek(character -> {
-                    if (character == '\r') {
-                        crFound[0] = true;
-                    }
-                })
-                .filter(character -> character == '\n')
-                .findFirst();
+        final CharSequence fullText = new FileText(new File(filepath), charset.name())
+                .getFullText();
+        for (int i = 0; i < fullText.length(); i++) {
+            final char character = fullText.charAt(i);
+
+            if (character == '\r') {
+                crFound[0] = true;
+                break;
+            }
+            else if (character == '\n') {
+                break;
+            }
+        }
 
         final String result;
         if (crFound[0]) {

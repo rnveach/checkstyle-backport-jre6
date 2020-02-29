@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.DefaultLogger;
 import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
@@ -47,7 +47,7 @@ import com.puppycrawl.tools.checkstyle.api.RootModule;
 public class ModuleReflectionUtilTest {
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(ModuleReflectionUtil.class, true),
                 "Constructor is not private");
     }

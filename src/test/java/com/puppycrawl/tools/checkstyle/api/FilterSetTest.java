@@ -21,11 +21,11 @@ package com.puppycrawl.tools.checkstyle.api;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import java.util.Objects;
-
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.filters.SeverityMatchFilter;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Boolean7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 public class FilterSetTest {
 
@@ -126,7 +126,7 @@ public class FilterSetTest {
                 return false;
             }
             final DummyFilter other = (DummyFilter) object;
-            return Boolean.compare(acceptValue, other.acceptValue) == 0;
+            return Boolean7.compare(acceptValue, other.acceptValue) == 0;
         }
 
     }

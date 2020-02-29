@@ -23,14 +23,13 @@ import static com.puppycrawl.tools.checkstyle.internal.utils.TestUtil.isUtilsCla
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
@@ -41,21 +40,29 @@ public class TokenTypesTest {
         final String tokenTypes = "com.puppycrawl.tools.checkstyle.api.tokentypes";
         final ResourceBundle bundle = ResourceBundle.getBundle(tokenTypes, Locale.ROOT);
 
-        final Set<String> expected = Arrays.stream(TokenUtil.getAllTokenIds())
-            .mapToObj(TokenUtil::getTokenName)
-            .filter(name -> name.charAt(0) != '$')
-            .collect(Collectors.toSet());
+        final Set<String> expected = new HashSet<String>();
+        for (int tokenId : TokenUtil.getAllTokenIds()) {
+            final String name = TokenUtil.getTokenName(tokenId);
+            if (name.charAt(0) != '$') {
+                expected.add(name);
+            }
+        }
         final Set<String> actual = bundle.keySet();
         assertEquals(expected, actual, "TokenTypes without description");
     }
 
     @Test
     public void testAllDescriptionsEndsWithPeriod() {
-        final Set<String> badDescriptions = Arrays.stream(TokenUtil.getAllTokenIds())
-            .mapToObj(TokenUtil::getTokenName)
-            .filter(name -> name.charAt(0) != '$')
-            .map(TokenUtil::getShortDescription)
-            .filter(desc -> desc.charAt(desc.length() - 1) != '.').collect(Collectors.toSet());
+        final Set<String> badDescriptions = new HashSet<String>();
+        for (int tokenId : TokenUtil.getAllTokenIds()) {
+            final String name = TokenUtil.getTokenName(tokenId);
+            if (name.charAt(0) != '$') {
+                final String desc = TokenUtil.getShortDescription(name);
+                if (desc.charAt(desc.length() - 1) != '.') {
+                    badDescriptions.add(desc);
+                }
+            }
+        }
         assertEquals(Collections.emptySet(), badDescriptions, "Malformed TokenType descriptions");
     }
 
@@ -87,7 +94,7 @@ public class TokenTypesTest {
     }
 
     @Test
-    public void testIsProperUtilsClass() throws ReflectiveOperationException {
+    public void testIsProperUtilsClass() throws Exception {
         assertTrue(isUtilsClassHasPrivateConstructor(TokenTypes.class, true),
                 "Constructor is not private");
     }

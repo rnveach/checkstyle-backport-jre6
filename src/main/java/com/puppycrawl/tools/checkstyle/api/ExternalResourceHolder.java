@@ -32,7 +32,6 @@ import com.puppycrawl.tools.checkstyle.Checker;
  * when the content of at least one external configuration resource of the module is changed.
  *
  */
-@FunctionalInterface
 public interface ExternalResourceHolder {
 
     /**

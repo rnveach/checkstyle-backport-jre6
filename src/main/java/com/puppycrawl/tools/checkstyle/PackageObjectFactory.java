@@ -22,13 +22,12 @@ package com.puppycrawl.tools.checkstyle;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.TreeSet;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Violation;
@@ -95,7 +94,7 @@ public class PackageObjectFactory implements ModuleFactory {
     public static final String STRING_SEPARATOR = ", ";
 
     /** Map of Checkstyle module names to their fully qualified names. */
-    private static final Map<String, String> NAME_TO_FULL_MODULE_NAME = new HashMap<>();
+    private static final Map<String, String> NAME_TO_FULL_MODULE_NAME = new HashMap<String, String>();
 
     /** A list of package names to prepend to class names. */
     private final Set<String> packages;
@@ -143,7 +142,7 @@ public class PackageObjectFactory implements ModuleFactory {
         }
 
         // create a copy of the given set, but retain ordering
-        packages = new LinkedHashSet<>(packageNames);
+        packages = new LinkedHashSet<String>(packageNames);
         this.moduleClassLoader = moduleClassLoader;
         this.moduleLoadOption = moduleLoadOption;
     }
@@ -282,9 +281,14 @@ public class PackageObjectFactory implements ModuleFactory {
             returnValue = createObject(fullModuleNames.iterator().next());
         }
         else {
-            final String optionalNames = fullModuleNames.stream()
-                    .sorted()
-                    .collect(Collectors.joining(STRING_SEPARATOR));
+            String optionalNames = "";
+            for (String fullModuleName : new TreeSet<String>(fullModuleNames)) {
+                if (optionalNames.length() != 0) {
+                    optionalNames += STRING_SEPARATOR;
+                }
+
+                optionalNames += fullModuleName;
+            }
             final Violation exceptionMessage = new Violation(1,
                     Definitions.CHECKSTYLE_BUNDLE, AMBIGUOUS_MODULE_NAME_EXCEPTION_MESSAGE,
                     new String[] {name, optionalNames}, null, getClass(), null);
@@ -304,9 +308,19 @@ public class PackageObjectFactory implements ModuleFactory {
     private Map<String, Set<String>> generateThirdPartyNameToFullModuleName(ClassLoader loader) {
         Map<String, Set<String>> returnValue;
         try {
-            returnValue = ModuleReflectionUtil.getCheckstyleModules(packages, loader).stream()
-                .collect(Collectors.groupingBy(Class::getSimpleName,
-                    Collectors.mapping(Class::getCanonicalName, Collectors.toSet())));
+            returnValue = new HashMap<String, Set<String>>();
+            for (Class<?> clzz : ModuleReflectionUtil.getCheckstyleModules(packages, loader)) {
+                final String key = clzz.getSimpleName();
+
+                if (returnValue.containsKey(key)) {
+                    final Set<String> mergedNames = new LinkedHashSet<String>(returnValue.get(key));
+                    mergedNames.add(clzz.getCanonicalName());
+                    returnValue.put(key, mergedNames);
+                }
+                else {
+                    returnValue.put(key, Collections.singleton(clzz.getCanonicalName()));
+                }
+            }
         }
         catch (IOException ignore) {
             returnValue = Collections.emptyMap();
@@ -321,13 +335,17 @@ public class PackageObjectFactory implements ModuleFactory {
      * @return simple check name.
      */
     public static String getShortFromFullModuleNames(String fullName) {
-        return NAME_TO_FULL_MODULE_NAME
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().equals(fullName))
-                .map(Entry::getKey)
-                .findFirst()
-                .orElse(fullName);
+        String result = fullName;
+        if (NAME_TO_FULL_MODULE_NAME.containsValue(fullName)) {
+            for (Entry<String, String> entry : NAME_TO_FULL_MODULE_NAME.entrySet()) {
+                if (entry.getValue().equals(fullName)) {
+                    result = entry.getKey();
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -338,9 +356,19 @@ public class PackageObjectFactory implements ModuleFactory {
      * @return a string which is obtained by joining package names with a class name.
      */
     private static String joinPackageNamesWithClassName(String className, Set<String> packages) {
-        return packages.stream().collect(
-            Collectors.joining(PACKAGE_SEPARATOR + className + STRING_SEPARATOR, "",
-                    PACKAGE_SEPARATOR + className));
+        String result = "";
+        boolean first = true;
+        for (String pkg : packages) {
+            if (first) {
+                first = false;
+            }
+            else {
+                result += STRING_SEPARATOR;
+            }
+
+            result += pkg + PACKAGE_SEPARATOR + className;
+        }
+        return result;
     }
 
     /**
@@ -356,7 +384,7 @@ public class PackageObjectFactory implements ModuleFactory {
         try {
             clazz = Class.forName(className, true, moduleClassLoader);
         }
-        catch (final ReflectiveOperationException | NoClassDefFoundError ignored) {
+        catch (Exception exception) {
             // ignore the exception
         }
 
@@ -366,7 +394,7 @@ public class PackageObjectFactory implements ModuleFactory {
             try {
                 instance = clazz.getDeclaredConstructor().newInstance();
             }
-            catch (final ReflectiveOperationException ex) {
+            catch (final Exception ex) {
                 throw new CheckstyleException("Unable to instantiate " + className, ex);
             }
         }
@@ -383,10 +411,15 @@ public class PackageObjectFactory implements ModuleFactory {
      * @throws CheckstyleException if an error occurs.
      */
     private Object createModuleByTryInEachPackage(String name) throws CheckstyleException {
-        final List<String> possibleNames = packages.stream()
-            .map(packageName -> packageName + PACKAGE_SEPARATOR + name)
-            .flatMap(className -> Stream.of(className, className + CHECK_SUFFIX))
-            .collect(Collectors.toList());
+        final Set<String> possibleNames = new HashSet<String>();
+        for (String packageName : packages) {
+            possibleNames.add(packageName + PACKAGE_SEPARATOR + name);
+        }
+        final Set<String> temp = new HashSet<String>();
+        for (String possibleName : possibleNames) {
+            temp.add(possibleName + CHECK_SUFFIX);
+        }
+        possibleNames.addAll(temp);
         Object instance = null;
         for (String possibleName : possibleNames) {
             instance = createObject(possibleName);

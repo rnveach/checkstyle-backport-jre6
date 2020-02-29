@@ -19,7 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.grammar.antlr4;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractTreeTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;

@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.google.common.reflect.ClassPath;
 import com.puppycrawl.tools.checkstyle.TreeWalkerFilter;
@@ -57,11 +57,16 @@ public final class ModuleReflectionUtil {
     public static Set<Class<?>> getCheckstyleModules(
             Collection<String> packages, ClassLoader loader) throws IOException {
         final ClassPath classPath = ClassPath.from(loader);
-        return packages.stream()
-                .flatMap(pkg -> classPath.getTopLevelClasses(pkg).stream())
-                .map(ClassPath.ClassInfo::load)
-                .filter(ModuleReflectionUtil::isCheckstyleModule)
-                .collect(Collectors.toSet());
+        final Set<Class<?>> checkstyleModules = new HashSet<Class<?>>();
+        for (String pkg : packages) {
+            for (ClassPath.ClassInfo clazz : classPath.getTopLevelClasses(pkg)) {
+                final Class<?> loadedClass = clazz.load();
+                if (isCheckstyleModule(loadedClass)) {
+                    checkstyleModules.add(loadedClass);
+                }
+            }
+        }
+        return checkstyleModules;
     }
 
     /**
@@ -106,7 +111,7 @@ public final class ModuleReflectionUtil {
     private static boolean hasDefaultConstructor(Class<?> clazz) {
         boolean result = false;
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-            if (constructor.getParameterCount() == 0) {
+            if (constructor.getParameterTypes().length == 0) {
                 result = true;
                 break;
             }

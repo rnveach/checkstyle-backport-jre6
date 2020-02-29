@@ -23,9 +23,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Set;
-import java.util.function.BiPredicate;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -34,6 +32,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.BiPredicate;
 
 public abstract class AbstractXmlTestSupport extends AbstractModuleTestSupport {
 

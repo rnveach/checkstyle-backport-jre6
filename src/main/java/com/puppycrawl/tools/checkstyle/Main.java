@@ -23,13 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Filter;
@@ -37,7 +34,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,11 +45,15 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.RootModule;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
+import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.utils.ChainedPropertyUtil;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.utils.XpathUtil;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.Parameters;
@@ -108,6 +108,7 @@ public final class Main {
 
         final CliOptions cliOptions = new CliOptions();
         final CommandLine commandLine = new CommandLine(cliOptions);
+        commandLine.registerConverter(Path.class, new PathConverter());
         commandLine.setUsageHelpWidth(CliOptions.HELP_WIDTH);
         commandLine.setCaseInsensitiveEnumValuesAllowed(true);
 
@@ -184,7 +185,9 @@ public final class Main {
         final List<String> messages = options.validateCli(parseResult, filesToProcess);
         final boolean hasMessages = !messages.isEmpty();
         if (hasMessages) {
-            messages.forEach(System.out::println);
+            for (String message : messages) {
+                System.out.println(message);
+            }
             exitStatus = EXIT_WITH_INVALID_USER_INPUT_CODE;
         }
         else {
@@ -202,7 +205,7 @@ public final class Main {
     private static List<File> getFilesToProcess(CliOptions options) {
         final List<Pattern> patternsToExclude = options.getExclusions();
 
-        final List<File> result = new LinkedList<>();
+        final List<File> result = new LinkedList<File>();
         for (File file : options.files) {
             result.addAll(listFiles(file, patternsToExclude));
         }
@@ -222,7 +225,7 @@ public final class Main {
     private static List<File> listFiles(File node, List<Pattern> patternsToExclude) {
         // could be replaced with org.apache.commons.io.FileUtils.list() method
         // if only we add commons-io library
-        final List<File> result = new LinkedList<>();
+        final List<File> result = new LinkedList<File>();
 
         if (node.canRead() && !isPathExcluded(node.getAbsolutePath(), patternsToExclude)) {
             if (node.isDirectory()) {
@@ -286,7 +289,7 @@ public final class Main {
                     JavaParser.Options.WITHOUT_COMMENTS);
             System.out.print(stringAst);
         }
-        else if (Objects.nonNull(options.xpath)) {
+        else if (options.xpath != null) {
             final String branch = XpathUtil.printXpathBranch(options.xpath, filesToProcess.get(0));
             System.out.print(branch);
         }
@@ -428,8 +431,14 @@ public final class Main {
             throws CheckstyleException {
         final Properties properties = new Properties();
 
-        try (InputStream stream = Files.newInputStream(file.toPath())) {
-            properties.load(stream);
+        try {
+            final InputStream stream = Files7.newInputStream(new Path(file));
+            try {
+                properties.load(stream);
+            }
+            finally {
+                stream.close();
+            }
         }
         catch (final IOException ex) {
             final Violation loadPropertiesExceptionMessage = new Violation(1,
@@ -504,14 +513,13 @@ public final class Main {
      * @throws IOException might happen
      * @noinspection UseOfSystemOutOrSystemErr
      */
-    @SuppressWarnings("resource")
     private static OutputStream getOutputStream(Path outputPath) throws IOException {
         final OutputStream result;
         if (outputPath == null) {
             result = System.out;
         }
         else {
-            result = Files.newOutputStream(outputPath);
+            result = Files7.newOutputStream(outputPath);
         }
         return result;
     }
@@ -756,7 +764,7 @@ public final class Main {
                 description = "Directory/file to exclude from CheckStyle. The path can be the "
                         + "full, absolute path, or relative to the current path. Multiple "
                         + "excludes are allowed.")
-        private List<File> exclude = new ArrayList<>();
+        private List<File> exclude = new ArrayList<File>();
 
         /**
          * Option that allows users to specify a regex of paths to exclude.
@@ -767,7 +775,7 @@ public final class Main {
         @Option(names = {"-x", "--exclude-regexp"},
                 description = "Directory/file pattern to exclude from CheckStyle. Multiple "
                         + "excludes are allowed.")
-        private List<Pattern> excludeRegex = new ArrayList<>();
+        private List<Pattern> excludeRegex = new ArrayList<Pattern>();
 
         /** Switch whether to execute ignored modules or not. */
         @Option(names = {"-E", "--executeIgnoredModules"},
@@ -785,11 +793,11 @@ public final class Main {
          * @return List of exclusion patterns.
          */
         private List<Pattern> getExclusions() {
-            final List<Pattern> result = exclude.stream()
-                    .map(File::getAbsolutePath)
-                    .map(Pattern::quote)
-                    .map(pattern -> Pattern.compile("^" + pattern + "$"))
-                    .collect(Collectors.toCollection(ArrayList::new));
+            final List<Pattern> result = new ArrayList<Pattern>();
+            for (File file : exclude) {
+                result.add(
+                        Pattern.compile("^" + Pattern.quote(file.getAbsolutePath()) + "$"));
+            }
             result.addAll(excludeRegex);
             return result;
         }
@@ -803,7 +811,7 @@ public final class Main {
          */
         // -@cs[CyclomaticComplexity] Breaking apart will damage encapsulation
         private List<String> validateCli(ParseResult parseResult, List<File> filesToProcess) {
-            final List<String> result = new ArrayList<>();
+            final List<String> result = new ArrayList<String>();
             final boolean hasConfigurationFile = configurationFile != null;
             final boolean hasSuppressionLineColumnNumber = suppressionLineColumnNumber != null;
 
@@ -856,12 +864,22 @@ public final class Main {
          * @return list of violations
          */
         private List<String> validateOptionalCliParametersIfConfigDefined() {
-            final List<String> result = new ArrayList<>();
+            final List<String> result = new ArrayList<String>();
             if (propertiesFile != null && !propertiesFile.exists()) {
                 result.add(String.format(Locale.ROOT,
                         "Could not find file '%s'.", propertiesFile));
             }
             return result;
+        }
+    }
+
+    /**
+     * Converter to turn String into a Path.
+     */
+    private static class PathConverter implements ITypeConverter<Path> {
+        @Override
+        public Path convert(String value) {
+            return Paths.get(value);
         }
     }
 }
