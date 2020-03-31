@@ -751,7 +751,44 @@ class K {
 &lt;module name=&quot;DefaultComesLast&quot;/&gt;
         </source>
         <p>
-            To configure the check for skipIfLastAndSharedWithCase:
+          Example:
+        </p>
+        <source>
+switch (i) {
+  case 1:
+    break;
+  case 2:
+    break;
+  default: // OK
+    break;
+}
+
+switch (i) {
+  case 1:
+    break;
+  case 2:
+    break; // OK, no default
+}
+
+switch (i) {
+  case 1:
+    break;
+  default: // violation, 'default' before 'case'
+    break;
+  case 2:
+    break;
+}
+
+switch (i) {
+  case 1:
+  default: // violation, 'default' before 'case'
+    break;
+  case 2:
+    break;
+}
+        </source>
+        <p>
+          To configure the check to allow default label to be not last if it is shared with case:
         </p>
         <source>
 &lt;module name=&quot;DefaultComesLast&quot;&gt;
@@ -759,22 +796,23 @@ class K {
 &lt;/module&gt;
         </source>
         <p>
-            Example when skipIfLastAndSharedWithCase is set to true.
+          Example:
         </p>
         <source>
 switch (i) {
   case 1:
     break;
   case 2:
-  default: // No violation with the new option is expected
+  default: // OK
     break;
   case 3:
     break;
 }
+
 switch (i) {
   case 1:
     break;
-  default: // violation with the new option is expected
+  default: // violation
   case 2:
     break;
 }
@@ -1014,6 +1052,60 @@ String nullString = null;
         </p>
         <source>
 &lt;module name=&quot;EqualsHashCode&quot;/&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public static class Example1 {
+    public int hashCode() {
+        // code
+    }
+    public boolean equals(String o) { // violation, overloaded implementation of 'equals'
+        // code
+    }
+}
+public static class Example2 {
+    public boolean equals(Object o) { // violation, no 'hashCode'
+        // code
+    }
+    public boolean equals(String o) {
+        // code
+    }
+}
+public static class Example3 {
+    public int hashCode() {
+        // code
+    }
+    public boolean equals(Object o) { // OK
+        // code
+    }
+    public boolean equals(String o) {
+        // code
+    }
+}
+public static class Example4 {
+    public int hashCode() {
+        // code
+    }
+    public boolean equals(java.lang.Object o) { // OK
+        // code
+   }
+}
+public static class Example5 {
+    public static int hashCode(int i) {
+        // code
+    }
+    public boolean equals(Object o) { // violation, overloaded implementation of 'hashCode'
+        // code
+    }
+}
+public static class Example6 {
+    public int hashCode() { // violation, overloaded implementation of 'equals'
+        // code
+    }
+    public static boolean equals(Object o, Object o2) {
+        // code
+    }
+}
         </source>
       </subsection>
 
@@ -1808,6 +1900,82 @@ class SomeClass
         <source>
 &lt;module name=&quot;IllegalCatch&quot;/&gt;
         </source>
+          <p>
+              Example:
+          </p>
+        <source>
+try {
+    // some code here
+} catch (Exception e) { // violation
+
+}
+
+try {
+    // some code here
+} catch (ArithmeticException e) { // OK
+
+} catch (Exception e) { // violation, catching Exception is illegal
+                          and order of catch blocks doesn't matter
+}
+
+try {
+    // some code here
+} catch (ArithmeticException | Exception e) { // violation, catching Exception is illegal
+
+}
+
+try {
+    // some code here
+} catch (ArithmeticException e) { // OK
+
+}
+          </source>
+          <p>
+              To configure the check to override the default list with
+              ArithmeticException and OutOfMemoryError:
+          </p>
+          <source>
+&lt;module name=&quot;IllegalCatch&quot;&gt;
+  &lt;property name=&quot;illegalClassNames&quot; value=&quot;ArithmeticException,
+              OutOfMemoryError&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>
+              Example:
+          </p>
+          <source>
+try {
+    // some code here
+} catch (OutOfMemoryError e) { // violation
+
+}
+
+try {
+    // some code here
+} catch (ArithmeticException e) { // violation
+
+}
+
+try {
+    // some code here
+} catch (NullPointerException e) { // OK
+
+} catch (OutOfMemoryError e) { // violation
+
+}
+
+try {
+    // some code here
+} catch (ArithmeticException | Exception e) {  // violation
+
+}
+
+try {
+    // some code here
+} catch (Exception e) { // OK
+
+}
+          </source>
       </subsection>
 
       <subsection name="Example of Usage" id="IllegalCatch_Example_of_Usage">
@@ -2135,14 +2303,33 @@ class SomeClass
         <source>
 &lt;module name=&quot;IllegalToken&quot;/&gt;
         </source>
+          <p>Example:</p>
+          <div class="wrapper">
+          <pre>
+public void myTest() {
+    outer: // violation
+    for (int i = 0; i &lt; 5; i++) {
+        if (i == 1) {
+            break outer;
+        }
+    }
+}
+          </pre>
+          </div>
         <p>
-          To configure the check to find token LITERAL_NATIVE:
+          To configure the check to report violation on token LITERAL_NATIVE:
         </p>
         <source>
 &lt;module name=&quot;IllegalToken&quot;&gt;
   &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_NATIVE&quot;/&gt;
 &lt;/module&gt;
         </source>
+          <p>Example:</p>
+          <div class="wrapper">
+              <pre>
+public native void myTest(); // violation
+              </pre>
+          </div>
       </subsection>
 
       <subsection name="Example of Usage" id="IllegalToken_Example_of_Usage">
@@ -2260,7 +2447,31 @@ class SomeClass
   &lt;property name=&quot;format&quot; value=&quot;a href&quot;/&gt;
 &lt;/module&gt;
         </source>
-
+          <p>Example:</p>
+          <source>
+public void myTest() {
+    String test = "a href"; // violation
+    String test2 = "A href"; // OK, case is sensitive
+}
+          </source>
+        <p>
+            To configure the check to forbid String literals containing
+            <code>&quot;a href&quot;</code> for the ignoreCase mode:
+        </p>
+        <source>
+&lt;module name=&quot;IllegalTokenText&quot;&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;STRING_LITERAL&quot;/&gt;
+  &lt;property name=&quot;format&quot; value=&quot;a href&quot;/&gt;
+  &lt;property name=&quot;ignoreCase&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+          <p>Example:</p>
+          <source>
+public void myTest() {
+    String test = "a href"; // violation
+    String test2 = "A href"; // violation, case is ignored
+}
+          </source>
         <p>
           To configure the check to forbid leading zeros in an integer
           literal, other than zero and a hex literal:
@@ -2272,6 +2483,17 @@ class SomeClass
   &lt;property name=&quot;ignoreCase&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
         </source>
+          <p>Example:</p>
+          <source>
+public void myTest() {
+    int test1 = 0; // OK
+    int test2 = 0x111; // OK
+    int test3 = 0X111; // OK, case is ignored
+    int test4 = 010; // violation
+    long test5 = 0L; // OK
+    long test6 = 010L; // violation
+}
+          </source>
       </subsection>
 
       <subsection name="Example of Usage" id="IllegalTokenText_Example_of_Usage">
@@ -2598,6 +2820,49 @@ while ((line = bufferedReader.readLine()) != null) {
         <source>
 &lt;module name=&quot;InnerAssignment&quot;/&gt;
         </source>
+        <p>Example:</p>
+        <source>
+class MyClass {
+
+  void foo() {
+    int a, b;
+    a = b = 5; // violation, assignment to each variable should be in a separate statement
+    a = b += 5; // violation
+
+    a = 5; // OK
+    b = 5; // OK
+    a = 5; b = 5; // OK
+
+    double myDouble;
+    double[] doubleArray = new double[] {myDouble = 4.5, 15.5}; // violation
+
+    String nameOne;
+    List&lt;String&gt; myList = new ArrayList&lt;String&gt;();
+    myList.add(nameOne = "tom"); // violation
+
+    for (int k = 0; k &lt; 10; k = k + 2) { // OK
+      // some code
+    }
+
+    boolean someVal;
+    if (someVal = true) { // violation
+      // some code
+    }
+
+    while (someVal = false) {} // violation
+
+    InputStream is = new FileInputStream("textFile.txt");
+    while ((b = is.read()) != -1) { // OK, this is a common idiom
+      // some code
+    }
+  }
+
+  boolean testMethod() {
+    boolean val;
+    return val = true; // violation
+  }
+}
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="InnerAssignment_Example_of_Usage">
@@ -2793,6 +3058,10 @@ class MyClass {
     int i = i + 1; // no violation
     int j = j + 8; // violation
   }
+
+  public int hashCode() {
+    return 10;    // violation
+  }
 }
 @interface anno {
   int value() default 10; // no violation
@@ -2869,6 +3138,23 @@ class TestMethodCall {
   }
 }
        </source>
+
+          <p>
+          Config example of ignoreHashCodeMethod option:
+          </p>
+          <source>
+&lt;module name=&quot;MagicNumber&quot;&gt;
+    &lt;property name=&quot;ignoreHashCodeMethod&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+          </source>
+          <p>result is no violation:</p>
+          <source>
+class TestHashCode {
+  public int hashCode() {
+    return 10;              // OK
+  }
+}
+          </source>
 
   </subsection>
 
@@ -3588,7 +3874,49 @@ for (String line: lines) {
         <source>
 &lt;module name=&quot;NestedTryDepth&quot;/&gt;
         </source>
-
+        <p>
+            case 1: Example of code with violation:
+        </p>
+        <source>
+try {
+    try {
+        try { // violation, current depth is 2, default max allowed depth is 1
+        } catch (Exception e) {
+        }
+    } catch (Exception e) {
+    }
+} catch (Exception e) {
+}
+        </source>
+        <p>
+          case 1: Example of compliant code:
+        </p>
+        <source>
+try {
+    try { // OK, current depth is 1, default max allowed depth is also 1
+    } catch (Exception e) {
+    }
+} catch (Exception e) {
+}
+        </source>
+        <p>case 2: Example of code for handling unique and general exceptions</p>
+        <source>
+try {
+    try { // OK, current depth is 1, default max allowed depth is also 1
+            // any more nesting could cause code violation!
+            throw ArithmeticException();
+    } catch (ArithmeticException e) { // catches arithmetic exceptions
+    } catch (NumberFormatException e) { // catches number-format exceptions
+    } catch (Exception e) { // catches general exceptions other than stated above
+    }
+} catch (
+  ArithmeticException
+  | NumberFormatException
+  | ArrayIndexOutOfBoundsException e) { // catches any of the 3 exception
+} catch (Exception e) { // catches general exception
+} finally { // do something when try-catch block finished execution
+}
+        </source>
         <p>
           To configure the check to allow nesting depth 3:
         </p>
@@ -3596,6 +3924,43 @@ for (String line: lines) {
 &lt;module name=&quot;NestedTryDepth&quot;&gt;
   &lt;property name=&quot;max&quot; value=&quot;3&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <p>
+            Example of code with violation:
+        </p>
+        <source>
+try {
+    try {
+        try {
+            try {
+                try { // violation, current depth is 4, max allowed depth is 3
+                } catch (Exception e) {
+                }
+            } catch (Exception e) {
+            }
+        } catch (Exception e) {
+        }
+    } catch (Exception e) {
+    }
+} catch (Exception e) {
+}
+        </source>
+        <p>
+            Example of compliant code:
+        </p>
+        <source>
+try {
+    try {
+        try {
+            try { // OK, current depth is 3, max allowed depth is also 3
+            } catch (Exception e) {
+            }
+        } catch (Exception e) {
+        }
+    } catch (Exception e) {
+    }
+} catch (Exception e) {
+}
         </source>
       </subsection>
 
@@ -3828,6 +4193,20 @@ System.out.println(s2 instanceof Square); //true
         </p>
         <source>
 &lt;module name=&quot;NoClone&quot;/&gt;
+        </source>
+        <p>Example: </p>
+        <source>
+public class Foo {
+
+ public Object clone() {return null;} // violation, overrides the clone method
+
+ public Foo clone() {return null;} // violation, overrides the clone method
+
+ public static Object clone(Object o) {return null;} // OK
+
+ public static Foo clone(Foo o) {return null;} // OK
+
+}
         </source>
       </subsection>
 
@@ -4873,6 +5252,30 @@ class C {
         <source>
 &lt;module name=&quot;SimplifyBooleanExpression&quot;/&gt;
         </source>
+        <p>Example:</p>
+<source>
+public class Test {
+
+  public void bar() {
+
+    boolean a, b;
+    Foo c, d, e;
+
+    if (!false) {}; // violation, can be simplified to true
+
+    if (a == true) {}; // violation, can be simplified to a
+    if (a == b) {}; // OK
+    if (a == false) {}; // violation, can be simplified to !a
+    if (!(a != true)) {}; // violation, can be simplified to a
+
+    e = (a || b) ? c : d; // OK
+    e = (a || false) ? c : d; // violation, can be simplified to a
+    e = (a &amp;&amp; b) ? c : d; // OK
+
+  }
+
+}
+</source>
       </subsection>
 
       <subsection name="Example of Usage" id="SimplifyBooleanExpression_Example_of_Usage">
@@ -4947,6 +5350,55 @@ return !valid();
         </p>
         <source>
 &lt;module name=&quot;SimplifyBooleanReturn&quot;/&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class Test {
+
+ private boolean cond;
+ private Foo a;
+ private Foo b;
+
+ public boolean check1() {
+  if (cond) { // violation, can be simplified
+    return true;
+  }
+  else {
+    return false;
+  }
+ }
+
+ // Ok, simplified version of check1()
+ public boolean check2() {
+  return cond;
+ }
+
+ // violations, can be simplified
+ public boolean check3() {
+  if (cond == true) { // can be simplified to "if (cond)"
+    return false;
+  }
+  else {
+    return true; // can be simplified to "return !cond"
+  }
+ }
+
+ // Ok, can be simplified but doesn't return a Boolean
+ public Foo choose1() {
+  if (cond) {
+    return a;
+  }
+  else {
+    return b;
+  }
+ }
+
+ // Ok, simplified version of choose1()
+ public Foo choose2() {
+  return cond ? a: b;
+ }
+
+}
         </source>
       </subsection>
 
@@ -5101,6 +5553,32 @@ if (name == getName()) {}
         </p>
         <source>
 &lt;module name=&quot;SuperClone&quot;/&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+class A {
+
+ public Object clone() { // OK
+  return super.clone();
+ }
+}
+
+class B {
+private int b;
+
+ public B clone() { // violation, does not call super.clone()
+  B other = new B();
+  other.b = this.b;
+  return other;
+ }
+}
+
+class C {
+
+ public C clone() { // OK
+  return (C) super.clone();
+ }
+}
         </source>
       </subsection>
 
@@ -5429,6 +5907,162 @@ myList.stream()
       </subsection>
 
       <subsection name="Parent Module" id="UnnecessaryParentheses_Parent_Module">
+        <p>
+          <a href="config.html#TreeWalker">TreeWalker</a>
+        </p>
+      </subsection>
+    </section>
+
+    <section name="UnnecessarySemicolonAfterOuterTypeDeclaration">
+      <p>Since Checkstyle 8.31</p>
+      <subsection name="Description"
+                  id="UnnecessarySemicolonAfterOuterTypeDeclaration_Description">
+        <p>
+          Checks if unnecessary semicolon is used after type declaration.
+        </p>
+      </subsection>
+      <subsection name="Notes" id="UnnecessarySemicolonAfterOuterTypeDeclaration_Notes">
+        <p>
+          This check is not applicable to nested type declarations,
+          <a
+          href="https://checkstyle.org/config_coding.html#UnnecessarySemicolonAfterTypeMemberDeclaration">
+          UnnecessarySemicolonAfterTypeMemberDeclaration</a> is responsible for it.
+        </p>
+      </subsection>
+      <subsection name="Properties" id="UnnecessarySemicolonAfterOuterTypeDeclaration_Properties">
+        <div class="wrapper">
+          <table>
+            <tr>
+              <th>name</th>
+              <th>description</th>
+              <th>type</th>
+              <th>default value</th>
+              <th>since</th>
+            </tr>
+            <tr>
+              <td>tokens</td>
+              <td>tokens to check</td>
+              <td>
+                subset of tokens
+                <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
+                 CLASS_DEF</a>,
+                <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
+                INTERFACE_DEF</a>,
+                <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                ENUM_DEF</a>,
+                <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
+                ANNOTATION_DEF</a>.
+              </td>
+              <td>
+                <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
+                    CLASS_DEF</a>,
+                <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
+                    INTERFACE_DEF</a>,
+                <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                    ENUM_DEF</a>,
+                <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
+                    ANNOTATION_DEF</a>.
+              </td>
+              <td>8.31</td>
+            </tr>
+          </table>
+        </div>
+      </subsection>
+
+      <subsection name="Examples" id="UnnecessarySemicolonAfterOuterTypeDeclaration_Examples">
+        <p>
+          To configure the check:
+        </p>
+        <source>
+&lt;module name=&quot;UnnecessarySemicolonAfterOuterTypeDeclaration&quot;/&gt;
+        </source>
+        <p>
+          Example:
+        </p>
+        <source>
+ class A {
+
+     class Nested {
+
+     }; // OK, nested type declarations are ignored
+
+ }; // violation
+
+ interface B {
+
+ }; // violation
+
+ enum C {
+
+ }; // violation
+
+ {@literal @}interface D {
+
+ }; // violation
+        </source>
+        <p>
+           To configure the check to detect unnecessary semicolon only after top level class
+           definitions:
+        </p>
+        <source>
+ &lt;module name=&quot;UnnecessarySemicolonAfterOuterTypeDeclaration&quot;&gt;
+   &lt;property name=&quot;tokens&quot; value=&quot;CLASS_DEF&quot;/&gt;
+ &lt;/module&gt;
+        </source>
+        <p>
+          Example:
+        </p>
+        <source>
+ class A {
+
+ }; // violation
+
+ interface B {
+
+ }; // OK
+
+ enum C {
+
+ }; // OK
+
+ {@literal @}interface D {
+
+ }; // OK
+        </source>
+      </subsection>
+
+      <subsection name="Example of Usage"
+                  id="UnnecessarySemicolonAfterOuterTypeDeclaration_Example_of_Usage">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+UnnecessarySemicolonAfterOuterTypeDeclaration">
+              Checkstyle Style</a>
+          </li>
+        </ul>
+      </subsection>
+
+      <subsection name="Violation Messages"
+                  id="UnnecessarySemicolonAfterOuterTypeDeclaration_Violation_Messages">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fcoding+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22unnecessary.semicolon%22">
+                unnecessary.semicolon</a>
+          </li>
+        </ul>
+        <p>
+          All messages can be customized if the default message doesn't suit you.
+          Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
+        </p>
+      </subsection>
+
+      <subsection name="Package" id="UnnecessarySemicolonAfterOuterTypeDeclaration_Package">
+        <p>
+          com.puppycrawl.tools.checkstyle.checks.coding
+        </p>
+      </subsection>
+
+      <subsection name="Parent Module"
+                  id="UnnecessarySemicolonAfterOuterTypeDeclaration_Parent_Module">
         <p>
           <a href="config.html#TreeWalker">TreeWalker</a>
         </p>

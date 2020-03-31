@@ -223,6 +223,14 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testIsSuppressedAfterEventStart2() throws Exception {
+        populateHolder("check", 100, 100, 350, 350);
+        final AuditEvent event = createAuditEvent("check", 100, 0);
+
+        assertTrue(SuppressWarningsHolder.isSuppressed(event), "Event is not suppressed");
+    }
+
+    @Test
     public void testIsSuppressedWithAllArgument() throws Exception {
         populateHolder("all", 100, 100, 350, 350);
 
@@ -253,7 +261,7 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
         final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
 
         final String[] expected = {
-            "11: " + getCheckMessage(SuppressWarningsHolder.MSG_KEY),
+            "11:14: " + getCheckMessage(SuppressWarningsHolder.MSG_KEY),
         };
 
         verify(checkConfig, getPath("InputSuppressWarningsHolder2.java"), expected);
@@ -378,6 +386,15 @@ public class SuppressWarningsHolderTest extends AbstractModuleTestSupport {
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputSuppressWarningsHolder4.java"), expected);
+    }
+
+    @Test
+    public void testSuppressWarningsAsAnnotationProperty() throws Exception {
+        final Configuration checkConfig = createModuleConfig(SuppressWarningsHolder.class);
+
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+
+        verify(checkConfig, getPath("InputSuppressWarningsHolder7.java"), expected);
     }
 
     @Test

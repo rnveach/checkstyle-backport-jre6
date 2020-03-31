@@ -510,6 +510,39 @@ public class StringUtils // not final to allow subclassing
         <source>
 &lt;module name=&quot;InterfaceIsType&quot;/&gt;
         </source>
+        <p>Example:</p>
+        <source>
+public interface Test1 { // violation
+    int a = 3;
+}
+
+public interface Test2 { // OK
+
+}
+
+public interface Test3 { // OK
+    int a = 3;
+    void test();
+}
+        </source>
+        <p>
+          To configure the check to report violation so that it doesn't allow Marker Interfaces:
+        </p>
+        <source>
+&lt;module name=&quot;InterfaceIsType&quot;&gt;
+  &lt;property name=&quot;allowMarkerInterfaces&quot; value=&quot;false&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public interface Test1 { // violation
+    int a = 3;
+}
+
+public interface Test2 { // violation
+
+}
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="InterfaceIsType_Example_of_Usage">
@@ -666,7 +699,7 @@ public class StringUtils // not final to allow subclassing
 
       <subsection name="Examples" id="OneTopLevelClass_Examples">
         <p>
-          An example of check's configuration:
+          To configure the check:
         </p>
         <source>
 &lt;module name="OneTopLevelClass"/&gt;
@@ -678,35 +711,41 @@ public class StringUtils // not final to allow subclassing
         <p>
           An example of code with violations:
         </p>
-        <source>
-public class Foo{
-  //methods
+        <div class="wrapper">
+          <pre>
+public class Foo { // OK, first top-level class
+  // methods
 }
 
-class Foo2{
-  //methods
+class Foo2 { // violation, second top-level class
+  // methods
 }
-        </source>
+          </pre>
+        </div>
         <p>
           An example of code without public top-level type:
         </p>
-        <source>
-class Foo{ // top-level class
-  //methods
+        <div class="wrapper">
+          <pre>
+class Foo { // OK, first top-level class
+  // methods
 }
 
-class Foo2{
-  //methods
+class Foo2 { // violation, second top-level class
+  // methods
 }
-        </source>
+          </pre>
+        </div>
         <p>
           An example of code without violations:
         </p>
-        <source>
-public class Foo{
-  //methods
+        <div class="wrapper">
+          <pre>
+public class Foo { // OK, only one top-level class
+  // methods
 }
-        </source>
+          </pre>
+        </div>
       </subsection>
 
       <subsection name="Example of Usage" id="OneTopLevelClass_Example_of_Usage">
@@ -808,6 +847,40 @@ public class Foo{
 
       <subsection name="Examples" id="ThrowsCount_Examples">
         <p>
+          To configure check:
+        </p>
+        <source>
+&lt;module name="ThrowsCount"/&gt;
+        </source>
+        <p>
+          Example:
+        </p>
+        <source>
+class Test {
+    public void myFunction() throws CloneNotSupportedException,
+                                ArrayIndexOutOfBoundsException,
+                                StringIndexOutOfBoundsException,
+                                IllegalStateException,
+                                NullPointerException { // violation, max allowed is 4
+        // body
+    }
+
+    public void myFunc() throws ArithmeticException,
+                                NumberFormatException { // ok
+        // body
+    }
+
+    private void privateFunc() throws CloneNotSupportedException,
+                                ClassNotFoundException,
+                                IllegalAccessException,
+                                ArithmeticException,
+                                ClassCastException { // ok, private methods are ignored
+        // body
+    }
+
+}
+        </source>
+        <p>
           To configure the check so that it doesn't allow more than two throws
           per method:
         </p>
@@ -816,7 +889,32 @@ public class Foo{
   &lt;property name=&quot;max&quot; value=&quot;2&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>
+          Example:
+        </p>
+        <source>
+class Test {
+    public void myFunction() throws IllegalStateException,
+                                ArrayIndexOutOfBoundsException,
+                                NullPointerException { // violation, max allowed is 2
+        // body
+    }
 
+    public void myFunc() throws ArithmeticException,
+                                NumberFormatException { // ok
+        // body
+    }
+
+    private void privateFunc() throws CloneNotSupportedException,
+                                ClassNotFoundException,
+                                IllegalAccessException,
+                                ArithmeticException,
+                                ClassCastException { // ok, private methods are ignored
+        // body
+    }
+
+}
+        </source>
         <p>
           To configure the check so that it doesn't skip private methods:
         </p>
@@ -824,6 +922,39 @@ public class Foo{
 &lt;module name=&quot;ThrowsCount&quot;&gt;
   &lt;property name=&quot;ignorePrivateMethods&quot; value=&quot;false&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <p>
+          Example:
+        </p>
+        <source>
+class Test {
+    public void myFunction() throws CloneNotSupportedException,
+                                ArrayIndexOutOfBoundsException,
+                                StringIndexOutOfBoundsException,
+                                IllegalStateException,
+                                NullPointerException { // violation, max allowed is 4
+        // body
+    }
+
+    public void myFunc() throws ArithmeticException,
+                                NumberFormatException { // ok
+        // body
+    }
+
+    private void privateFunc() throws CloneNotSupportedException,
+                                ClassNotFoundException,
+                                IllegalAccessException,
+                                ArithmeticException,
+                                ClassCastException { // violation, max allowed is 4
+        // body
+    }
+
+    private void func() throws IllegalStateException,
+                                NullPointerException { // ok
+        // body
+    }
+
+}
         </source>
       </subsection>
 

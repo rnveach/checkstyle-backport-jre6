@@ -44,25 +44,10 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * </p>
  * <ul id="SuppressionXpathFilter_IncompatibleChecks">
  * <li>
- * AnnotationLocation
- * </li>
- * <li>
- * AnnotationOnSameLine
- * </li>
- * <li>
  * AnnotationUseStyle
  * </li>
  * <li>
- * ArrayTrailingComma
- * </li>
- * <li>
  * AvoidEscapedUnicodeCharacters
- * </li>
- * <li>
- * AvoidStarImport
- * </li>
- * <li>
- * AvoidStaticImport
  * </li>
  * <li>
  * CommentsIndentation
@@ -71,19 +56,7 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * CustomImportOrder
  * </li>
  * <li>
- * EmptyCatchBlock
- * </li>
- * <li>
  * EmptyLineSeparator
- * </li>
- * <li>
- * FinalClass
- * </li>
- * <li>
- * IllegalCatch
- * </li>
- * <li>
- * ImportOrder
  * </li>
  * <li>
  * Indentation
@@ -95,67 +68,25 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * InterfaceMemberImpliedModifier
  * </li>
  * <li>
- * InvalidJavadocPosition
- * </li>
- * <li>
  * JavadocContentLocation
  * </li>
  * <li>
  * JavadocMethod
  * </li>
  * <li>
- * JavadocStyle
- * </li>
- * <li>
  * JavadocType
- * </li>
- * <li>
- * LambdaParameterName
  * </li>
  * <li>
  * MethodCount
  * </li>
  * <li>
- * MissingCtor
- * </li>
- * <li>
  * MissingJavadocMethod
- * </li>
- * <li>
- * MissingJavadocPackage
  * </li>
  * <li>
  * MissingJavadocType
  * </li>
  * <li>
- * MissingOverride
- * </li>
- * <li>
- * MissingSwitchDefault
- * </li>
- * <li>
- * NeedBraces
- * </li>
- * <li>
- * NoClone
- * </li>
- * <li>
- * NoFinalizer
- * </li>
- * <li>
- * NoLineWrap
- * </li>
- * <li>
- * OneTopLevelClass
- * </li>
- * <li>
- * OuterTypeFilename
- * </li>
- * <li>
  * OverloadMethodsDeclarationOrder
- * </li>
- * <li>
- * PackageAnnotation
  * </li>
  * <li>
  * PackageDeclaration
@@ -167,16 +98,10 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * RegexpSinglelineJava
  * </li>
  * <li>
- * SuppressWarningsHolder
- * </li>
- * <li>
  * TodoComment
  * </li>
  * <li>
  * TrailingComment
- * </li>
- * <li>
- * UncommentedMain
  * </li>
  * <li>
  * UnnecessaryParentheses
@@ -189,7 +114,7 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * </li>
  * </ul>
  * <p>
- * Also, the filter does not support Javadoc checks:
+ * Also, the filter does not support suppressions inside javadoc reported by Javadoc checks:
  * </p>
  * <ul id="SuppressionXpathFilter_JavadocChecks">
  * <li>
@@ -200,6 +125,9 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * </li>
  * <li>
  * JavadocParagraph
+ * </li>
+ * <li>
+ * JavadocStyle
  * </li>
  * <li>
  * JavadocTagContinuationIndentation

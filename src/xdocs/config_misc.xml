@@ -1640,6 +1640,30 @@ key.png =value - violation
         <source>
 &lt;module name=&quot;OuterTypeFilename&quot;/&gt;
         </source>
+        <p>Example of class Test in a file named Test.java</p>
+        <source>
+public class Test { // OK
+
+}
+        </source>
+        <p>Example of class Foo in a file named Test.java</p>
+        <source>
+class Foo { // violation
+
+}
+        </source>
+        <p>Example of interface Foo in a file named Test.java</p>
+        <source>
+interface Foo { // violation
+
+}
+        </source>
+        <p>Example of enum Foo in a file named Test.java</p>
+        <source>
+enum Foo { // violation
+
+}
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="OuterTypeFilename_Example_of_Usage">
@@ -1731,7 +1755,13 @@ key.png =value - violation
         <source>
 &lt;module name=&quot;TodoComment&quot;/&gt;
         </source>
-
+        <p>
+          Example:
+        </p>
+        <source>
+i++; // TODO: do differently in future   // violation
+i++; // todo: do differently in future   // OK
+        </source>
         <p>
           To configure the check for comments that contain <code>TODO</code> and <code>FIXME</code>:
         </p>
@@ -1739,6 +1769,15 @@ key.png =value - violation
 &lt;module name=&quot;TodoComment&quot;&gt;
   &lt;property name=&quot;format&quot; value=&quot;(TODO)|(FIXME)&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <p>
+          Example:
+        </p>
+        <source>
+i++;   // TODO: do differently in future   // violation
+i++;   // todo: do differently in future   // OK
+i=i/x; // FIXME: handle x = 0 case         // violation
+i=i/x; // FIX :  handle x = 0 case         // OK
         </source>
       </subsection>
 
@@ -2182,7 +2221,24 @@ messages_home_fr_CA_UNIX.properties
         <source>
 &lt;module name=&quot;UncommentedMain&quot;/&gt;
         </source>
+        <p>Example:</p>
+        <source>
+public class Game {
+   public static void main(String... args){}   // violation
+}
 
+public class Main {
+   public static void main(String[] args){}   // violation
+}
+
+public class Launch {
+   //public static void main(String[] args){} // OK
+}
+
+public class Start {
+   public void main(){}                       // OK
+}
+        </source>
         <p>
           To configure the check to allow the <code>main</code> method for all classes
           with &quot;Main&quot; name:
@@ -2191,6 +2247,24 @@ messages_home_fr_CA_UNIX.properties
 &lt;module name=&quot;UncommentedMain&quot;&gt;
   &lt;property name=&quot;excludedClasses&quot; value=&quot;\.Main$&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class Game {
+   public static void main(String... args){}   // violation
+}
+
+public class Main {
+   public static void main(String[] args){}   // OK
+}
+
+public class Launch {
+   //public static void main(String[] args){} // OK
+}
+
+public class Start {
+   public void main(){}                       // OK
+}
         </source>
       </subsection>
 

@@ -66,7 +66,7 @@ no-error-orekit)
   checkout_from https://github.com/Hipparchus-Math/hipparchus.git
   cd .ci-temp/hipparchus
   # checkout to version that Orekit expects
-  SHA_HIPPARCHUS="4c6c6fc45e859e""ae2d4eb091a3a3c0a7a458b8d9"
+  SHA_HIPPARCHUS="1fb""fb8a2a259a9""7a23e2a387e8fd""c5e0a8402e77"
   git checkout $SHA_HIPPARCHUS
   mvn install -DskipTests
   cd -
@@ -75,7 +75,7 @@ no-error-orekit)
   # no CI is enforced in project, so to make our build stable we should
   # checkout to latest release/development (annotated tag or hash) or sha that have fix we need
   # git checkout $(git describe --abbrev=0 --tags)
-  git checkout "a7e67ce73803c67a""ad90e0b28ed77a7781dc28a9"
+  git checkout "b67b419db7014f4b""ad921a1ba""c6c848384ad2b92"
   mvn -e compile checkstyle:check -Dorekit.checkstyle.version=${CS_POM_VERSION}
   cd ../
   rm -rf Orekit
@@ -87,7 +87,7 @@ no-error-xwiki)
   echo CS_version: ${CS_POM_VERSION}
   checkout_from https://github.com/xwiki/xwiki-commons.git
   cd .ci-temp/xwiki-commons
-  SHA_XWIKI="8a2e04689fb8e707a3457833d""d44c909a""cc43e5b"
+  SHA_XWIKI="4fa""a8a49de3a70b""ba9c6c3849784e5d""fb642fa8d"
   git checkout $SHA_XWIKI
   mvn -f xwiki-commons-tools/xwiki-commons-tool-verification-resources/pom.xml \
     install -DskipTests -Dcheckstyle.version=${CS_POM_VERSION}
@@ -100,11 +100,11 @@ no-error-apex-core)
   CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
                      --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
   echo CS_version: ${CS_POM_VERSION}
-  checkout_from https://github.com/apache/incubator-apex-core.git
-  cd .ci-temp/incubator-apex-core
+  checkout_from https://github.com/checkstyle/apex-core
+  cd .ci-temp/apex-core
   mvn -e compile checkstyle:check -Dcheckstyle.version=${CS_POM_VERSION}
   cd ../
-  rm -rf incubator-apex-core
+  rm -rf apex-core
   ;;
 
 no-error-equalsverifier)
@@ -136,11 +136,8 @@ no-error-htmlunit)
   CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
                      --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
   echo CS_version: ${CS_POM_VERSION}
-  echo "checkouting project sources ..."
-  svn -q export https://svn.code.sf.net/p/htmlunit/code/trunk/htmlunit@r14923 htmlunit
-  cd htmlunit
- sed -i "s/            <version>2.28-SNAPSHOT/            <version>2.28-20171106.080245-12/" pom.xml
-  echo "Running checkstyle validation ..."
+  checkout_from https://github.com/HtmlUnit/htmlunit
+  cd .ci-temp/htmlunit
   mvn -e compile checkstyle:check -Dcheckstyle.version=${CS_POM_VERSION}
   cd ../
   rm -rf htmlunit
@@ -167,6 +164,38 @@ no-error-sevntu-checks)
      -Dcheckstyle.configLocation=../../../config/checkstyle_checks.xml
   cd ../../
   rm -rf sevntu.checkstyle
+  ;;
+
+no-error-contribution)
+  set -e
+  CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
+                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+  echo CS_version: ${CS_POM_VERSION}
+  checkout_from https://github.com/checkstyle/contribution.git
+  cd .ci-temp/contribution
+  cd patch-diff-report-tool
+  mvn -e verify -DskipTests -Dcheckstyle.version=${CS_POM_VERSION} \
+     -Dcheckstyle.configLocation=../../../config/checkstyle_checks.xml
+  cd ../
+  cd releasenotes-builder
+  mvn -e verify -DskipTests -Dcheckstyle.version=${CS_POM_VERSION} \
+     -Dcheckstyle.configLocation=../../../config/checkstyle_checks.xml
+  cd ../
+  cd ../../
+  rm -rf checkstyle
+  ;;
+
+no-error-methods-distance)
+  set -e
+  CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
+                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+  echo CS_version: ${CS_POM_VERSION}
+  checkout_from https://github.com/sevntu-checkstyle/methods-distance.git
+  cd .ci-temp/methods-distance
+  mvn -e verify -DskipTests -Dcheckstyle-version=${CS_POM_VERSION} \
+     -Dcheckstyle.configLocation=../../config/checkstyle_checks.xml
+  cd ../../
+  rm -rf checkstyle
   ;;
 
 no-error-strata)
@@ -282,6 +311,20 @@ no-exception-spotbugs)
   sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
   sed -i.'' 's/#spotbugs/spotbugs/' projects-to-test-on.properties
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
+      --config checks-nonjavadoc-error.xml --checkstyleVersion ${CS_POM_VERSION}
+  cd ../../
+  rm -rf contribution
+  ;;
+
+no-exception-spoon)
+  CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
+                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+  echo CS_version: ${CS_POM_VERSION}
+  checkout_from https://github.com/checkstyle/contribution.git
+  cd .ci-temp/contribution/checkstyle-tester
+  sed -i.'' 's/^guava/#guava/' projects-to-test-on.properties
+  sed -i.'' 's/#spoon/spoon/' projects-to-test-on.properties
+  groovy ./launch.groovy --listOfProjects projects-for-wercker.properties \
       --config checks-nonjavadoc-error.xml --checkstyleVersion ${CS_POM_VERSION}
   cd ../../
   rm -rf contribution

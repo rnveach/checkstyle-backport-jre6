@@ -90,7 +90,7 @@ public class MissingJavadocPackageCheck extends AbstractCheck {
     public void visitToken(DetailAST ast) {
         final FileContents contents = getFileContents();
         if (contents.inPackageInfo() && !hasJavadoc(ast)) {
-            log(ast.getLineNo(), MSG_PKG_JAVADOC_MISSING);
+            log(ast, MSG_PKG_JAVADOC_MISSING);
         }
     }
 

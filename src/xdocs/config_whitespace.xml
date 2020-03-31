@@ -655,11 +655,20 @@ class Foo {
           <li> should be followed with whitespace in almost all cases, except diamond operators
                and when preceding method name or constructor.</li>
         </ul>
+      </subsection>
 
+      <subsection name="Examples" id="GenericWhitespace_Examples">
+        <p>
+          To configure the check:
+        </p>
+        <source>
+&lt;module name=&quot;GenericWhitespace&quot;/&gt;
+        </source>
         <p>
           Examples with correct spacing:
         </p>
-        <source>
+        <div class="wrapper">
+          <pre>
 // Generic methods definitions
 public void &lt;K, V extends Number&gt; boolean foo(K, V) {}
 // Generic type definition
@@ -676,16 +685,22 @@ List&lt;T&gt; list = ImmutableList.Builder&lt;T&gt;::new;
 sort(list, Comparable::&lt;String&gt;compareTo);
 // Constructor call
 MyClass obj = new &lt;String&gt;MyClass();
-        </source>
-      </subsection>
-
-      <subsection name="Examples" id="GenericWhitespace_Examples">
+          </pre>
+        </div>
         <p>
-          To configure the check:
+          Examples with incorrect spacing:
         </p>
-        <source>
-&lt;module name=&quot;GenericWhitespace&quot;/&gt;
-        </source>
+        <div class="wrapper">
+          <pre>
+List&lt; String&gt; l; // violation, "&lt;" followed by whitespace
+Box b = Box. &lt;String&gt;of("foo"); // violation, "&lt;" preceded with whitespace
+public&lt;T&gt; void foo() {} // violation, "&lt;" not preceded with whitespace
+
+List a = new ArrayList&lt;&gt; (); // violation, "&gt;" followed by whitespace
+Map&lt;Integer, String&gt;m; // violation, "&gt;" not followed by whitespace
+Pair&lt;Integer, Integer &gt; p; // violation, "&gt;" preceded with whitespace
+          </pre>
+        </div>
       </subsection>
 
       <subsection name="Example of Usage" id="GenericWhitespace_Example_of_Usage">
@@ -958,13 +973,13 @@ MyClass obj = new &lt;String&gt;MyClass();
         Examples of line-wrapped statements (bad case):
       </p>
       <source>
-package com.puppycrawl. //violation
+package com.puppycrawl. // violation
     tools.checkstyle.checks;
 
-import com.puppycrawl.tools. //violation
+import com.puppycrawl.tools. // violation
     checkstyle.api.AbstractCheck;
 
-import static java.math. //violation
+import static java.math. // violation
     BigInteger.ZERO;
       </source>
       <p>
@@ -975,6 +990,28 @@ import static java.math. //violation
 &lt;module name=&quot;NoLineWrap&quot;/&gt;
       </source>
       <p>
+        Examples:
+      </p>
+      <source>
+package com.puppycrawl.tools.checkstyle. // violation
+  checks.whitespace;
+
+import java.lang.Object; // OK
+import java.lang. // violation
+  Integer;
+
+import static java.math. // violation
+  BigInteger.TEN;
+      </source>
+      <source>
+package com.puppycrawl.tools.checkstyle.checks.coding; // OK
+
+import java.lang. // violation
+  Boolean;
+
+import static java.math.BigInteger.ONE; // OK
+      </source>
+      <p>
         To configure the check to force no line-wrapping only
         in import statements:
       </p>
@@ -982,6 +1019,54 @@ import static java.math. //violation
 &lt;module name=&quot;NoLineWrap&quot;&gt;
   &lt;property name="tokens" value="IMPORT"/&gt;
 &lt;/module&gt;
+      </source>
+      <p>
+        Example:
+      </p>
+      <source>
+package com.puppycrawl. // OK
+  tools.checkstyle.checks;
+
+import java.io.*; // OK
+import java.lang. // violation
+  Boolean;
+
+import static java.math. // OK
+  BigInteger.ZERO;
+      </source>
+      <p>
+        To configure the check to force no line-wrapping only
+        in class, method and constructor definitions:
+      </p>
+      <source>
+&lt;module name=&quot;NoLineWrap&quot;&gt;
+  &lt;property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF"/&gt;
+&lt;/module&gt;
+      </source>
+      <p>
+        Example:
+      </p>
+      <source>
+public class // violation, class definition not wrapped in a single line
+  Foo {
+
+  public Foo() { // OK
+  }
+
+  public static void // violation, method definition not wrapped in a single line
+    doSomething() {
+  }
+}
+
+public class Bar { // OK
+
+  public // violation, constructor definition not wrapped in a single line
+    Bar() {
+  }
+
+  public int fun() { // OK
+  }
+}
       </source>
       <p>
         Examples of not line-wrapped statements (good case):
@@ -1265,7 +1350,7 @@ public void foo(final char @NotNull [] param) {} // No violation
                   GENERIC_END</a>,
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELLIPSIS">
                   ELLIPSIS</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ELLIPSIS">
+                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_REF">
                   METHOD_REF</a>.
               </td>
               <td>
@@ -1293,16 +1378,80 @@ public void foo(final char @NotNull [] param) {} // No violation
         <source>
 &lt;module name=&quot;NoWhitespaceBefore&quot;/&gt;
         </source>
-
+        <p>Example:</p>
+        <source>
+int foo;
+foo ++; // violation, whitespace before '++' is not allowed
+foo++; // OK
+for (int i = 0 ; i &lt; 5; i++) {}  // violation
+           // ^ whitespace before ';' is not allowed
+for (int i = 0; i &lt; 5; i++) {} // OK
+int[][] array = { { 1, 2 }
+                , { 3, 4 } }; // violation, whitespace before ',' is not allowed
+int[][] array2 = { { 1, 2 },
+                   { 3, 4 } }; // OK
+Lists.charactersOf("foo").listIterator()
+       .forEachRemaining(System.out::print)
+       ; // violation, whitespace before ';' is not allowed
+        </source>
         <p>
-          To configure the check to allow linebreaks before a DOT token:
+            To configure the check to allow linebreaks before default tokens:
         </p>
         <source>
 &lt;module name=&quot;NoWhitespaceBefore&quot;&gt;
-  &lt;property name=&quot;tokens&quot; value=&quot;DOT&quot;/&gt;
   &lt;property name=&quot;allowLineBreaks&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <source>
+int[][] array = { { 1, 2 }
+                , { 3, 4 } }; // OK, linebreak is allowed before ','
+int[][] array2 = { { 1, 2 },
+                   { 3, 4 } }; // OK, ideal code
+void ellipsisExample(String ...params) {}; // violation, whitespace before '...' is not allowed
+void ellipsisExample2(String
+                        ...params) {}; //OK, linebreak is allowed before '...'
+Lists.charactersOf("foo")
+       .listIterator()
+       .forEachRemaining(System.out::print); // OK
+        </source>
+        <p>
+        To Configure the check to restrict the use of whitespace before METHOD_REF and DOT tokens:
+        </p>
+       <source>
+&lt;module name=&quot;NoWhitespaceBefore&quot;&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;METHOD_REF&quot;/&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;DOT&quot;/&gt;
+&lt;/module&gt;
+       </source>
+       <p>Example:</p>
+       <source>
+Lists.charactersOf("foo").listIterator()
+       .forEachRemaining(System.out::print); // violation, whitespace before '.' is not allowed
+Lists.charactersOf("foo").listIterator().forEachRemaining(System.out ::print); // violation,
+                          // whitespace before '::' is not allowed  ^
+Lists.charactersOf("foo").listIterator().forEachRemaining(System.out::print); // OK
+       </source>
+       <p>
+           To configure the check to allow linebreak before METHOD_REF and DOT tokens:
+       </p>
+       <source>
+&lt;module name=&quot;NoWhitespaceBefore&quot;&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;METHOD_REF&quot;/&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;DOT&quot;/&gt;
+  &lt;property name=&quot;allowLineBreaks&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+       </source>
+       <p>Example:</p>
+       <source>
+Lists .charactersOf("foo") //violation, whitespace before '.' is not allowed
+        .listIterator()
+        .forEachRemaining(System.out ::print); // violation,
+                                 // ^ whitespace before '::' is not allowed
+Lists.charactersOf("foo")
+       .listIterator()
+       .forEachRemaining(System.out::print); // OK
+       </source>
       </subsection>
 
       <subsection name="Example of Usage" id="NoWhitespaceBefore_Example_of_Usage">
@@ -2031,7 +2180,16 @@ public long toMicros(long d) { return d / (C1 / C0); }
         <source>
 &lt;module name=&quot;SingleSpaceSeparator&quot;/&gt;
         </source>
-
+        <p>Example:</p>
+        <source>
+int foo()   { // violation, 3 whitespaces
+  return  1; // violation, 2 whitespaces
+}
+int fun1() { // OK, 1 whitespace
+  return 3; // OK, 1 whitespace
+}
+void  fun2() {} // violation, 2 whitespaces
+        </source>
         <p>
           To configure the check so that it validates comments:
         </p>
@@ -2040,6 +2198,25 @@ public long toMicros(long d) { return d / (C1 / C0); }
 &lt;module name=&quot;SingleSpaceSeparator&quot;&gt;
   &lt;property name=&quot;validateComments&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+void fun1() {}  // violation, 2 whitespaces before the comment starts
+void fun2() { return; }  /* violation here, 2 whitespaces before the comment starts */
+
+/* violation, 2 whitespaces after the comment ends */  int a;
+
+String s; /* OK, 1 whitespace */
+
+/**
+ * This is a Javadoc comment
+ */  int b; // violation, 2 whitespaces after the javadoc comment ends
+
+float f1; // OK, 1 whitespace
+
+/**
+ * OK, 1 white space after the doc comment ends
+ */ float f2;
         </source>
       </subsection>
 

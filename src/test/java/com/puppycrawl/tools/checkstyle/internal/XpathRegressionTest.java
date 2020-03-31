@@ -41,6 +41,7 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.AbstractJavadocCheck;
+import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocStyleCheck;
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
@@ -52,51 +53,26 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     // till https://github.com/checkstyle/checkstyle/issues/5777
     public static final Set<String> INCOMPATIBLE_CHECK_NAMES =
         Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
-            "AnnotationLocation",
-            "AnnotationOnSameLine",
             "AnnotationUseStyle",
-            "ArrayTrailingComma",
             "AvoidEscapedUnicodeCharacters",
-            "AvoidStarImport",
-            "AvoidStaticImport",
             "CommentsIndentation",
             "CustomImportOrder",
-            "EmptyCatchBlock",
             "EmptyLineSeparator",
-            "FinalClass",
-            "IllegalCatch",
-            "ImportOrder",
             "Indentation",
             "InterfaceIsType",
             "InterfaceMemberImpliedModifier",
-            "InvalidJavadocPosition",
             "JavadocContentLocation",
             "JavadocMethod",
-            "JavadocStyle",
             "JavadocType",
-            "LambdaParameterName",
             "MethodCount",
-            "MissingCtor",
             "MissingJavadocMethod",
-            "MissingJavadocPackage",
             "MissingJavadocType",
-            "MissingOverride",
-            "MissingSwitchDefault",
-            "NeedBraces",
-            "NoClone",
-            "NoFinalizer",
-            "NoLineWrap",
-            "OneTopLevelClass",
-            "OuterTypeFilename",
             "OverloadMethodsDeclarationOrder",
-            "PackageAnnotation",
             "PackageDeclaration",
             "Regexp",
             "RegexpSinglelineJava",
-            "SuppressWarningsHolder",
             "TodoComment",
             "TrailingComment",
-            "UncommentedMain",
             "UnnecessaryParentheses",
             "VariableDeclarationUsageDistance",
             "WriteTag"
@@ -111,12 +87,18 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
                     "AtclauseOrder",
                     "JavadocBlockTagLocation",
                     "JavadocParagraph",
+                    "JavadocStyle",
                     "JavadocTagContinuationIndentation",
                     "MissingDeprecated",
                     "NonEmptyAtclauseDescription",
                     "SingleLineJavadoc",
                     "SummaryJavadoc"
     )));
+
+    // Older regex-based checks that are under INCOMPATIBLE_JAVADOC_CHECK_NAMES
+    // but not subclasses of AbstractJavadocCheck.
+    private static final Set<Class<JavadocStyleCheck>> REGEXP_JAVADOC_CHECKS =
+            Collections.singleton(JavadocStyleCheck.class);
 
     // Checks that allowed to have no XPath IT Regression Testing
     // till https://github.com/checkstyle/checkstyle/issues/6207
@@ -214,12 +196,15 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
 
     @Test
     public void validateIncompatibleJavadocCheckNames() throws IOException {
+        // subclasses of AbstractJavadocCheck
         final Set<Class<?>> abstractJavadocCheckNames = new HashSet<Class<?>>();
         for (Class<?> check : CheckUtil.getCheckstyleChecks()) {
             if (AbstractJavadocCheck.class.isAssignableFrom(check)) {
                 abstractJavadocCheckNames.add(check);
             }
         }
+        // add the extra checks
+        abstractJavadocCheckNames.addAll(REGEXP_JAVADOC_CHECKS);
         assertWithMessage("INCOMPATIBLE_JAVADOC_CHECK_NAMES should contains all descendants "
                     + "of AbstractJavadocCheck")
             .that(CheckUtil.getSimpleNames(abstractJavadocCheckNames))

@@ -52,6 +52,24 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
  * <pre>
  * &lt;module name=&quot;UncommentedMain&quot;/&gt;
  * </pre>
+ * <p>Example:</p>
+ * <pre>
+ * public class Game {
+ *    public static void main(String... args){}   // violation
+ * }
+ *
+ * public class Main {
+ *    public static void main(String[] args){}   // violation
+ * }
+ *
+ * public class Launch {
+ *    //public static void main(String[] args){} // OK
+ * }
+ *
+ * public class Start {
+ *    public void main(){}                       // OK
+ * }
+ * </pre>
  * <p>
  * To configure the check to allow the {@code main} method for all classes with "Main" name:
  * </p>
@@ -59,6 +77,24 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
  * &lt;module name=&quot;UncommentedMain&quot;&gt;
  *   &lt;property name=&quot;excludedClasses&quot; value=&quot;\.Main$&quot;/&gt;
  * &lt;/module&gt;
+ * </pre>
+ * <p>Example:</p>
+ * <pre>
+ * public class Game {
+ *    public static void main(String... args){}   // violation
+ * }
+ *
+ * public class Main {
+ *    public static void main(String[] args){}   // OK
+ * }
+ *
+ * public class Launch {
+ *    //public static void main(String[] args){} // OK
+ * }
+ *
+ * public class Start {
+ *    public void main(){}                       // OK
+ * }
  * </pre>
  *
  * @since 3.2
@@ -181,7 +217,7 @@ public class UncommentedMainCheck
                 && checkModifiers(method)
                 && checkType(method)
                 && checkParams(method)) {
-            log(method.getLineNo(), MSG_KEY);
+            log(method, MSG_KEY);
         }
     }
 

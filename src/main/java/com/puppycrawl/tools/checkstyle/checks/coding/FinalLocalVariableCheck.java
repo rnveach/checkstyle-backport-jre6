@@ -798,7 +798,7 @@ public class FinalLocalVariableCheck extends AbstractCheck {
 
     }
 
-    /**Represents information about final local variable candidate. */
+    /** Represents information about final local variable candidate. */
     private static class FinalVariableCandidate {
 
         /** Identifier token. */

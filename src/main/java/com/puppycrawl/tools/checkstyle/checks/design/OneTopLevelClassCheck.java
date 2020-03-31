@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.checks.design;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -27,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.lang.Integer7;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
@@ -39,7 +41,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * public class, enum or interface, top-level type is the first type in file.
  * </p>
  * <p>
- * An example of check's configuration:
+ * To configure the check:
  * </p>
  * <pre>
  * &lt;module name=&quot;OneTopLevelClass&quot;/&gt;
@@ -52,32 +54,32 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * An example of code with violations:
  * </p>
  * <pre>
- * public class Foo{
- *   //methods
+ * public class Foo { // OK, first top-level class
+ *   // methods
  * }
  *
- * class Foo2{
- *   //methods
+ * class Foo2 { // violation, second top-level class
+ *   // methods
  * }
  * </pre>
  * <p>
  * An example of code without public top-level type:
  * </p>
  * <pre>
- * class Foo{ // top-level class
- *   //methods
+ * class Foo { // OK, first top-level class
+ *   // methods
  * }
  *
- * class Foo2{
- *   //methods
+ * class Foo2 { // violation, second top-level class
+ *   // methods
  * }
  * </pre>
  * <p>
  * An example of code without violations:
  * </p>
  * <pre>
- * public class Foo{
- *   //methods
+ * public class Foo { // OK, only one top-level class
+ *   // methods
  * }
  * </pre>
  *
@@ -92,14 +94,29 @@ public class OneTopLevelClassCheck extends AbstractCheck {
      */
     public static final String MSG_KEY = "one.top.level.class";
 
+    /** Compare DetailAST nodes by line and then column number to make a unique ordering. */
+    private static final Comparator<DetailAST> LINE_AND_COL_COMPARATOR = new Comparator<DetailAST>() {
+        @Override
+        public int compare(DetailAST l, DetailAST r) {
+            int result = Integer7.compare(l.getLineNo(), r.getLineNo());
+
+            if (result == 0) {
+                result = Integer7.compare(l.getColumnNo(), r.getColumnNo());
+            }
+
+            return result;
+        }
+    };
+
     /**
      * True if a java source file contains a type
      * with a public access level modifier.
      */
     private boolean publicTypeFound;
 
-    /** Mapping between type names and line numbers of the type declarations.*/
-    private final SortedMap<Integer, String> lineNumberTypeMap = new TreeMap<Integer, String>();
+    /** Mapping between type names and DetailAST nodes of the type declarations. */
+    private final SortedMap<DetailAST, String> lineNumberTypeMap =
+            new TreeMap<DetailAST, String>(LINE_AND_COL_COMPARATOR);
 
     @Override
     public int[] getDefaultTokens() {
@@ -133,7 +150,7 @@ public class OneTopLevelClassCheck extends AbstractCheck {
                 else {
                     final String typeName = currentNode
                             .findFirstToken(TokenTypes.IDENT).getText();
-                    lineNumberTypeMap.put(currentNode.getLineNo(), typeName);
+                    lineNumberTypeMap.put(currentNode, typeName);
                 }
             }
             currentNode = currentNode.getNextSibling();
@@ -148,7 +165,7 @@ public class OneTopLevelClassCheck extends AbstractCheck {
                 lineNumberTypeMap.remove(lineNumberTypeMap.firstKey());
             }
 
-            for (Map.Entry<Integer, String> entry
+            for (Map.Entry<DetailAST, String> entry
                     : lineNumberTypeMap.entrySet()) {
                 log(entry.getKey(), MSG_KEY, entry.getValue());
             }

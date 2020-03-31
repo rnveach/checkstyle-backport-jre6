@@ -300,7 +300,7 @@ public class SuppressWarningsHolder
                 final DetailAST targetAST = getAnnotationTarget(ast);
 
                 if (targetAST == null) {
-                    log(ast.getLineNo(), MSG_KEY);
+                    log(ast, MSG_KEY);
                 }
                 else {
                     // get text range of target
@@ -403,6 +403,8 @@ public class SuppressWarningsHolder
         switch (parentAST.getType()) {
             case TokenTypes.MODIFIERS:
             case TokenTypes.ANNOTATIONS:
+            case TokenTypes.ANNOTATION:
+            case TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR:
                 targetAST = getAcceptableParent(parentAST);
                 break;
             default:
@@ -441,6 +443,8 @@ public class SuppressWarningsHolder
             case TokenTypes.TYPE_ARGUMENT:
             case TokenTypes.IMPLEMENTS_CLAUSE:
             case TokenTypes.DOT:
+            case TokenTypes.ANNOTATION:
+            case TokenTypes.MODIFIERS:
                 result = parent;
                 break;
             default:
