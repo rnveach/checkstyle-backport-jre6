@@ -227,6 +227,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
     /**
      * Setter to specify annotations which allow the check to skip the method from validation.
+     *
      * @param ignoredAnnotations method annotations.
      */
     public void setIgnoredAnnotations(String... ignoredAnnotations) {
@@ -275,6 +276,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
     /**
      * Checks whether a method has a javadoc comment.
+     *
      * @param methodDef method definition token.
      * @return true if a method has a javadoc comment.
      */
@@ -328,6 +330,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
     /**
      * Checks whether a methods is native.
+     *
      * @param ast method definition token.
      * @return true if a methods is native.
      */
@@ -339,6 +342,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
     /**
      * Checks whether a method has only comments in the body (has an empty implementation).
      * Method is OK if its implementation is empty.
+     *
      * @param ast method definition token.
      * @return true if a method has only comments in the body.
      */
@@ -365,6 +369,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * Checks whether a method can be overridden.
      * Method can be overridden if it is not private, abstract, final or static.
      * Note that the check has nothing to do for interfaces.
+     *
      * @param methodDef method definition token.
      * @return true if a method can be overridden in a subclass.
      */
@@ -380,6 +385,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
     /**
      * Checks whether a method has any of ignored annotations.
+     *
      * @param methodDef method definition token.
      * @param annotations a set of ignored annotations.
      * @return true if a method has any of ignored annotations.
@@ -399,6 +405,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
     /**
      * Gets the name of the annotation.
+     *
      * @param annotation to get name of.
      * @return the name of the annotation.
      */
@@ -417,6 +424,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
     /**
      * Returns CLASS_DEF or ENUM_DEF token which is the nearest to the given ast node.
      * Searches the tree towards the root until it finds a CLASS_DEF or ENUM_DEF node.
+     *
      * @param ast the start node for searching.
      * @return the CLASS_DEF or ENUM_DEF token.
      */
@@ -431,6 +439,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
     /**
      * Checks if the given class (given CLASS_DEF node) can be subclassed.
+     *
      * @param classDef class definition token.
      * @return true if the containing class can be subclassed.
      */
@@ -443,6 +452,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
 
     /**
      * Checks whether a class has default or explicit non-private constructor.
+     *
      * @param classDef class ast token.
      * @return true if a class has default or explicit non-private constructor.
      */

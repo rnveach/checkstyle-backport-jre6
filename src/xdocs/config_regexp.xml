@@ -761,23 +761,50 @@ void method() {
         <source>
 &lt;module name=&quot;RegexpOnFilename&quot;/&gt;
         </source>
+        <p>Example:</p>
+        <div class="wrapper">
+          <pre>
+src/xdocs/config_regexp.xml  //OK, contains no whitespace
+src/xdocs/&quot;config regexp&quot;.xml  //violation, contains whitespace
+          </pre>
+        </div>
         <p>
-          To configure the check to force picture files to not be 'gif':
+          To configure the check to forbid 'gif' files in folders:
         </p>
         <source>
 &lt;module name=&quot;RegexpOnFilename&quot;&gt;
   &lt;property name=&quot;fileNamePattern&quot; value=&quot;\.gif$&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <div class="wrapper">
+          <pre>
+src/site/resources/images/favicon.png  //OK
+src/site/resources/images/logo.jpg  //OK
+src/site/resources/images/groups.gif  //violation, .gif images not allowed
+          </pre>
+        </div>
         <p>
-          OR:
+          To configure the check to forbid 'md' files except 'README.md file' in folders,
+          with custom message:
         </p>
         <source>
 &lt;module name=&quot;RegexpOnFilename&quot;&gt;
-  &lt;property name=&quot;fileNamePattern&quot; value=&quot;.&quot;/&gt;
-  &lt;property name=&quot;fileExtensions&quot; value=&quot;gif&quot;/&gt;
+  &lt;property name=&quot;fileNamePattern&quot; value=&quot;README&quot;/&gt;
+  &lt;property name=&quot;fileExtensions&quot; value=&quot;md&quot;/&gt;
+  &lt;property name=&quot;match&quot; value=&quot;false&quot;/&gt;
+  &lt;message key=&quot;regexp.filename.mismatch&quot;
+    value=&quot;No '*.md' files other then 'README.md'&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <div class="wrapper">
+          <pre>
+src/site/resources/README.md  //OK
+src/site/resources/Logo.png  //OK
+src/site/resources/Text.md  //violation, .md files other than 'README.md' are not allowed
+          </pre>
+        </div>
         <p>
           To configure the check to only allow property and xml files to be located
           in the resource folder:
@@ -790,6 +817,14 @@ void method() {
   &lt;property name=&quot;fileExtensions&quot; value=&quot;properties, xml&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <div class="wrapper">
+          <pre>
+src/main/resources/sun_checks.xml  //OK
+src/main/resources/check_properties.properties  //OK
+src/main/resources/JavaClass.java  //violation, xml|property files are allowed in resource folder
+          </pre>
+        </div>
         <p>
           To configure the check to only allow Java and XML files in your folders use the below.
         </p>
@@ -799,6 +834,17 @@ void method() {
   &lt;property name=&quot;match&quot; value=&quot;false&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <div class="wrapper">
+          <pre>
+src/main/java/JavaClass.java  //OK
+src/main/MainClass.java  //OK
+src/main/java/java_xml.xml  //OK
+src/main/main_xml.xml  //OK
+src/main/java/image.png  //violation, folders should only contain java or xml files
+src/main/check_properties.properties  //violation, folders should only contain java or xml files
+          </pre>
+        </div>
         <p>
           To configure the check to only allow Java and XML files only in your source folder
           and ignore any other folders:
@@ -810,6 +856,15 @@ void method() {
   &lt;property name=&quot;match&quot; value=&quot;false&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <div class="wrapper">
+          <pre>
+src/SourceClass.java  //OK
+src/source_xml.xml  //OK
+src/image.png  //violation, only java and xml files are allowed in src folder
+src/main/main_properties.properties  //OK, this check only applies to src folder
+          </pre>
+        </div>
         <p>
           <b>Note:</b> 'folderPattern' must be specified if checkstyle is analyzing more than
           the normal source folder, like the 'bin' folder where class files can be located.
@@ -824,6 +879,15 @@ void method() {
   &lt;property name=&quot;ignoreFileNameExtensions&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <div class="wrapper">
+          <pre>
+src/main/java/JavaClass.java  //OK
+src/main/MainClass.java  //OK
+src/main/java/java_class.java  //violation, file names should be in Camel Case
+src/main/main_class.java  //violation, file names should be in Camel Case
+          </pre>
+        </div>
       </subsection>
 
       <subsection name="Example of Usage" id="RegexpOnFilename_Example_of_Usage">
@@ -938,30 +1002,55 @@ void method() {
 
       <subsection name="Examples" id="RegexpSingleline_Examples">
         <p>
-          To configure the check to find trailing whitespace at the end
-          of a line:
+        To configure the check with default values:
         </p>
         <source>
-&lt;module name=&quot;RegexpSingleline&quot;&gt;
-  &lt;!-- \s matches whitespace character, $ matches end of line. --&gt;
-  &lt;property name=&quot;format&quot; value=&quot;\s+$&quot;/&gt;
-&lt;/module&gt;
+&lt;module name=&quot;RegexpSingleline&quot; /&gt;
         </source>
-
         <p>
-          To configure the check to find trailing whitespace at the end
-          of a line, with some <i>slack</i> of allowing two occurrences
-          per file:
+        This configuration does not match to anything,
+        so we do not provide any code example for it
+        as no violation will ever be reported.
+        </p>
+        <p>
+        To configure the check to find occurrences of 'System.exit('
+        with some <i>slack</i> of allowing only one occurrence per file:
         </p>
         <source>
 &lt;module name=&quot;RegexpSingleline&quot;&gt;
-  &lt;property name=&quot;format&quot; value=&quot;\s+$&quot;/&gt;
+  &lt;property name=&quot;format&quot; value=&quot;System.exit\(&quot;/&gt;
   &lt;!-- next line not required as 0 is the default --&gt;
   &lt;property name=&quot;minimum&quot; value=&quot;0&quot;/&gt;
-  &lt;property name=&quot;maximum&quot; value=&quot;2&quot;/&gt;
+  &lt;property name=&quot;maximum&quot; value=&quot;1&quot;/&gt;
 &lt;/module&gt;
         </source>
 
+        <p>Example:</p>
+        <source>
+class MyClass {
+    void myFunction() {
+        try {
+            doSomething();
+        } catch (Exception e) {
+            System.exit(1); // OK, as only there is only one occurrence.
+        }
+    }
+    void doSomething(){};
+}
+        </source>
+        <source>
+class MyClass {
+    void myFunction() {
+        try {
+            doSomething();
+            System.exit(0);
+        } catch (Exception e) {
+            System.exit(1); // Violation, as there are more than one occurrence.
+        }
+    }
+    void doSomething(){};
+}
+        </source>
         <p>
           An example of how to configure the check to make sure a copyright
           statement is included in the file:
@@ -974,8 +1063,53 @@ void method() {
   &lt;property name=&quot;maximum&quot; value=&quot;10&quot;/&gt;
 &lt;/module&gt;
         </source>
-      </subsection>
+      <p>Example:</p>
+      <source>
+/**
+* This file is copyrighted under CC. // Ok, as the file contains a copyright statement.
+*/
+class MyClass {
 
+}
+      </source>
+      <source>
+/** // violation, as the file doesn't contain a copyright statement.
+* MyClass as a configuration example.
+*/
+class MyClass {
+
+}
+      </source>
+      <p>
+       An example of how to configure the check to make sure sql files contains the term 'license'.
+      </p>
+      <source>
+&lt;module name=&quot;RegexpSingleline&quot;&gt;
+    &lt;property name=&quot;format&quot; value=&quot;license&quot;/&gt;
+    &lt;property name=&quot;minimum&quot; value=&quot;1&quot;/&gt;
+    &lt;property name=&quot;maximum&quot; value=&quot;9999&quot;/&gt;
+    &lt;property name=&quot;ignoreCase&quot; value=&quot;true&quot;/&gt;
+    &lt;!--  Configure a message to be shown on violation of the Check. --&gt;
+    &lt;property name=&quot;message&quot;
+          value=&quot;File must contain at least one occurrence of 'license' term&quot;/&gt;
+    &lt;!--  Perform the Check only on files with java extension. --&gt;
+    &lt;property name=&quot;fileExtensions&quot; value=&quot;sql&quot;/&gt;
+&lt;/module&gt;
+      </source>
+      <p>Example:</p>
+      <source>
+/*
+ AP 2.0 License. // Ok, Check ignores the case of the term.
+*/
+CREATE DATABASE MyDB;
+      </source>
+      <source>
+/* // violation, file doesn't contain the term.
+ Example sql file.
+*/
+CREATE DATABASE MyDB;
+      </source>
+      </subsection>
       <subsection name="Example of Usage" id="RegexpSingleline_Example_of_Usage">
         <ul>
           <li>

@@ -33,6 +33,7 @@ public interface Contextualizable {
 
     /**
      * Sets the context for this Component.
+     *
      * @param context the context.
      * @throws CheckstyleException if there is a contextualization error.
      */

@@ -619,12 +619,197 @@ public class Foo {
         </source>
 
         <p>
-          To configure the check with a threshold of 10:
+          Example:
+        </p>
+        <p>
+          The check passes without violations in the following:
+        </p>
+        <source>
+class InputClassComplexity {
+  Set set = new HashSet(); // Set, HashSet ignored due to default excludedClasses property
+  Map map = new HashMap(); // Map, HashMap ignored due to default excludedClasses property
+  Date date = new Date(); // Counted, 1
+  Time time = new Time(); // Counted, 2
+  Place place = new Place(); // Counted, 3
+}
+        </source>
+
+        <p>
+          The check results in a violation in the following:
+        </p>
+        <source>
+class InputClassComplexity {
+  Set set = new HashSet(); // Set, HashSet ignored due to default excludedClasses property
+  Map map = new HashMap(); // Map, HashMap ignored due to default excludedClasses property
+  Date date = new Date(); // Counted, 1
+  Time time = new Time(); // Counted, 2
+  // mention of 18 other user defined classes
+  Place place = new Place(); // violation, total is 21
+}
+        </source>
+
+        <p>
+          To configure the check with a threshold of 2:
         </p>
         <source>
 &lt;module name=&quot;ClassFanOutComplexity&quot;&gt;
-  &lt;property name=&quot;max&quot; value=&quot;10&quot;/&gt;
+  &lt;property name=&quot;max&quot; value=&quot;2&quot;/&gt;
 &lt;/module&gt;
+        </source>
+
+        <p>
+          Example:
+        </p>
+        <p>
+          The check passes without violations in the following:
+        </p>
+        <source>
+class InputClassComplexity {
+  Set set = new HashSet(); // Set, HashSet ignored due to default excludedClasses property
+  Map map = new HashMap(); // Map, HashMap ignored due to default excludedClasses property
+  Date date = new Date(); // Counted, 1
+  Time time = new Time(); // Counted, 2
+}
+        </source>
+
+        <p>
+          The check results in a violation in the following:
+        </p>
+        <source>
+class InputClassComplexity {
+  Set set = new HashSet(); // Set, HashSet ignored due to default excludedClasses property
+  Map map = new HashMap(); // Map, HashMap ignored due to default excludedClasses property
+  Date date = new Date(); // Counted, 1
+  Time time = new Time(); // Counted, 2
+  Place place = new Place(); // violation, total is 3
+}
+        </source>
+
+        <p>
+          To configure the check with three excluded classes <code>HashMap</code>,
+          <code>HashSet</code> and <code>Place</code>:
+        </p>
+        <source>
+&lt;module name=&quot;ClassFanOutComplexity&quot;&gt;
+  &lt;property name=&quot;excludedClasses&quot; value=&quot;HashMap, HashSet, Place&quot;/&gt;
+&lt;/module&gt;
+        </source>
+
+        <p>
+          Example:
+        </p>
+        <p>
+          The check passes without violations in the following:
+        </p>
+        <source>
+class InputClassComplexity {
+  Set set = new HashSet(); // Set counted 1, HashSet ignored
+  Map map = new HashMap(); // Map counted 2, HashMap ignored
+  Date date = new Date(); // Counted, 3
+  Time time = new Time(); // Counted, 4
+  // mention of 16 other user defined classes
+  Place place = new Place(); // Ignored
+}
+        </source>
+
+        <p>
+          The check results in a violation in the following:
+        </p>
+        <source>
+class InputClassComplexity {
+  Set set = new HashSet(); // Set counted 1, HashSet ignored
+  Map map = new HashMap(); // Map counted 2, HashMap ignored
+  Date date = new Date(); // Counted, 3
+  Time time = new Time(); // Counted, 4
+  // mention of 16 other user defined classes
+  Space space = new Space(); // violation, total is 21
+}
+        </source>
+
+        <p>
+          To configure the check to exclude classes with a regular expression
+          <code>.*Reader$</code>:
+        </p>
+        <source>
+&lt;module name=&quot;ClassFanOutComplexity&quot;&gt;
+  &lt;property name=&quot;excludeClassesRegexps&quot; value=&quot;.*Reader$&quot;/&gt;
+&lt;/module&gt;
+        </source>
+
+        <p>
+          Example:
+        </p>
+        <p>
+          The check passes without violations in the following:
+        </p>
+        <source>
+class InputClassComplexity {
+  Set set = new HashSet(); // Set, HashSet ignored due to default excludedClasses property
+  Map map = new HashMap(); // Map, HashMap ignored due to default excludedClasses property
+  Date date = new Date(); // Counted, 1
+  Time time = new Time(); // Counted, 2
+  // mention of 18 other user defined classes
+  BufferedReader br; // Ignored
+}
+        </source>
+
+        <p>
+          The check results in a violation in the following:
+        </p>
+        <source>
+class InputClassComplexity {
+  Set set = new HashSet(); // Set, HashSet ignored due to default excludedClasses property
+  Map map = new HashMap(); // Map, HashMap ignored due to default excludedClasses property
+  Date date = new Date(); // Counted, 1
+  Time time = new Time(); // Counted, 2
+  // mention of 18 other user defined classes
+  File file; // violation, total is 21
+}
+        </source>
+
+        <p>
+          To configure the check with an excluded package <code>java.io</code>:
+        </p>
+
+        <source>
+&lt;module name=&quot;ClassFanOutComplexity&quot;&gt;
+  &lt;property name=&quot;excludedPackages&quot; value=&quot;java.io&quot;/&gt;
+&lt;/module&gt;
+        </source>
+
+        <p>
+          Example:
+        </p>
+        <p>
+          The check passes without violations in the following:
+        </p>
+        <source>
+import java.io.BufferedReader;
+
+class InputClassComplexity {
+  Set set = new HashSet(); // Set, HashSet ignored due to default excludedClasses property
+  Map map = new HashMap(); // Map, HashMap ignored due to default excludedClasses property
+  Date date = new Date(); // Counted, 1
+  Time time = new Time(); // Counted, 2
+  // mention of 18 other user defined classes
+  BufferedReader br; // Ignored
+}
+        </source>
+
+        <p>
+          The check results in a violation in the following:
+        </p>
+        <source>
+import java.util.StringTokenizer;
+
+class InputClassComplexity {
+  Set set = new HashSet(); // Set, HashSet ignored due to default excludedClasses property
+  Map map = new HashMap(); // Map, HashMap ignored due to default excludedClasses property
+  Date date = new Date(); // Counted, 1
+  Time time = new Time(); // Counted, 2
+  // mention of 18 other user defined classes
+  StringTokenizer st; // violation, total is 21
+}
         </source>
 
         <p>
@@ -649,7 +834,7 @@ public class Foo {
           the <code>excludedPackages</code> parameter.
         </p>
         <p>
-          Also node, that <code>excludedPackages</code> will not exclude classes, imported via
+          Also note, that <code>excludedPackages</code> will not exclude classes, imported via
           wildcard (e.g. <code>import java.math.*</code>). Instead of wildcard import you should
           use direct import (e.g. <code>import java.math.BigDecimal</code>).
         </p>
@@ -659,7 +844,7 @@ public class Foo {
           assuming the config is
         </p>
         <source>
-&lt;module name=&quot;ClassDataAbstractionCoupling&quot;&gt;
+&lt;module name=&quot;ClassFanOutComplexity&quot;&gt;
   &lt;property name=&quot;excludedPackages&quot; value=&quot;a.b&quot;/&gt;
 &lt;/module&gt;
         </source>
@@ -672,13 +857,13 @@ package a.b;
 import a.b.Bar;
 import a.b.c.Baz;
 
-public class Foo {
-  public Bar bar; // Will be ignored, located inside ignored a.b package
-  public Baz baz; // Will not be ignored, located inside a.b.c package
-  public Data data; // Will not be ignored, same file
+class Foo {
+  Bar bar; // Will be ignored, located inside ignored a.b package
+  Baz baz; // Will not be ignored, located inside a.b.c package
+  Data data; // Will not be ignored, same file
 
   class Data {
-    public Foo foo; // Will not be ignored, same file
+    Foo foo; // Will not be ignored, same file
   }
 }
         </source>
@@ -690,14 +875,6 @@ public class Foo {
           The <code>data</code> and <code>foo</code> members will be counted, as they are
           inside same file.
         </p>
-        <p>
-          Example of usage:
-        </p>
-        <source>
-&lt;module name=&quot;ClassFanOutComplexity&quot;&gt;
-  &lt;property name=&quot;excludedPackages&quot; value=&quot;java.util, java.math&quot;/&gt;
-&lt;/module&gt;
-        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="ClassFanOutComplexity_Example_of_Usage">
@@ -859,84 +1036,128 @@ public class Foo {
         <source>
 &lt;module name=&quot;CyclomaticComplexity&quot;/&gt;
         </source>
-
         <p>
-          To configure the check with a threshold of 15:
+          Example:
+        </p>
+        <source>
+class CyclomaticComplexity {
+  // Cyclomatic Complexity = 11
+  int a, b, c, d, n;
+  public void foo() { // 1, function declaration
+    if (a == 1) { // 2, if
+      fun1();
+    } else if (a == b // 3, if
+      &amp;&amp; a == c) { // 4, &amp;&amp; operator
+      if (c == 2) { // 5, if
+        fun2();
+      }
+    } else if (a == d) { // 6, if
+      try {
+        fun4();
+      } catch (Exception e) { // 7, catch
+      }
+    } else {
+      switch(n) {
+        case 1: // 8, case
+          fun1();
+          break;
+        case 2: // 9, case
+          fun2();
+          break;
+        case 3: // 10, case
+          fun3();
+          break;
+        default:
+          break;
+      }
+    }
+    d = a &lt; 0 ? -1 : 1; // 11, ternary operator
+  }
+}
+        </source>
+        <p>
+          To configure the check with a threshold of 4 and check only for while and do-while loops:
         </p>
         <source>
 &lt;module name=&quot;CyclomaticComplexity&quot;&gt;
-  &lt;property name=&quot;max&quot; value=&quot;15&quot;/&gt;
+  &lt;property name=&quot;max&quot; value=&quot;4&quot;/&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_WHILE, LITERAL_DO&quot;/&gt;
 &lt;/module&gt;
         </source>
         <p>
-          Explanation on how complexity is calculated (switchBlockAsSingleDecisionPoint
-          is set to false):
+          Example:
         </p>
         <source>
-class CC {
-  // Cyclomatic Complexity = 12
-  public void doSmth()  {         // 1
-    if (a == b)  {                // 2
-      if (a1 == b1                // 3
-        &amp;&amp; c1 == d1) {            // 4
-        fiddle();
-      }
-      else if (a2 == b2           // 5
-              || c1 &lt; d1) {       // 6
-        fiddle();
-      }
-      else {
-        fiddle();
-      }
+class CyclomaticComplexity {
+  // Cyclomatic Complexity = 5
+  int a, b, c, d;
+  public void foo() { // 1, function declaration
+    while (a &lt; b // 2, while
+      &amp;&amp; a &gt; c) {
+      fun();
     }
-    else if (c == d) {            // 7
-      while (c == d) {            // 8
-        fiddle();
+    if (a == b) {
+      do { // 3, do
+        fun();
+      } while (d);
+    } else if (c == d) {
+      while (c &gt; 0) { // 4, while
+        fun();
       }
-    }
-    else if (e == f) {
-      for (n = 0; n &lt; h            // 9
-            || n &lt; 6; n++) {       // 10
-        fiddle();
-      }
-    }
-      else {
-        switch (z) {
-          case 1:                  // 11
-            fiddle();
-            break;
-          case 2:                  // 12
-            fiddle();
-            break;
-          default:
-            fiddle();
-            break;
-      }
+      do { // 5, do-while
+        fun();
+      } while (a);
     }
   }
-}        </source>
+}
+        </source>
         <p>
-          Explanation on how complexity is calculated (switchBlockAsSingleDecisionPoint is set to
-          true):
+          To configure the check to consider switch-case block as one decision point.
         </p>
         <source>
-class SwitchExample {
-  // Cyclomatic Complexity = 2
-  public void doSmth()  {          // 1
-    int z = 1;
-    switch (z) {                   // 2
-      case 1:
-        foo1();
-        break;
-      case 2:
-        foo2();
-        break;
-      default:
-        fooDefault();
-        break;
-     }
+&lt;module name=&quot;CyclomaticComplexity&quot;&gt;
+  &lt;property name=&quot;switchBlockAsSingleDecisionPoint&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+          Example:
+        </p>
+        <source>
+class CyclomaticComplexity {
+  // Cyclomatic Complexity = 11
+  int a, b, c, d, e, n;
+  public void foo() { // 1, function declaration
+    if (a == b) { // 2, if
+      fun1();
+    } else if (a == 0 // 3, if
+      &amp;&amp; b == c) { // 4, &amp;&amp; operator
+      if (c == -1) { // 5, if
+        fun2();
+      }
+    } else if (a == c // 6, if
+      || a == d) { // 7, || operator
+      fun3();
+    } else if (d == e) { // 8, if
+      try {
+        fun4();
+      } catch (Exception e) { // 9, catch
+      }
+    } else {
+      switch(n) { // 10, switch
+        case 1:
+          fun1();
+          break;
+        case 2:
+          fun2();
+          break;
+        default:
+          break;
+      }
+    }
+    a = a &gt; 0 ? b : c; // 11, ternary operator
   }
-}        </source>
+}
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="CyclomaticComplexity_Example_of_Usage">

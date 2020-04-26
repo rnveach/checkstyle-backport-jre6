@@ -94,6 +94,7 @@ public class MainFrame extends JFrame {
 
     /**
      * Create buttons panel.
+     *
      * @return buttons panel.
      */
     private JPanel createButtonsPanel() {
@@ -139,6 +140,7 @@ public class MainFrame extends JFrame {
 
     /**
      * Open file and load it.
+     *
      * @param sourceFile the file to open.
      */
     public void openFile(File sourceFile) {

@@ -25,6 +25,7 @@ import org.junit.Test;
 
 /**
  * GeneratedJavaTokenTypesTest.
+ *
  * @noinspection ClassIndependentOfModule
  */
 public class GeneratedJavaTokenTypesTest {

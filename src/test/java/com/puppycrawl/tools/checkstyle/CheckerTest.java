@@ -93,6 +93,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 /**
  * CheckerTest.
+ *
  * @noinspection ClassWithTooManyDependencies
  */
 public class CheckerTest extends AbstractModuleTestSupport {
@@ -416,7 +417,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
         checker.finishLocalSetup();
 
         final Context context = Whitebox.getInternalState(checker, "childContext");
-        final String encoding = System.getProperty("file.encoding", StandardCharsets.UTF_8.name());
+        final String encoding = StandardCharsets.UTF_8.name();
         assertEquals(encoding, context.get("charset"), "Charset was different than expected");
         assertEquals("error", context.get("severity"), "Severity is set to unexpected value");
         assertEquals("testBaseDir", context.get("basedir"), "Basedir is set to unexpected value");
@@ -692,6 +693,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
     /**
      * Test doesn't need to be serialized.
+     *
      * @noinspection SerializableInnerClassWithNonSerializableOuterClass
      */
     @Test
@@ -706,6 +708,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
             /**
              * Test is checking catch clause when exception is thrown.
+             *
              * @noinspection ProhibitedExceptionThrown
              */
             @Override
@@ -734,6 +737,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
     /**
      * Test doesn't need to be serialized.
+     *
      * @noinspection SerializableInnerClassWithNonSerializableOuterClass
      */
     @Test
@@ -748,6 +752,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
             /**
              * Test is checking catch clause when exception is thrown.
+             *
              * @noinspection ProhibitedExceptionThrown
              */
             @Override
@@ -1030,6 +1035,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
     /**
      * Test doesn't need to be serialized.
+     *
      * @noinspection SerializableInnerClassWithNonSerializableOuterClass
      */
     @Test
@@ -1054,6 +1060,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
             /**
              * Test is checking catch clause when exception is thrown.
+             *
              * @noinspection ProhibitedExceptionThrown
              */
             @Override
@@ -1097,6 +1104,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
     /**
      * Test doesn't need to be serialized.
+     *
      * @noinspection SerializableInnerClassWithNonSerializableOuterClass
      */
     @Test
@@ -1116,6 +1124,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
             /**
              * Test is checking catch clause when exception is thrown.
+             *
              * @noinspection ProhibitedExceptionThrown
              */
             @Override
@@ -1158,6 +1167,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
     /**
      * Test doesn't need to be serialized.
+     *
      * @noinspection SerializableInnerClassWithNonSerializableOuterClass
      */
     @Test
@@ -1170,6 +1180,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
             /**
              * Test is checking catch clause when exception is thrown.
+             *
              * @noinspection ProhibitedExceptionThrown
              */
             @Override
@@ -1195,6 +1206,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
     /**
      * Test doesn't need to be serialized.
+     *
      * @noinspection SerializableInnerClassWithNonSerializableOuterClass
      */
     @Test
@@ -1213,6 +1225,7 @@ public class CheckerTest extends AbstractModuleTestSupport {
 
             /**
              * Test is checking catch clause when exception is thrown.
+             *
              * @noinspection ProhibitedExceptionThrown
              */
             @Override

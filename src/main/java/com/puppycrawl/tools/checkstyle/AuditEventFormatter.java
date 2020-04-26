@@ -28,6 +28,7 @@ public interface AuditEventFormatter {
 
     /**
      * Formats an event message.
+     *
      * @param event audit event.
      * @return string representation of event message.
      */

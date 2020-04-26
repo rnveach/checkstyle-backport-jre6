@@ -56,7 +56,6 @@ import org.powermock.reflect.Whitebox;
 import com.puppycrawl.tools.checkstyle.api.AuditListener;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.internal.testmodules.TestRootModuleChecker;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
@@ -73,12 +72,11 @@ public class MainTest {
             + "Try 'checkstyle --help' for more information.%n");
 
     private static final String USAGE = String.format(Locale.ROOT,
-          "Usage: checkstyle [-dEghjJtTV] [-b=<xpath>] [-c=<configurationFile>]"
-          + " [-C=<checkerThreadsNumber>]%n"
-          + "                  [-f=<format>] [-o=<outputPath>] [-p=<propertiesFile>]%n"
-          + "                  [-s=<suppressionLineColumnNumber>] [-w=<tabWidth>]"
-          + " [-W=<treeWalkerThreadsNumber>]%n"
-          + "                  [-e=<exclude>]... [-x=<excludeRegex>]..."
+          "Usage: checkstyle [-dEghjJtTV] [-b=<xpath>] [-c=<configurationFile>] "
+          + "[-f=<format>]%n"
+          + "                  [-o=<outputPath>] [-p=<propertiesFile>] "
+          + "[-s=<suppressionLineColumnNumber>]%n"
+          + "                  [-w=<tabWidth>] [-e=<exclude>]... [-x=<excludeRegex>]..."
           + " <files>...%n"
           + "Checkstyle verifies that the specified source code files adhere to the specified"
           + " rules. By default%n"
@@ -89,9 +87,6 @@ public class MainTest {
           + "  -b, --branch-matching-xpath=<xpath>%n"
           + "                            Show Abstract Syntax Tree(AST) branches that match XPath%n"
           + "  -c=<configurationFile>    Sets the check configuration file to use.%n"
-          + "  -C, --checker-threads-number=<checkerThreadsNumber>%n"
-          + "                            (experimental) The number of Checker threads (must be"
-          + " greater than zero)%n"
           + "  -d, --debug               Print all debug logging of CheckStyle utility%n"
           + "  -e, --exclude=<exclude>   Directory/File path to exclude from CheckStyle%n"
           + "  -E, --executeIgnoredModules%n"
@@ -120,10 +115,6 @@ public class MainTest {
           + "  -w, --tabWidth=<tabWidth> Sets the length of the tab character. Used only with"
           + " \"-s\" option.%n"
           + "                              Default value is 8%n"
-          + "  -W, --tree-walker-threads-number=<treeWalkerThreadsNumber>%n"
-          + "                            (experimental) The number of TreeWalker threads (must be"
-          + " greater than%n"
-          + "                              zero)%n"
           + "  -x, --exclude-regexp=<excludeRegex>%n"
           + "                            Regular expression of directory/file to exclude from"
           + " CheckStyle%n");
@@ -555,6 +546,7 @@ public class MainTest {
      * Similar test to {@link #testExistingTargetFileWithError}, but for PIT mutation tests:
      * this test fails if the boundary condition is changed from {@code if (exitStatus > 0)}
      * to {@code if (exitStatus > 1)}.
+     *
      * @throws Exception should not throw anything
      */
     @Test
@@ -812,6 +804,7 @@ public class MainTest {
 
     /**
      * Test doesn't need to be serialized.
+     *
      * @noinspection SerializableInnerClassWithNonSerializableOuterClass
      */
     @Test
@@ -842,6 +835,7 @@ public class MainTest {
 
     /**
      * Test doesn't need to be serialized.
+     *
      * @noinspection SerializableInnerClassWithNonSerializableOuterClass
      */
     @Test
@@ -1764,168 +1758,7 @@ public class MainTest {
     }
 
     @Test
-    public void testNoProblemOnExecuteIgnoredModuleWithBadPropertyValue() throws Exception {
-        exit.checkAssertionAfterwards(new Assertion() {
-            @Override
-            public void checkAssertion() {
-                assertTrue(systemErr.getLog().isEmpty(), "Unexpected system error log");
-            }
-        });
-
-        Main.main("-c", getPath("InputMainConfig-TypeName-bad-value.xml"),
-                "",
-                getPath("InputMain.java"));
-    }
-
-    @Test
-    public void testInvalidCheckerThreadsNumber() throws Exception {
-        exit.expectSystemExitWithStatus(-1);
-        exit.checkAssertionAfterwards(new Assertion() {
-            @Override
-            public void checkAssertion() {
-                assertEquals("", systemOut.getLog(), "Unexpected output log");
-                assertEquals("Invalid value for option '--checker-threads-number': 'invalid' is not an int"
-                        + EOL + SHORT_USAGE, systemErr.getLog(), "Unexpected system error log");
-            }
-        });
-        Main.main("-C", "invalid", "-c", "/google_checks.xml", getPath("InputMain.java"));
-    }
-
-    @Test
-    public void testInvalidTreeWalkerThreadsNumber() throws Exception {
-        exit.expectSystemExitWithStatus(-1);
-        exit.checkAssertionAfterwards(new Assertion() {
-            @Override
-            public void checkAssertion() {
-                assertEquals("", systemOut.getLog(), "Unexpected output log");
-                assertEquals("Invalid value for option '--tree-walker-threads-number': "
-                        + "'invalid' is not an int" + EOL + SHORT_USAGE, systemErr.getLog(),
-                        "Unexpected system error log");
-            }
-        });
-        Main.main("-W", "invalid", "-c", "/google_checks.xml", getPath("InputMain.java"));
-    }
-
-    @Test
-    public void testZeroCheckerThreadsNumber() throws Exception {
-        exit.expectSystemExitWithStatus(-1);
-        exit.checkAssertionAfterwards(new Assertion() {
-            @Override
-            public void checkAssertion() {
-                assertEquals("Checker threads number must be greater than zero"
-                    + System7.lineSeparator(), systemOut.getLog(), "Unexpected output log");
-                assertEquals("", systemErr.getLog(), "Unexpected system error log");
-            }
-        });
-        Main.main("-C", "0", "-c", "/google_checks.xml", getPath("InputMain.java"));
-    }
-
-    @Test
-    public void testZeroTreeWalkerThreadsNumber() throws Exception {
-        exit.expectSystemExitWithStatus(-1);
-        exit.checkAssertionAfterwards(new Assertion() {
-            @Override
-            public void checkAssertion() {
-                assertEquals("TreeWalker threads number must be greater than zero"
-                    + System7.lineSeparator(), systemOut.getLog(), "Unexpected output log");
-                assertEquals("", systemErr.getLog(), "Unexpected system error log");
-            }
-        });
-        Main.main("-W", "0", "-c", "/google_checks.xml", getPath("InputMain.java"));
-    }
-
-    @Test
-    public void testCheckerThreadsNumber() throws Exception {
-        TestRootModuleChecker.reset();
-
-        exit.checkAssertionAfterwards(new Assertion() {
-            @Override
-            public void checkAssertion() {
-                assertEquals("", systemOut.getLog(), "Unexpected output log");
-                assertEquals("", systemErr.getLog(), "Unexpected system error log");
-                assertTrue(TestRootModuleChecker.isProcessed(), "Invalid checker state");
-                final DefaultConfiguration config =
-                        (DefaultConfiguration) TestRootModuleChecker.getConfig();
-                final ThreadModeSettings multiThreadModeSettings = config.getThreadModeSettings();
-                assertEquals(4, multiThreadModeSettings.getCheckerThreadsNumber(),
-                        "Invalid checker thread number");
-                assertEquals(1, multiThreadModeSettings.getTreeWalkerThreadsNumber(),
-                        "Invalid checker thread number");
-            }
-        });
-        Main.main("-C", "4", "-c", getPath("InputMainConfig-custom-root-module.xml"),
-            getPath("InputMain.java"));
-    }
-
-    @Test
-    public void testTreeWalkerThreadsNumber() throws Exception {
-        TestRootModuleChecker.reset();
-
-        exit.checkAssertionAfterwards(new Assertion() {
-            @Override
-            public void checkAssertion() {
-                assertEquals("", systemOut.getLog(), "Unexpected output log");
-                assertEquals("", systemErr.getLog(), "Unexpected system error log");
-                assertTrue(TestRootModuleChecker.isProcessed(), "Invalid checker state");
-                final DefaultConfiguration config =
-                        (DefaultConfiguration) TestRootModuleChecker.getConfig();
-                final ThreadModeSettings multiThreadModeSettings = config.getThreadModeSettings();
-                assertEquals(1, multiThreadModeSettings.getCheckerThreadsNumber(),
-                        "Invalid checker thread number");
-                assertEquals(4, multiThreadModeSettings.getTreeWalkerThreadsNumber(),
-                        "Invalid checker thread number");
-            }
-        });
-        Main.main("-W", "4", "-c", getPath("InputMainConfig-custom-root-module.xml"),
-            getPath("InputMain.java"));
-    }
-
-    @Test
-    public void testModuleNameInSingleThreadMode() throws Exception {
-        TestRootModuleChecker.reset();
-
-        exit.checkAssertionAfterwards(new Assertion() {
-            @Override
-            public void checkAssertion() {
-                assertEquals("", systemOut.getLog(), "Unexpected output log");
-                assertEquals("", systemErr.getLog(), "Unexpected system error log");
-                assertTrue(TestRootModuleChecker.isProcessed(), "Invalid checker state");
-                final DefaultConfiguration config =
-                        (DefaultConfiguration) TestRootModuleChecker.getConfig();
-                final ThreadModeSettings multiThreadModeSettings =
-                    config.getThreadModeSettings();
-                assertEquals(1, multiThreadModeSettings.getCheckerThreadsNumber(),
-                        "Invalid checker thread number");
-                assertEquals(1, multiThreadModeSettings.getTreeWalkerThreadsNumber(),
-                        "Invalid checker thread number");
-                final Configuration checkerConfiguration = config
-                    .getChildren()[0];
-                assertEquals("Checker", checkerConfiguration.getName(), "Invalid checker name");
-                final Configuration treeWalkerConfig = checkerConfiguration.getChildren()[0];
-                assertEquals("TreeWalker", treeWalkerConfig.getName(), "Invalid checker childs name");
-            }
-        });
-        Main.main("-C", "1", "-W", "1", "-c", getPath("InputMainConfig-multi-thread-mode.xml"),
-            getPath("InputMain.java"));
-    }
-
-    @Test
-    public void testModuleNameInMultiThreadMode() throws Exception {
-        TestRootModuleChecker.reset();
-
-        try {
-            Main.main("-C", "4", "-W", "4", "-c", getPath("InputMainConfig-multi-thread-mode.xml"),
-                getPath("InputMain.java"));
-            fail("An exception is expected");
-        }
-        catch (IllegalArgumentException ex) {
-            assertEquals("Multi thread mode for Checker module is not implemented",
-                ex.getMessage(), "Invalid error message");
-        }
-    }
-
-    @Test
-    public void testMissingFiles() throws Exception {
+    public void testMissingFiles() throws IOException {
         exit.expectSystemExitWithStatus(-1);
         exit.checkAssertionAfterwards(new Assertion() {
             @Override
@@ -1935,6 +1768,7 @@ public class MainTest {
                 assertEquals(usage, systemErr.getLog(), "Unexpected system error log");
             }
         });
+
         Main.main();
     }
 

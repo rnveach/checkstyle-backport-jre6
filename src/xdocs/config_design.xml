@@ -361,6 +361,40 @@ public class StringUtils // not final to allow subclassing
         <source>
 &lt;module name=&quot;HideUtilityClassConstructor&quot;/&gt;
         </source>
+        <p>
+          Example:
+        </p>
+        <source>
+class Test { // violation, class only has a static method and a constructor
+
+  public Test() {
+  }
+
+  public static void fun() {
+  }
+}
+
+class Foo { // OK
+
+  private Foo() {
+  }
+
+  static int n;
+}
+
+class Bar { // OK
+
+  protected Bar() {
+    // prevents calls from subclass
+    throw new UnsupportedOperationException();
+  }
+}
+
+class UtilityClass { // violation, class only has a static field
+
+  static float f;
+}
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="HideUtilityClassConstructor_Example_of_Usage">
@@ -417,6 +451,20 @@ public class StringUtils // not final to allow subclassing
         </p>
         <source>
 &lt;module name=&quot;InnerTypeLast&quot;/&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+class Test {
+    private String s; // OK
+    class InnerTest1 {}
+    public void test() {} // violation, method should be declared before inner types.
+}
+
+class Test2 {
+    private String s; // OK
+    public void test() {} // OK
+    class InnerTest1 {}
+}
         </source>
       </subsection>
 
@@ -687,12 +735,12 @@ public interface Test2 { // violation
       <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="OneTopLevelClass_Description">
         <p>
-          Checks that each top-level class, interface or
-          enum resides in a source file of its own.
+          Checks that each top-level class, interface, enum
+          or annotation resides in a source file of its own.
           Official description of a 'top-level' term:<a
           href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-7.html#jls-7.6">
             7.6. Top Level Type Declarations</a>.
-          If file doesn't contains public class, enum or interface,
+          If file doesn't contains public class, interface, enum or annotation,
           top-level type is the first type in file.
         </p>
       </subsection>
@@ -1043,24 +1091,24 @@ class Test {
         </ul>
         <p>
           Classes known to be immutable are listed in <b>immutableClassCanonicalNames</b> by their
-          <b>canonical</b> names.
+          canonical names.
         </p>
         <p>
-          Rationale: Forcing all fields of class to have private modifier by default is good
-          in most cases, but in some cases it drawbacks in too much boilerplate get/set code.
+          Property Rationale: Forcing all fields of class to have private modifier by default is
+          good in most cases, but in some cases it drawbacks in too much boilerplate get/set code.
           One of such cases are immutable classes.
         </p>
         <p>
-          <b>Restriction</b>: Check doesn't check if class is immutable, there's no
+          Restriction: Check doesn't check if class is immutable, there's no
           checking if accessory methods are missing and all fields are immutable, we only check
-          <b>if current field is immutable or final</b>. Under the flag
+          if current field is immutable or final. Under the flag
           <b>allowPublicImmutableFields</b>, the enclosing class must also be final, to encourage
           immutability. Under the flag <b>allowPublicFinalFields</b>, the final modifier on
           the enclosing class is optional.
         </p>
         <p>
           Star imports are out of scope of this Check. So if one of type imported via
-          <b>star import</b> collides with user specified one by its short name -
+          star import collides with user specified one by its short name -
           there won't be Check's violation.
         </p>
       </subsection>

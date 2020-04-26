@@ -66,6 +66,9 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Matcher.html#groupCount()">
  * paren counts</a>.
  * </p>
+ * <p>
+ * SuppressionCommentFilter can suppress Checks that have Treewalker as parent module.
+ * </p>
  * <ul>
  * <li>
  * Property {@code offCommentFormat} - Specify comment pattern to
@@ -380,6 +383,7 @@ public class SuppressionCommentFilter
 
     /**
      * Setter to specify comment pattern to trigger filter to begin suppression.
+     *
      * @param pattern a pattern.
      */
     public final void setOffCommentFormat(Pattern pattern) {
@@ -388,6 +392,7 @@ public class SuppressionCommentFilter
 
     /**
      * Setter to specify comment pattern to trigger filter to end suppression.
+     *
      * @param pattern a pattern.
      */
     public final void setOnCommentFormat(Pattern pattern) {
@@ -396,6 +401,7 @@ public class SuppressionCommentFilter
 
     /**
      * Returns FileContents for this filter.
+     *
      * @return the FileContents for this filter.
      */
     private FileContents getFileContents() {
@@ -404,6 +410,7 @@ public class SuppressionCommentFilter
 
     /**
      * Set the FileContents for this filter.
+     *
      * @param fileContents the FileContents for this filter.
      * @noinspection WeakerAccess
      */
@@ -413,6 +420,7 @@ public class SuppressionCommentFilter
 
     /**
      * Setter to specify check pattern to suppress.
+     *
      * @param format a {@code String} value
      */
     public final void setCheckFormat(String format) {
@@ -421,6 +429,7 @@ public class SuppressionCommentFilter
 
     /**
      * Setter to specify message pattern to suppress.
+     *
      * @param format a {@code String} value
      */
     public void setMessageFormat(String format) {
@@ -429,6 +438,7 @@ public class SuppressionCommentFilter
 
     /**
      * Setter to specify check ID pattern to suppress.
+     *
      * @param format a {@code String} value
      */
     public void setIdFormat(String format) {
@@ -437,6 +447,7 @@ public class SuppressionCommentFilter
 
     /**
      * Setter to control whether to check C++ style comments ({@code //}).
+     *
      * @param checkCpp {@code true} if C++ comments are checked.
      */
     // -@cs[AbbreviationAsWordInName] We can not change it as,
@@ -447,6 +458,7 @@ public class SuppressionCommentFilter
 
     /**
      * Setter to control whether to check C style comments ({@code &#47;* ... *&#47;}).
+     *
      * @param checkC {@code true} if C comments are checked.
      */
     public void setCheckC(boolean checkC) {
@@ -480,6 +492,7 @@ public class SuppressionCommentFilter
     /**
      * Finds the nearest comment text tag that matches an audit event.
      * The nearest tag is before the line and column of the event.
+     *
      * @param event the {@code TreeWalkerAuditEvent} to match.
      * @return The {@code Tag} nearest event.
      */
@@ -521,6 +534,7 @@ public class SuppressionCommentFilter
     /**
      * Appends the suppressions in a collection of comments to the full
      * set of suppression tags.
+     *
      * @param comments the set of comments.
      */
     private void tagSuppressions(Collection<TextBlock> comments) {
@@ -537,6 +551,7 @@ public class SuppressionCommentFilter
     /**
      * Tags a string if it matches the format for turning
      * checkstyle reporting on or the format for turning reporting off.
+     *
      * @param text the string to tag.
      * @param line the line number of text.
      * @param column the column number of text.
@@ -556,6 +571,7 @@ public class SuppressionCommentFilter
 
     /**
      * Adds a {@code Tag} to the list of all tags.
+     *
      * @param text the text of the tag.
      * @param line the line number of the tag.
      * @param column the column number of the tag.
@@ -596,6 +612,7 @@ public class SuppressionCommentFilter
 
         /**
          * Constructs a tag.
+         *
          * @param line the line number.
          * @param column the column number.
          * @param text the text of the suppression.
@@ -652,6 +669,7 @@ public class SuppressionCommentFilter
 
         /**
          * Returns line number of the tag in the source file.
+         *
          * @return the line number of the tag in the source file.
          */
         public int getLine() {
@@ -662,6 +680,7 @@ public class SuppressionCommentFilter
          * Determines the column number of the tag in the source file.
          * Will be 0 for all lines of multiline comment, except the
          * first line.
+         *
          * @return the column number of the tag in the source file.
          */
         public int getColumn() {
@@ -671,6 +690,7 @@ public class SuppressionCommentFilter
         /**
          * Determines whether the suppression turns checkstyle reporting on or
          * off.
+         *
          * @return {@code ON} if the suppression turns reporting on.
          */
         public TagType getTagType() {
@@ -680,6 +700,7 @@ public class SuppressionCommentFilter
         /**
          * Compares the position of this tag in the file
          * with the position of another tag.
+         *
          * @param object the tag to compare with this one.
          * @return a negative number if this tag is before the other tag,
          *     0 if they are at the same position, and a positive number if this
@@ -700,6 +721,7 @@ public class SuppressionCommentFilter
         /**
          * Indicates whether some other object is "equal to" this one.
          * Suppression on enumeration is needed so code stays consistent.
+         *
          * @noinspection EqualsCalledOnEnumConstant
          */
         @Override
@@ -729,6 +751,7 @@ public class SuppressionCommentFilter
         /**
          * Determines whether the source of an audit event
          * matches the text of this tag.
+         *
          * @param event the {@code TreeWalkerAuditEvent} to check.
          * @return true if the source of event matches the text of this tag.
          */
@@ -738,6 +761,7 @@ public class SuppressionCommentFilter
 
         /**
          * Checks whether {@link TreeWalkerAuditEvent} source name matches the check format.
+         *
          * @param event {@link TreeWalkerAuditEvent} instance.
          * @return true if the {@link TreeWalkerAuditEvent} source name matches the check format.
          */
@@ -748,6 +772,7 @@ public class SuppressionCommentFilter
 
         /**
          * Checks whether the {@link TreeWalkerAuditEvent} module ID matches the ID format.
+         *
          * @param event {@link TreeWalkerAuditEvent} instance.
          * @return true if the {@link TreeWalkerAuditEvent} module ID matches the ID format.
          */
@@ -767,6 +792,7 @@ public class SuppressionCommentFilter
 
         /**
          * Checks whether the {@link TreeWalkerAuditEvent} message matches the message format.
+         *
          * @param event {@link TreeWalkerAuditEvent} instance.
          * @return true if the {@link TreeWalkerAuditEvent} message matches the message format.
          */

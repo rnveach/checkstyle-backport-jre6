@@ -54,6 +54,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Parse a file and print the parse tree.
+     *
      * @param file the file to print.
      * @param options {@link JavaParser.Options} to control the inclusion of comment nodes.
      * @return the AST of the file in String form.
@@ -67,6 +68,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Prints full AST (java + comments + javadoc) of the java file.
+     *
      * @param file java file
      * @return Full tree
      * @throws IOException Failed to open a file
@@ -80,6 +82,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Prints full tree (java + comments + javadoc) of the DetailAST.
+     *
      * @param ast root DetailAST
      * @return Full tree
      */
@@ -105,6 +108,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Parses block comment as javadoc and prints its tree.
+     *
      * @param node block comment begin
      * @return string javadoc tree
      */
@@ -121,6 +125,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Parse a file and print the parse tree.
+     *
      * @param text the text to parse.
      * @param options {@link JavaParser.Options} to control the inclusion of comment nodes.
      * @return the AST of the file in String form.
@@ -134,6 +139,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Print branch info from root down to given {@code node}.
+     *
      * @param node last item of the branch
      * @return branch as string
      */
@@ -153,6 +159,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Print AST.
+     *
      * @param ast the root AST node.
      * @return string AST.
      */
@@ -172,6 +179,7 @@ public final class AstTreeStringPrinter {
     /**
      * Get string representation of the node as token name,
      * node text, line number and column number.
+     *
      * @param node DetailAST
      * @return node info
      */
@@ -183,6 +191,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Get indentation for an AST node.
+     *
      * @param ast the AST to get the indentation for.
      * @return the indentation in String format.
      */
@@ -216,6 +225,7 @@ public final class AstTreeStringPrinter {
 
     /**
      * Replace all control chars with escaped symbols.
+     *
      * @param text the String to process.
      * @return the processed String with all control chars escaped.
      */

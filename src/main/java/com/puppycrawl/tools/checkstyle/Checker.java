@@ -118,7 +118,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
     private SeverityLevel severity = SeverityLevel.ERROR;
 
     /** Name of a charset. */
-    private String charset = System.getProperty("file.encoding", StandardCharsets.UTF_8.name());
+    private String charset = StandardCharsets.UTF_8.name();
 
     /** Cache file. **/
     private PropertyCacheFile cacheFile;
@@ -140,6 +140,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Sets cache file.
+     *
      * @param fileName the cache file.
      * @throws IOException if there are some problems with file loading.
      */
@@ -151,6 +152,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Removes before execution file filter.
+     *
      * @param filter before execution file filter to remove.
      */
     public void removeBeforeExecutionFileFilter(BeforeExecutionFileFilter filter) {
@@ -159,6 +161,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Removes filter.
+     *
      * @param filter filter to remove.
      */
     public void removeFilter(Filter filter) {
@@ -183,6 +186,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Removes a given listener.
+     *
      * @param listener a listener to remove
      */
     public void removeListener(AuditListener listener) {
@@ -191,6 +195,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Sets base directory.
+     *
      * @param basedir the base directory to strip off in file names
      */
     public void setBasedir(String basedir) {
@@ -236,6 +241,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
     /**
      * Returns a set of external configuration resource locations which are used by all file set
      * checks and filters.
+     *
      * @return a set of external configuration resource locations which are used by all file set
      *         checks and filters.
      */
@@ -276,6 +282,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Processes a list of files with all FileSetChecks.
+     *
      * @param files a list of files to process.
      * @throws CheckstyleException if error condition within Checkstyle occurs.
      * @throws Error wraps any java.lang.Error happened during execution
@@ -324,6 +331,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Processes a file with all FileSetChecks.
+     *
      * @param file a file to process.
      * @return a sorted set of messages to be logged.
      * @throws Exception if error condition within Checkstyle occurs.
@@ -459,6 +467,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * {@inheritDoc} Creates child module.
+     *
      * @noinspection ChainOfInstanceofChecks
      */
     @Override
@@ -506,6 +515,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
     /**
      * Adds a FileSetCheck to the list of FileSetChecks
      * that is executed in process().
+     *
      * @param fileSetCheck the additional FileSetCheck
      */
     public void addFileSetCheck(FileSetCheck fileSetCheck) {
@@ -515,6 +525,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Adds a before execution file filter to the end of the event chain.
+     *
      * @param filter the additional filter
      */
     public void addBeforeExecutionFileFilter(BeforeExecutionFileFilter filter) {
@@ -523,6 +534,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Adds a filter to the end of the audit event filter chain.
+     *
      * @param filter the additional filter
      */
     public void addFilter(Filter filter) {
@@ -537,6 +549,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
     /**
      * Sets the file extensions that identify the files that pass the
      * filter of this FileSetCheck.
+     *
      * @param extensions the set of file extensions. A missing
      *     initial '.' character of an extension is automatically added.
      */
@@ -569,6 +582,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Sets locale country.
+     *
      * @param localeCountry the country to report messages
      */
     public void setLocaleCountry(String localeCountry) {
@@ -577,6 +591,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Sets locale language.
+     *
      * @param localeLanguage the language to report messages
      */
     public void setLocaleLanguage(String localeLanguage) {
@@ -601,6 +616,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Sets a named charset.
+     *
      * @param charset the name of a charset
      * @throws UnsupportedEncodingException if charset is unsupported.
      */
@@ -615,6 +631,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Sets the field haltOnException.
+     *
      * @param haltOnException the new value.
      */
     public void setHaltOnException(boolean haltOnException) {
@@ -623,6 +640,7 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
 
     /**
      * Set the tab width to report audit events with.
+     *
      * @param tabWidth an {@code int} value
      */
     public final void setTabWidth(int tabWidth) {

@@ -173,7 +173,8 @@ public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
     }
 
     /**
-     * Method generates IOException details. It tries to a open file that does not exist.
+     * Method generates NoSuchFileException details. It tries to a open file that does not exist.
+     *
      * @param file to be opened
      * @return localized detail message of {@link IOException}
      */

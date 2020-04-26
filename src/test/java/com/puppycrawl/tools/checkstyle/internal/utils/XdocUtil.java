@@ -40,6 +40,7 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 /**
  * XdocUtil.
+ *
  * @noinspection ClassOnlyUsedInOnePackage
  */
 public final class XdocUtil {
@@ -51,6 +52,7 @@ public final class XdocUtil {
 
     /**
      * Gets xdocs file paths.
+     *
      * @return a list of xdocs file paths.
      */
     public static Set<Path> getXdocsFilePaths() {
@@ -70,6 +72,7 @@ public final class XdocUtil {
 
     /**
      * Gets xdocs documentation file paths.
+     *
      * @param files list of all xdoc files
      * @return a list of xdocs config file paths.
      */
@@ -86,6 +89,7 @@ public final class XdocUtil {
 
     /**
      * Gets xdocs style file paths.
+     *
      * @param files list of all xdoc files
      * @return a list of xdocs style file paths.
      */
@@ -102,6 +106,7 @@ public final class XdocUtil {
 
     /**
      * Gets names of checkstyle's modules which are documented in xdocs.
+     *
      * @return a set of checkstyle's modules which have xdoc documentation.
      * @throws ParserConfigurationException if a DocumentBuilder cannot be created which satisfies
      *              the configuration requested.

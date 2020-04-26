@@ -12,7 +12,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.31</version>
+  <version>8.32</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -186,9 +186,9 @@
     <maven.site.plugin.version>3.8.2</maven.site.plugin.version>
     <maven.spotbugs.plugin.version>4.0.0</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.13.0</maven.pmd.plugin.version>
-    <pmd.version>6.21.0</pmd.version>
+    <pmd.version>6.22.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
-    <powermock.version>2.0.6</powermock.version>
+    <powermock.version>2.0.7</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
     <maven.checkstyle.plugin.version>3.1.1</maven.checkstyle.plugin.version>
     <maven.sevntu.checkstyle.plugin.version>1.37.1</maven.sevntu.checkstyle.plugin.version>
@@ -332,7 +332,7 @@
              see no old versions -->
         <plugin>
           <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.8</version>
+          <version>3.0.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
@@ -362,7 +362,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>3.2.2</version>
+          <version>3.2.3</version>
         </plugin>
         <plugin>
           <groupId>org.pitest</groupId>
@@ -576,6 +576,7 @@
               <logViolationsToConsole>true</logViolationsToConsole>
               <maxAllowedViolations>0</maxAllowedViolations>
               <violationSeverity>error</violationSeverity>
+              <cacheFile>${project.build.directory}/cachefile_sevntu</cacheFile>
               <propertyExpansion>project.basedir=${project.basedir}</propertyExpansion>
               <sourceDirectories>
                 <sourceDirectory>${project.basedir}/src</sourceDirectory>
@@ -1581,6 +1582,11 @@
             <excludedLink>https://www.w3.org/TR/*</excludedLink>
             <!-- very frequent SocketTimeoutException : Read timed out -->
             <excludedLink>https://maven.apache.org/*</excludedLink>
+            <!-- very frequent SocketTimeoutException : Read timed out -->
+            <excludedLink>https://www.bountysource.com/*</excludedLink>
+            <excludedLink>https://api.bountysource.com/*</excludedLink>
+            <!-- This URL become to require to login first to see content -->
+            <excludedLink>https://bitbucket.org/atlassian/bamboo-checkstyle-plugin</excludedLink>
           </excludedLinks>
         </configuration>
       </plugin>

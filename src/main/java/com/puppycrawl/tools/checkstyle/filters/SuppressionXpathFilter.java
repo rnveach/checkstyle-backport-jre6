@@ -44,12 +44,6 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * </p>
  * <ul id="SuppressionXpathFilter_IncompatibleChecks">
  * <li>
- * AnnotationUseStyle
- * </li>
- * <li>
- * AvoidEscapedUnicodeCharacters
- * </li>
- * <li>
  * CommentsIndentation
  * </li>
  * <li>
@@ -62,40 +56,18 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * Indentation
  * </li>
  * <li>
- * InterfaceIsType
- * </li>
- * <li>
- * InterfaceMemberImpliedModifier
- * </li>
- * <li>
- * JavadocContentLocation
- * </li>
- * <li>
  * JavadocMethod
- * </li>
- * <li>
- * JavadocType
- * </li>
- * <li>
- * MethodCount
- * </li>
- * <li>
- * MissingJavadocMethod
  * </li>
  * <li>
  * MissingJavadocType
  * </li>
  * <li>
- * OverloadMethodsDeclarationOrder
+ * Regexp (reason is at
+ * <a href="https://github.com/checkstyle/checkstyle/issues/7759#issuecomment-605525287"> #7759</a>)
  * </li>
  * <li>
- * PackageDeclaration
- * </li>
- * <li>
- * Regexp
- * </li>
- * <li>
- * RegexpSinglelineJava
+ * RegexpSinglelineJava (reason is at
+ * <a href="https://github.com/checkstyle/checkstyle/issues/7759#issuecomment-605525287"> #7759</a>)
  * </li>
  * <li>
  * TodoComment
@@ -109,8 +81,14 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * <li>
  * VariableDeclarationUsageDistance
  * </li>
+ * </ul>
+ * <p>
+ * Certain Checks are partially supported by the filter:
+ * </p>
+ * <ul>
  * <li>
- * WriteTag
+ * PackageDeclaration (until
+ * <a href="https://github.com/checkstyle/checkstyle/pull/8110">#8110</a>)
  * </li>
  * </ul>
  * <p>
@@ -124,6 +102,9 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * JavadocBlockTagLocation
  * </li>
  * <li>
+ * JavadocMissingWhitespaceAfterAsterisk
+ * </li>
+ * <li>
  * JavadocParagraph
  * </li>
  * <li>
@@ -131,6 +112,9 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * </li>
  * <li>
  * JavadocTagContinuationIndentation
+ * </li>
+ * <li>
+ * JavadocType
  * </li>
  * <li>
  * MissingDeprecated
@@ -144,11 +128,16 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * <li>
  * SummaryJavadoc
  * </li>
+ * <li>
+ * WriteTag
+ * </li>
  * </ul>
  * <p>
  * Note, that support for these Checks will be available after resolving issues
  * <a href="https://github.com/checkstyle/checkstyle/issues/5770">#5770</a> and
  * <a href="https://github.com/checkstyle/checkstyle/issues/5777">#5777</a>.
+ * Support for Indentation check will be available after resolving issue
+ * <a href="https://github.com/checkstyle/checkstyle/issues/7734">#7734</a>.
  * </p>
  * <p>
  * Currently, filter supports the following xpath axes:
@@ -211,6 +200,9 @@ import com.puppycrawl.tools.checkstyle.utils.FilterUtil;
  * if no file found, then passed to the {@code ClassLoader.getResource()} method.
  * </li>
  * </ol>
+ * <p>
+ * SuppressionXpathFilter can suppress Checks that have Treewalker as parent module.
+ * </p>
  * <ul>
  * <li>
  * Property {@code file} - Specify the location of the <em>suppressions XML document</em> file.
@@ -555,6 +547,7 @@ public class SuppressionXpathFilter extends AutomaticBean implements
 
     /**
      * Setter to specify the location of the <em>suppressions XML document</em> file.
+     *
      * @param fileName name of the suppressions file.
      */
     public void setFile(String fileName) {
@@ -566,6 +559,7 @@ public class SuppressionXpathFilter extends AutomaticBean implements
      * If optional is set to false the file must exist, or else it ends with error.
      * On the other hand if optional is true and file is not found,
      * the filter accepts all audit events.
+     *
      * @param optional tells if config file existence is optional.
      */
     public void setOptional(boolean optional) {

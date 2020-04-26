@@ -87,6 +87,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  *
  * }
  * </pre>
+ *
  * @since 3.1
  */
 @StatelessCheck
@@ -129,12 +130,13 @@ public final class InterfaceIsTypeCheck
                 !allowMarkerInterfaces || variableDef != null;
 
         if (methodDef == null && methodRequired) {
-            log(ast.getLineNo(), MSG_KEY);
+            log(ast, MSG_KEY);
         }
     }
 
     /**
      * Setter to control whether marker interfaces like Serializable are allowed.
+     *
      * @param flag whether to allow marker interfaces or not
      */
     public void setAllowMarkerInterfaces(boolean flag) {

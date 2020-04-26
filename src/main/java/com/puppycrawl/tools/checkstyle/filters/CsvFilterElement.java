@@ -42,6 +42,7 @@ class CsvFilterElement implements IntFilterElement {
      * string. Each value is an integer, or a range of integers. A range of
      * integers is of the form integer-integer, such as 1-10.
      * Note: integers must be non-negative.
+     *
      * @param pattern the CSV string.
      * @throws NumberFormatException if a component substring does not
      *     contain a parsable integer.
@@ -67,6 +68,7 @@ class CsvFilterElement implements IntFilterElement {
 
     /**
      * Adds a IntFilterElement to the set.
+     *
      * @param filter the IntFilterElement to add.
      */
     private void addFilter(IntFilterElement filter) {
@@ -75,6 +77,7 @@ class CsvFilterElement implements IntFilterElement {
 
     /**
      * Returns the IntFilters of the filter set.
+     *
      * @return the IntFilters of the filter set.
      */
     protected Set<IntFilterElement> getFilters() {
@@ -83,6 +86,7 @@ class CsvFilterElement implements IntFilterElement {
 
     /**
      * Determines whether an Integer matches a CSV integer value.
+     *
      * @param intValue the Integer to check.
      * @return true if intValue is an Integer that matches a CSV value.
      */

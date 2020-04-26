@@ -46,6 +46,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
  * Custom class loader is needed to pass URLs to pretend these are loaded from the classpath
  * though we can't add/change the files for testing. The class loader is nested in this class,
  * so the custom class loader we are using is safe.
+ *
  * @noinspection ClassLoaderInstantiation
  */
 public class PackageNamesLoaderTest extends AbstractPathTestSupport {
@@ -207,6 +208,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
     /**
      * Custom class loader is needed to pass URLs to pretend these are loaded from the classpath
      * though we can't add/change the files for testing.
+     *
      * @noinspection CustomClassloader
      */
     private static class TestUrlsClassLoader extends ClassLoader {
@@ -225,6 +227,7 @@ public class PackageNamesLoaderTest extends AbstractPathTestSupport {
 
     /**
      * Custom class loader is needed to throw an exception to test a catch statement.
+     *
      * @noinspection CustomClassloader
      */
     private static class TestIoExceptionClassLoader extends ClassLoader {

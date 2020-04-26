@@ -59,4 +59,3 @@ are in the file named "LICENSE.apache20" in this directory.
 
 ![](https://raw.githubusercontent.com/checkstyle/resources/master/img/checkstyle-logos/checkstyle-logo-260x99.png)
 
-GitHub: https://github.com/checkstyle/checkstyle/

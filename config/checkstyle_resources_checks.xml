@@ -7,7 +7,6 @@
     <property name="charset" value="UTF-8"/>
     <property name="haltOnException" value="false"/>
 
-    <!-- Hard coded until https://issues.apache.org/jira/browse/MCHECKSTYLE-332 is released. -->
     <property name="cacheFile" value="target/cache_resources"/>
 
     <!-- Suppressions for resources -->
@@ -15,13 +14,13 @@
         <property name="file"
                   value="${project.basedir}/config/checkstyle_resources_suppressions.xml"/>
     </module>
-    <!-- till https://github.com/checkstyle/checkstyle/issues/4100
+    <!-- until https://github.com/checkstyle/checkstyle/issues/8019
     <module name="FileTabCharacter"/>
+    -->
     <module name="RegexpSingleline">
         <property name="format" value="\s+$"/>
         <property name="message" value="Trailing whitespace"/>
     </module>
-    -->
     <module name="RegexpOnFilename">
       <property name="folderPattern"
                 value="[\\/]src[\\/](it|test)[\\/]resources(-noncompilable?)[\\/]"/>

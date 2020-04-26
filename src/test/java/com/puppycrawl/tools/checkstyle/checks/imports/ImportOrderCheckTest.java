@@ -682,6 +682,7 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
 
     /**
      * Creates MOCK lexical token and returns AST node for this token.
+     *
      * @param tokenType type of token
      * @param tokenText text of token
      * @param tokenFileName file name of token
@@ -792,6 +793,22 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
                 "io.netty.handler.codec.http.HttpHeaders.Names.DATE"),
             };
         verify(checkConfig, getNonCompilablePath("InputImportOrderEclipseStatic.java"), expected);
+    }
+
+    @Test
+    public void testUseContainerOrderingForStatic() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
+        checkConfig.addAttribute("ordered", "true");
+        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addAttribute("useContainerOrderingForStatic", "true");
+        final String[] expected = {
+            "6:1: " + getCheckMessage(MSG_ORDERING,
+                    "io.netty.handler.Codec.HTTP.HttpHeaders.tmp.same"),
+            "7:1: " + getCheckMessage(MSG_ORDERING,
+                    "io.netty.handler.Codec.HTTP.HttpHeaders.TKN.same"),
+        };
+        verify(checkConfig, getNonCompilablePath("InputImportOrderContainerOrdering.java"),
+                expected);
     }
 
     @Test

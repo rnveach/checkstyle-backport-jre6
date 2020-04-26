@@ -216,6 +216,7 @@ public class UnusedImportsCheck extends AbstractCheck {
 
     /**
      * Checks whether an import is unused.
+     *
      * @param imprt an import.
      * @return true if an import is unused.
      */
@@ -227,6 +228,7 @@ public class UnusedImportsCheck extends AbstractCheck {
 
     /**
      * Collects references made by IDENT.
+     *
      * @param ast the IDENT node to process
      */
     private void processIdent(DetailAST ast) {
@@ -242,6 +244,7 @@ public class UnusedImportsCheck extends AbstractCheck {
 
     /**
      * Collects the details of imports.
+     *
      * @param ast node containing the import details
      */
     private void processImport(DetailAST ast) {
@@ -253,6 +256,7 @@ public class UnusedImportsCheck extends AbstractCheck {
 
     /**
      * Collects the details of static imports.
+     *
      * @param ast node containing the static import details
      */
     private void processStaticImport(DetailAST ast) {
@@ -266,6 +270,7 @@ public class UnusedImportsCheck extends AbstractCheck {
 
     /**
      * Collects references made in Javadoc comments.
+     *
      * @param ast node to inspect for Javadoc
      */
     private void collectReferencesFromJavadoc(DetailAST ast) {
@@ -280,6 +285,7 @@ public class UnusedImportsCheck extends AbstractCheck {
     /**
      * Process a javadoc {@link TextBlock} and return the set of classes
      * referenced within.
+     *
      * @param textBlock The javadoc block to parse
      * @return a set of classes referenced in the javadoc block
      */
@@ -303,6 +309,7 @@ public class UnusedImportsCheck extends AbstractCheck {
 
     /**
      * Returns the list of valid tags found in a javadoc {@link TextBlock}.
+     *
      * @param cmt The javadoc block to parse
      * @param tagType The type of tags we're interested in
      * @return the list of tags
@@ -314,6 +321,7 @@ public class UnusedImportsCheck extends AbstractCheck {
 
     /**
      * Returns a list of references found in a javadoc {@link JavadocTag}.
+     *
      * @param tag The javadoc tag to parse
      * @return A list of references found in this tag
      */
@@ -330,6 +338,7 @@ public class UnusedImportsCheck extends AbstractCheck {
     /**
      * Extracts a list of texts matching a {@link Pattern} from a
      * {@link String}.
+     *
      * @param identifier The String to match the pattern against
      * @param pattern The Pattern used to extract the texts
      * @return A list of texts which matched the pattern
@@ -347,6 +356,7 @@ public class UnusedImportsCheck extends AbstractCheck {
      * If the given type string contains "." (e.g. "Map.Entry"), returns the
      * top level type (e.g. "Map"), as that is what must be imported for the
      * type to resolve. Otherwise, returns the type as-is.
+     *
      * @param type A possibly qualified type name
      * @return The simple name of the top level type
      */

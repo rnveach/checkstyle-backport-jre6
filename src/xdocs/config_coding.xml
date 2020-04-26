@@ -209,18 +209,18 @@ int[] a2 = new int[]{
         </p>
         <source>
 class MyClass {
-  List list1 = new ArrayList&lt;Object&gt; { // violation
-    {
-      add(new Object());
-    }
-  };
-  List list2 = new ArrayList&lt;Object&gt; { // violation, comments and semicolons are ignored
-    ;
-    // my comment
-    {
-      add(new Object());
-    }
-  };
+    List&lt;Integer&gt; list1 = new ArrayList&lt;&gt;() { // violation
+        {
+            add(1);
+        }
+    };
+    List&lt;String&gt; list2 = new ArrayList&lt;&gt;() { // violation
+        ;
+        // comments and semicolons are ignored
+        {
+            add("foo");
+        }
+    };
 }
         </source>
         <p>
@@ -231,12 +231,12 @@ class MyClass {
         </p>
           <source>
 class MyClass {
-  List list = new ArrayList&lt;Object&gt; { // OK as it is not pure double brace pattern
-     private int field;
-     {
-       add(new Object());
-     }
-  };
+    List&lt;Object&gt; list = new ArrayList&lt;&gt;() { // OK, not pure double brace pattern
+        private int field;
+        {
+            add(new Object());
+        }
+    };
 }
           </source>
       </subsection>
@@ -2696,12 +2696,86 @@ List list; //No violation here
 
       <subsection name="Examples" id="IllegalType_Examples">
         <p>
-          To configure the check so that it ignores getInstance() methods:
+          Default Configuration:
+        </p>
+        <source>
+&lt;module name=&quot;IllegalType&quot;/&gt;
+        </source>
+        <source>
+public class Test extends TreeSet { // violation
+  public &lt;T extends java.util.HashSet&gt; void method() { // violation
+
+    LinkedHashMap&lt;Integer, String&gt; lhmap =
+        new LinkedHashMap&lt;Integer, String&gt;(); // violation
+    TreeMap&lt;Integer, String&gt; treemap = new TreeMap&lt;Integer, String&gt;(); // violation
+    Test t; // OK
+    HashMap&lt;String, String&gt; hmap; // violation
+    Queue&lt;Integer&gt; intqueue; // OK
+
+    java.lang.IllegalArgumentException illegalex; // OK
+    java.util.TreeSet treeset; // violation
+  }
+
+}
+        </source>
+        <p>
+          To configure the Check so that particular tokens are checked:
+        </p>
+        <source>
+&lt;module name="IllegalType"&gt;
+  &lt;property name="tokens" value="METHOD_DEF"/&gt;
+&lt;/module&gt;
+        </source>
+        <source>
+public class Test extends TreeSet { // OK
+  public &lt;T extends java.util.HashSet&gt; void method() { // violation
+
+    LinkedHashMap&lt;Integer, String&gt; lhmap = new LinkedHashMap&lt;Integer, String&gt;(); // OK
+
+    java.lang.IllegalArgumentException illegalex; // OK
+    java.util.TreeSet treeset; // Ok
+  }
+
+  public &lt;T extends java.util.HashSet&gt; void typeParam(T t) {} // violation
+
+  public void fullName(TreeSet a) {} // OK
+
+}
+        </source>
+        <p>
+          To configure the Check so that it ignores function() methods:
         </p>
         <source>
 &lt;module name=&quot;IllegalType&quot;&gt;
-  &lt;property name=&quot;ignoredMethodNames&quot; value=&quot;getInstance&quot;/&gt;
+  &lt;property name=&quot;ignoredMethodNames&quot; value=&quot;function&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <source>
+public class Test {
+  public HashMap&lt;String, String&gt; function() { // OK
+    // code
+  }
+
+  public HashMap&lt;String, String&gt; function1() { // violation
+    // code
+  }
+}
+        </source>
+        <p>
+          To configure the Check so that it validates abstract class names:
+        </p>
+        <source>
+&lt;module name=&quot;IllegalType&quot;&gt;
+  &lt;property name=&quot;validateAbstractClassNames&quot; value=&quot;true&quot;/&gt;
+  &lt;property name=&quot;illegalAbstractClassNameFormat&quot; value=&quot;Gitt&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <source>
+class Test extends Gitter { // violation
+}
+
+class Test1 extends Github { // OK
+}
         </source>
         <p>
           To configure the Check so that it verifies only public, protected or static
@@ -2710,15 +2784,35 @@ List list; //No violation here
         <source>
 &lt;module name=&quot;IllegalType&quot;&gt;
   &lt;property name=&quot;memberModifiers&quot; value=&quot;LITERAL_PUBLIC,
-   LITERAL_PROTECTED, LITERAL_STATIC&quot;/&gt;
+    LITERAL_PROTECTED, LITERAL_STATIC&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <source>
+public class Test {
+  public HashMap&lt;String, String&gt; function1() { // violation
+    // code
+  }
+
+  private HashMap&lt;String, String&gt; function2() { // OK
+    // code
+  }
+
+  protected HashMap&lt;Integer, String&gt; function3() { // violation
+    // code
+  }
+
+  public static TreeMap&lt;Integer, String&gt; function4() { // violation
+    // code
+  }
+
+}
         </source>
           <p>
             To configure the check so that it verifies usage of types Boolean and Foo:
           </p>
         <source>
 &lt;module name="IllegalType"&gt;
-          &lt;property name=&quot;illegalClassNames&quot; value=&quot;Boolean, Foo&quot;/&gt;
+  &lt;property name=&quot;illegalClassNames&quot; value=&quot;Boolean, Foo&quot;/&gt;
 &lt;/module&gt;
         </source>
 
@@ -4559,27 +4653,34 @@ try (Reader r = new PipedReader(); s2; Reader s3 = new PipedReader() // violatio
       <p>Since Checkstyle 5.8</p>
       <subsection name="Description" id="OverloadMethodsDeclarationOrder_Description">
         <p>
-          Checks that overload methods are grouped together.
+          Checks that overloaded methods are grouped together. Overloaded methods have the same
+          name but different signatures where the signature can differ by the number of input
+          parameters or type of input parameters or both.
         </p>
       </subsection>
 
       <subsection name="Examples" id="OverloadMethodsDeclarationOrder_Examples">
-        <p>
-          Example of incorrect grouping overload methods:
-        </p>
-        <source>
-public void foo(int i) {}
-public void foo(String s) {}
-public void notFoo() {} // Have to be after foo(int i, String s)
-public void foo(int i, String s) {}
-        </source>
-        <p>
-          An example of how to configure the check is:
-        </p>
+        <p>To configure the check:</p>
         <source>
 &lt;module name="OverloadMethodsDeclarationOrder"/&gt;
         </source>
-        </subsection>
+        <p>Example of correct grouping of overloaded methods:</p>
+        <source>
+public void foo(int i) {}
+public void foo(String s) {}
+public void foo(String s, int i) {}
+public void foo(int i, String s) {}
+public void notFoo() {}
+        </source>
+        <p>Example of incorrect grouping of overloaded methods:</p>
+        <source>
+public void foo(int i) {} // OK
+public void foo(String s) {} // OK
+public void notFoo() {} // violation. Have to be after foo(String s, int i)
+public void foo(int i, String s) {}
+public void foo(String s, int i) {}
+        </source>
+      </subsection>
 
       <subsection name="Example of Usage" id="OverloadMethodsDeclarationOrder_Example_of_Usage">
         <ul>
@@ -4636,6 +4737,13 @@ public void foo(int i, String s) {}
           the form of directory levels to provide physical grouping to your classes.
           These directories are added to the classpath so that your classes
           are visible to JVM when it runs the code.
+        </p>
+        <p>
+          <b>Note:</b>
+          This Check is partially supported by Xpath Suppression Filters. In case of testing empty
+          java files, Xpath Suppression Filters are not supported for this Check. (until
+          <a href="https://github.com/checkstyle/checkstyle/pull/8110">#8110
+          </a>)
         </p>
       </subsection>
 
@@ -6667,3 +6775,4 @@ for (int i = 0; i &lt; 20; i++) {
 
   </body>
 </document>
+

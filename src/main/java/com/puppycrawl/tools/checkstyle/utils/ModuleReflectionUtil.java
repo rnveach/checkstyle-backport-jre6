@@ -47,6 +47,7 @@ public final class ModuleReflectionUtil {
 
     /**
      * Gets checkstyle's modules (directly, not recursively) in the given packages.
+     *
      * @param packages the collection of package names to use
      * @param loader the class loader used to load Checkstyle package names
      * @return the set of checkstyle's module classes
@@ -72,6 +73,7 @@ public final class ModuleReflectionUtil {
      * Checks whether a class may be considered as a checkstyle module. Checkstyle's modules are
      * non-abstract classes, which are either checkstyle's checks, file sets, filters, file filters,
      * {@code TreeWalker} filters, audit listener, or root module.
+     *
      * @param clazz class to check.
      * @return true if the class may be considered as the checkstyle module.
      */
@@ -89,6 +91,7 @@ public final class ModuleReflectionUtil {
     /**
      * Checks whether a class extends 'AutomaticBean', is non-abstract, and has a default
      * constructor.
+     *
      * @param clazz class to check.
      * @return true if a class may be considered a valid production class.
      */
@@ -101,6 +104,7 @@ public final class ModuleReflectionUtil {
 
     /**
      * Checks if the class has a default constructor.
+     *
      * @param clazz class to check
      * @return true if the class has a default constructor.
      */
@@ -119,6 +123,7 @@ public final class ModuleReflectionUtil {
      * Checks whether a class may be considered as the checkstyle check
      * which has TreeWalker as a parent.
      * Checkstyle's checks are classes which implement 'AbstractCheck' interface.
+     *
      * @param clazz class to check.
      * @return true if a class may be considered as the checkstyle check.
      */
@@ -129,6 +134,7 @@ public final class ModuleReflectionUtil {
     /**
      * Checks whether a class may be considered as the checkstyle file set.
      * Checkstyle's file sets are classes which implement 'AbstractFileSetCheck' interface.
+     *
      * @param clazz class to check.
      * @return true if a class may be considered as the checkstyle file set.
      */
@@ -139,6 +145,7 @@ public final class ModuleReflectionUtil {
     /**
      * Checks whether a class may be considered as the checkstyle filter.
      * Checkstyle's filters are classes which implement 'Filter' interface.
+     *
      * @param clazz class to check.
      * @return true if a class may be considered as the checkstyle filter.
      */
@@ -149,6 +156,7 @@ public final class ModuleReflectionUtil {
     /**
      * Checks whether a class may be considered as the checkstyle file filter.
      * Checkstyle's file filters are classes which implement 'BeforeExecutionFileFilter' interface.
+     *
      * @param clazz class to check.
      * @return true if a class may be considered as the checkstyle file filter.
      */
@@ -159,6 +167,7 @@ public final class ModuleReflectionUtil {
     /**
      * Checks whether a class may be considered as the checkstyle audit listener module.
      * Checkstyle's audit listener modules are classes which implement 'AuditListener' interface.
+     *
      * @param clazz class to check.
      * @return true if a class may be considered as the checkstyle audit listener module.
      */
@@ -169,6 +178,7 @@ public final class ModuleReflectionUtil {
     /**
      * Checks whether a class may be considered as the checkstyle root module.
      * Checkstyle's root modules are classes which implement 'RootModule' interface.
+     *
      * @param clazz class to check.
      * @return true if a class may be considered as the checkstyle root module.
      */
@@ -180,6 +190,7 @@ public final class ModuleReflectionUtil {
      * Checks whether a class may be considered as the checkstyle {@code TreeWalker} filter.
      * Checkstyle's {@code TreeWalker} filters are classes which implement 'TreeWalkerFilter'
      * interface.
+     *
      * @param clazz class to check.
      * @return true if a class may be considered as the checkstyle {@code TreeWalker} filter.
      */
@@ -191,6 +202,7 @@ public final class ModuleReflectionUtil {
      * Checks whether a class is {@code XpathFileGeneratorAstFilter} or
      * {@code XpathFileGeneratorAuditListener}.
      * See issue #102 https://github.com/checkstyle/checkstyle/issues/102
+     *
      * @param clazz class to check.
      * @return true if a class name starts with `XpathFileGenerator`.
      */

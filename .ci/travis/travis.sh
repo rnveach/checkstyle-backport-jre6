@@ -115,26 +115,26 @@ javac9)
   fi
   ;;
 
-javac13)
-  files=($(grep -Rl --include='*.java' ': Compilable with Java13' \
+javac14)
+  files=($(grep -Rl --include='*.java' ': Compilable with Java14' \
         src/test/resources-noncompilable || true))
   if [[  ${#files[@]} -eq 0 ]]; then
-    echo "No Java13 files to process"
+    echo "No Java14 files to process"
   else
       mkdir -p target
       for file in "${files[@]}"
       do
-        javac --release 13 --enable-preview -d target "${file}"
+        javac --release 14 --enable-preview -d target "${file}"
       done
   fi
   ;;
 
-jdk13-assembly-site)
+jdk14-assembly-site)
   mvn -e package -Passembly
   mvn -e site -Pno-validations
   ;;
 
-jdk13-verify-limited)
+jdk14-verify-limited)
   # we skip pmd and spotbugs as they executed in special Travis build
   mvn -e verify -Dpmd.skip=true -Dspotbugs.skip=true
   ;;
@@ -174,8 +174,8 @@ assembly-run-all-jar)
                      --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
   echo version:$CS_POM_VERSION
   mkdir -p .ci-temp
-  FOLDER=src/it/resources/com/google/checkstyle/test/chapter4formatting/rule413emptyblocks
-  FILE=InputRightCurlyAloneOrEmptyNoViolations.java
+  FOLDER=src/it/resources/com/google/checkstyle/test/chapter3filestructure/rule333orderingandspacing
+  FILE=InputCustomImportOrderNoImports.java
   java -jar target/checkstyle-$CS_POM_VERSION-all.jar -c /google_checks.xml \
         $FOLDER/$FILE > .ci-temp/output.log
   if grep -vE '(Starting audit)|(warning)|(Audit done.)' .ci-temp/output.log ; then exit 1; fi

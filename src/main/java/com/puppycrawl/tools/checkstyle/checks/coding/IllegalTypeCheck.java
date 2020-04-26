@@ -131,12 +131,87 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * </li>
  * </ul>
  * <p>
- * To configure the check so that it ignores getInstance() methods:
+ * Default Configuration:
+ * </p>
+ * <pre>
+ * &lt;module name=&quot;IllegalType&quot;/&gt;
+ * </pre>
+ * <pre>
+ * public class Test extends TreeSet { // violation
+ *   public &lt;T extends java.util.HashSet&gt; void method() { // violation
+ *
+ *     LinkedHashMap&lt;Integer, String&gt; lhmap =
+ *     new LinkedHashMap&lt;Integer, String&gt;(); // violation
+ *     TreeMap&lt;Integer, String&gt; treemap =
+ *     new TreeMap&lt;Integer, String&gt;(); // violation
+ *     Test t; // OK
+ *     HashMap&lt;String, String&gt; hmap; // violation
+ *     Queue&lt;Integer&gt; intqueue; // OK
+ *
+ *     java.lang.IllegalArgumentException illegalex; // OK
+ *     java.util.TreeSet treeset; // violation
+ *   }
+ *
+ * }
+ * </pre>
+ * <p>
+ * To configure the Check so that particular tokens are checked:
+ * </p>
+ * <pre>
+ * &lt;module name="IllegalType"&gt;
+ *   &lt;property name="tokens" value="METHOD_DEF"/&gt;
+ * &lt;/module&gt;
+ * </pre>
+ * <pre>
+ * public class Test extends TreeSet { // OK
+ *   public &lt;T extends java.util.HashSet&gt; void method() { // violation
+ *     LinkedHashMap&lt;Integer, String&gt; lhmap =
+ *     new LinkedHashMap&lt;Integer, String&gt;(); // OK
+ *
+ *     java.lang.IllegalArgumentException illegalex; // OK
+ *     java.util.TreeSet treeset; // Ok
+ *   }
+ *
+ *   public &lt;T extends java.util.HashSet&gt; void typeParam(T t) {} // violation
+ *
+ *   public void fullName(TreeSet a) {} // OK
+ *
+ * }
+ * </pre>
+ * <p>
+ * To configure the Check so that it ignores function() methods:
  * </p>
  * <pre>
  * &lt;module name=&quot;IllegalType&quot;&gt;
- *   &lt;property name=&quot;ignoredMethodNames&quot; value=&quot;getInstance&quot;/&gt;
+ *   &lt;property name=&quot;ignoredMethodNames&quot; value=&quot;function&quot;/&gt;
  * &lt;/module&gt;
+ * </pre>
+ * <pre>
+ * public class Test {
+ *   public HashMap&lt;String, String&gt; function() { // OK
+ *     // code
+ *   }
+ *
+ *   public HashMap&lt;String, String&gt; function1() { // violation
+ *     // code
+ *   }
+ * }
+ * </pre>
+ * <p>
+ * To configure the Check so that it validates abstract class names:
+ * </p>
+ * <pre>
+ *  &lt;module name=&quot;IllegalType&quot;&gt;
+ *    &lt;property name=&quot;validateAbstractClassNames&quot; value=&quot;true&quot;/&gt;
+ *    &lt;property name=&quot;illegalAbstractClassNameFormat&quot; value=&quot;Gitt&quot;/&gt;
+ *  &lt;/module&gt;
+ * </pre>
+ * <pre>
+ * class Test extends Gitter { // violation
+ * }
+ *
+ * class Test1 extends Github { // OK
+ * }
  * </pre>
  * <p>
  * To configure the Check so that it verifies only public, protected or static methods and fields:
@@ -146,6 +221,26 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  *   &lt;property name=&quot;memberModifiers&quot; value=&quot;LITERAL_PUBLIC,
  *    LITERAL_PROTECTED, LITERAL_STATIC&quot;/&gt;
  * &lt;/module&gt;
+ * </pre>
+ * <pre>
+ * public class Test {
+ *   public HashMap&lt;String, String&gt; function1() { // violation
+ *     // code
+ *   }
+ *
+ *   private HashMap&lt;String, String&gt; function2() { // OK
+ *     // code
+ *   }
+ *
+ *   protected HashMap&lt;Integer, String&gt; function3() { // violation
+ *     // code
+ *   }
+ *
+ *   public static TreeMap&lt;Integer, String&gt; function4() { // violation
+ *     // code
+ *   }
+ *
+ * }
  * </pre>
  * <p>
  * To configure the check so that it verifies usage of types Boolean and Foo:
@@ -246,6 +341,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Setter to specify RegExp for illegal abstract class names.
+     *
      * @param pattern a pattern.
      */
     public void setIllegalAbstractClassNameFormat(Pattern pattern) {
@@ -254,6 +350,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Setter to control whether to validate abstract class names.
+     *
      * @param validateAbstractClassNames whether abstract class names must be ignored.
      */
     public void setValidateAbstractClassNames(boolean validateAbstractClassNames) {
@@ -328,6 +425,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
     /**
      * Checks if current method's return type or variable's type is verifiable
      * according to <b>memberModifiers</b> option.
+     *
      * @param methodOrVariableDef METHOD_DEF or VARIABLE_DEF ast node.
      * @return true if member is verifiable according to <b>memberModifiers</b> option.
      */
@@ -364,6 +462,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks the super type and implemented interfaces of a given type.
+     *
      * @param typeDef class or interface for check.
      */
     private void visitTypeDef(DetailAST typeDef) {
@@ -382,6 +481,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks return type of a given method.
+     *
      * @param methodDef method for check.
      */
     private void visitMethodDef(DetailAST methodDef) {
@@ -392,6 +492,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks type of parameters.
+     *
      * @param parameterDef parameter list for check.
      */
     private void visitParameterDef(DetailAST parameterDef) {
@@ -404,6 +505,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks type of given variable.
+     *
      * @param variableDef variable to check.
      */
     private void visitVariableDef(DetailAST variableDef) {
@@ -414,6 +516,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks the type arguments of given method call/reference.
+     *
      * @param methodCallOrRef method call/reference to check.
      */
     private void visitMethodCallOrRef(DetailAST methodCallOrRef) {
@@ -424,6 +527,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * Checks imported type (as static and star imports are not supported by Check,
      *  only type is in the consideration).<br>
      * If this type is illegal due to Check's options - puts violation on it.
+     *
      * @param importAst {@link TokenTypes#IMPORT Import}
      */
     private void visitImport(DetailAST importAst) {
@@ -440,6 +544,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * import java.util.*;
      * }
      * </p>
+     *
      * @param importAst {@link TokenTypes#IMPORT Import}
      * @return true if it is star import
      */
@@ -459,6 +564,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
     /**
      * Checks type and type arguments/parameters of given method, parameter, variable or
      * method call/reference.
+     *
      * @param ast node to check.
      */
     private void checkClassName(DetailAST ast) {
@@ -469,6 +575,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks the identifier of the given type.
+     *
      * @param type node to check.
      */
     private void checkIdent(DetailAST type) {
@@ -480,6 +587,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks the {@code extends} or {@code implements} statement.
+     *
      * @param clause DetailAST for either {@link TokenTypes#EXTENDS_CLAUSE} or
      *               {@link TokenTypes#IMPLEMENTS_CLAUSE}
      */
@@ -504,6 +612,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks the given type, its arguments and parameters.
+     *
      * @param type node to check.
      */
     private void checkType(DetailAST type) {
@@ -514,6 +623,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks the upper and lower bounds for the given type.
+     *
      * @param type node to check.
      */
     private void checkTypeBounds(DetailAST type) {
@@ -529,6 +639,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks the type parameters of the node.
+     *
      * @param node node to check.
      */
     private void checkTypeParameters(final DetailAST node) {
@@ -546,6 +657,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Checks the type arguments of the node.
+     *
      * @param node node to check.
      */
     private void checkTypeArguments(final DetailAST node) {
@@ -567,6 +679,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Returns true if given class name is one of illegal classes or else false.
+     *
      * @param className class name to check.
      * @return true if given class name is one of illegal classes
      *         or if it matches to abstract class names pattern.
@@ -582,6 +695,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Extends illegal class names set via imported short type name.
+     *
      * @param canonicalName
      *  <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.7">
      *  Canonical</a> name of imported type.
@@ -598,6 +712,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * Gets imported type's
      * <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.7">
      *  canonical name</a>.
+     *
      * @param importAst {@link TokenTypes#IMPORT Import}
      * @return Imported canonical type's name.
      */
@@ -619,6 +734,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
     /**
      * Gets the next node of a syntactical tree (child of a current node or
      * sibling of a current node, or sibling of a parent of a current node).
+     *
      * @param currentNodeAst Current node in considering
      * @param subTreeRootAst SubTree root
      * @return Current node after bypassing, if current node reached the root of a subtree
@@ -642,6 +758,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Returns true if method has to be checked or false.
+     *
      * @param ast method def to check.
      * @return true if we should check this method.
      */
@@ -655,6 +772,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
     /**
      * Setter to specify classes that should not be used as types in variable declarations,
      * return values or parameters.
+     *
      * @param classNames array of illegal variable types
      * @noinspection WeakerAccess
      */
@@ -665,6 +783,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Setter to specify methods that should not be checked.
+     *
      * @param methodNames array of ignored method names
      * @noinspection WeakerAccess
      */
@@ -675,6 +794,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
 
     /**
      * Setter to define abstract classes that may be used as types.
+     *
      * @param classNames array of legal abstract class names
      * @noinspection WeakerAccess
      */
@@ -686,6 +806,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * Setter to control whether to check only methods and fields with any of
      * the specified modifiers.
      * This property does not affect method calls nor method references.
+     *
      * @param modifiers String contains modifiers.
      */
     public void setMemberModifiers(String modifiers) {

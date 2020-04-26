@@ -36,6 +36,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
 /**
  * AllTestsTest.
+ *
  * @noinspection ClassIndependentOfModule
  */
 public class AllTestsTest {

@@ -37,6 +37,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * The check context.
+     *
      * @noinspection ThreadLocalNotStaticFinal
      */
     private final ThreadLocal<FileContext> context =
@@ -58,6 +59,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * Called to process a file that matches the specified file extensions.
+     *
      * @param file the file to be processed
      * @param fileText the contents of the file.
      * @throws CheckstyleException if error condition within Checkstyle occurs.
@@ -117,6 +119,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * Returns the sorted set of {@link LocalizedMessage}.
+     *
      * @return the sorted set of {@link LocalizedMessage}.
      */
     public SortedSet<LocalizedMessage> getMessages() {
@@ -125,6 +128,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * Set the file contents associated with the tree.
+     *
      * @param contents the manager
      */
     public final void setFileContents(FileContents contents) {
@@ -133,6 +137,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * Returns the file contents associated with the file.
+     *
      * @return the file contents
      */
     protected final FileContents getFileContents() {
@@ -141,6 +146,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * Makes copy of file extensions and returns them.
+     *
      * @return file extensions that identify the files that pass the
      *     filter of this FileSetCheck.
      */
@@ -174,6 +180,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * Get tab width to report audit events with.
+     *
      * @return the tab width to report audit events with
      */
     protected final int getTabWidth() {
@@ -182,6 +189,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * Set the tab width to report audit events with.
+     *
      * @param tabWidth an {@code int} value
      */
     public final void setTabWidth(int tabWidth) {
@@ -190,6 +198,7 @@ public abstract class AbstractFileSetCheck
 
     /**
      * Adds the sorted set of {@link LocalizedMessage} to the message collector.
+     *
      * @param messages the sorted set of {@link LocalizedMessage}.
      */
     protected void addMessages(SortedSet<LocalizedMessage> messages) {
@@ -230,6 +239,7 @@ public abstract class AbstractFileSetCheck
      * Notify all listeners about the errors in a file.
      * Calls {@code MessageDispatcher.fireErrors()} with
      * all logged errors and then clears errors' list.
+     *
      * @param fileName the audited file
      */
     protected final void fireErrors(String fileName) {

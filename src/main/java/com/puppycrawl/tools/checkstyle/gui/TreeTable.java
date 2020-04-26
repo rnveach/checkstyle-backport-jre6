@@ -64,6 +64,7 @@ public final class TreeTable extends JTable {
 
     /**
      * Creates TreeTable base on TreeTableModel.
+     *
      * @param treeTableModel Tree table model
      */
     public TreeTable(ParseTreeTableModel treeTableModel) {
@@ -214,6 +215,7 @@ public final class TreeTable extends JTable {
 
     /**
      * Returns tree.
+     *
      * @return the tree that is being shared between the model.
      */
     public JTree getTree() {
@@ -222,6 +224,7 @@ public final class TreeTable extends JTable {
 
     /**
      * Sets text area editor.
+     *
      * @param textArea JTextArea component.
      */
     public void setEditor(JTextArea textArea) {
@@ -230,6 +233,7 @@ public final class TreeTable extends JTable {
 
     /**
      * Sets line position map.
+     *
      * @param linePositionMap Line position map.
      */
     public void setLinePositionMap(List<Integer> linePositionMap) {

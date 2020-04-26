@@ -114,6 +114,7 @@ public class FinalParametersCheck extends AbstractCheck {
 
     /**
      * Setter to ignore primitive types as parameters.
+     *
      * @param ignorePrimitiveTypes true or false.
      */
     public void setIgnorePrimitiveTypes(boolean ignorePrimitiveTypes) {
@@ -162,6 +163,7 @@ public class FinalParametersCheck extends AbstractCheck {
 
     /**
      * Checks parameters of the method or ctor.
+     *
      * @param method method or ctor to check.
      */
     private void visitMethod(final DetailAST method) {
@@ -186,6 +188,7 @@ public class FinalParametersCheck extends AbstractCheck {
 
     /**
      * Checks parameter of the catch block.
+     *
      * @param catchClause catch block to check.
      */
     private void visitCatch(final DetailAST catchClause) {
@@ -194,6 +197,7 @@ public class FinalParametersCheck extends AbstractCheck {
 
     /**
      * Checks parameter of the for each clause.
+     *
      * @param forEachClause for each clause to check.
      */
     private void visitForEachClause(final DetailAST forEachClause) {
@@ -202,6 +206,7 @@ public class FinalParametersCheck extends AbstractCheck {
 
     /**
      * Checks if the given parameter is final.
+     *
      * @param param parameter to check.
      */
     private void checkParam(final DetailAST param) {
@@ -217,6 +222,7 @@ public class FinalParametersCheck extends AbstractCheck {
 
     /**
      * Checks for skip current param due to <b>ignorePrimitiveTypes</b> option.
+     *
      * @param paramDef {@link TokenTypes#PARAMETER_DEF PARAMETER_DEF}
      * @return true if param has to be skipped.
      */

@@ -71,6 +71,7 @@ public final class JavaParser {
 
     /**
      * Static helper method to parses a Java source file.
+     *
      * @param contents contains the contents of the file
      * @return the root of the AST
      * @throws CheckstyleException if the contents is not a valid Java source
@@ -122,6 +123,7 @@ public final class JavaParser {
 
     /**
      * Parse a text and return the parse tree.
+     *
      * @param text the text to parse
      * @param options {@link Options} to control inclusion of comment nodes
      * @return the root node of the parse tree
@@ -139,6 +141,7 @@ public final class JavaParser {
 
     /**
      * Parses Java source file.
+     *
      * @param file the file to parse
      * @param options {@link Options} to control inclusion of comment nodes
      * @return DetailAST tree
@@ -148,7 +151,7 @@ public final class JavaParser {
     public static DetailAST parseFile(File file, Options options)
             throws IOException, CheckstyleException {
         final FileText text = new FileText(file.getAbsoluteFile(),
-            System.getProperty("file.encoding", StandardCharsets.UTF_8.name()));
+            StandardCharsets.UTF_8.name());
         return parseFileText(text, options);
     }
 
@@ -156,6 +159,7 @@ public final class JavaParser {
      * Appends comment nodes to existing AST.
      * It traverses each node in AST, looks for hidden comment tokens
      * and appends found comment tokens as nodes in AST.
+     *
      * @param root of AST
      * @return root of AST with comment nodes
      */
@@ -211,6 +215,7 @@ public final class JavaParser {
     /**
      * Create comment AST from token. Depending on token type
      * SINGLE_LINE_COMMENT or BLOCK_COMMENT_BEGIN is created.
+     *
      * @param token to create the AST
      * @return DetailAST of comment node
      */
@@ -227,6 +232,7 @@ public final class JavaParser {
 
     /**
      * Create single-line comment from token.
+     *
      * @param token to create the AST
      * @return DetailAST with SINGLE_LINE_COMMENT type
      */
