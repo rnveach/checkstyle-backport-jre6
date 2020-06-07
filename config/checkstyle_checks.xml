@@ -93,6 +93,11 @@
       <property name="message"
                 value="First sentence in a comment should start with a capital letter"/>
   </module>
+  <module name="RegexpMultiline">
+    <property name="format" value="^\s*$" />
+    <property name="matchAcrossLines" value="true" />
+    <property name="message" value="Empty file is not allowed" />
+  </module>
   <module name="RegexpSingleline">
     <property name="format" value="\s+$"/>
     <property name="minimum" value="0"/>
@@ -110,7 +115,8 @@
     <property name="message" value="Line should not be longer than 100 symbols"/>
   </module>
   <module name="RegexpSingleline">
-    <property name="format" value="^(?!(\s*&lt;a href=&quot;[^&quot;]+&quot;&gt;|.*http)).{101,}$"/>
+    <property name="format"
+              value="^(?!(\s*,?\s*&lt;a href=&quot;[^&quot;]+&quot;&gt;|.*http)).{101,}$"/>
     <property name="fileExtensions" value="xml, vm"/>
     <property name="message" value="Line should not be longer than 100 symbols"/>
   </module>
@@ -381,6 +387,7 @@
       <property name="severity" value="ignore"/>
     </module>
     <module name="NoClone"/>
+    <module name="NoCodeInFile"/>
     <module name="NoEnumTrailingComma">
       <!-- This Check is conflicting with our vision of code
            to be same as ArrayTrailingComma requires it -->
@@ -408,7 +415,7 @@
     <module name="UnnecessarySemicolonInTryWithResources"/>
     <module name="VariableDeclarationUsageDistance"/>
 
-    <!-- Filters-->
+    <!-- Filters -->
     <module name="SuppressionCommentFilter">
       <!--
         Use suppressions.xml for suppressions, this is only example.
@@ -540,7 +547,7 @@
       <property name="max" value="7"/>
     </module>
     <module name="ClassDataAbstractionCoupling">
-        <!-- Default classes are also listed-->
+        <!-- Default classes are also listed -->
         <property name="excludedClasses"
                   value="boolean, byte, char, double, float, int, long, short, void,
                          Boolean, Byte, Character, Double, Float, Integer, Long, Short, Void,
@@ -556,7 +563,7 @@
     </module>
     <module name="ClassFanOutComplexity">
         <property name="max" value="25"/>
-        <!-- Default classes are also listed-->
+        <!-- Default classes are also listed -->
         <property name="excludedClasses"
                   value="boolean, byte, char, double, float, int, long, short,
                          void, Boolean, Byte, Character, Double, Float, Integer,

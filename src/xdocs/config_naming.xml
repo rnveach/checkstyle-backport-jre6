@@ -127,41 +127,43 @@
                <td>
                  subset of tokens
                  <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
-                   CLASS_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
-                   INTERFACE_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
-                   ENUM_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
-                   ANNOTATION_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">
-                   ANNOTATION_FIELD_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
-                   PARAMETER_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
-                   VARIABLE_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
-                   METHOD_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_CONSTANT_DEF">
-                   ENUM_CONSTANT_DEF</a>.
+                   CLASS_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
+                   INTERFACE_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                   ENUM_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
+                   ANNOTATION_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">
+                   ANNOTATION_FIELD_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
+                   PARAMETER_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
+                   VARIABLE_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
+                   METHOD_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_CONSTANT_DEF">
+                   ENUM_CONSTANT_DEF</a>
+                   .
                </td>
                <td>
                  <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
-                   CLASS_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
-                   INTERFACE_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
-                   ENUM_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
-                   ANNOTATION_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">
-                   ANNOTATION_FIELD_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
-                   PARAMETER_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
-                   VARIABLE_DEF</a>,
-                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
-                   METHOD_DEF</a>.
+                   CLASS_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
+                   INTERFACE_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                   ENUM_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
+                   ANNOTATION_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">
+                   ANNOTATION_FIELD_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
+                   PARAMETER_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
+                   VARIABLE_DEF</a>
+                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
+                   METHOD_DEF</a>
+                   .
                </td>
                <td>5.8</td>
              </tr>
@@ -432,11 +434,22 @@ public class MyClass {
 
       <subsection name="Examples" id="AbstractClassName_Examples">
         <p>
-          The following example shows how to configure the
-          <code>AbstractClassName</code> to checks names, but ignore
-          missing <code>abstract</code> modifiers:
+          To configure the check:
         </p>
-        <p>Configuration:</p>
+        <source>
+&lt;module name=&quot;AbstractClassName&quot;/&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+abstract class AbstractFirstClass {} // OK
+abstract class SecondClass {} // violation, it should match pattern "^Abstract.+$"
+class AbstractThirdClass {} // violation, must be declared 'abstract'
+class FourthClass {} // OK
+        </source>
+        <p>
+          To configure the check so that it check name
+          but ignore <code>abstract</code> modifier:
+        </p>
         <source>
 &lt;module name=&quot;AbstractClassName&quot;&gt;
   &lt;property name=&quot;ignoreModifier&quot; value=&quot;true&quot;/&gt;
@@ -445,9 +458,42 @@ public class MyClass {
         <p>Example:</p>
         <source>
 abstract class AbstractFirstClass {} // OK
-abstract class SecondClass {} // violation, it should match the pattern "^Abstract.+$"
+abstract class SecondClass {} // violation, it should match pattern "^Abstract.+$"
 class AbstractThirdClass {} // OK, no "abstract" modifier
+class FourthClass {} // OK
+         </source>
+         <p>
+            To configure the check to ignore name
+            validation when class declared as 'abstract'
+        </p>
+        <source>
+&lt;module name=&quot;AbstractClassName&quot;&gt;
+  &lt;property name=&quot;ignoreName&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <source>
+abstract class AbstractFirstClass {} // OK
+abstract class SecondClass {} // OK, name validation is ignored
+class AbstractThirdClass {} // violation, must be declared as 'abstract'
+class FourthClass {} // OK, no "abstract" modifier
+         </source>
+        <p>
+          To configure the check
+          with <code>format</code>:
+        </p>
+        <source>
+&lt;module name=&quot;AbstractClassName&quot;&gt;
+  &lt;property name=&quot;format&quot; value=&quot;^Generator.+$&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+abstract class GeneratorFirstClass {} // OK
+abstract class SecondClass {} // violation, must match pattern '^Generator.+$'
+class GeneratorThirdClass {} // violation, must be declared 'abstract'
+class FourthClass {} // OK, no "abstract" modifier
+      </source>
       </subsection>
 
       <subsection name="Example of Usage" id="AbstractClassName_Example_of_Usage">
@@ -539,6 +585,38 @@ class AbstractThirdClass {} // OK, no "abstract" modifier
         <source>
 &lt;module name=&quot;CatchParameterName&quot;/&gt;
         </source>
+        <p>Example:
+        </p>
+        <source>
+public class MyTest {
+  public void myTest() {
+    try {
+      // ...
+    } catch (ArithmeticException e) { // OK
+      // ...
+    } catch (ArrayIndexOutOfBoundsException ex) { // OK
+      // ...
+    } catch (Throwable t) { // OK
+      // ...
+    } catch (IndexOutOfBoundsException e123) { // violation, digits
+                                               // not allowed
+      // ...
+    } catch (NullPointerException ab) { // violation, should have at least
+                                        // three characters if not e|t|ex
+      // ...
+    } catch (ArrayStoreException abc) { // OK
+      // ...
+    } catch (InterruptedException aBC) { // violation, first two characters
+                                         // should be in lowercase
+      // ...
+    } catch (RuntimeException abC) { // OK
+      // ...
+    } catch (Exception abCD) { // OK
+      // ...
+    }
+  }
+}
+        </source>
         <p>
           An example of how to configure the check for names that begin with
           a lower case letter, followed by any letters or digits is:
@@ -555,11 +633,11 @@ public class MyTest {
   public void myTest() {
     try {
       // ...
-    } catch (ArithmeticException ex) { //OK
+    } catch (ArithmeticException ex) { // OK
       // ...
-    } catch (ArrayIndexOutOfBoundsException ex2) { //OK
+    } catch (ArrayIndexOutOfBoundsException ex2) { // OK
       // ...
-    } catch (IOException thirdException) { //OK
+    } catch (IOException thirdException) { // OK
       // ...
     } catch (Exception FourthException) { // violation, the initial letter
                                           // should be lowercase
@@ -1079,19 +1157,21 @@ class MyClass {
             <td>
               subset of tokens
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
-                  VARIABLE_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
-                  PARAMETER_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">
-                  RESOURCE</a>.
+                  VARIABLE_DEF</a>
+              , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
+                  PARAMETER_DEF</a>
+              , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">
+                  RESOURCE</a>
+                .
             </td>
             <td>
               <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
-                  VARIABLE_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
-                  PARAMETER_DEF</a>,
-              <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">
-                  RESOURCE</a>.
+                  VARIABLE_DEF</a>
+              , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
+                  PARAMETER_DEF</a>
+              , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RESOURCE">
+                  RESOURCE</a>
+                .
             </td>
             <td>3.0</td>
           </tr>
@@ -2425,23 +2505,25 @@ class MyClass {
               <td>
                 subset of tokens
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
-                  CLASS_DEF</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
-                  INTERFACE_DEF</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
-                  ENUM_DEF</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
-                  ANNOTATION_DEF</a>.
+                  CLASS_DEF</a>
+                , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
+                  INTERFACE_DEF</a>
+                , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                  ENUM_DEF</a>
+                , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
+                  ANNOTATION_DEF</a>
+                  .
               </td>
               <td>
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
-                  CLASS_DEF</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
-                  INTERFACE_DEF</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
-                  ENUM_DEF</a>,
-                <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
-                  ANNOTATION_DEF</a>.
+                  CLASS_DEF</a>
+                , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
+                  INTERFACE_DEF</a>
+                , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ENUM_DEF">
+                  ENUM_DEF</a>
+                , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
+                  ANNOTATION_DEF</a>
+                  .
               </td>
               <td>3.0</td>
             </tr>

@@ -75,7 +75,7 @@
             <td>Checks the order of javadoc block-tags or javadoc tags.</td>
           </tr>
           <tr>
-            <td><a href="config_misc.html#AvoidDoubleBraceInitialization">
+            <td><a href="config_coding.html#AvoidDoubleBraceInitialization">
               AvoidDoubleBraceInitialization</a></td>
             <td>Detects double brace initialization.</td>
           </tr>
@@ -608,6 +608,12 @@
             <td>
               Checks that the clone method is not overridden from the
             Object class.</td>
+          </tr>
+          <tr>
+            <td><a href="config_misc.html#NoCodeInFile">NoCodeInFile</a></td>
+            <td>
+              Checks whether file contains code.
+            </td>
           </tr>
           <tr>
             <td><a href="config_coding.html#NoFinalizer">NoFinalizer</a></td>

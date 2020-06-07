@@ -12,7 +12,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.32</version>
+  <version>8.33</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -186,7 +186,7 @@
     <maven.site.plugin.version>3.8.2</maven.site.plugin.version>
     <maven.spotbugs.plugin.version>4.0.0</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.13.0</maven.pmd.plugin.version>
-    <pmd.version>6.22.0</pmd.version>
+    <pmd.version>6.23.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
     <powermock.version>2.0.7</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
@@ -208,7 +208,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.2.0</version>
+      <version>4.3.1</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -336,7 +336,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
@@ -778,12 +778,6 @@
             </goals>
             <configuration>
               <excludes>
-                <!-- Parser related classes -->
-                <exclude>com/puppycrawl/tools/checkstyle/grammar/*.class</exclude>
-                <exclude>com/puppycrawl/tools/checkstyle/grammar/javadoc/*.class</exclude>
-                <exclude>
-                  com/puppycrawl/tools/checkstyle/JavadocDetailNodeParser$JavadocParserErrorStrategy.class
-                </exclude>
                 <!-- Swing related classes -->
                 <exclude>com/puppycrawl/tools/checkstyle/gui/*.class</exclude>
               </excludes>
@@ -892,12 +886,12 @@
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.54</minimum>
+                      <minimum>0.57</minimum>
                     </limit>
                     <limit>
                       <counter>BRANCH</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.44</minimum>
+                      <minimum>0.48</minimum>
                     </limit>
                   </limits>
                 </rule>
@@ -1309,7 +1303,7 @@
       <plugin>
         <groupId>de.thetaphi</groupId>
         <artifactId>forbiddenapis</artifactId>
-        <version>2.7</version>
+        <version>3.0</version>
         <configuration>
           <targetVersion>${java.version}</targetVersion>
           <failOnUnsupportedJava>false</failOnUnsupportedJava>
@@ -1541,7 +1535,7 @@
             <!-- Excluded due to Maven Release Plugin's issue #919:
                  https://issues.apache.org/jira/browse/MRELEASE-919 -->
             <excludedLink>http://maven.apache.org/plugins/maven-release-plugin/</excludedLink>
-            <!-- permanent java.net.UnknownHostException :-->
+            <!-- permanent java.net.UnknownHostException : -->
             <excludedLink>http://jacoco-maven-plugin/</excludedLink>
             <!-- Excluded till https://issues.sonatype.org/browse/NEXUS-9643 -->
             <excludedLink>
@@ -1587,6 +1581,8 @@
             <excludedLink>https://api.bountysource.com/*</excludedLink>
             <!-- This URL become to require to login first to see content -->
             <excludedLink>https://bitbucket.org/atlassian/bamboo-checkstyle-plugin</excludedLink>
+            <!-- link works but plugin's request always result in 404 -->
+            <excludedLink>https://www.manning.com/books/java-development-with-ant</excludedLink>
           </excludedLinks>
         </configuration>
       </plugin>
@@ -1786,6 +1782,7 @@
                 <param>com.puppycrawl.tools.checkstyle.checks.FinalParametersCheck*</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.LineSeparatorOption*</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck*</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.NoCodeInFileCheck*</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.OrderedPropertiesCheck*</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.OuterTypeFilenameCheck*</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.SuppressWarningsHolder*</param>
@@ -1804,6 +1801,7 @@
                 <param>com.puppycrawl.tools.checkstyle.checks.DescendantTokenCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.FinalParametersCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheckTest</param>
+                <param>com.puppycrawl.tools.checkstyle.checks.NoCodeInFileCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.OrderedPropertiesCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.OuterTypeFilenameCheckTest</param>
                 <param>com.puppycrawl.tools.checkstyle.checks.SuppressWarningsHolderTest</param>
@@ -1947,7 +1945,7 @@
                 <mutator>MATH</mutator>
                 <mutator>NEGATE_CONDITIONALS</mutator>
                 <!-- result in 115 extra survived items, too much to keep in ignore list -->
-                <!--<mutator>REMOVE_CONDITIONALS</mutator>-->
+                <!-- <mutator>REMOVE_CONDITIONALS</mutator> -->
                 <mutator>RETURN_VALS</mutator>
                 <mutator>TRUE_RETURNS</mutator>
                 <mutator>VOID_METHOD_CALLS</mutator>
@@ -2132,7 +2130,7 @@
                 <mutator>MATH</mutator>
                 <mutator>NEGATE_CONDITIONALS</mutator>
                 <!-- result in 53 extra survived items, too much to keep in ignore list -->
-                <!--<mutator>REMOVE_CONDITIONALS</mutator>-->
+                <!-- <mutator>REMOVE_CONDITIONALS</mutator> -->
                 <mutator>RETURN_VALS</mutator>
                 <mutator>TRUE_RETURNS</mutator>
                 <mutator>VOID_METHOD_CALLS</mutator>
@@ -2178,7 +2176,7 @@
                 <mutator>MATH</mutator>
                 <mutator>NEGATE_CONDITIONALS</mutator>
                 <!-- result in 64 extra survived items, too much to keep in ignore list -->
-                <!--<mutator>REMOVE_CONDITIONALS</mutator>-->
+                <!-- <mutator>REMOVE_CONDITIONALS</mutator> -->
                 <mutator>RETURN_VALS</mutator>
                 <mutator>TRUE_RETURNS</mutator>
                 <mutator>VOID_METHOD_CALLS</mutator>
@@ -2685,11 +2683,11 @@
                 <param>com.puppycrawl.tools.checkstyle.ConfigurationLoaderTest</param>
               </targetTests>
               <excludedMethods>
-                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605 -->
+                <!-- cause of https://github.com/checkstyle/checkstyle/issues/3605 -->
                 <param>setFeaturesBySystemProperty</param>
               </excludedMethods>
               <avoidCallsTo>
-                <!--cause of https://github.com/checkstyle/checkstyle/issues/3605 -->
+                <!-- cause of https://github.com/checkstyle/checkstyle/issues/3605 -->
                 <avoidCallsTo>
                   com.puppycrawl.tools.checkstyle.XmlLoader$LoadExternalDtdFeatureProvider
                 </avoidCallsTo>
@@ -2962,7 +2960,7 @@
                 <mutator>MATH</mutator>
                 <mutator>NEGATE_CONDITIONALS</mutator>
                 <!-- result in 58 extra survived items, too much to keep in ignore list -->
-                <!--<mutator>REMOVE_CONDITIONALS</mutator>-->
+                <!-- <mutator>REMOVE_CONDITIONALS</mutator> -->
                 <mutator>RETURN_VALS</mutator>
                 <mutator>TRUE_RETURNS</mutator>
                 <mutator>VOID_METHOD_CALLS</mutator>

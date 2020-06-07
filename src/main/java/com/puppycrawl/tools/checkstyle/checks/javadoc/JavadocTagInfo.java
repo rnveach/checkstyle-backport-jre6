@@ -39,7 +39,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  *
  * and
  *
- * <a href="https://www.oracle.com/technetwork/java/javase/documentation/index-137868.html">
+ * <a href="https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html">
  * how to write</a>.
  * </p>
  *
@@ -391,7 +391,7 @@ public enum JavadocTagInfo {
         final Map<String, JavadocTagInfo> textToTagBuilder = new HashMap<String, JavadocTagInfo>();
         final Map<String, JavadocTagInfo> nameToTagBuilder = new HashMap<String, JavadocTagInfo>();
 
-        for (final JavadocTagInfo tag : JavadocTagInfo.values()) {
+        for (final JavadocTagInfo tag : values()) {
             textToTagBuilder.put(tag.text, tag);
             nameToTagBuilder.put(tag.name, tag);
         }

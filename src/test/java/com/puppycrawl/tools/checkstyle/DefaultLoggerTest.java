@@ -90,8 +90,9 @@ public class DefaultLoggerTest {
 
     @Test
     public void testNullInfoStreamOptions() {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            final DefaultLogger logger = new DefaultLogger(new ByteArrayOutputStream(), null);
+            final DefaultLogger logger = new DefaultLogger(outputStream, null);
             // assert required to calm down eclipse's 'The allocated object is never used' violation
             assertNotNull(logger, "Null instance");
             fail("Exception was expected");
@@ -104,9 +105,10 @@ public class DefaultLoggerTest {
 
     @Test
     public void testNullErrorStreamOptions() {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            final DefaultLogger logger = new DefaultLogger(new ByteArrayOutputStream(),
-                AutomaticBean.OutputStreamOptions.CLOSE, new ByteArrayOutputStream(), null);
+            final DefaultLogger logger = new DefaultLogger(outputStream,
+                AutomaticBean.OutputStreamOptions.CLOSE, outputStream, null);
             // assert required to calm down eclipse's 'The allocated object is never used' violation
             assertNotNull(logger, "Null instance");
             fail("Exception was expected");

@@ -141,11 +141,13 @@ jdk14-verify-limited)
 
 nondex)
   mvn -e --fail-never clean nondex:nondex -DargLine='-Xms1024m -Xmx2048m'
-  cat `grep -RlE 'td class=.x' .nondex/ | cat` < /dev/null > output.txt
-  RESULT=$(cat output.txt | wc -c)
-  cat output.txt
+  mkdir -p .ci-temp
+  cat `grep -RlE 'td class=.x' .nondex/ | cat` < /dev/null > .ci-temp/output.txt
+  RESULT=$(cat .ci-temp/output.txt | wc -c)
+  cat .ci-temp/output.txt
   echo 'Size of output:'$RESULT
   if [[ $RESULT != 0 ]]; then sleep 5s; false; fi
+  rm .ci-temp/output.txt
   ;;
 
 versions)
@@ -178,8 +180,15 @@ assembly-run-all-jar)
   FILE=InputCustomImportOrderNoImports.java
   java -jar target/checkstyle-$CS_POM_VERSION-all.jar -c /google_checks.xml \
         $FOLDER/$FILE > .ci-temp/output.log
-  if grep -vE '(Starting audit)|(warning)|(Audit done.)' .ci-temp/output.log ; then exit 1; fi
-  if grep 'warning' .ci-temp/output.log ; then exit 1; fi
+  fail=0
+  if grep -vE '(Starting audit)|(warning)|(Audit done.)' .ci-temp/output.log ; then
+    fail=1;
+  elif grep 'warning' .ci-temp/output.log ; then
+    fail=1;
+  fi
+  rm .ci-temp/output.log
+  sleep 5
+  exit $fail
   ;;
 
 release-dry-run)
@@ -187,6 +196,7 @@ release-dry-run)
     mvn -e release:prepare -DdryRun=true --batch-mode -Darguments='-DskipTests -DskipITs \
       -Djacoco.skip=true -Dpmd.skip=true -Dspotbugs.skip=true -Dxml.skip=true \
       -Dcheckstyle.ant.skip=true -Dcheckstyle.skip=true -Dgpg.skip=true'
+    mvn -e release:clean
   fi
   ;;
 
@@ -199,9 +209,9 @@ pr-description)
   ;;
 
 pr-age)
-  ## Travis merges the PR commit into origin/master
-  ## This command undoes that to work with the original branch
-  ## if it notices a merge commit
+  # Travis merges the PR commit into origin/master
+  # This command undoes that to work with the original branch
+  # if it notices a merge commit
   if git show --summary HEAD | grep ^Merge: ;
   then
     git reset --hard `git log -n 1 --no-merges --pretty=format:"%h"`
@@ -227,17 +237,20 @@ check-chmod)
   ;;
 
 all-sevntu-checks)
+  mkdir -p .ci-temp/all-sevntu-checks
+  working_dir=".ci-temp/all-sevntu-checks"
   xmlstarlet sel --net --template -m .//module -v "@name" -n config/checkstyle_sevntu_checks.xml \
     | grep -vE "Checker|TreeWalker|Filter|Holder" | grep -v "^$" \
     | sed "s/com\.github\.sevntu\.checkstyle\.checks\..*\.//" \
-    | sort | uniq | sed "s/Check$//" > file.txt
+    | sort | uniq | sed "s/Check$//" > $working_dir/file.txt
   wget -q http://sevntu-checkstyle.github.io/sevntu.checkstyle/apidocs/allclasses-frame.html -O - \
     | grep "<li>" | cut -d '>' -f 3 | sed "s/<\/a//" \
     | grep -E "Check$" \
-    | sort | uniq | sed "s/Check$//" > web.txt
+    | sort | uniq | sed "s/Check$//" > $working_dir/web.txt
   # temporal ignore list
   # sed -i.backup '/Jsr305Annotations/d' web.txt
-  diff -u web.txt file.txt
+  diff -u $working_dir/web.txt $working_dir/file.txt
+  removeFolderWithProtectedFiles $working_dir
   ;;
 
 no-error-test-sbe)
@@ -253,6 +266,8 @@ no-error-test-sbe)
     "s/'com.puppycrawl.tools:checkstyle:.*'/'com.puppycrawl.tools:checkstyle:$CS_POM_VERSION'/" \
     build.gradle
   ./gradlew build --stacktrace
+  cd ..
+  removeFolderWithProtectedFiles simple-binary-encoding
   ;;
 
 no-exception-test-checkstyle-sevntu-checkstyle)
@@ -272,6 +287,8 @@ no-exception-test-checkstyle-sevntu-checkstyle)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
     --config checks-nonjavadoc-error.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
   ;;
 
 no-exception-test-guava)
@@ -288,8 +305,10 @@ no-exception-test-guava)
   mvn -e clean install -Pno-validations
   cd .ci-temp/contribution/checkstyle-tester
   export MAVEN_OPTS="-Xmx2048m"
-  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties
+  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
      --config checks-nonjavadoc-error.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
   ;;
 
 no-exception-test-guava-with-google-checks)
@@ -310,6 +329,9 @@ no-exception-test-guava-with-google-checks)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
       --config ../../google_checks.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
+  rm google_checks.*
   ;;
 
 no-exception-test-guava-with-sun-checks)
@@ -330,6 +352,9 @@ no-exception-test-guava-with-sun-checks)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
       --config ../../sun_checks.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
+  rm sun_checks.*
   ;;
 
 no-exception-test-hibernate)
@@ -348,6 +373,8 @@ no-exception-test-hibernate)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
      --config checks-nonjavadoc-error.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
   ;;
 
 no-exception-test-spotbugs)
@@ -366,6 +393,8 @@ no-exception-test-spotbugs)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
     --config checks-nonjavadoc-error.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
   ;;
 
 no-exception-test-spring-framework)
@@ -384,6 +413,8 @@ no-exception-test-spring-framework)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
     --config checks-nonjavadoc-error.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
   ;;
 
 no-exception-test-hbase)
@@ -402,6 +433,8 @@ no-exception-test-hbase)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
       --config checks-nonjavadoc-error.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
   ;;
 
 no-exception-test-Pmd-elasticsearch-lombok-ast)
@@ -422,6 +455,8 @@ no-exception-test-Pmd-elasticsearch-lombok-ast)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
       --config checks-nonjavadoc-error.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
   ;;
 
 no-exception-test-alot-of-project1)
@@ -445,6 +480,8 @@ no-exception-test-alot-of-project1)
   export MAVEN_OPTS="-Xmx2048m"
   groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
       --config checks-nonjavadoc-error.xml --checkstyleVersion $CS_POM_VERSION
+  cd ../..
+  removeFolderWithProtectedFiles contribution
   ;;
 
 
@@ -459,6 +496,31 @@ no-error-pmd)
   mvn -e install checkstyle:check -Dcheckstyle.version=${CS_POM_VERSION}
   cd ..
   removeFolderWithProtectedFiles pmd
+  ;;
+
+no-violation-test-josm)
+  CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
+                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.6.0:exec)
+  echo CS_version: ${CS_POM_VERSION}
+  mkdir -p .ci-temp
+  cd .ci-temp
+  TESTED=16391
+  # Uncomment to test current tested version instead of hardcoded version
+  # TESTED=`wget -q -O - https://josm.openstreetmap.de/wiki/TestedVersion?format=txt`
+  echo "JOSM revision: $TESTED"
+  svn -q --force export https://josm.openstreetmap.de/svn/trunk/ -r $TESTED --native-eol LF josm
+  cd josm
+  sed -i -E "s/(name=\"checkstyle\" rev=\")([0-9]+\.[0-9]+(-SNAPSHOT)?)/\1${CS_POM_VERSION}/" \
+   tools/ivy.xml
+  ant -v checkstyle
+  grep '<error' checkstyle-josm.xml | cat > errors.log
+  echo "Checkstyle Errors:"
+  RESULT=$(cat errors.log | wc -l)
+  cat errors.log
+  echo 'Size of output:'$RESULT
+  cd ..
+  removeFolderWithProtectedFiles josm
+  if [[ $RESULT != 0 ]]; then false; fi
   ;;
 
 check-missing-pitests)
@@ -503,24 +565,26 @@ check-missing-pitests)
   ;;
 
 verify-no-exception-configs)
-  mkdir -p .ci-temp
+  mkdir -p .ci-temp/verify-no-exception-configs
+  working_dir=.ci-temp/verify-no-exception-configs
   wget -q \
-    --directory-prefix .ci-temp \
+    --directory-prefix $working_dir \
     --no-clobber \
     https://raw.githubusercontent.com/checkstyle/contribution/master/checkstyle-tester/checks-nonjavadoc-error.xml
   wget -q \
-    --directory-prefix .ci-temp \
+    --directory-prefix $working_dir \
     --no-clobber \
     https://raw.githubusercontent.com/checkstyle/contribution/master/checkstyle-tester/checks-only-javadoc-error.xml
   MODULES_WITH_EXTERNAL_FILES="Filter|ImportControl"
   xmlstarlet sel --net --template -m .//module -v "@name" \
-    -n .ci-temp/checks-nonjavadoc-error.xml -n .ci-temp/checks-only-javadoc-error.xml \
+    -n $working_dir/checks-nonjavadoc-error.xml -n $working_dir/checks-only-javadoc-error.xml \
     | grep -vE $MODULES_WITH_EXTERNAL_FILES | grep -v "^$" \
-    | sort | uniq | sed "s/Check$//" > .ci-temp/web.txt
+    | sort | uniq | sed "s/Check$//" > $working_dir/web.txt
   xmlstarlet sel --net --template -m .//module -v "@name" -n config/checkstyle_checks.xml \
     | grep -vE $MODULES_WITH_EXTERNAL_FILES | grep -v "^$" \
-    | sort | uniq | sed "s/Check$//" > .ci-temp/file.txt
-  DIFF_TEXT=$(diff -u .ci-temp/web.txt .ci-temp/file.txt | cat)
+    | sort | uniq | sed "s/Check$//" > $working_dir/file.txt
+  DIFF_TEXT=$(diff -u $working_dir/web.txt $working_dir/file.txt | cat)
+  fail=0
   if [[ $DIFF_TEXT != "" ]]; then
     echo "Diff is detected."
     if [[ $TRAVIS_PULL_REQUEST =~ ^([0-9]+)$ ]]; then
@@ -531,47 +595,40 @@ verify-no-exception-configs)
       echo 'PR Description grepped:'${PR_DESC:0:180}
       if [[ -z $PR_DESC ]]; then
         echo 'You introduce new Check'
-        diff -u .ci-temp/web.txt .ci-temp/file.txt | cat
+        diff -u $working_dir/web.txt $working_dir/file.txt | cat
         echo 'Please create PR to repository https://github.com/checkstyle/contribution'
         echo 'and add your new Check '
         echo '   to file checkstyle-tester/checks-nonjavadoc-error.xml'
         echo 'or to file checkstyle-tester/checks-only-javadoc-error.xml'
         echo 'PR for contribution repository will be merged right after this PR.'
-        sleep 5s
-        false;
+        fail=1;
       fi
     else
-      diff -u .ci-temp/web.txt .ci-temp/file.txt | cat
+      diff -u $working_dir/web.txt $working_dir/file.txt | cat
       echo 'file config/checkstyle_checks.xml contains Check that is not present at:'
-      echo 'https://github.com/checkstyle/contribution/checkstyle-tester/checks-nonjavadoc-error.xml'
-      echo 'https://github.com/checkstyle/contribution/checkstyle-tester/checks-nonjavadoc-error.xml'
+      echo 'https://github.com/checkstyle/contribution/blob/master/checkstyle-tester/checks-nonjavadoc-error.xml'
+      echo 'https://github.com/checkstyle/contribution/blob/master/checkstyle-tester/checks-only-javadoc-error.xml'
       echo 'Please add new Check to one of such files to let Check participate in auto testing'
-      sleep 5s
-      false;
+      fail=1;
     fi
   fi
-  ;;
-
-git-status)
-  if [ $(git status | grep "Changes not staged for commit" | wc -l) -gt 0 ]; then
-    echo "There are changes in files after clone, recheck .gitattributes file"
-    sleep 5s
-    false
-  fi
+  removeFolderWithProtectedFiles .ci-temp/verify-no-exception-configs
+  sleep 5
+  exit $fail
   ;;
 
 check-since-version)
-  ## Travis merges the PR commit into origin/master
-  ## This identifies the PR's original commit
-  ## if it notices a merge commit
+  # Travis merges the PR commit into origin/master
+  # This identifies the PR's original commit
+  # if it notices a merge commit
   HEAD=`git rev-parse HEAD`
   if git show --summary HEAD | grep ^Merge: ; then
       echo "Merge detected."
       HEAD=`git log -n 1 --no-merges --pretty=format:"%H"`
   fi
-  ## Identify previous commit to know how much to examine
-  ## Script assumes we are only working with 1 commit if we are in master
-  ## Otherwise, it looks for the common ancestor with master
+  # Identify previous commit to know how much to examine
+  # Script assumes we are only working with 1 commit if we are in master
+  # Otherwise, it looks for the common ancestor with master
   COMMIT=`git rev-parse $HEAD`
   echo "PR commit: $COMMIT"
 

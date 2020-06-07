@@ -35,8 +35,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,6 +60,21 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * TestCase to check DetailAST.
  */
 public class DetailAstImplTest extends AbstractModuleTestSupport {
+
+    // Ignores file which are not meant to have root node intentionally.
+    public static final Set<String> NO_ROOT_FILES =
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
+                 // fails with unexpected character
+                 "InputGrammar.java",
+                 // comment only files, no root
+                 "InputPackageDeclarationWithCommentOnly.java",
+                 "InputSingleSpaceSeparatorEmpty.java",
+                 "InputNoCodeInFile1.java",
+                 "InputNoCodeInFile2.java",
+                 "InputNoCodeInFile3.java",
+                 "InputNoCodeInFile5.java",
+                 "InputNoCodeInFile6.java"
+        )));
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -566,11 +584,7 @@ public class DetailAstImplTest extends AbstractModuleTestSupport {
                     result.addAll(getAllFiles(file));
                 }
                 else if (file.getName().endsWith(".java")
-                        // fails with unexpected character
-                        && !file.getName().endsWith("InputGrammar.java")
-                        // comment only files, no root
-                        && !file.getName().endsWith("InputPackageDeclarationWithCommentOnly.java")
-                        && !file.getName().endsWith("InputSingleSpaceSeparatorEmpty.java")) {
+                        && !NO_ROOT_FILES.contains(file.getName())) {
                     result.add(file);
                 }
 

@@ -55,12 +55,11 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     // till https://github.com/checkstyle/checkstyle/issues/5777
     public static final Set<String> INCOMPATIBLE_CHECK_NAMES =
         Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
-            "CommentsIndentation",
-            "CustomImportOrder",
             "EmptyLineSeparator",
             "Indentation",
             "JavadocMethod",
             "MissingJavadocType",
+            "NoCodeInFile (reason is that AST is not generated for a file not containing code)",
             "Regexp (reason is at  #7759)",
             "RegexpSinglelineJava (reason is at  #7759)",
             "TodoComment",
@@ -252,7 +251,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
         final Set<String> allChecks = new HashSet<String>(simpleCheckNames);
         allChecks.removeAll(INCOMPATIBLE_JAVADOC_CHECK_NAMES);
         allChecks.removeAll(INCOMPATIBLE_CHECK_NAMES);
-        allChecks.removeAll(Arrays.asList("Regexp", "RegexpSinglelineJava"));
+        allChecks.removeAll(Arrays.asList("Regexp", "RegexpSinglelineJava", "NoCodeInFile"));
         allChecks.removeAll(MISSING_CHECK_NAMES);
         allChecks.removeAll(NO_VIOLATION_MODULES);
         allChecks.removeAll(compatibleChecks);

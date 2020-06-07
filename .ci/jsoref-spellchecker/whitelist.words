@@ -174,7 +174,7 @@ ccc
 CCCC
 CClass
 ccomment
-CDATA
+cdata
 cde
 cdfd
 Cdi
@@ -552,7 +552,7 @@ hideutilityclassconstructor
 hipparchus
 hmap
 hne
-Homepage
+homepage
 horizontalwhitespace
 Hostname
 href
@@ -700,6 +700,7 @@ jls
 JNDI
 jooq
 JOption
+josm
 jp
 Jpa
 JPanel
@@ -839,6 +840,7 @@ mojohaus
 moks
 moradan
 moz
+mozilla
 MRELEASE
 MSITE
 MSONAR
@@ -900,6 +902,8 @@ noarraytrailingcomma
 noauto
 nobr
 noclone
+nocode
+nocodeinfile
 nocstylearray
 nodeps
 NODESET
@@ -963,6 +967,7 @@ OOL
 oopsla
 opencollective
 openjdk
+openstreetmap
 operatorwrap
 optgroup
 optimisation
@@ -1177,6 +1182,7 @@ slist
 Sms
 smth
 snyk
+socio
 solr
 som
 someinner
@@ -1469,7 +1475,7 @@ xy
 XYzz
 xz
 xzvf
-Yaml
+yaml
 Yaroslavtsev
 yml
 youtrack

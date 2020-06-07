@@ -52,6 +52,7 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
                     + "  -h, --help        Show this help message and exit.%n"
                     + "  -V, --version     Print version information and exit.%n");
     private static final File DESTFILE = new File("target/tokentypes.properties");
+    private static final String DESTFILE_ABSOLUTE_PATH = DESTFILE.getAbsolutePath();
 
     @Rule
     public final SystemErrRule systemErr = new SystemErrRule().enableLog().mute();
@@ -89,8 +90,9 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
             throws Exception {
         JavadocPropertiesGenerator.main("--nonexistent-argument");
 
-        final String expected = String.format(Locale.ROOT, "Missing required options "
-                + "[--destfile=<outputFile>, params[0]=<inputFile>]%n")
+        final String expected = String.format(Locale.ROOT,
+                "Missing required options and parameters: "
+                + "'--destfile=<outputFile>', '<inputFile>'%n")
                 + USAGE;
         assertEquals(expected, systemErr.getLog(), "Unexpected error log");
         assertEquals("", systemOut.getLog(), "Unexpected output log");
@@ -101,24 +103,24 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
         JavadocPropertiesGenerator.main(getPath("InputMain.java"));
 
         final String expected = String.format(Locale.ROOT,
-                "Missing required option '--destfile=<outputFile>'%n") + USAGE;
+                "Missing required option: '--destfile=<outputFile>'%n") + USAGE;
         assertEquals(expected, systemErr.getLog(), "Unexpected error log");
         assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
     public void testNoInputSpecified() throws Exception {
-        JavadocPropertiesGenerator.main("--destfile", DESTFILE.getAbsolutePath());
+        JavadocPropertiesGenerator.main("--destfile", DESTFILE_ABSOLUTE_PATH);
 
         final String expected = String.format(Locale.ROOT,
-                "Missing required parameter: <inputFile>%n") + USAGE;
+                "Missing required parameter: '<inputFile>'%n") + USAGE;
         assertEquals(expected, systemErr.getLog(), "Unexpected error log");
         assertEquals("", systemOut.getLog(), "Unexpected output log");
     }
 
     @Test
     public void testNotClass() throws Exception {
-        JavadocPropertiesGenerator.main("--destfile", DESTFILE.getAbsolutePath(),
+        JavadocPropertiesGenerator.main("--destfile", DESTFILE_ABSOLUTE_PATH,
             getPath("InputJavadocPropertiesGeneratorNotClass.java"));
         assertEquals("", systemErr.getLog(), "Unexpected error log");
         assertEquals("", systemOut.getLog(), "Unexpected output log");
@@ -128,13 +130,13 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
     public void testNotExistentInputSpecified() {
         try {
             JavadocPropertiesGenerator.main(
-                "--destfile", DESTFILE.getAbsolutePath(), "NotExistent.java");
+                "--destfile", DESTFILE_ABSOLUTE_PATH, "NotExistent.java");
             fail("Exception was expected");
         }
         catch (CheckstyleException ex) {
             assertEquals(
                     "Failed to write javadoc properties of 'NotExistent.java' to '"
-                    + DESTFILE.getAbsolutePath() + "'",
+                    + DESTFILE_ABSOLUTE_PATH + "'",
                 ex.getMessage(), "Invalid error message");
 
             final Throwable cause = ex.getCause();
@@ -177,7 +179,7 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
             + "DEPRECATED_LITERAL='@deprecated' literal in @deprecated Javadoc tag?" + EOL;
 
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorCorrect.java"),
-            "--destfile", DESTFILE.getAbsolutePath());
+            "--destfile", DESTFILE_ABSOLUTE_PATH);
         assertEquals("", systemErr.getLog(), "Unexpected error log");
         assertEquals("", systemOut.getLog(), "Unexpected output log");
         final String fileContent = FileUtils.readFileToString(DESTFILE, StandardCharsets.UTF_8);
@@ -187,7 +189,7 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
     @Test
     public void testEmptyJavadoc() throws Exception {
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorEmptyJavadoc.java"),
-            "--destfile", DESTFILE.getAbsolutePath());
+            "--destfile", DESTFILE_ABSOLUTE_PATH);
         assertEquals("", systemErr.getLog(), "Unexpected error log");
         assertEquals("", systemOut.getLog(), "Unexpected output log");
         final long size = FileUtils.sizeOf(DESTFILE);
@@ -197,7 +199,7 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
     @Test
     public void testNotConstants() throws Exception {
         JavadocPropertiesGenerator.main(getPath("InputJavadocPropertiesGeneratorNotConstants.java"),
-            "--destfile", DESTFILE.getAbsolutePath());
+            "--destfile", DESTFILE_ABSOLUTE_PATH);
         assertEquals("", systemErr.getLog(), "Unexpected error log");
         assertEquals("", systemOut.getLog(), "Unexpected output log");
         final long size = FileUtils.sizeOf(DESTFILE);
@@ -213,10 +215,9 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
     @Test
     public void testJavadocParseError() throws Exception {
+        final String path = getPath("InputJavadocPropertiesGeneratorJavadocParseError.java");
         try {
-            JavadocPropertiesGenerator.main(
-                getPath("InputJavadocPropertiesGeneratorJavadocParseError.java"),
-                "--destfile", DESTFILE.getAbsolutePath());
+            JavadocPropertiesGenerator.main(path, "--destfile", DESTFILE_ABSOLUTE_PATH);
             fail("Exception was expected");
         }
         catch (IllegalArgumentException ex) {
@@ -230,10 +231,9 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
     @Test
     public void testNotImplementedTag() throws Exception {
+        final String path = getPath("InputJavadocPropertiesGeneratorNotImplementedTag.java");
         try {
-            JavadocPropertiesGenerator.main(
-                getPath("InputJavadocPropertiesGeneratorNotImplementedTag.java"),
-                "--destfile", DESTFILE.getAbsolutePath());
+            JavadocPropertiesGenerator.main(path, "--destfile", DESTFILE_ABSOLUTE_PATH);
             fail("Exception was expected");
         }
         catch (CheckstyleException ex) {
@@ -246,10 +246,9 @@ public class JavadocPropertiesGeneratorTest extends AbstractPathTestSupport {
 
     @Test
     public void testParseError() throws Exception {
+        final String path = getNonCompilablePath("InputJavadocPropertiesGeneratorParseError.java");
         try {
-            JavadocPropertiesGenerator.main(
-                getNonCompilablePath("InputJavadocPropertiesGeneratorParseError.java"),
-                "--destfile", DESTFILE.getAbsolutePath());
+            JavadocPropertiesGenerator.main(path, "--destfile", DESTFILE_ABSOLUTE_PATH);
             fail("Exception was expected");
         }
         catch (CheckstyleException ex) {

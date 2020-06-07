@@ -94,7 +94,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
             final File file = path.toFile();
             final String fileName = file.getName();
 
-            if ("config_reporting.xml".equals(fileName)) {
+            if ("config_system_properties.xml".equals(fileName)) {
                 continue;
             }
 
