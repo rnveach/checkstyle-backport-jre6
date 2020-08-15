@@ -12,7 +12,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.33</version>
+  <version>8.34</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -184,9 +184,9 @@
     <projectVersion>${project.version}</projectVersion>
     <antlr4.version>4.5.3</antlr4.version>
     <maven.site.plugin.version>3.8.2</maven.site.plugin.version>
-    <maven.spotbugs.plugin.version>4.0.0</maven.spotbugs.plugin.version>
+    <maven.spotbugs.plugin.version>4.0.4</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.13.0</maven.pmd.plugin.version>
-    <pmd.version>6.23.0</pmd.version>
+    <pmd.version>6.24.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
     <powermock.version>2.0.7</powermock.version>
     <saxon.version>9.8.0-14</saxon.version>
@@ -206,9 +206,15 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit4</artifactId>
+      <version>0.14.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.3.1</version>
+      <version>4.3.2</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -352,7 +358,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>1.6.0</version>
+          <version>3.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -362,7 +368,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>3.2.3</version>
+          <version>3.2.4</version>
         </plugin>
         <plugin>
           <groupId>org.pitest</groupId>
@@ -1303,7 +1309,7 @@
       <plugin>
         <groupId>de.thetaphi</groupId>
         <artifactId>forbiddenapis</artifactId>
-        <version>3.0</version>
+        <version>3.0.1</version>
         <configuration>
           <targetVersion>${java.version}</targetVersion>
           <failOnUnsupportedJava>false</failOnUnsupportedJava>
@@ -1325,6 +1331,10 @@
             <exclude>**/Input*</exclude>
             <!-- tests need forbidden apis to test the main code fully -->
             <exclude>**/XpathFileGeneratorAuditListenerTest.class</exclude>
+            <!-- These tests uses java.lang.reflect.AccessibleObject.isAccessible
+              which has no Java 8 compatible workaround. -->
+            <exclude>**/AllChecksTest.class</exclude>
+            <exclude>**/XdocsPagesTest.class</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -1348,7 +1358,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
       </plugin>
 
       <plugin>
@@ -1583,6 +1593,10 @@
             <excludedLink>https://bitbucket.org/atlassian/bamboo-checkstyle-plugin</excludedLink>
             <!-- link works but plugin's request always result in 404 -->
             <excludedLink>https://www.manning.com/books/java-development-with-ant</excludedLink>
+            <!-- permanent 403, but it works fine out of plugin execution -->
+            <excludedLink>https://opencollective.com/*</excludedLink>
+            <!-- 405 Not Allowed, link present in generated website only -->
+            <excludedLink>https://oss.sonatype.org/service/local/staging/deploy/maven2/</excludedLink>
           </excludedLinks>
         </configuration>
       </plugin>
@@ -3057,7 +3071,7 @@
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>org.eclipse.jdt.annotation</artifactId>
-            <version>2.2.400</version>
+            <version>2.2.600</version>
         </dependency>
       </dependencies>
       <build>

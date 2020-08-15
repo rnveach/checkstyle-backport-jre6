@@ -19,8 +19,14 @@
 
 package com.puppycrawl.tools.checkstyle.jre6.lang;
 
+import java.util.Arrays;
+
 public final class String7 {
     private String7() {
+    }
+
+    public static String join(String delimiter, String[] elements) {
+        return join(delimiter, Arrays.asList(elements));
     }
 
     public static String join(String delimiter, Iterable<String> elements) {

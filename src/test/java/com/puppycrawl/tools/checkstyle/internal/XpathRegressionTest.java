@@ -41,6 +41,7 @@ import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.AbstractJavadocCheck;
+import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocStyleCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.WriteTagCheck;
@@ -55,17 +56,10 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     // till https://github.com/checkstyle/checkstyle/issues/5777
     public static final Set<String> INCOMPATIBLE_CHECK_NAMES =
         Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
-            "EmptyLineSeparator",
-            "Indentation",
-            "JavadocMethod",
-            "MissingJavadocType",
             "NoCodeInFile (reason is that AST is not generated for a file not containing code)",
             "Regexp (reason is at  #7759)",
             "RegexpSinglelineJava (reason is at  #7759)",
-            "TodoComment",
-            "TrailingComment",
-            "UnnecessaryParentheses",
-            "VariableDeclarationUsageDistance"
+            "TrailingComment"
     )));
 
     // Javadoc checks are not compatible with SuppressionXpathFilter
@@ -76,6 +70,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
             Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
                     "AtclauseOrder",
                     "JavadocBlockTagLocation",
+                    "JavadocMethod",
                     "JavadocMissingWhitespaceAfterAsterisk",
                     "JavadocParagraph",
                     "JavadocStyle",
@@ -93,6 +88,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
     private static final Set<Class<?>> REGEXP_JAVADOC_CHECKS =
             Collections.unmodifiableSet(new HashSet<Class<?>>(Arrays.asList(
                     JavadocStyleCheck.class,
+                    JavadocMethodCheck.class,
                     JavadocTypeCheck.class,
                     WriteTagCheck.class
     )));

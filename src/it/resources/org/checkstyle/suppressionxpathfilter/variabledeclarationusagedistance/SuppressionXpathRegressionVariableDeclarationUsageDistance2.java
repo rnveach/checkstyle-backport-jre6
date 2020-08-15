@@ -17,23 +17,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.puppycrawl.tools.checkstyle.checks.indentation;
+package org.checkstyle.suppressionxpathfilter.variabledeclarationusagedistance;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-
-public class LineSetTest {
-
-    @Test
-    public void testToStringShowingFirstAndLastLine() {
-        final LineSet lineSet = new LineSet();
-        lineSet.addLineAndCol(0, 1);
-        lineSet.addLineAndCol(2, 3);
-
-        final String result = lineSet.toString();
-
-        assertEquals("LineSet[firstLine=0, lastLine=2]", result, "Invalid toString result");
+public class SuppressionXpathRegressionVariableDeclarationUsageDistance2 {
+    public void testMethod2() {
+        int count; // warn
+        int a = 3;
+        int b = 2;
+        {
+            a = a
+                    + b
+                    - 5
+                    + 2
+                    * a;
+            count = b; // DECLARATION OF VARIABLE 'count' SHOULD BE HERE (distance = 2)
+        }
     }
-
 }
