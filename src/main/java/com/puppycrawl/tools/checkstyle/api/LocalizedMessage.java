@@ -383,6 +383,7 @@ public final class LocalizedMessage
     /**
      * Indicates whether some other object is "equal to" this one.
      * Suppression on enumeration is needed so code stays consistent.
+     *
      * @noinspection EqualsCalledOnEnumConstant
      */
     // -@cs[CyclomaticComplexity] equals - a lot of fields to check.
@@ -449,6 +450,7 @@ public final class LocalizedMessage
 
     /**
      * Gets the translated message.
+     *
      * @return the translated message
      */
     public String getMessage() {
@@ -478,6 +480,7 @@ public final class LocalizedMessage
 
     /**
      * Returns the formatted custom message if one is configured.
+     *
      * @return the formatted custom message or {@code null}
      *          if there is no custom message
      */
@@ -494,6 +497,7 @@ public final class LocalizedMessage
      * Find a ResourceBundle for a given bundle name. Uses the classloader
      * of the class emitting this message, to be sure to get the correct
      * bundle.
+     *
      * @param bundleName the bundle name
      * @return a ResourceBundle
      */

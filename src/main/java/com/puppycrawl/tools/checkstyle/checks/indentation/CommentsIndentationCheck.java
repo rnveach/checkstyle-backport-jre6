@@ -218,6 +218,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * <ul>
  * <li>
  * Property {@code tokens} - tokens to check
+ * Type is {@code int[]}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#SINGLE_LINE_COMMENT">
  * SINGLE_LINE_COMMENT</a>,
@@ -231,6 +232,20 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * <pre>
  * &lt;module name=&quot;CommentsIndentation&quot;/&gt;
  * </pre>
+ * <p>
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * </p>
+ * <p>
+ * Violation Message Keys:
+ * </p>
+ * <ul>
+ * <li>
+ * {@code comments.indentation.block}
+ * </li>
+ * <li>
+ * {@code comments.indentation.single}
+ * </li>
+ * </ul>
  *
  * @since 6.10
  */
@@ -429,11 +444,8 @@ public class CommentsIndentationCheck extends AbstractCheck {
      * @return true if the statement is a kind of definition.
      */
     private static boolean isDefinition(DetailAST previousSibling) {
-        return previousSibling.getType() == TokenTypes.METHOD_DEF
-            || previousSibling.getType() == TokenTypes.CLASS_DEF
-            || previousSibling.getType() == TokenTypes.INTERFACE_DEF
-            || previousSibling.getType() == TokenTypes.ENUM_DEF
-            || previousSibling.getType() == TokenTypes.ANNOTATION_DEF;
+        return TokenUtil.isTypeDeclaration(previousSibling.getType())
+            || previousSibling.getType() == TokenTypes.METHOD_DEF;
     }
 
     /**

@@ -10,6 +10,7 @@
             src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
     <script type="text/javascript" src="js/anchors.js"/>
     <script type="text/javascript" src="js/google-analytics.js"/>
+    <script type="text/javascript" src="js/checkstyle.js"/>
     <link rel="icon" href="images/favicon.png" type="image/x-icon" />
     <link rel="shortcut icon" href="images/favicon.ico" type="image/ico" />
   </head>
@@ -56,7 +57,7 @@
       <p>
         The <code>Filter</code> that we demonstrate here rejects
         audit events for files whose name matches a <a
-        href="property_types.html#regexp">regular expression</a>.  In order to
+        href="property_types.html#Pattern">regular expression</a>.  In order to
         enable the specification of the file name pattern as a property in a
         configuration file, the <code>Filter</code> is an <a
         href="apidocs/com/puppycrawl/tools/checkstyle/api/AutomaticBean.html">AutomaticBean</a>

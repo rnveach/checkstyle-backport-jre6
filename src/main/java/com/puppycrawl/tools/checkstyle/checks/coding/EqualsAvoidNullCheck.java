@@ -59,6 +59,7 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
  * <li>
  * Property {@code ignoreEqualsIgnoreCase} - Control whether to ignore
  * {@code String.equalsIgnoreCase(String)} invocations.
+ * Type is {@code boolean}.
  * Default value is {@code false}.
  * </li>
  * </ul>
@@ -68,6 +69,20 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
  * <pre>
  * &lt;module name=&quot;EqualsAvoidNull&quot;/&gt;
  * </pre>
+ * <p>
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * </p>
+ * <p>
+ * Violation Message Keys:
+ * </p>
+ * <ul>
+ * <li>
+ * {@code equals.avoid.null}
+ * </li>
+ * <li>
+ * {@code equalsIgnoreCase.avoid.null}
+ * </li>
+ * </ul>
  *
  * @since 5.0
  */
@@ -130,6 +145,7 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
             TokenTypes.ENUM_CONSTANT_DEF,
             TokenTypes.LITERAL_NEW,
             TokenTypes.LAMBDA,
+            TokenTypes.PATTERN_VARIABLE_DEF,
         };
     }
 
@@ -153,6 +169,7 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
         switch (ast.getType()) {
             case TokenTypes.VARIABLE_DEF:
             case TokenTypes.PARAMETER_DEF:
+            case TokenTypes.PATTERN_VARIABLE_DEF:
                 currentFrame.addField(ast);
                 break;
             case TokenTypes.METHOD_CALL:
@@ -192,7 +209,8 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
         }
         else if (astType != TokenTypes.VARIABLE_DEF
                 && astType != TokenTypes.PARAMETER_DEF
-                && astType != TokenTypes.METHOD_CALL) {
+                && astType != TokenTypes.METHOD_CALL
+                && astType != TokenTypes.PATTERN_VARIABLE_DEF) {
             currentFrame = currentFrame.getParent();
         }
     }

@@ -525,6 +525,52 @@ public class AbbreviationAsWordInNameCheckTest extends AbstractModuleTestSupport
                 expected);
     }
 
+    @Test
+    public void testAbbreviationAsWordInNameCheckEnhancedInstanceof()
+            throws Exception {
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(AbbreviationAsWordInNameCheck.class);
+
+        final int expectedCapitalCount = 4;
+
+        final String[] expected = {
+            "19:36: " + getWarningMessage("STRING", expectedCapitalCount),
+            "20:43: " + getWarningMessage("INTEGER", expectedCapitalCount),
+            "29:41: " + getWarningMessage("ssSTRING", expectedCapitalCount),
+            "32:35: " + getWarningMessage("XMLHTTP", expectedCapitalCount),
+        };
+
+        verify(checkConfig,
+                getNonCompilablePath(
+                        "InputAbbreviationAsWordInNameCheckEnhancedInstanceof.java"),
+                expected);
+    }
+
+    @Test
+    public void testAbbreviationAsWordInNameCheckEnhancedInstanceofAllowXmlLength1()
+            throws Exception {
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(AbbreviationAsWordInNameCheck.class);
+        checkConfig.addAttribute("allowedAbbreviations", "XML");
+        checkConfig.addAttribute("allowedAbbreviationLength", "1");
+
+        final int expectedCapitalCount = 2;
+
+        final String[] expected = {
+            "19:36: " + getWarningMessage("STRING", expectedCapitalCount),
+            "20:43: " + getWarningMessage("INTEGER", expectedCapitalCount),
+            "28:39: " + getWarningMessage("aTXT", expectedCapitalCount),
+            "29:41: " + getWarningMessage("ssSTRING", expectedCapitalCount),
+            "32:35: " + getWarningMessage("XMLHTTP", expectedCapitalCount),
+        };
+
+        verify(checkConfig,
+                getNonCompilablePath(
+                        "InputAbbreviationAsWordInNameCheckEnhanced"
+                                + "InstanceofAllowXmlLength1.java"),
+                expected);
+    }
+
     private String getWarningMessage(String typeName, int expectedCapitalCount) {
         return getCheckMessage(MSG_KEY, typeName, expectedCapitalCount);
     }

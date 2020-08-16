@@ -28,6 +28,7 @@ Aleksey
 allchecks
 allclasses
 alot
+amazonaws
 ambig
 Amessages
 androidx
@@ -96,6 +97,7 @@ avoidnestedblocks
 avoidnoargumentsuperconstructorcall
 avoidstarimport
 avoidstaticimport
+aws
 awt
 backend
 backport
@@ -408,6 +410,7 @@ errorprone
 esac
 Eslint
 esslingen
+esversion
 etsy
 ev
 Evt
@@ -720,6 +723,7 @@ Jscs
 jsecurity
 Jsf
 jshiell
+jshint
 JSJ
 jslint
 jsni
@@ -738,6 +742,7 @@ junitpioneer
 jvm
 jxr
 kailasam
+kate
 kazgroup
 kbd
 kclee
@@ -877,6 +882,7 @@ nameofdivision
 nameofproject
 namespace
 Nanos
+navcolumn
 nbactions
 nbia
 nbsp
@@ -1063,6 +1069,7 @@ println
 priva
 programpractice
 Proguard
+proj
 propertycachefile
 propertyfile
 prot
@@ -1281,6 +1288,7 @@ technotes
 tected
 Testik
 testmodules
+textarea
 textlevel
 Tfo
 tfoot
@@ -1413,7 +1421,7 @@ woff
 wontfix
 wordpress
 workaround
-workflows
+workflow
 writetag
 writingchecks
 writingdoccomments
@@ -1453,12 +1461,14 @@ xmlvalidate
 Xms
 Xmx
 xpath
+xpathfilegenerator
 xpathfilegeneratorastfilter
 xpathfilegeneratorauditlistener
 xpathfilter
 xpathfilterelement
 xpathmapper
 xpathquerygenerator
+xright
 xsd
 Xshow
 xsi

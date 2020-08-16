@@ -9,12 +9,174 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
     <script type="text/javascript" src="js/anchors.js"/>
     <script type="text/javascript" src="js/google-analytics.js"/>
+    <script type="text/javascript" src="js/checkstyle.js"/>
     <link rel="icon" href="images/favicon.png" type="image/x-icon" />
     <link rel="shortcut icon" href="images/favicon.ico" type="image/ico" />
   </head>
 
   <body>
     <!-- placeholder for a new section -->
+    <section name="Release 8.35">
+      <div class="releaseDate">26.07.2020</div>
+      <p>New:</p>
+        <ul>
+          <li>
+            Java14 enhanced instanceof check validation: IllegalTypeCheck .
+            Author: Nick Mancuso
+            <a href="https://github.com/checkstyle/checkstyle/issues/8365">#8365</a>
+          </li>
+          <li>
+            Java14 enhanced instanceof check validation: HiddenFieldCheck.
+            Author: Nick Mancuso
+            <a href="https://github.com/checkstyle/checkstyle/issues/8364">#8364</a>
+          </li>
+          <li>
+            Java14 enhanced instanceof check validation: EqualsAvoidNullCheck.
+            Author: Nick Mancuso
+            <a href="https://github.com/checkstyle/checkstyle/issues/8362">#8362</a>
+          </li>
+          <li>
+            Java14 enhanced instanceof check validation: AbbreviationAsWordInNameCheck.
+            Author: Nick Mancuso
+            <a href="https://github.com/checkstyle/checkstyle/issues/8387">#8387</a>
+          </li>
+          <li>
+            Allow unsupported syntax, like record classes.
+            Author: Nick Mancuso
+            <a href="https://github.com/checkstyle/checkstyle/issues/8023">#8023</a>
+          </li>
+          <li>
+            Add support for enhanced instanceof.
+            Author: Nick Mancuso
+            <a href="https://github.com/checkstyle/checkstyle/issues/7290">#7290</a>
+          </li>
+        </ul>
+      <p>Bug fixes:</p>
+        <ul>
+          <li>
+            InnerTypeLast should handle ctors and static init blocks.
+            Author: Andrei Paikin
+            <a href="https://github.com/checkstyle/checkstyle/issues/8394">#8394</a>
+          </li>
+          <li>
+            super::clone breaks SuperCloneCheck.
+            Author: Andrei Paikin
+            <a href="https://github.com/checkstyle/checkstyle/issues/8399">#8399</a>
+          </li>
+          <li>
+            RedundantModifierCheck throws NullPointerException.
+            Author: Andrei Paikin
+            <a href="https://github.com/checkstyle/checkstyle/issues/8299">#8299</a>
+          </li>
+        </ul>
+      <p>Notes:</p>
+        <ul>
+          <li>
+            Format xml sources.
+            Author: pbludov
+            <a href="https://github.com/checkstyle/checkstyle/issues/8544">#8544</a>
+          </li>
+          <li>
+            Check that all xml sources are well formed.
+            Author: pbludov
+            <a href="https://github.com/checkstyle/checkstyle/issues/8543">#8543</a>
+          </li>
+          <li>
+            Change diff report generation pipeline logic to trigger to single
+            comment.
+            Author: Andrei Paikin
+            <a href="https://github.com/checkstyle/checkstyle/issues/8539">#8539</a>
+          </li>
+          <li>
+            To Top Button on website.
+            Author: JohannesTeklote
+            <a href="https://github.com/checkstyle/checkstyle/issues/8533">#8533</a>
+          </li>
+          <li>
+            Add TokenUtil.isTypeDeclaration method.
+            Author: Nick Mancuso
+            <a href="https://github.com/checkstyle/checkstyle/issues/8345">#8345</a>
+          </li>
+          <li>
+            Enhance diff generation pipeline to create report for different
+            configs for branches.
+            Author: kate2513
+            <a href="https://github.com/checkstyle/checkstyle/issues/8448">#8448</a>
+          </li>
+          <li>
+            Add comment to notify user about failure in diff report generation
+            pipeline.
+            Author: kate2513
+            <a href="https://github.com/checkstyle/checkstyle/issues/8496">#8496</a>
+          </li>
+          <li>
+            Enhance diff generation pipeline to create report for new check.
+            Author: OvchinnikovNV
+            <a href="https://github.com/checkstyle/checkstyle/issues/8447">#8447</a>
+          </li>
+          <li>
+            Add trigger to diff generation pipeline for comment editing.
+            Author: kate2513
+            <a href="https://github.com/checkstyle/checkstyle/issues/8495">#8495</a>
+          </li>
+          <li>
+            Remove pull request trigger from diff report generation action.
+            Author: kate2513
+            <a href="https://github.com/checkstyle/checkstyle/issues/8459">#8459</a>
+          </li>
+          <li>
+            Change comment action for report generation pipeline.
+            Author: kate2513
+            <a href="https://github.com/checkstyle/checkstyle/issues/8446">#8446</a>
+          </li>
+          <li>
+            Generation and publishing regression diff report base on config in PR
+            description.
+            Author: kate2513
+            <a href="https://github.com/checkstyle/checkstyle/issues/7498">#7498</a>
+          </li>
+          <li>
+            Javadoc Modification for Metadata Generation Support.
+            Author: Gaurab Dasgupta
+            <a href="https://github.com/checkstyle/checkstyle/issues/8306">#8306</a>
+          </li>
+          <li>
+            Extend Checkstyle GUI tool to work with Xpath.
+            Author: hembhagat
+            <a href="https://github.com/checkstyle/checkstyle/issues/4944">#4944</a>
+          </li>
+          <li>
+            Ability to keep mobile mode when mobie phone is vertical position.
+            Author: Roman Ivanov
+            <a href="https://github.com/checkstyle/checkstyle/issues/8397">#8397</a>
+          </li>
+          <li>
+            Change name of checkstyle types to match real java types.
+            Author: Gaurab Dasgupta
+            <a href="https://github.com/checkstyle/checkstyle/issues/8328">#8328</a>
+          </li>
+          <li>
+            Revert &quot;doc: add example of how to run GUI from snapshot jar&quot;.
+            Author: Roman Ivanov
+          </li>
+          <li>
+            Increase font size for website.
+            Author: JohannesTeklote
+            <a href="https://github.com/checkstyle/checkstyle/issues/8264">#8264</a>
+          </li>
+          <li>
+            doc: change &quot;nmancus1&quot; to &quot;Nick Mancuso&quot; in release
+            notes.
+            Author: Nick Mancuso
+          </li>
+          <li>
+            Resolve Sonar violation &#39;This branch&#39;s code block is the same
+            as the block for the branch on line&#39;.
+            Author: Abhishek-kumar09
+            <a href="https://github.com/checkstyle/checkstyle/issues/8336">#8336</a>
+          </li>
+        </ul>
+    </section>
     <section name="Release 8.34">
       <div class="releaseDate">28.06.2020</div>
       <p>New:</p>
@@ -73,7 +235,7 @@
         <ul>
           <li>
             Add input file for Java14 records #8290
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/8290">#8290</a>
           </li>
           <li>
@@ -83,7 +245,7 @@
           <li>
             Java Grammar: need to introduce &quot;id&quot; rule to solve keyword as
             identifier problem.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/8308">#8308</a>
           </li>
           <li>
@@ -108,7 +270,7 @@
           </li>
           <li>
             Update java.g to allow new tokens to be added.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/8274">#8274</a>
           </li>
           <li>
@@ -218,7 +380,7 @@
           </li>
           <li>
             Cleanup .ci-temp folder after release notes generation.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/8268">#8268</a>
           </li>
           <li>
@@ -238,7 +400,7 @@
           </li>
           <li>
             Improve clean up of .ci-temp directory.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/7892">#7892</a>
           </li>
           <li>
@@ -268,7 +430,7 @@
           </li>
           <li>
             Update CIs to validate empty outpu of &#39;git status&#39; after execution.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/8228">#8228</a>
           </li>
           <li>
@@ -377,7 +539,7 @@
         <ul>
           <li>
             Checker should use UTF-8 encoding by default.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/6204">#6204</a>
           </li>
         </ul>
@@ -443,7 +605,7 @@
           </li>
           <li>
             Update AbstractChecks to log DetailAST - OverloadMethodsDeclarationOrder.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/7756">#7756</a>
           </li>
           <li>
@@ -491,7 +653,7 @@
           </li>
           <li>
             Improve clean up of .ci-temp directory.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/7892">#7892</a>
           </li>
           <li>
@@ -715,7 +877,7 @@
           </li>
           <li>
             Resolve Pitest Issues - ImportOrderCheck (3).
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/7874">#7874</a>
           </li>
           <li>
@@ -741,7 +903,7 @@
         <ul>
           <li>
             Remove all deprecated setClassLoader methods from Checker and TreeWalker.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/7190">#7190</a>
           </li>
         </ul>
@@ -807,7 +969,7 @@
           </li>
           <li>
             NPE in MissingDeprecatedCheck.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/7534">#7534</a>
           </li>
           <li>
@@ -1190,7 +1352,7 @@
           </li>
           <li>
             Update doc for WhitespaceAfter.
-            Author: nmancus1
+            Author: Nick Mancuso
             <a href="https://github.com/checkstyle/checkstyle/issues/7631">#7631</a>
           </li>
           <li>

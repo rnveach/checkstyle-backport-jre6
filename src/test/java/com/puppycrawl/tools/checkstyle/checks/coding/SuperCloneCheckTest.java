@@ -37,6 +37,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
+import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
 public class SuperCloneCheckTest
     extends AbstractModuleTestSupport {
@@ -67,6 +68,14 @@ public class SuperCloneCheckTest
             "9:17: " + getCheckMessage(MSG_KEY, "clone", "super.clone"),
         };
         verify(checkConfig, getPath("InputSuperClonePlainAndSubclasses.java"), expected);
+    }
+
+    @Test
+    public void testMethodReference() throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(SuperCloneCheck.class);
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+        verify(checkConfig, getPath("InputSuperCloneMethodReference.java"), expected);
     }
 
     @Test

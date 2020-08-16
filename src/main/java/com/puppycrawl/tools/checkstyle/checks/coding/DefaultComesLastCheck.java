@@ -37,6 +37,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  * <li>
  * Property {@code skipIfLastAndSharedWithCase} - Control whether to allow {@code default}
  * along with {@code case} if they are not last.
+ * Type is {@code boolean}.
  * Default value is {@code false}.
  * </li>
  * </ul>
@@ -108,6 +109,20 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
  *     break;
  * }
  * </pre>
+ * <p>
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * </p>
+ * <p>
+ * Violation Message Keys:
+ * </p>
+ * <ul>
+ * <li>
+ * {@code default.comes.last}
+ * </li>
+ * <li>
+ * {@code default.comes.last.in.casegroup}
+ * </li>
+ * </ul>
  *
  * @since 3.4
  */

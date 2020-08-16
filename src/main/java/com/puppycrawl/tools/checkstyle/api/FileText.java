@@ -99,6 +99,7 @@ public final class FileText {
 
     /**
      * Copy constructor.
+     *
      * @param fileText to make copy of
      */
     public FileText(FileText fileText) {
@@ -224,6 +225,7 @@ public final class FileText {
     /**
      * Retrieves a line of the text by its number.
      * The returned line will not contain a trailing terminator.
+     *
      * @param lineNo the number of the line to get, starting at zero
      * @return the line with the given number
      */
@@ -292,6 +294,7 @@ public final class FileText {
 
     /**
      * Find positions of line breaks in the full text.
+     *
      * @return an array giving the first positions of each line.
      */
     private int[] findLineBreaks() {

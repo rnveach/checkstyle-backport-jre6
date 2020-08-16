@@ -202,7 +202,7 @@ public class TokenUtilTest {
     public void testGetTokenTypesTotalNumber() {
         final int tokenTypesTotalNumber = TokenUtil.getTokenTypesTotalNumber();
 
-        assertEquals(169, tokenTypesTotalNumber, "Invalid token total number");
+        assertEquals(172, tokenTypesTotalNumber, "Invalid token total number");
     }
 
     @Test
@@ -213,8 +213,8 @@ public class TokenUtilTest {
             sum += tokenId;
         }
 
-        assertEquals(169, allTokenIds.length, "Invalid token length");
-        assertEquals(15662, sum, "invalid sum");
+        assertEquals(172, allTokenIds.length, "Invalid token length");
+        assertEquals(16259, sum, "invalid sum");
     }
 
     @Test
@@ -290,6 +290,20 @@ public class TokenUtilTest {
 
         assertEquals(1, children.size(), "Must be one match");
         assertEquals(secondSibling, firstChild, "Mismatched child node");
+    }
+
+    @Test
+    public void testIsTypeDeclaration() {
+        assertTrue(TokenUtil.isTypeDeclaration(TokenTypes.CLASS_DEF),
+                "Should return true when valid type passed");
+        assertTrue(TokenUtil.isTypeDeclaration(TokenTypes.INTERFACE_DEF),
+                "Should return true when valid type passed");
+        assertTrue(TokenUtil.isTypeDeclaration(TokenTypes.ANNOTATION_DEF),
+                "Should return true when valid type passed");
+        assertTrue(TokenUtil.isTypeDeclaration(TokenTypes.ENUM_DEF),
+                "Should return true when valid type passed");
+        assertTrue(TokenUtil.isTypeDeclaration(TokenTypes.RECORD_DEF),
+                "Should return true when valid type passed");
     }
 
 }

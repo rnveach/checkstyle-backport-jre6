@@ -26,7 +26,10 @@ import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * <p>
@@ -135,6 +138,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * <ul>
  * <li>
  * Property {@code tokens} - tokens to check
+ * Type is {@code int[]}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
  * METHOD_DEF</a>,
@@ -168,6 +172,17 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  *   &lt;property name="tokens" value="METHOD_DEF"/&gt;
  * &lt;/module&gt;
  * </pre>
+ * <p>
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * </p>
+ * <p>
+ * Violation Message Keys:
+ * </p>
+ * <ul>
+ * <li>
+ * {@code redundantModifier}
+ * </li>
+ * </ul>
  *
  * @since 3.0
  */
@@ -268,27 +283,22 @@ public class RedundantModifierCheck
      */
     private void checkEnumConstructorModifiers(DetailAST ast) {
         final DetailAST modifiers = ast.findFirstToken(TokenTypes.MODIFIERS);
-        final DetailAST modifier = getFirstModifierAst(modifiers);
-
-        if (modifier != null) {
-            log(modifier, MSG_KEY, modifier.getText());
-        }
-    }
-
-    /**
-     * Retrieves the first modifier that is not an annotation.
-     *
-     * @param modifiers The ast to examine.
-     * @return The first modifier or {@code null} if none found.
-     */
-    private static DetailAST getFirstModifierAst(DetailAST modifiers) {
-        DetailAST modifier = modifiers.getFirstChild();
-
-        while (modifier != null && modifier.getType() == TokenTypes.ANNOTATION) {
-            modifier = modifier.getNextSibling();
-        }
-
-        return modifier;
+        TokenUtil.findFirstTokenByPredicate(
+            modifiers,
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST mod) {
+                    return mod.getType() != TokenTypes.ANNOTATION;
+                }
+            }
+        ).ifPresent(
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST modifier) {
+                    log(modifier, MSG_KEY, modifier.getText());
+                    return true;
+                }
+            });
     }
 
     /**
@@ -383,13 +393,14 @@ public class RedundantModifierCheck
      */
     private void processAbstractMethodParameters(DetailAST ast) {
         final DetailAST parameters = ast.findFirstToken(TokenTypes.PARAMETERS);
-
-        for (DetailAST child = parameters.getFirstChild(); child != null; child = child
-                .getNextSibling()) {
-            if (child.getType() == TokenTypes.PARAMETER_DEF) {
-                checkForRedundantModifier(child, TokenTypes.FINAL);
-            }
-        }
+        TokenUtil.forEachChild(parameters, TokenTypes.PARAMETER_DEF,
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST paramDef) {
+                    checkForRedundantModifier(paramDef, TokenTypes.FINAL);
+                    return true;
+                }
+            });
     }
 
     /**
@@ -420,14 +431,16 @@ public class RedundantModifierCheck
      * @param modifierType The modifier to check for.
      */
     private void checkForRedundantModifier(DetailAST ast, int modifierType) {
-        final DetailAST astModifiers = ast.findFirstToken(TokenTypes.MODIFIERS);
-        DetailAST astModifier = astModifiers.getFirstChild();
-        while (astModifier != null) {
-            if (astModifier.getType() == modifierType) {
-                log(astModifier, MSG_KEY, astModifier.getText());
-            }
-
-            astModifier = astModifier.getNextSibling();
+        final DetailAST modifiers = ast.findFirstToken(TokenTypes.MODIFIERS);
+        if (modifiers != null) {
+            TokenUtil.forEachChild(modifiers, modifierType,
+                new Consumer<DetailAST>() {
+                    @Override
+                    public boolean accept(DetailAST modifier) {
+                        log(modifier, MSG_KEY, modifier.getText());
+                        return true;
+                    }
+                });
         }
     }
 
@@ -527,13 +540,13 @@ public class RedundantModifierCheck
     private static List<DetailAST> getMethodAnnotationsList(DetailAST methodDef) {
         final List<DetailAST> annotationsList = new ArrayList<DetailAST>();
         final DetailAST modifiers = methodDef.findFirstToken(TokenTypes.MODIFIERS);
-        DetailAST modifier = modifiers.getFirstChild();
-        while (modifier != null) {
-            if (modifier.getType() == TokenTypes.ANNOTATION) {
-                annotationsList.add(modifier);
-            }
-            modifier = modifier.getNextSibling();
-        }
+        TokenUtil.forEachChild(modifiers, TokenTypes.ANNOTATION,
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST ast) {
+                    return annotationsList.add(ast);
+                }
+            });
         return annotationsList;
     }
 

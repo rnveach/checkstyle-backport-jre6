@@ -76,20 +76,8 @@ import com.puppycrawl.tools.checkstyle.api.AbstractFileSetCheck;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Scope;
-import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
-import com.puppycrawl.tools.checkstyle.checks.LineSeparatorOption;
-import com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheck.ClosingParens;
-import com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheck.ElementStyle;
-import com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationUseStyleCheck.TrailingArrayComma;
-import com.puppycrawl.tools.checkstyle.checks.blocks.BlockOption;
-import com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyOption;
-import com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyOption;
-import com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderOption;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.AbstractJavadocCheck;
-import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocContentLocationOption;
-import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
-import com.puppycrawl.tools.checkstyle.checks.whitespace.PadOption;
-import com.puppycrawl.tools.checkstyle.checks.whitespace.WrapOption;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifierOption;
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.internal.utils.XdocUtil;
@@ -964,7 +952,7 @@ public class XdocsPagesTest {
             Object instance, String propertyName) {
         final String instanceName = instance.getClass().getSimpleName();
         String result = null;
-
+        final String checkProperty = sectionName + ":" + propertyName;
         if (("SuppressionCommentFilter".equals(sectionName)
                 || "SuppressWithNearbyCommentFilter".equals(sectionName)
                 || "SuppressWithPlainTextCommentFilter".equals(sectionName))
@@ -980,21 +968,21 @@ public class XdocsPagesTest {
             result = "Regular Expression";
         }
         else if (fieldClass == boolean.class) {
-            result = "Boolean";
+            result = "boolean";
         }
         else if (fieldClass == int.class) {
-            result = "Integer";
+            result = "int";
         }
         else if (fieldClass == int[].class) {
             if (isPropertyTokenType(sectionName, propertyName)) {
                 result = "subset of tokens TokenTypes";
             }
             else {
-                result = "Integer Set";
+                result = "int[]";
             }
         }
         else if (fieldClass == double[].class) {
-            result = "Number Set";
+            result = "double[]";
         }
         else if (fieldClass == String.class) {
             result = "String";
@@ -1014,62 +1002,46 @@ public class XdocsPagesTest {
                 result = "subset of tokens TokenTypes";
             }
             else {
-                result = "String Set";
+                result = "String[]";
             }
         }
         else if (fieldClass == URI.class) {
             result = "URI";
         }
         else if (fieldClass == Pattern.class) {
-            result = "Regular Expression";
+            if ("SuppressionSingleFilter:checks".equals(checkProperty)
+                || "SuppressionXpathSingleFilter:files".equals(checkProperty)
+                || "SuppressionXpathSingleFilter:checks".equals(checkProperty)
+                || "SuppressionXpathSingleFilter:message".equals(checkProperty)
+                || "IllegalTokenText:format".equals(checkProperty)) {
+                result = "Regular Expression";
+            }
+            else {
+                result = "Pattern";
+            }
         }
         else if (fieldClass == Pattern[].class) {
-            result = "Regular Expressions";
-        }
-        else if (fieldClass == SeverityLevel.class) {
-            result = "Severity";
+            if ("ImportOrder:groups".equals(checkProperty)
+                || "ImportOrder:staticGroups".equals(checkProperty)
+                || "ClassDataAbstractionCoupling:excludeClassesRegexps".equals(checkProperty)
+                || "ClassFanOutComplexity:excludeClassesRegexps".equals(checkProperty)) {
+                result = "Regular Expressions";
+            }
+            else {
+                result = "Pattern[]";
+            }
         }
         else if (fieldClass == Scope.class) {
             result = "Scope";
         }
-        else if (fieldClass == ElementStyle.class) {
-            result = "Element Style";
-        }
-        else if (fieldClass == ClosingParens.class) {
-            result = "Closing Parens";
-        }
-        else if (fieldClass == TrailingArrayComma.class) {
-            result = "Trailing Comma";
-        }
-        else if (fieldClass == PadOption.class) {
-            result = "Pad Policy";
-        }
-        else if (fieldClass == WrapOption.class) {
-            result = "Wrap Operator Policy";
-        }
-        else if (fieldClass == BlockOption.class) {
-            result = "Block Policy";
-        }
-        else if (fieldClass == LeftCurlyOption.class) {
-            result = "Left Curly Brace Policy";
-        }
-        else if (fieldClass == RightCurlyOption.class) {
-            result = "Right Curly Brace Policy";
-        }
-        else if (fieldClass == LineSeparatorOption.class) {
-            result = "Line Separator Policy";
-        }
-        else if (fieldClass == ImportOrderOption.class) {
-            result = "Import Order Policy";
-        }
-        else if (fieldClass == AccessModifier[].class) {
-            result = "Access Modifier Set";
-        }
-        else if (fieldClass == JavadocContentLocationOption.class) {
-            result = "Javadoc Content Location";
+        else if (fieldClass == AccessModifierOption[].class) {
+            result = "AccessModifierOption[]";
         }
         else if ("PropertyCacheFile".equals(fieldClass.getSimpleName())) {
             result = "File";
+        }
+        else if (fieldClass.isEnum()) {
+            result = fieldClass.getSimpleName();
         }
         else {
             fail("Unknown property type: " + fieldClass.getSimpleName());
@@ -1299,7 +1271,7 @@ public class XdocsPagesTest {
                     result = value.toString().toLowerCase(Locale.ENGLISH);
                 }
             }
-            else if (fieldClass == AccessModifier[].class) {
+            else if (fieldClass == AccessModifierOption[].class) {
                 result = Arrays.toString((Object[]) value).replace("[", "").replace("]", "");
             }
             else {

@@ -76,33 +76,41 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  * <li>
  * Property {@code ignoreFormat} - Define the RegExp for names of variables
  * and parameters to ignore.
+ * Type is {@code java.util.regex.Pattern}.
  * Default value is {@code null}.
  * </li>
  * <li>
  * Property {@code ignoreConstructorParameter} - Control whether to ignore constructor parameters.
+ * Type is {@code boolean}.
  * Default value is {@code false}.
  * </li>
  * <li>
  * Property {@code ignoreSetter} - Allow to ignore the parameter of a property setter method.
+ * Type is {@code boolean}.
  * Default value is {@code false}.
  * </li>
  * <li>
  * Property {@code setterCanReturnItsClass} - Allow to expand the definition of a setter method
  * to include methods that return the class' instance.
+ * Type is {@code boolean}.
  * Default value is {@code false}.
  * </li>
  * <li>
  * Property {@code ignoreAbstractMethods} - Control whether to ignore parameters
  * of abstract methods.
+ * Type is {@code boolean}.
  * Default value is {@code false}.
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
+ * Type is {@code int[]}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
  * VARIABLE_DEF</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PARAMETER_DEF">
  * PARAMETER_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PATTERN_VARIABLE_DEF">
+ * PATTERN_VARIABLE_DEF</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LAMBDA">
  * LAMBDA</a>.
  * </li>
@@ -174,6 +182,17 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  *   &lt;property name=&quot;setterCanReturnItsClass&quot; value=&quot;true&quot;/&gt;
  * &lt;/module&gt;
  * </pre>
+ * <p>
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * </p>
+ * <p>
+ * Violation Message Keys:
+ * </p>
+ * <ul>
+ * <li>
+ * {@code hidden.field}
+ * </li>
+ * </ul>
  *
  * @since 3.0
  */
@@ -226,6 +245,7 @@ public class HiddenFieldCheck
             TokenTypes.CLASS_DEF,
             TokenTypes.ENUM_DEF,
             TokenTypes.ENUM_CONSTANT_DEF,
+            TokenTypes.PATTERN_VARIABLE_DEF,
             TokenTypes.LAMBDA,
         };
     }
@@ -250,6 +270,7 @@ public class HiddenFieldCheck
         switch (type) {
             case TokenTypes.VARIABLE_DEF:
             case TokenTypes.PARAMETER_DEF:
+            case TokenTypes.PATTERN_VARIABLE_DEF:
                 processVariable(ast);
                 break;
             case TokenTypes.LAMBDA:
@@ -352,7 +373,8 @@ public class HiddenFieldCheck
         if (!ScopeUtil.isInInterfaceOrAnnotationBlock(ast)
             && !CheckUtil.isReceiverParameter(ast)
             && (ScopeUtil.isLocalVariableDef(ast)
-                || ast.getType() == TokenTypes.PARAMETER_DEF)) {
+                || ast.getType() == TokenTypes.PARAMETER_DEF
+                || ast.getType() == TokenTypes.PATTERN_VARIABLE_DEF)) {
             // local variable or parameter. Does it shadow a field?
             final DetailAST nameAST = ast.findFirstToken(TokenTypes.IDENT);
             final String name = nameAST.getText();

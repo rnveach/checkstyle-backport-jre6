@@ -39,7 +39,9 @@ import javax.swing.LookAndFeel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.tree.TreePath;
 
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.jre6.lang.Math7;
+import com.puppycrawl.tools.checkstyle.xpath.XpathQueryGenerator;
 
 /**
  * This example shows how to create a simple TreeTable component,
@@ -59,6 +61,8 @@ public final class TreeTable extends JTable {
     private final TreeTableCellRenderer tree;
     /** JTextArea editor. */
     private JTextArea editor;
+    /** JTextArea xpathEditor. */
+    private JTextArea xpathEditor;
     /** Line position map. */
     private List<Integer> linePositionMap;
 
@@ -128,6 +132,7 @@ public final class TreeTable extends JTable {
     private void expandSelectedNode() {
         final TreePath selected = tree.getSelectionPath();
         makeCodeSelection();
+        generateXpath();
 
         if (tree.isExpanded(selected)) {
             tree.collapsePath(selected);
@@ -143,6 +148,23 @@ public final class TreeTable extends JTable {
      */
     private void makeCodeSelection() {
         new CodeSelector(tree.getLastSelectedPathComponent(), editor, linePositionMap).select();
+    }
+
+    /**
+     * Generate Xpath.
+     */
+    private void generateXpath() {
+        if (tree.getLastSelectedPathComponent() instanceof DetailAST) {
+            final DetailAST ast = (DetailAST) tree.getLastSelectedPathComponent();
+            final int beginPos = 4;
+            String xpath = XpathQueryGenerator.generateXpathQuery(ast);
+            final int length = xpath.length();
+            xpath = xpath.substring(beginPos, length);
+            xpathEditor.setText(xpath);
+        }
+        else {
+            xpathEditor.setText("Xpath is not supported yet for javadoc nodes");
+        }
     }
 
     /**
@@ -229,6 +251,15 @@ public final class TreeTable extends JTable {
      */
     public void setEditor(JTextArea textArea) {
         editor = textArea;
+    }
+
+    /**
+     * Sets text area xpathEditor.
+     *
+     * @param xpathTextArea JTextArea component.
+     */
+    public void setXpathEditor(JTextArea xpathTextArea) {
+        xpathEditor = xpathTextArea;
     }
 
     /**

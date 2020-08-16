@@ -24,6 +24,7 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * <p>
@@ -76,6 +77,17 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  *   // methods
  * }
  * </pre>
+ * <p>
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * </p>
+ * <p>
+ * Violation Message Keys:
+ * </p>
+ * <ul>
+ * <li>
+ * {@code one.top.level.class}
+ * </li>
+ * </ul>
  *
  * @since 5.8
  */
@@ -145,10 +157,7 @@ public class OneTopLevelClassCheck extends AbstractCheck {
      * @return true if the node is a type (class, enum, interface, annotation) definition.
      */
     private static boolean isTypeDef(DetailAST node) {
-        return node.getType() == TokenTypes.CLASS_DEF
-                || node.getType() == TokenTypes.ENUM_DEF
-                || node.getType() == TokenTypes.INTERFACE_DEF
-                || node.getType() == TokenTypes.ANNOTATION_DEF;
+        return TokenUtil.isTypeDeclaration(node.getType());
     }
 
     /**

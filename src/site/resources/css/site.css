@@ -72,6 +72,36 @@ section {
   position: relative;
 }
 
+p, td, table.bodyTable td, th, table.bodyTable th, li, pre, #breadcrumbs span, #navcolumn h5,
+  #navcolumn li, #footer, div.tip b, .releaseDate, .xright {
+  font-size: 15px;
+}
+
+#navcolumn li.expanded, #navcolumn li.collapsed {
+  background-size: 7px;
+}
+
+#navcolumn {
+  padding: 8px 4px 0 12px;
+}
+
+#bodyColumn h2, h2 {
+  font-size: 24px;
+}
+
+#navcolumn li {
+  margin: 3px 0;
+}
+
+#bodyColumn {
+  margin-left: 297px;
+}
+
+#leftColumn {
+  width: 270px;
+}
+
+
 .releaseDate {
   position: absolute;
   top: 2px;
@@ -90,7 +120,21 @@ span.wrapper.inline {
   display: inline;
 }
 
-@media screen and (max-width: 600px) {
+a[title="toTop"] {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border: 1px solid Rgb(0, 0, 0);
+  background-color: Rgb(221, 221, 221);
+  color: Rgb(153, 0, 0);
+  padding: 5px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 900;
+  z-index: 10;
+}
+
+@media screen and (max-width: 823px) {
   #leftColumn {
     float: none;
     width: auto;

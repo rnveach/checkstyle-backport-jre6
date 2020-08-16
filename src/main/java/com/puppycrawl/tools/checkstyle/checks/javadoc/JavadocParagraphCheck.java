@@ -44,11 +44,13 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * if the Javadoc being examined by this check violates the tight html rules defined at
  * <a href="https://checkstyle.org/writingjavadocchecks.html#Tight-HTML_rules">
  * Tight-HTML Rules</a>.
+ * Type is {@code boolean}.
  * Default value is {@code false}.
  * </li>
  * <li>
  * Property {@code allowNewlineParagraph} - Control whether the &lt;p&gt; tag
  * should be placed immediately before the first word.
+ * Type is {@code boolean}.
  * Default value is {@code true}.
  * </li>
  * </ul>
@@ -106,6 +108,35 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * public class TestClass {
  * }
  * </pre>
+ * <p>
+ * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
+ * </p>
+ * <p>
+ * Violation Message Keys:
+ * </p>
+ * <ul>
+ * <li>
+ * {@code javadoc.missed.html.close}
+ * </li>
+ * <li>
+ * {@code javadoc.paragraph.line.before}
+ * </li>
+ * <li>
+ * {@code javadoc.paragraph.misplaced.tag}
+ * </li>
+ * <li>
+ * {@code javadoc.paragraph.redundant.paragraph}
+ * </li>
+ * <li>
+ * {@code javadoc.paragraph.tag.after}
+ * </li>
+ * <li>
+ * {@code javadoc.parse.rule.error}
+ * </li>
+ * <li>
+ * {@code javadoc.wrong.singleton.html.tag}
+ * </li>
+ * </ul>
  *
  * @since 6.0
  */
@@ -177,6 +208,7 @@ public class JavadocParagraphCheck extends AbstractJavadocCheck {
 
     /**
      * Determines whether or not the next line after empty line has paragraph tag in the beginning.
+     *
      * @param newline NEWLINE node.
      */
     private void checkEmptyLine(DetailNode newline) {
@@ -189,6 +221,7 @@ public class JavadocParagraphCheck extends AbstractJavadocCheck {
 
     /**
      * Determines whether or not the line with paragraph tag has previous empty line.
+     *
      * @param tag html tag.
      */
     private void checkParagraphTag(DetailNode tag) {
@@ -206,6 +239,7 @@ public class JavadocParagraphCheck extends AbstractJavadocCheck {
 
     /**
      * Returns nearest node.
+     *
      * @param node DetailNode node.
      * @return nearest node.
      */
@@ -220,6 +254,7 @@ public class JavadocParagraphCheck extends AbstractJavadocCheck {
 
     /**
      * Determines whether or not the line is empty line.
+     *
      * @param newLine NEWLINE node.
      * @return true, if line is empty line.
      */
@@ -240,6 +275,7 @@ public class JavadocParagraphCheck extends AbstractJavadocCheck {
 
     /**
      * Determines whether or not the line with paragraph tag is first line in javadoc.
+     *
      * @param paragraphTag paragraph tag.
      * @return true, if line with paragraph tag is first line in javadoc.
      */
@@ -262,6 +298,7 @@ public class JavadocParagraphCheck extends AbstractJavadocCheck {
 
     /**
      * Finds and returns nearest empty line in javadoc.
+     *
      * @param node DetailNode node.
      * @return Some nearest empty line in javadoc.
      */
@@ -279,6 +316,7 @@ public class JavadocParagraphCheck extends AbstractJavadocCheck {
 
     /**
      * Tests whether the paragraph tag is immediately followed by the text.
+     *
      * @param tag html tag.
      * @return true, if the paragraph tag is immediately followed by the text.
      */

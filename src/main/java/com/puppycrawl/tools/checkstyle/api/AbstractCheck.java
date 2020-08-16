@@ -283,6 +283,7 @@ public abstract class AbstractCheck extends AbstractViolationReporter {
 
     /**
      * Returns the lines associated with the tree.
+     *
      * @return the file contents
      */
     public final String[] getLines() {
@@ -291,6 +292,7 @@ public abstract class AbstractCheck extends AbstractViolationReporter {
 
     /**
      * Returns the line associated with the tree.
+     *
      * @param index index of the line
      * @return the line from the file contents
      */
