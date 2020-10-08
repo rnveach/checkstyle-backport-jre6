@@ -212,6 +212,7 @@ checkouting
 checkstyle
 checkstyleanttask
 checkstylecompilation
+checkstylemeta
 checkutil
 chmod
 chr
@@ -328,6 +329,7 @@ detailast
 detailastimpl
 detailnodetreestringprinter
 Dexec
+Dfile
 dfn
 Dfoo
 Dforbiddenapis
@@ -450,7 +452,7 @@ fht
 fieldset
 filebasic
 filechooser
-filefilters
+filefilter
 filelength
 filepath
 fileset
@@ -569,6 +571,7 @@ HTMLJS
 htmlunit
 http
 hurz
+hyperlinks
 iae
 ibs
 ico
@@ -583,6 +586,7 @@ IInterfacable
 Ilja
 illegalcatch
 illegalex
+illegalidentifiername
 illegalimport
 illegalinstantiation
 illegalthrows
@@ -753,6 +757,7 @@ Kordas
 Kotlin
 kused
 lambdaparametername
+langtools
 lbc
 LBRACK
 lbt
@@ -837,6 +842,7 @@ missingtag
 mixin
 mkdir
 mkordas
+mktemp
 MLINKCHECK
 mockfile
 mockito
@@ -952,6 +958,7 @@ npathcomplexity
 npe
 npm
 nts
+NTU
 nullanalysis
 NULLCHECK
 nullness
@@ -1027,6 +1034,7 @@ Passembly
 pathcomplexity
 pathelement
 patreon
+patternvariablename
 Paulicke
 paypal
 pbludov
@@ -1104,6 +1112,8 @@ README
 Readonly
 rebased
 rebasing
+recordcomponentnumber
+recordtypeparametername
 redundantimport
 redundantmodifier
 refactor
@@ -1119,6 +1129,7 @@ regexpsinglelinejava
 relativized
 releasenotes
 remkop
+requireemptylinebeforeblocktaggroup
 requirethis
 Rethrown
 returncount
@@ -1288,6 +1299,7 @@ technotes
 tected
 Testik
 testmodules
+testresults
 textarea
 textlevel
 Tfo
@@ -1473,7 +1485,7 @@ xsd
 Xshow
 xsi
 xsl
-Xslt
+xslt
 xsltproc
 XSO
 Xss

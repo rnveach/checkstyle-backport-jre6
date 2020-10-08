@@ -30,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
@@ -56,7 +57,8 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * Property {@code ignoreOccurrenceContext} - Specify token type names where duplicate
  * strings are ignored even if they don't match ignoredStringsRegexp. This allows you to
  * exclude syntactical contexts like annotations or static initializers from the check.
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is {@code ANNOTATION}.
  * </li>
  * </ul>
@@ -114,6 +116,16 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
      * file.
      */
     public static final String MSG_KEY = "multiple.string.literal";
+
+    /**
+     * Compiled pattern for all system newlines.
+     */
+    private static final Pattern ALL_NEW_LINES = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
+
+    /**
+     * String used to amend TEXT_BLOCK_CONTENT so that it matches STRING_LITERAL.
+     */
+    private static final String QUOTE = "\"";
 
     /**
      * The found strings and their tokens.
@@ -197,14 +209,27 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
 
     @Override
     public int[] getRequiredTokens() {
-        return new int[] {TokenTypes.STRING_LITERAL};
+        return new int[] {
+            TokenTypes.STRING_LITERAL,
+            TokenTypes.TEXT_BLOCK_CONTENT,
+        };
     }
 
     @Override
     public void visitToken(DetailAST ast) {
         if (!isInIgnoreOccurrenceContext(ast)) {
-            final String currentString = ast.getText();
-            if (ignoreStringsRegexp == null || !ignoreStringsRegexp.matcher(currentString).find()) {
+            final String currentString;
+            if (ast.getType() == TokenTypes.TEXT_BLOCK_CONTENT) {
+                final String strippedString =
+                    CheckUtil.stripIndentAndInitialNewLineFromTextBlock(ast.getText());
+                // We need to add quotes here to be consistent with STRING_LITERAL text.
+                currentString = QUOTE + strippedString + QUOTE;
+            }
+            else {
+                currentString = ast.getText();
+            }
+            if (ignoreStringsRegexp == null
+                    || !ignoreStringsRegexp.matcher(currentString).find()) {
                 List<DetailAST> hitList = stringMap.get(currentString);
                 if (hitList == null) {
                     hitList = new ArrayList<DetailAST>();
@@ -248,9 +273,12 @@ public class MultipleStringLiteralsCheck extends AbstractCheck {
             final List<DetailAST> hits = stringListEntry.getValue();
             if (hits.size() > allowedDuplicates) {
                 final DetailAST firstFinding = hits.get(0);
-                log(firstFinding, MSG_KEY, stringListEntry.getKey(), hits.size());
+                final String recurringString =
+                    ALL_NEW_LINES.matcher(
+                        stringListEntry.getKey()).replaceAll("\\\\n");
+                log(firstFinding, MSG_KEY, recurringString, hits.size());
             }
         }
     }
-
 }
+

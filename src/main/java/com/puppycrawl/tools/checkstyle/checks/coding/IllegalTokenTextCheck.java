@@ -36,7 +36,8 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * <li>
  * Property {@code format} - Define the RegExp for illegal pattern.
  * Type is {@code java.lang.String}.
- * Default value is {@code "^$" (empty)}.
+ * Validation type is {@code java.util.regex.Pattern}.
+ * Default value is {@code "^$"}.
  * </li>
  * <li>
  * Property {@code ignoreCase} - Control whether to ignore case when matching.
@@ -51,7 +52,8 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is: empty.
  * </li>
  * </ul>
@@ -87,6 +89,22 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * public void myTest() {
  *     String test = "a href"; // violation
  *     String test2 = "A href"; // violation, case is ignored
+ * }
+ * </pre>
+ * <p>
+ * To configure the check to forbid string literal text blocks containing {@code """}:
+ * </p>
+ * <pre>
+ * &lt;module name=&quot;IllegalTokenText&quot;&gt;
+ *   &lt;property name=&quot;tokens&quot; value=&quot;TEXT_BLOCK_CONTENT&quot;/&gt;
+ *   &lt;property name=&quot;format&quot; value='&quot;'/&gt;
+ * &lt;/module&gt;
+ * </pre>
+ * <p>Example:</p>
+ * <pre>
+ * public void myTest() {
+ *     final String quote = """
+ *                \""""; // violation
  * }
  * </pre>
  * <p>
@@ -166,6 +184,7 @@ public class IllegalTokenTextCheck
             TokenTypes.COMMENT_CONTENT,
             TokenTypes.STRING_LITERAL,
             TokenTypes.CHAR_LITERAL,
+            TokenTypes.TEXT_BLOCK_CONTENT,
         };
     }
 

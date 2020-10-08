@@ -45,6 +45,7 @@ import com.google.common.collect.ImmutableSet;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
+import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.GlobalStatefulCheck;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
@@ -78,6 +79,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
             new HashMap<String, Set<String>>();
     private static final Map<String, Set<String>> GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE =
             new HashMap<String, Set<String>>();
+    private static final Set<String> INTERNAL_MODULES;
 
     static {
         // checkstyle
@@ -129,26 +131,31 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                         "NUM_INT", "ANNOTATION_DEF", "METHOD_REF", "TYPE_ARGUMENTS",
                         "DOUBLE_COLON", "IDENT", "MOD_ASSIGN", "LITERAL_FOR", "SUPER_CTOR_CALL",
                         "STRING_LITERAL", "ARRAY_DECLARATOR", "LITERAL_CASE",
-                        "PATTERN_VARIABLE_DEF", "RECORD_DEF", "LITERAL_RECORD"));
+                        "PATTERN_VARIABLE_DEF", "RECORD_DEF", "LITERAL_RECORD",
+                        "RECORD_COMPONENTS", "RECORD_COMPONENT_DEF", "COMPACT_CTOR_DEF",
+                        "TEXT_BLOCK_LITERAL_BEGIN", "TEXT_BLOCK_CONTENT", "TEXT_BLOCK_LITERAL_END",
+                        "LITERAL_YIELD", "SWITCH_RULE"));
         // we have no need to block specific token text
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("IllegalTokenText",
                 ImmutableSet.of("NUM_DOUBLE", "NUM_FLOAT", "NUM_INT", "NUM_LONG", "IDENT",
-                    "COMMENT_CONTENT", "STRING_LITERAL", "CHAR_LITERAL"));
+                    "COMMENT_CONTENT", "STRING_LITERAL", "CHAR_LITERAL", "TEXT_BLOCK_CONTENT"));
         // we do not use this check as it is deprecated
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("WriteTag",
-                ImmutableSet.of("ENUM_CONSTANT_DEF", "METHOD_DEF", "CTOR_DEF", "ANNOTATION_FIELD_DEF"));
+                ImmutableSet.of("ENUM_CONSTANT_DEF", "METHOD_DEF", "CTOR_DEF",
+                    "ANNOTATION_FIELD_DEF", "RECORD_DEF", "COMPACT_CTOR_DEF"));
         // state of the configuration when test was made until reason found in
         // https://github.com/checkstyle/checkstyle/issues/3730
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("AnnotationLocation",
                 ImmutableSet.of("CLASS_DEF", "CTOR_DEF", "ENUM_DEF", "INTERFACE_DEF",
-                        "METHOD_DEF", "VARIABLE_DEF"));
+                        "METHOD_DEF", "VARIABLE_DEF",
+                        "RECORD_DEF", "COMPACT_CTOR_DEF"));
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoLineWrap", ImmutableSet.of(
-                // method declaration could be long due to "parameters/exceptions", it is ok to
-                // be not strict there
-                "METHOD_DEF", "CTOR_DEF",
+                // method/constructor declaration could be long due to "parameters/exceptions", it
+                // is ok to be not strict there
+                "METHOD_DEF", "CTOR_DEF", "COMPACT_CTOR_DEF",
                 // type declaration could be long due to "extends/implements", it is ok to
                 // be not strict there
-                "CLASS_DEF", "ENUM_DEF", "INTERFACE_DEF"));
+                "CLASS_DEF", "ENUM_DEF", "INTERFACE_DEF", "RECORD_DEF"));
         CHECKSTYLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoWhitespaceAfter", ImmutableSet.of(
                 // whitespace after is preferred
                 "TYPECAST", "LITERAL_SYNCHRONIZED"));
@@ -181,7 +188,8 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("NoLineWrap", ImmutableSet.of(
                 // method declaration could be long due to "parameters/exceptions", it is ok to
                 // be not strict there
-                "METHOD_DEF", "CTOR_DEF", "CLASS_DEF", "ENUM_DEF", "INTERFACE_DEF"));
+                "METHOD_DEF", "CTOR_DEF", "CLASS_DEF", "ENUM_DEF", "INTERFACE_DEF", "RECORD_DEF",
+                "COMPACT_CTOR_DEF"));
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("SeparatorWrap", ImmutableSet.of(
                 // location could be any to allow writing expressions for indexes evaluation
                 // on new line, see https://github.com/checkstyle/checkstyle/issues/3752
@@ -219,7 +227,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("IllegalTokenText", ImmutableSet.of(
                 // all other java tokens and text are allowed
                 "NUM_DOUBLE", "NUM_FLOAT", "NUM_INT", "NUM_LONG", "IDENT",
-                "COMMENT_CONTENT", "STRING_LITERAL", "CHAR_LITERAL"));
+                "COMMENT_CONTENT", "STRING_LITERAL", "CHAR_LITERAL", "TEXT_BLOCK_CONTENT"));
         GOOGLE_TOKENS_IN_CONFIG_TO_IGNORE.put("OperatorWrap", ImmutableSet.of(
                 // specifically allowed via '4.5.1 Where to break' because the following are
                 // assignment operators and they are allowed to break before or after the symbol
@@ -235,6 +243,13 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 // whitespace is necessary between a type annotation and ellipsis
                 // according '4.6.2 Horizontal whitespace point 9'
                 "ELLIPSIS"));
+
+        INTERNAL_MODULES = new HashSet<String>();
+
+        for (String moduleName : Definitions.INTERNAL_MODULES) {
+            final String[] packageTokens = moduleName.split("\\.");
+            INTERNAL_MODULES.add(packageTokens[packageTokens.length - 1]);
+        }
     }
 
     @Override
@@ -343,6 +358,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         final Set<String> modulesReferencedInConfig = CheckUtil.getConfigCheckStyleModules();
         final Set<String> moduleNames = CheckUtil.getSimpleNames(CheckUtil.getCheckstyleModules());
 
+        moduleNames.removeAll(INTERNAL_MODULES);
         for (String check : moduleNames) {
             if (!modulesReferencedInConfig.contains(check)) {
                 final String errorMessage = String.format(Locale.ROOT,
@@ -457,6 +473,8 @@ public class AllChecksTest extends AbstractModuleTestSupport {
         // these are documented on non-'config_' pages
         checkstyleModulesNames.remove("TreeWalker");
         checkstyleModulesNames.remove("Checker");
+        // temporarily hosted in test folder
+        checkstyleModulesNames.removeAll(INTERNAL_MODULES);
 
         for (String moduleName : checkstyleModulesNames) {
             if (!modulesNamesWhichHaveXdocs.contains(moduleName)) {
@@ -472,7 +490,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
     public void testAllCheckstyleModulesInCheckstyleConfig() throws Exception {
         final Set<String> configChecks = CheckUtil.getConfigCheckStyleModules();
         final Set<String> moduleNames = CheckUtil.getSimpleNames(CheckUtil.getCheckstyleModules());
-
+        moduleNames.removeAll(INTERNAL_MODULES);
         for (String moduleName : moduleNames) {
             assertTrue(configChecks.contains(moduleName),
                     "checkstyle_checks.xml is missing module: " + moduleName);
@@ -511,7 +529,9 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                     message.setAccessible(true);
                 }
 
-                verifyCheckstyleMessage(usedMessages, module, message);
+                if (!INTERNAL_MODULES.contains(module.getSimpleName())) {
+                    verifyCheckstyleMessage(usedMessages, module, message);
+                }
             }
         }
 

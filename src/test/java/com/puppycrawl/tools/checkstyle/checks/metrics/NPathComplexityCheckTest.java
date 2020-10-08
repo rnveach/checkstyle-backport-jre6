@@ -235,6 +235,43 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testNpathComplexityRecords() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(NPathComplexityCheck.class);
+        checkConfig.addAttribute("max", "1");
+
+        final int max = 1;
+
+        final String[] expected = {
+            "11:5: " + getCheckMessage(MSG_KEY, 3, max),
+            "21:9: " + getCheckMessage(MSG_KEY, 2, max),
+            "26:21: " + getCheckMessage(MSG_KEY, 2, max),
+            "40:9: " + getCheckMessage(MSG_KEY, 3, max),
+        };
+
+        verify(checkConfig,
+                getNonCompilablePath("InputNPathComplexityRecords.java"), expected);
+    }
+
+    @Test
+    public void testNpathComplexitySwitchExpression() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(NPathComplexityCheck.class);
+        checkConfig.addAttribute("max", "1");
+
+        final int max = 1;
+
+        final String[] expected = {
+            "8:5: " + getCheckMessage(MSG_KEY, 5, max),
+            "25:5: " + getCheckMessage(MSG_KEY, 5, max),
+            "40:5: " + getCheckMessage(MSG_KEY, 6, max),
+            "56:5: " + getCheckMessage(MSG_KEY, 6, max),
+            };
+
+        verify(checkConfig,
+            getNonCompilablePath("InputNPathComplexityCheckSwitchExpression.java"),
+            expected);
+    }
+
+    @Test
     public void testGetAcceptableTokens() {
         final NPathComplexityCheck npathComplexityCheckObj = new NPathComplexityCheck();
         final int[] actual = npathComplexityCheckObj.getAcceptableTokens();
@@ -255,6 +292,8 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
             TokenTypes.QUESTION,
             TokenTypes.LITERAL_RETURN,
             TokenTypes.LITERAL_DEFAULT,
+            TokenTypes.COMPACT_CTOR_DEF,
+            TokenTypes.SWITCH_RULE,
         };
         assertNotNull(actual, "Acceptable tokens should not be null");
         assertArrayEquals(expected, actual, "Invalid acceptable tokens");
@@ -281,6 +320,8 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
             TokenTypes.QUESTION,
             TokenTypes.LITERAL_RETURN,
             TokenTypes.LITERAL_DEFAULT,
+            TokenTypes.COMPACT_CTOR_DEF,
+            TokenTypes.SWITCH_RULE,
         };
         assertNotNull(actual, "Required tokens should not be null");
         assertArrayEquals(expected, actual, "Invalid required tokens");

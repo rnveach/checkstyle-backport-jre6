@@ -50,7 +50,7 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * <li>
  * Property {@code forbiddenSummaryFragments} - Specify the regexp for forbidden summary fragments.
  * Type is {@code java.util.regex.Pattern}.
- * Default value is {@code "^$" (empty)}.
+ * Default value is {@code "^$"}.
  * </li>
  * <li>
  * Property {@code period} - Specify the period symbol at the end of first javadoc sentence.
@@ -59,7 +59,8 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * </li>
  * </ul>
  * <p>
- * By default Check validate that first sentence is not empty and first sentence is not missing:
+ * To configure the default check to validate that first sentence is not empty and first
+ * sentence is not missing:
  * </p>
  * <pre>
  * &lt;module name=&quot;SummaryJavadocCheck&quot;/&gt;

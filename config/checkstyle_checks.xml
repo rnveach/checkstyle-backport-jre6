@@ -219,6 +219,8 @@
       <property name="tokens" value="PARAMETER_DEF"/>
       <property name="tokens" value="IMPLEMENTS_CLAUSE"/>
       <property name="tokens" value="ANNOTATION_FIELD_DEF"/>
+      <property name="tokens" value="RECORD_DEF"/>
+      <property name="tokens" value="COMPACT_CTOR_DEF"/>
     </module>
     <module name="AnnotationUseStyle"/>
     <module name="MissingDeprecated"/>
@@ -280,6 +282,8 @@
       <property name="tokens" value="LITERAL_TRY"/>
       <property name="tokens" value="ANNOTATION_DEF"/>
       <property name="tokens" value="ENUM_DEF"/>
+      <property name="tokens" value="RECORD_DEF"/>
+      <property name="tokens" value="COMPACT_CTOR_DEF"/>
       <property name="option" value="alone"/>
     </module>
     <module name="RightCurly">
@@ -545,6 +549,7 @@
     <module name="SingleLineJavadoc"/>
     <module name="WriteTag"/>
     <module name="SummaryJavadoc"/>
+    <module name="RequireEmptyLineBeforeBlockTagGroup"/>
 
     <!-- Metrics -->
     <module name="BooleanExpressionComplexity">
@@ -647,6 +652,7 @@
     </module>
     <module name="AbstractClassName"/>
     <module name="ClassTypeParameterName"/>
+    <module name="RecordTypeParameterName"/>
     <module name="ConstantName"/>
     <module name="InterfaceTypeParameterName"/>
     <module name="LocalFinalVariableName"/>
@@ -674,6 +680,8 @@
       <property name="format" value="^(id)|([a-z][a-z0-9][a-zA-Z0-9]+)$"/>
     </module>
     <module name="TypeName"/>
+    <module name="PatternVariableName"/>
+    <module name="IllegalIdentifierName"/>
 
     <!-- Regexp -->
     <module name="Regexp"/>
@@ -694,6 +702,7 @@
     <module name="MethodLength"/>
     <module name="OuterTypeNumber"/>
     <module name="ParameterNumber"/>
+    <module name="RecordComponentNumber"/>
 
     <!-- Whitespace -->
     <module name="EmptyForInitializerPad"/>

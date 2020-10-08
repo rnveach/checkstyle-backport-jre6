@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
@@ -129,6 +130,16 @@ public class SuppressWarningsHolder
 
     /** A map from check source names to suppression aliases. */
     private static final Map<String, String> CHECK_ALIAS_MAP = new HashMap<String, String>();
+
+    /**
+     * Compiled pattern used to match whitespace in text block content.
+     */
+    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
+
+    /**
+     * Compiled pattern used to match preceding newline in text block content.
+     */
+    private static final Pattern NEWLINE = Pattern.compile("\\n");
 
     /**
      * A thread-local holder for the list of suppression entries for the last
@@ -478,6 +489,10 @@ public class SuppressWarningsHolder
             case TokenTypes.DOT:
                 expr = firstChild.getLastChild().getText();
                 break;
+            case TokenTypes.TEXT_BLOCK_LITERAL_BEGIN:
+                final String textBlockContent = firstChild.getFirstChild().getText();
+                expr = getContentWithoutPrecedingWhitespace(textBlockContent);
+                break;
             default:
                 // annotations with complex expressions cannot suppress warnings
         }
@@ -524,6 +539,18 @@ public class SuppressWarningsHolder
             childAST = childAST.getNextSibling();
         }
         return valueList;
+    }
+
+    /**
+     * Remove preceding newline and whitespace from the content of a text block.
+     *
+     * @param textBlockContent the actual text in a text block.
+     * @return content of text block with preceding whitespace and newline removed.
+     */
+    private static String getContentWithoutPrecedingWhitespace(String textBlockContent) {
+        final String contentWithNoPrecedingNewline =
+            NEWLINE.matcher(textBlockContent).replaceAll("");
+        return WHITESPACE.matcher(contentWithNoPrecedingNewline).replaceAll("");
     }
 
     @Override

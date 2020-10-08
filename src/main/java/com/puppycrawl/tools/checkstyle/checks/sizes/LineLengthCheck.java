@@ -54,12 +54,12 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * <li>
  * Property {@code fileExtensions} - Specify file extensions that are accepted.
  * Type is {@code java.lang.String[]}.
- * Default value is {@code all files}.
+ * Default value is {@code ""}.
  * </li>
  * <li>
  * Property {@code ignorePattern} - Specify pattern for lines to ignore.
  * Type is {@code java.util.regex.Pattern}.
- * Default value is {@code "^$" (empty)}.
+ * Default value is {@code "^$"}.
  * </li>
  * <li>
  * Property {@code max} - Specify the maximum line length allowed.

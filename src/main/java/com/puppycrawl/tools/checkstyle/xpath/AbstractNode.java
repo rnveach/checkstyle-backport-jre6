@@ -317,6 +317,7 @@ public abstract class AbstractNode implements NodeInfo {
      * Compares current object with specified for position. Throws
      * {@code UnsupportedOperationException}, because no child
      * class implements it and this method is not used for querying.
+     *
      * @param nodeInfo another {@code NodeInfo} object
      * @return constant from {@code AxisInfo} representing order of
      *      current object to specified one
@@ -329,6 +330,7 @@ public abstract class AbstractNode implements NodeInfo {
     /**
      * Returns head. Throws {@code UnsupportedOperationException}, because no child
      * class implements it and this method is not used for querying.
+     *
      * @return head
      */
     @Override
@@ -339,6 +341,7 @@ public abstract class AbstractNode implements NodeInfo {
     /**
      * Returns iterator. Throws {@code UnsupportedOperationException}, because no child
      * class implements it and this method is not used for querying.
+     *
      * @return iterator
      */
     @Override

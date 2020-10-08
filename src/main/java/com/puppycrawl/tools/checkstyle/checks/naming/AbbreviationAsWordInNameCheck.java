@@ -69,7 +69,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * Property {@code allowedAbbreviations} - Specify list of abbreviations that must be skipped for
  * checking. Abbreviations should be separated by comma.
  * Type is {@code java.lang.String[]}.
- * Default value is {@code {}}.
+ * Default value is {@code ""}.
  * </li>
  * <li>
  * Property {@code ignoreFinal} - Allow to skip variables with {@code final} modifier.
@@ -95,7 +95,8 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
  * CLASS_DEF</a>,
@@ -114,7 +115,11 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
  * METHOD_DEF</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PATTERN_VARIABLE_DEF">
- * PATTERN_VARIABLE_DEF</a>.
+ * PATTERN_VARIABLE_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_DEF">
+ * RECORD_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_COMPONENT_DEF">
+ * RECORD_COMPONENT_DEF</a>.
  * </li>
  * </ul>
  * <p>
@@ -421,7 +426,8 @@ public class AbbreviationAsWordInNameCheck extends AbstractCheck {
             TokenTypes.VARIABLE_DEF,
             TokenTypes.METHOD_DEF,
             TokenTypes.PATTERN_VARIABLE_DEF,
-
+            TokenTypes.RECORD_DEF,
+            TokenTypes.RECORD_COMPONENT_DEF,
         };
     }
 
@@ -438,7 +444,8 @@ public class AbbreviationAsWordInNameCheck extends AbstractCheck {
             TokenTypes.METHOD_DEF,
             TokenTypes.ENUM_CONSTANT_DEF,
             TokenTypes.PATTERN_VARIABLE_DEF,
-
+            TokenTypes.RECORD_DEF,
+            TokenTypes.RECORD_COMPONENT_DEF,
         };
     }
 

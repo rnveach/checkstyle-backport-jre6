@@ -28,14 +28,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
+import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
-public class BlockCommentPositionTest extends AbstractPathTestSupport {
+public class BlockCommentPositionTest extends AbstractModuleTestSupport {
 
     @Test
     public void testPrivateConstr() throws Exception {
@@ -131,6 +131,34 @@ public class BlockCommentPositionTest extends AbstractPathTestSupport {
         for (BlockCommentPositionTestMetadata metadata : metadataList) {
             final DetailAST ast = JavaParser.parseFile(new File(getPath(metadata.getFileName())),
                 JavaParser.Options.WITH_COMMENTS);
+            final int matches = getJavadocsCount(ast, metadata.getAssertion());
+            assertEquals(metadata.getMatchesNum(), matches, "Invalid javadoc count");
+        }
+    }
+
+    @Test
+    public void testJavaDocsRecognitionNonCompilable() throws Exception {
+        final List<BlockCommentPositionTestMetadata> metadataList = Arrays.asList(
+            new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnRecord.java",
+                new Function<DetailAST, Boolean>() {
+                    @Override
+                    public Boolean apply(DetailAST node) {
+                        return BlockCommentPosition.isOnRecord(node);
+                    }
+                }, 3),
+            new BlockCommentPositionTestMetadata("InputBlockCommentPositionOnCompactCtor.java",
+                new Function<DetailAST, Boolean>() {
+                    @Override
+                    public Boolean apply(DetailAST node) {
+                        return BlockCommentPosition.isOnCompactConstructor(node);
+                    }
+                }, 3)
+        );
+
+        for (BlockCommentPositionTestMetadata metadata : metadataList) {
+            final DetailAST ast = JavaParser.parseFile(
+                new File(getNonCompilablePath(metadata.getFileName())),
+                    JavaParser.Options.WITH_COMMENTS);
             final int matches = getJavadocsCount(ast, metadata.getAssertion());
             assertEquals(metadata.getMatchesNum(), matches, "Invalid javadoc count");
         }

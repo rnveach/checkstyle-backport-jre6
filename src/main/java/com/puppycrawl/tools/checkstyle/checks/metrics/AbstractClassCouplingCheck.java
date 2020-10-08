@@ -40,6 +40,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * Base class for coupling calculation.
@@ -206,6 +207,7 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
             case TokenTypes.INTERFACE_DEF:
             case TokenTypes.ANNOTATION_DEF:
             case TokenTypes.ENUM_DEF:
+            case TokenTypes.RECORD_DEF:
                 visitClassDef(ast);
                 break;
             case TokenTypes.EXTENDS_CLAUSE:
@@ -229,15 +231,8 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
 
     @Override
     public void leaveToken(DetailAST ast) {
-        switch (ast.getType()) {
-            case TokenTypes.CLASS_DEF:
-            case TokenTypes.INTERFACE_DEF:
-            case TokenTypes.ANNOTATION_DEF:
-            case TokenTypes.ENUM_DEF:
-                leaveClassDef();
-                break;
-            default:
-                // Do nothing
+        if (TokenUtil.isTypeDeclaration(ast.getType())) {
+            leaveClassDef();
         }
     }
 

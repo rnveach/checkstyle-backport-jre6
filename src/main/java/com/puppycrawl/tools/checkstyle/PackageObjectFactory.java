@@ -706,6 +706,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.javadoc.MissingJavadocTypeCheck");
         NAME_TO_FULL_MODULE_NAME.put("NonEmptyAtclauseDescriptionCheck",
                 BASE_PACKAGE + ".checks.javadoc.NonEmptyAtclauseDescriptionCheck");
+        NAME_TO_FULL_MODULE_NAME.put("RequireEmptyLineBeforeBlockTagGroupCheck",
+                BASE_PACKAGE + ".checks.javadoc.RequireEmptyLineBeforeBlockTagGroupCheck");
         NAME_TO_FULL_MODULE_NAME.put("SingleLineJavadocCheck",
                 BASE_PACKAGE + ".checks.javadoc.SingleLineJavadocCheck");
         NAME_TO_FULL_MODULE_NAME.put("SummaryJavadocCheck",
@@ -758,6 +760,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.naming.CatchParameterNameCheck");
         NAME_TO_FULL_MODULE_NAME.put("ClassTypeParameterNameCheck",
                 BASE_PACKAGE + ".checks.naming.ClassTypeParameterNameCheck");
+        NAME_TO_FULL_MODULE_NAME.put("RecordTypeParameterNameCheck",
+                BASE_PACKAGE + ".checks.naming.RecordTypeParameterNameCheck");
         NAME_TO_FULL_MODULE_NAME.put("ConstantNameCheck",
                 BASE_PACKAGE + ".checks.naming.ConstantNameCheck");
         NAME_TO_FULL_MODULE_NAME.put("InterfaceTypeParameterNameCheck",
@@ -782,6 +786,10 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.naming.StaticVariableNameCheck");
         NAME_TO_FULL_MODULE_NAME.put("TypeNameCheck",
                 BASE_PACKAGE + ".checks.naming.TypeNameCheck");
+        NAME_TO_FULL_MODULE_NAME.put("PatternVariableNameCheck",
+                BASE_PACKAGE + ".checks.naming.PatternVariableNameCheck");
+        NAME_TO_FULL_MODULE_NAME.put("IllegalIdentifierNameCheck",
+            BASE_PACKAGE + ".checks.naming.IllegalIdentifierNameCheck");
     }
 
     /**
@@ -820,6 +828,8 @@ public class PackageObjectFactory implements ModuleFactory {
                 BASE_PACKAGE + ".checks.sizes.OuterTypeNumberCheck");
         NAME_TO_FULL_MODULE_NAME.put("ParameterNumberCheck",
                 BASE_PACKAGE + ".checks.sizes.ParameterNumberCheck");
+        NAME_TO_FULL_MODULE_NAME.put("RecordComponentNumberCheck",
+                BASE_PACKAGE + ".checks.sizes.RecordComponentNumberCheck");
     }
 
     /**

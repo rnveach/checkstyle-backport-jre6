@@ -95,7 +95,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * <li>
  * Property {@code legalAbstractClassNames} - Define abstract classes that may be used as types.
  * Type is {@code java.lang.String[]}.
- * Default value is {@code {}}.
+ * Default value is {@code ""}.
  * </li>
  * <li>
  * Property {@code ignoredMethodNames} - Specify methods that should not be checked.
@@ -112,12 +112,14 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * Property {@code memberModifiers} - Control whether to check only methods and fields with any
  * of the specified modifiers.
  * This property does not affect method calls nor method references.
- * Type is {@code int[]}.
- * Default value is no tokens.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
+ * Default value is {@code no tokens}.
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">
  * ANNOTATION_FIELD_DEF</a>,
@@ -136,11 +138,15 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
  * VARIABLE_DEF</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PATTERN_VARIABLE_DEF">
- * PATTERN_VARIABLE_DEF</a>.
+ * PATTERN_VARIABLE_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_DEF">
+ * RECORD_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_COMPONENT_DEF">
+ * RECORD_COMPONENT_DEF</a>.
  * </li>
  * </ul>
  * <p>
- * Default Configuration:
+ * To configure the default check:
  * </p>
  * <pre>
  * &lt;module name=&quot;IllegalType&quot;/&gt;
@@ -395,6 +401,8 @@ public final class IllegalTypeCheck extends AbstractCheck {
             TokenTypes.PARAMETER_DEF,
             TokenTypes.VARIABLE_DEF,
             TokenTypes.PATTERN_VARIABLE_DEF,
+            TokenTypes.RECORD_DEF,
+            TokenTypes.RECORD_COMPONENT_DEF,
         };
     }
 
@@ -419,6 +427,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
         switch (ast.getType()) {
             case TokenTypes.CLASS_DEF:
             case TokenTypes.INTERFACE_DEF:
+            case TokenTypes.RECORD_DEF:
                 visitTypeDef(ast);
                 break;
             case TokenTypes.METHOD_CALL:
@@ -431,6 +440,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
             case TokenTypes.VARIABLE_DEF:
             case TokenTypes.ANNOTATION_FIELD_DEF:
             case TokenTypes.PATTERN_VARIABLE_DEF:
+            case TokenTypes.RECORD_COMPONENT_DEF:
                 visitVariableDef(ast);
                 break;
             case TokenTypes.PARAMETER_DEF:

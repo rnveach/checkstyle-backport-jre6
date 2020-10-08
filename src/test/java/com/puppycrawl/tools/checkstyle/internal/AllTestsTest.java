@@ -247,6 +247,9 @@ public class AllTestsTest {
             if (!fileName.endsWith("TestSupport.java")
                     // tests external utility XPathEvaluator
                     && !"XpathMapper.java".equals(fileName)
+                    // JavadocMetadataScraper and related classes are temporarily hosted in test
+                    && !filePath.contains("meta")
+                    // junit 5 wrapper class
                     && !filePath.contains(File.separatorChar + "jupiter" + File.separatorChar)) {
                 final String path;
 

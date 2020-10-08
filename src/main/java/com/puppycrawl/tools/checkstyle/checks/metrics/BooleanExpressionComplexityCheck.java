@@ -57,7 +57,8 @@ import com.puppycrawl.tools.checkstyle.utils.CheckUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LAND">
  * LAND</a>,
@@ -191,6 +192,7 @@ public final class BooleanExpressionComplexityCheck extends AbstractCheck {
             TokenTypes.LOR,
             TokenTypes.BOR,
             TokenTypes.BXOR,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -200,6 +202,7 @@ public final class BooleanExpressionComplexityCheck extends AbstractCheck {
             TokenTypes.CTOR_DEF,
             TokenTypes.METHOD_DEF,
             TokenTypes.EXPR,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -214,6 +217,7 @@ public final class BooleanExpressionComplexityCheck extends AbstractCheck {
             TokenTypes.LOR,
             TokenTypes.BOR,
             TokenTypes.BXOR,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -231,6 +235,7 @@ public final class BooleanExpressionComplexityCheck extends AbstractCheck {
         switch (ast.getType()) {
             case TokenTypes.CTOR_DEF:
             case TokenTypes.METHOD_DEF:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 visitMethodDef(ast);
                 break;
             case TokenTypes.EXPR:
@@ -284,6 +289,7 @@ public final class BooleanExpressionComplexityCheck extends AbstractCheck {
         switch (ast.getType()) {
             case TokenTypes.CTOR_DEF:
             case TokenTypes.METHOD_DEF:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 leaveMethodDef();
                 break;
             case TokenTypes.EXPR:

@@ -51,7 +51,8 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_TRY">
  * LITERAL_TRY</a>,
@@ -290,6 +291,8 @@ public class RightCurlyCheck extends AbstractCheck {
             TokenTypes.ANNOTATION_DEF,
             TokenTypes.ENUM_DEF,
             TokenTypes.INTERFACE_DEF,
+            TokenTypes.RECORD_DEF,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -502,6 +505,7 @@ public class RightCurlyCheck extends AbstractCheck {
             TokenTypes.ENUM_DEF,
             TokenTypes.ANNOTATION_DEF,
             TokenTypes.INTERFACE_DEF,
+            TokenTypes.RECORD_DEF,
         };
 
         /** Right curly. */
@@ -625,8 +629,8 @@ public class RightCurlyCheck extends AbstractCheck {
         }
 
         /**
-         * Collects validation details for CLASS_DEF, METHOD DEF, CTOR_DEF, STATIC_INIT,
-         * INSTANCE_INIT, ANNOTATION_DEF and ENUM_DEF.
+         * Collects validation details for CLASS_DEF, RECORD_DEF, METHOD DEF, CTOR_DEF, STATIC_INIT,
+         * INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF, and COMPACT_CTOR_DEF.
          *
          * @param ast a {@code DetailAST} value
          * @return an object containing all details to make a validation

@@ -22,11 +22,14 @@ package com.puppycrawl.tools.checkstyle.checks.metrics;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * <p>
@@ -310,6 +313,8 @@ public final class NPathComplexityCheck extends AbstractCheck {
             TokenTypes.QUESTION,
             TokenTypes.LITERAL_RETURN,
             TokenTypes.LITERAL_DEFAULT,
+            TokenTypes.COMPACT_CTOR_DEF,
+            TokenTypes.SWITCH_RULE,
         };
     }
 
@@ -344,6 +349,11 @@ public final class NPathComplexityCheck extends AbstractCheck {
                 branchVisited = true;
                 pushValue(caseNumber);
                 break;
+            case TokenTypes.SWITCH_RULE:
+                final int caseConstantNumber = countCaseConstants(ast);
+                branchVisited = true;
+                pushValue(caseConstantNumber);
+                break;
             case TokenTypes.LITERAL_ELSE:
                 branchVisited = true;
                 if (currentRangeValue.equals(BigInteger.ZERO)) {
@@ -360,6 +370,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
             case TokenTypes.METHOD_DEF:
             case TokenTypes.INSTANCE_INIT:
             case TokenTypes.STATIC_INIT:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 pushValue(0);
                 break;
             default:
@@ -392,6 +403,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
                 break;
             case TokenTypes.LITERAL_ELSE:
             case TokenTypes.CASE_GROUP:
+            case TokenTypes.SWITCH_RULE:
                 leaveBranch();
                 branchVisited = false;
                 break;
@@ -399,6 +411,7 @@ public final class NPathComplexityCheck extends AbstractCheck {
             case TokenTypes.METHOD_DEF:
             case TokenTypes.INSTANCE_INIT:
             case TokenTypes.STATIC_INIT:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 leaveMethodDef(ast);
                 break;
             default:
@@ -595,6 +608,29 @@ public final class NPathComplexityCheck extends AbstractCheck {
             }
         }
         return counter;
+    }
+
+    /**
+     * Counts number of case constants (EXPR) tokens in a switch labeled rule.
+     *
+     * @param ast switch rule token.
+     * @return number of case constant (EXPR) tokens.
+     */
+    private static int countCaseConstants(DetailAST ast) {
+        final AtomicInteger counter = new AtomicInteger();
+        final DetailAST literalCase = ast.getFirstChild();
+
+        TokenUtil.forEachChild(literalCase,
+            TokenTypes.EXPR,
+            new Consumer<DetailAST>() {
+                @Override
+                public boolean accept(DetailAST node) {
+                    counter.getAndIncrement();
+                    return true;
+                }
+            });
+
+        return counter.get();
     }
 
     /**

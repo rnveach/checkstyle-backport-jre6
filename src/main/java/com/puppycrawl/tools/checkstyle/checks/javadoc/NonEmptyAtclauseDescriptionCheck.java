@@ -38,7 +38,8 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * </li>
  * <li>
  * Property {@code javadocTokens} - javadoc tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/JavadocTokenTypes.html#PARAM_LITERAL">
  * PARAM_LITERAL</a>,
@@ -53,7 +54,7 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * </li>
  * </ul>
  * <p>
- * Default configuration that will check {@code @param}, {@code @return},
+ * To configure the default check that will check {@code @param}, {@code @return},
  * {@code @throws}, {@code @deprecated}:
  * </p>
  * <pre>

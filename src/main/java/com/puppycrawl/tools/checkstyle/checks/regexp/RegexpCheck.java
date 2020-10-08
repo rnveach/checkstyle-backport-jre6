@@ -88,7 +88,7 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * <li>
  * Property {@code format} - Specify the pattern to match against.
  * Type is {@code java.util.regex.Pattern}.
- * Default value is {@code "^$"}(empty).
+ * Default value is {@code "^$"}.
  * </li>
  * <li>
  * Property {@code message} - Specify message which is used to notify about
@@ -121,6 +121,9 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * Default value is {@code false}.
  * </li>
  * </ul>
+ * <p>
+ * To configure the check:
+ * </p>
  * <p>
  * The following examples are mainly copied from the other 3 checks mentioned above,
  * to show how the same results can be achieved using this check in place of them.

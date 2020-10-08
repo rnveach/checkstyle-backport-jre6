@@ -69,7 +69,8 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#PACKAGE_DEF">
  * PACKAGE_DEF</a>,
@@ -92,9 +93,19 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">
  * CTOR_DEF</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
- * VARIABLE_DEF</a>.
+ * VARIABLE_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_DEF">
+ * RECORD_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMPACT_CTOR_DEF">
+ * COMPACT_CTOR_DEF</a>.
  * </li>
  * </ul>
+ * <p>
+ * To configure the default check:
+ * </p>
+ * <pre>
+ * &lt;module name=&quot;EmptyLineSeparator&quot;/&gt;
+ * </pre>
  * <p>
  * Example of declarations without empty line separator:
  * </p>
@@ -109,14 +120,6 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  *   public static final int FOO_CONST = 1;
  *   public void foo() {} //should be separated from previous statement.
  * }
- * </pre>
- *
- * <p>
- * To configure the check with default parameters:
- * </p>
- *
- * <pre>
- * &lt;module name=&quot;EmptyLineSeparator&quot;/&gt;
  * </pre>
  *
  * <p>
@@ -382,6 +385,8 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
             TokenTypes.METHOD_DEF,
             TokenTypes.CTOR_DEF,
             TokenTypes.VARIABLE_DEF,
+            TokenTypes.RECORD_DEF,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -484,7 +489,8 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
         return astType == TokenTypes.STATIC_INIT
                 || astType == TokenTypes.INSTANCE_INIT
                 || astType == TokenTypes.METHOD_DEF
-                || astType == TokenTypes.CTOR_DEF;
+                || astType == TokenTypes.CTOR_DEF
+                || astType == TokenTypes.COMPACT_CTOR_DEF;
     }
 
     /**
@@ -831,7 +837,8 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
      */
     private static boolean isTypeField(DetailAST variableDef) {
         final int parentType = variableDef.getParent().getParent().getType();
-        return parentType == TokenTypes.CLASS_DEF;
+        return parentType == TokenTypes.CLASS_DEF
+                || parentType == TokenTypes.RECORD_DEF;
     }
 
 }

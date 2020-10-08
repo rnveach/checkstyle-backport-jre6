@@ -170,23 +170,9 @@ switch (a) {
         </source>
 
         <p>
-          This check processes LITERAL_CASE and LITERAL_DEFAULT separately.
-          So, if tokens=LITERAL_DEFAULT, following code will not trigger any violation,
-          as the empty block belongs to LITERAL_CASE:
+          NOTE: This check processes LITERAL_CASE and LITERAL_DEFAULT separately.
+          Verification empty block is done for single most nearest {@code case} or {@code default}.
         </p>
-        <p> Configuration: </p>
-        <source>
-&lt;module name=&quot;EmptyBlock&quot;&gt;
-  &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_DEFAULT&quot;/&gt;
-&lt;/module&gt;
-        </source>
-        <p> Result: </p>
-        <source>
-switch (a) {
-  default:        // no violation for "default:" as empty block belong to "case 1:"
-  case 1: { }
-}
-        </source>
       </subsection>
 
       <subsection name="Properties" id="EmptyBlock_Properties">
@@ -290,6 +276,27 @@ switch (a) {
   &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_TRY&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>
+          To configure the check for default in switch block:
+        </p>
+        <source>
+&lt;module name=&quot;EmptyBlock&quot;&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_DEFAULT&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p> Result: </p>
+        <source>
+switch (a) {
+  default:        // no violation for "default:" as empty block belong to "case 1:"
+  case 1: { }
+}
+        </source>
+        <source>
+switch (a) {
+  case 1:
+  default: { } // violation
+}
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="EmptyBlock_Example_of_Usage">
@@ -369,7 +376,7 @@ switch (a) {
                 If check meets variable name matching specified value - empty block is suppressed.
               </td>
               <td><a href="property_types.html#Pattern">Pattern</a></td>
-              <td><code>&quot;^$&quot; (empty)</code></td>
+              <td><code>&quot;^$&quot;</code></td>
               <td>6.4</td>
             </tr>
             <tr>
@@ -390,7 +397,7 @@ switch (a) {
       <subsection name="Examples" id="EmptyCatchBlock_Examples">
         <p>
           To configure the check to suppress empty catch block if exception's variable name is
-           <code>expected</code> or <code>ignore</code> or there's any comment inside:
+          <code>expected</code> or <code>ignore</code> or there's any comment inside:
         </p>
         <source>
 &lt;module name=&quot;EmptyCatchBlock&quot;&gt;
@@ -603,6 +610,10 @@ try {
                   OBJBLOCK</a>
                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#STATIC_INIT">
                   STATIC_INIT</a>
+                ,<a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_DEF">
+                  RECORD_DEF</a>
+                ,<a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMPACT_CTOR_DEF">
+                  COMPACT_CTOR_DEF</a>
                 .
               </td>
 
@@ -651,6 +662,10 @@ try {
                   OBJBLOCK</a>
                 , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#STATIC_INIT">
                   STATIC_INIT</a>
+                ,<a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_DEF">
+                  RECORD_DEF</a>
+                ,<a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMPACT_CTOR_DEF">
+                  COMPACT_CTOR_DEF</a>
                 .
               </td>
               <td>3.0</td>
@@ -1009,6 +1024,10 @@ allowedFuture.addCallback(result -> {
                   ENUM_DEF</a>
               , <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
                   INTERFACE_DEF</a>
+                ,<a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_DEF">
+                  RECORD_DEF</a>
+                ,<a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMPACT_CTOR_DEF">
+                  COMPACT_CTOR_DEF</a>
                 .
               </td>
               <td>

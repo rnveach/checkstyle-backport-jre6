@@ -64,11 +64,11 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
  * <li>
  * Property {@code fileExtensions} - Specify the file type extension of files to process.
  * Type is {@code java.lang.String[]}.
- * Default value is {@code all files}.
+ * Default value is {@code ""}.
  * </li>
  * </ul>
  * <p>
- *   To configure the check with default values:
+ *   To configure the default check:
  * </p>
  * <pre>
  * &lt;module name="RegexpSingleline" /&gt;

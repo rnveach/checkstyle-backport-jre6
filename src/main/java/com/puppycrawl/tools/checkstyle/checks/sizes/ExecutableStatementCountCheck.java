@@ -39,7 +39,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">
  * CTOR_DEF</a>,
@@ -48,7 +49,9 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INSTANCE_INIT">
  * INSTANCE_INIT</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#STATIC_INIT">
- * STATIC_INIT</a>.
+ * STATIC_INIT</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMPACT_CTOR_DEF">
+ * COMPACT_CTOR_DEF</a>.
  * </li>
  * </ul>
  * <p>
@@ -115,6 +118,7 @@ public final class ExecutableStatementCountCheck
             TokenTypes.INSTANCE_INIT,
             TokenTypes.STATIC_INIT,
             TokenTypes.SLIST,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -131,6 +135,7 @@ public final class ExecutableStatementCountCheck
             TokenTypes.INSTANCE_INIT,
             TokenTypes.STATIC_INIT,
             TokenTypes.SLIST,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -156,6 +161,7 @@ public final class ExecutableStatementCountCheck
             case TokenTypes.METHOD_DEF:
             case TokenTypes.INSTANCE_INIT:
             case TokenTypes.STATIC_INIT:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 visitMemberDef(ast);
                 break;
             case TokenTypes.SLIST:
@@ -173,6 +179,7 @@ public final class ExecutableStatementCountCheck
             case TokenTypes.METHOD_DEF:
             case TokenTypes.INSTANCE_INIT:
             case TokenTypes.STATIC_INIT:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 leaveMemberDef(ast);
                 break;
             case TokenTypes.SLIST:
@@ -217,10 +224,8 @@ public final class ExecutableStatementCountCheck
             final DetailAST contextAST = context.getAST();
             DetailAST parent = ast.getParent();
             int type = parent.getType();
-            while (type != TokenTypes.CTOR_DEF
-                && type != TokenTypes.METHOD_DEF
-                && type != TokenTypes.INSTANCE_INIT
-                && type != TokenTypes.STATIC_INIT) {
+            while (type != TokenTypes.METHOD_DEF
+                && !isConstructorOrInit(type)) {
                 parent = parent.getParent();
                 type = parent.getType();
             }
@@ -228,6 +233,19 @@ public final class ExecutableStatementCountCheck
                 context.addCount(ast.getChildCount() / 2);
             }
         }
+    }
+
+    /**
+     * Check if token type is a ctor (compact or canonical) or instance/ static initializer.
+     *
+     * @param tokenType type of token we are checking
+     * @return true if token type is constructor or initializer
+     */
+    private static boolean isConstructorOrInit(int tokenType) {
+        return tokenType == TokenTypes.CTOR_DEF
+                || tokenType == TokenTypes.INSTANCE_INIT
+                || tokenType == TokenTypes.STATIC_INIT
+                || tokenType == TokenTypes.COMPACT_CTOR_DEF;
     }
 
     /**

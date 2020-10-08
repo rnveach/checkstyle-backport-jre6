@@ -41,6 +41,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
+import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 
 /**
  * Contains utility methods.
@@ -658,16 +659,27 @@ public final class CommonUtil {
      * @return true if the arg is blank.
      */
     public static boolean isBlank(String value) {
-        boolean result = true;
-        if (value != null && !value.isEmpty()) {
-            for (int i = 0; i < value.length(); i++) {
-                if (!Character.isWhitespace(value.charAt(i))) {
-                    result = false;
-                    break;
-                }
+        return Objects.isNull(value)
+                || indexOfNonWhitespace(value) >= value.length();
+    }
+
+    /**
+     * Method to find the index of the first non-whitespace character in a string.
+     *
+     * @param value the string to find the first index of a non-whitespace character for.
+     * @return the index of the first non-whitespace character.
+     */
+    public static int indexOfNonWhitespace(String value) {
+        final int length = value.length();
+        int left = 0;
+        while (left < length) {
+            final int codePointAt = value.codePointAt(left);
+            if (!Character.isWhitespace(codePointAt)) {
+                break;
             }
+            left += Character.charCount(codePointAt);
         }
-        return result;
+        return left;
     }
 
     /**

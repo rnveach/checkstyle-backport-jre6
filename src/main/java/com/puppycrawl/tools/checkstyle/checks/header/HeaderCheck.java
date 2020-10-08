@@ -61,8 +61,8 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
  * <li>
  * Property {@code charset} - Specify the character encoding to use when reading the headerFile.
  * Type is {@code java.lang.String}.
- * Default value is the charset property of the parent
- * <a href="https://checkstyle.org/config.html#Checker">Checker</a> module.
+ * Default value is {@code the charset property of the parent
+ * <a href="https://checkstyle.org/config.html#Checker">Checker</a> module}.
  * </li>
  * <li>
  * Property {@code header} - Specify the required header specified inline.
@@ -74,16 +74,16 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
  * <li>
  * Property {@code ignoreLines} - Specify the line numbers to ignore.
  * Type is {@code int[]}.
- * Default value is {@code {}}.
+ * Default value is {@code ""}.
  * </li>
  * <li>
  * Property {@code fileExtensions} - Specify the file type extension of files to process.
  * Type is {@code java.lang.String[]}.
- * Default value is {@code all files}.
+ * Default value is {@code ""}.
  * </li>
  * </ul>
  * <p>
- * In default configuration the check does not rise any violations.
+ * To configure the check such that no violations arise.
  * Default values of properties are used.
  * </p>
  * <pre>

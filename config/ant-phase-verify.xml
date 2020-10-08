@@ -118,6 +118,12 @@
 
           <!-- Exclude because printed AST has line length > 100 characters -->
           <exclude name="**/InputJava14InstanceofWithPatternMatchingAST.txt"/>
+          <exclude name="**/InputJava14Records.txt"/>
+          <exclude name="**/InputJava14TextBlocks.txt"/>
+          <exclude name="**/InputJava14SwitchExpression.txt"/>
+
+          <!-- Exclude list of files for openjdk checkstyle run in Travis -->
+          <exclude name="**/jdk14-test-files.list"/>
 
         </fileset>
       </path>
@@ -153,12 +159,6 @@
           <exclude name="**/InputMainFrameModelIncorrectClass.java"/>
           <exclude name="**/InputBeforeExecutionExclusionFileFilterIncorrectClass.java"/>
           <exclude name="**/InputJavaParser.java"/>
-          <!-- until https://github.com/checkstyle/checkstyle/issues/8023 -->
-          <exclude name="**/InputJava14Records.java"/>
-          <!-- until https://github.com/checkstyle/checkstyle/issues/7103 -->
-          <exclude name="**/InputJava14TextBlocks.java"/>
-          <!-- until https://github.com/checkstyle/checkstyle/issues/6615 -->
-          <exclude name="**/InputJava14SwitchExpression.java"/>
 
         </fileset>
       </path>
@@ -217,6 +217,12 @@
           <exclude name="**/api/**/*"/>
           <!-- No need to check ant files -->
           <exclude name="**/ant/**/*"/>
+          <!-- No need to check ast String Printer input files -->
+          <exclude name="**/asttreestringprinter/**/*"/>
+          <!-- Indentation checks use "warn" -->
+          <exclude name="**/resources-noncompilable/**/checks/indentation/**/*"/>
+          <!-- BlockComment test files do not need 'ok', 'violation, or 'Config:' comments -->
+          <exclude name="**/utils/blockcommentposition/**/*"/>
 
         </fileset>
       </path>

@@ -140,14 +140,17 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
  * METHOD_DEF</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CTOR_DEF">
  * CTOR_DEF</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_FIELD_DEF">
- * ANNOTATION_FIELD_DEF</a>.
+ * ANNOTATION_FIELD_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMPACT_CTOR_DEF">
+ * COMPACT_CTOR_DEF</a>.
  * </li>
  * </ul>
  * <p>
@@ -456,6 +459,7 @@ public class JavadocMethodCheck extends AbstractCheck {
             TokenTypes.CLASS_DEF,
             TokenTypes.INTERFACE_DEF,
             TokenTypes.ENUM_DEF,
+            TokenTypes.RECORD_DEF,
         };
     }
 
@@ -473,6 +477,8 @@ public class JavadocMethodCheck extends AbstractCheck {
             TokenTypes.METHOD_DEF,
             TokenTypes.CTOR_DEF,
             TokenTypes.ANNOTATION_FIELD_DEF,
+            TokenTypes.RECORD_DEF,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -485,7 +491,8 @@ public class JavadocMethodCheck extends AbstractCheck {
     public final void visitToken(DetailAST ast) {
         if (ast.getType() == TokenTypes.CLASS_DEF
                  || ast.getType() == TokenTypes.INTERFACE_DEF
-                 || ast.getType() == TokenTypes.ENUM_DEF) {
+                 || ast.getType() == TokenTypes.ENUM_DEF
+                 || ast.getType() == TokenTypes.RECORD_DEF) {
             processClass(ast);
         }
         else {
@@ -497,7 +504,8 @@ public class JavadocMethodCheck extends AbstractCheck {
     public final void leaveToken(DetailAST ast) {
         if (ast.getType() == TokenTypes.CLASS_DEF
             || ast.getType() == TokenTypes.INTERFACE_DEF
-            || ast.getType() == TokenTypes.ENUM_DEF) {
+            || ast.getType() == TokenTypes.ENUM_DEF
+            || ast.getType() == TokenTypes.RECORD_DEF) {
             // perhaps it was inner class
             final int dotIdx = currentClassName.lastIndexOf('$');
             currentClassName = currentClassName.substring(0, dotIdx);
@@ -562,13 +570,17 @@ public class JavadocMethodCheck extends AbstractCheck {
                 final boolean reportExpectedTags = !hasInheritDocTag
                     && !AnnotationUtil.containsAnnotation(ast, allowedAnnotations);
 
-                checkParamTags(tags, ast, reportExpectedTags);
+                // COMPACT_CTOR_DEF has no parameters
+                if (ast.getType() != TokenTypes.COMPACT_CTOR_DEF) {
+                    checkParamTags(tags, ast, reportExpectedTags);
+                }
                 final List<ExceptionInfo> throwed =
-                        combineExceptionInfo(getThrows(ast), getThrowed(ast));
+                    combineExceptionInfo(getThrows(ast), getThrowed(ast));
                 checkThrowsTags(tags, throwed, reportExpectedTags);
                 if (CheckUtil.isNonVoidMethod(ast)) {
                     checkReturnTag(tags, ast.getLineNo(), reportExpectedTags);
                 }
+
             }
 
             // Dump out all unused tags

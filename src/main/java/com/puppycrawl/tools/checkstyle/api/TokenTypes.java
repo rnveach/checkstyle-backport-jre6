@@ -984,6 +984,7 @@ public final class TokenTypes {
      * @see #LITERAL_CASE
      * @see #LITERAL_DEFAULT
      * @see #LITERAL_SWITCH
+     * @see #LITERAL_YIELD
      **/
     public static final int CASE_GROUP = GeneratedJavaTokenTypes.CASE_GROUP;
     /**
@@ -1861,6 +1862,7 @@ public final class TokenTypes {
      * @see #CASE_GROUP
      * @see #RCURLY
      * @see #SLIST
+     * @see #SWITCH_RULE
      **/
     public static final int LITERAL_SWITCH =
         GeneratedJavaTokenTypes.LITERAL_switch;
@@ -1906,6 +1908,7 @@ public final class TokenTypes {
      *
      * @see #CASE_GROUP
      * @see #MODIFIERS
+     * @see #SWITCH_RULE
      **/
     public static final int LITERAL_DEFAULT =
         GeneratedJavaTokenTypes.LITERAL_default;
@@ -3565,6 +3568,7 @@ public final class TokenTypes {
      * </pre>
      *
      * @see #LITERAL_INSTANCEOF
+     * @since 8.35
      */
     public static final int PATTERN_VARIABLE_DEF =
             GeneratedJavaTokenTypes.PATTERN_VARIABLE_DEF;
@@ -3572,13 +3576,16 @@ public final class TokenTypes {
     /**
      * The {@code record} keyword.  This element appears
      * as part of a record declaration.
+     *
+     * @since 8.35
      **/
     public static final int LITERAL_RECORD =
             GeneratedJavaTokenTypes.LITERAL_record;
 
     /**
-     * A record declaration, this implementation is just to avoid parse errors,
-     * full support will be at https://github.com/checkstyle/checkstyle/issues/8267 .
+     * A declaration of a record specifies a name, a header, and a body.
+     * The header lists the components of the record, which are the variables
+     * that make up its state.
      *
      * <p>For example:</p>
      * <pre>
@@ -3590,11 +3597,353 @@ public final class TokenTypes {
      * |--MODIFIERS
      * |   `--LITERAL_PUBLIC (public)
      * |--LITERAL_RECORD (record)
-     *  `--IDENT (myRecord)
+     * |--IDENT (myRecord)
+     * |--LPAREN (()
+     * |--RECORD_COMPONENTS
+     * |--RPAREN ())
+     * `--OBJBLOCK
+     *     |--LCURLY ({)
+     *      `--RCURLY (})
      * </pre>
+     *
+     * @since 8.35
      */
     public static final int RECORD_DEF =
             GeneratedJavaTokenTypes.RECORD_DEF;
+
+    /**
+     * Record components are a (possibly empty) list containing the components of a record, which
+     * are the variables that make up its state.
+     *
+     * <p>For example:</p>
+     * <pre>
+     * public record myRecord (Comp x, Comp y) { }
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * RECORD_DEF
+     * |--MODIFIERS
+     * |   `--LITERAL_PUBLIC (public)
+     * |--LITERAL_RECORD (record)
+     * |--IDENT (myRecord)
+     * |--LPAREN (()
+     * |--RECORD_COMPONENTS
+     * |   |--RECORD_COMPONENT_DEF
+     * |   |   |--ANNOTATIONS
+     * |   |   |--TYPE
+     * |   |   |   `--IDENT (Comp)
+     * |   |   `--IDENT (x)
+     * |   |--COMMA (,)
+     * |   `--RECORD_COMPONENT_DEF
+     * |       |--ANNOTATIONS
+     * |       |--TYPE
+     * |       |   `--IDENT (Comp)
+     * |       `--IDENT (y)
+     * |--RPAREN ())
+     * `--OBJBLOCK
+     *      |--LCURLY ({)
+     *       `--RCURLY (})
+     * </pre>
+     *
+     * @since 8.36
+     */
+    public static final int RECORD_COMPONENTS =
+            GeneratedJavaTokenTypes.RECORD_COMPONENTS;
+
+    /**
+     * A record component is a variable that comprises the state of a record.  Record components
+     * have annotations (possibly), a type definition, and an identifier.  They can also be of
+     * variable arity ('...').
+     *
+     * <p>For example:</p>
+     * <pre>
+     * public record myRecord (Comp x, Comp... comps) { }
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * RECORD_DEF
+     * |--MODIFIERS
+     * |   `--LITERAL_PUBLIC (public)
+     * |--LITERAL_RECORD (record)
+     * |--IDENT (myRecord)
+     * |--LPAREN (()
+     * |--RECORD_COMPONENTS
+     * |   |--RECORD_COMPONENT_DEF
+     * |   |   |--ANNOTATIONS
+     * |   |   |--TYPE
+     * |   |   |   `--IDENT (Comp)
+     * |   |   `--IDENT (x)
+     * |   |--COMMA (,)
+     * |   `--RECORD_COMPONENT_DEF
+     * |       |--ANNOTATIONS
+     * |       |--TYPE
+     * |       |   `--IDENT (Comp)
+     * |       |--ELLIPSIS (...)
+     * |       `--IDENT (comps)
+     * |--RPAREN ())
+     * `--OBJBLOCK
+     *      |--LCURLY ({)
+     *       `--RCURLY (})
+     * </pre>
+     *
+     * @since 8.36
+     */
+    public static final int RECORD_COMPONENT_DEF =
+            GeneratedJavaTokenTypes.RECORD_COMPONENT_DEF;
+
+    /**
+     * A compact canonical constructor eliminates the list of formal parameters; they are
+     * declared implicitly.
+     *
+     * <p>For example:</p>
+     * <pre>
+     * public record myRecord () {
+     *     public myRecord{}
+     * }
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * RECORD_DEF
+     * |--MODIFIERS
+     * |   `--LITERAL_PUBLIC (public)
+     * |--LITERAL_RECORD (record)
+     * |--IDENT (myRecord)
+     * |--LPAREN (()
+     * |--RECORD_COMPONENTS
+     * |--RPAREN ())
+     * `--OBJBLOCK
+     *     |--LCURLY ({)
+     *     |--COMPACT_CTOR_DEF
+     *     |   |--MODIFIERS
+     *     |   |   `--LITERAL_PUBLIC (public)
+     *     |   |--IDENT (myRecord)
+     *     |   `--SLIST ({)
+     *     |       `--RCURLY (})
+     *     `--RCURLY (})
+     * </pre>
+     *
+     * @since 8.36
+     */
+    public static final int COMPACT_CTOR_DEF =
+            GeneratedJavaTokenTypes.COMPACT_CTOR_DEF;
+
+    /**
+     * Beginning of a Java 14 Text Block literal,
+     * delimited by three double quotes.
+     *
+     * <p>For example:</p>
+     * <pre>
+     *         String hello = """
+     *                 Hello, world!
+     *                 """;
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * |--VARIABLE_DEF
+     * |   |--MODIFIERS
+     * |   |--TYPE
+     * |   |   `--IDENT (String)
+     * |   |--IDENT (hello)
+     * |   |--ASSIGN (=)
+     * |   |   `--EXPR
+     * |   |       `--TEXT_BLOCK_LITERAL_BEGIN (""")
+     * |   |           |--TEXT_BLOCK_CONTENT (\n                Hello, world!\n                    )
+     * |   |           `--TEXT_BLOCK_LITERAL_END (""")
+     * |   `--SEMI (;)
+     * </pre>
+     *
+     * @since 8.36
+     */
+    public static final int TEXT_BLOCK_LITERAL_BEGIN =
+            GeneratedJavaTokenTypes.TEXT_BLOCK_LITERAL_BEGIN;
+
+    /**
+     * Content of a Java 14 text block. This is a
+     * sequence of characters, possibly escaped with '\'. Actual line terminators
+     * are represented by '\n'.
+     *
+     * <p>For example:</p>
+     * <pre>
+     *         String hello = """
+     *                 Hello, world!
+     *                 """;
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * |--VARIABLE_DEF
+     * |   |--MODIFIERS
+     * |   |--TYPE
+     * |   |   `--IDENT (String)
+     * |   |--IDENT (hello)
+     * |   |--ASSIGN (=)
+     * |   |   `--EXPR
+     * |   |       `--TEXT_BLOCK_LITERAL_BEGIN (""")
+     * |   |           |--TEXT_BLOCK_CONTENT (\n                Hello, world!\n                    )
+     * |   |           `--TEXT_BLOCK_LITERAL_END (""")
+     * |   `--SEMI (;)
+     * </pre>
+     *
+     * @since 8.36
+     */
+    public static final int TEXT_BLOCK_CONTENT =
+            GeneratedJavaTokenTypes.TEXT_BLOCK_CONTENT;
+
+    /**
+     * End of a Java 14 text block literal, delimited by three
+     * double quotes.
+     *
+     * <p>For example:</p>
+     * <pre>
+     *         String hello = """
+     *                 Hello, world!
+     *                 """;
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * |--VARIABLE_DEF
+     * |   |--MODIFIERS
+     * |   |--TYPE
+     * |   |   `--IDENT (String)
+     * |   |--IDENT (hello)
+     * |   |--ASSIGN (=)
+     * |   |   `--EXPR
+     * |   |       `--TEXT_BLOCK_LITERAL_BEGIN (""")
+     * |   |           |--TEXT_BLOCK_CONTENT (\n                Hello, world!\n                    )
+     * |   |           `--TEXT_BLOCK_LITERAL_END (""")
+     * |   `--SEMI (;)
+     * </pre>
+     *
+     * @since 8.36
+     */
+    public static final int TEXT_BLOCK_LITERAL_END =
+            GeneratedJavaTokenTypes.TEXT_BLOCK_LITERAL_END;
+
+    /**
+     * The {@code yield} keyword.  This element appears
+     * as part of a yield statement.
+     *
+     * <p>For example:</p>
+     * <pre>
+     * int yield = 0; // not a keyword here
+     * return switch (mode) {
+     *    case "a", "b":
+     *        yield 1;
+     *    default:
+     *        yield - 1;
+     * };
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * |--VARIABLE_DEF
+     * |   |--MODIFIERS
+     * |   |--TYPE
+     * |   |   `--LITERAL_INT (int)
+     * |   |--IDENT (yield)
+     * |   `--ASSIGN (=)
+     * |       `--EXPR
+     * |           `--NUM_INT (0)
+     * |--SEMI (;)
+     * |--LITERAL_RETURN (return)
+     * |   |--EXPR
+     * |   |   `--LITERAL_SWITCH (switch)
+     * |   |       |--LPAREN (()
+     * |   |       |--EXPR
+     * |   |       |   `--IDENT (mode)
+     * |   |       |--RPAREN ())
+     * |   |       |--LCURLY ({)
+     * |   |       |--CASE_GROUP
+     * |   |       |   |--LITERAL_CASE (case)
+     * |   |       |   |   |--EXPR
+     * |   |       |   |   |   `--STRING_LITERAL ("a")
+     * |   |       |   |   |--COMMA (,)
+     * |   |       |   |   |--EXPR
+     * |   |       |   |   |   `--STRING_LITERAL ("b")
+     * |   |       |   |   `--COLON (:)
+     * |   |       |   `--SLIST
+     * |   |       |       `--LITERAL_YIELD (yield)
+     * |   |       |           |--EXPR
+     * |   |       |           |   `--NUM_INT (1)
+     * |   |       |           `--SEMI (;)
+     * |   |       |--CASE_GROUP
+     * |   |       |   |--LITERAL_DEFAULT (default)
+     * |   |       |   |   `--COLON (:)
+     * |   |       |   `--SLIST
+     * |   |       |       `--LITERAL_YIELD (yield)
+     * |   |       |           |--EXPR
+     * |   |       |           |   `--UNARY_MINUS (-)
+     * |   |       |           |       `--NUM_INT (1)
+     * |   |       |           `--SEMI (;)
+     * |   |       `--RCURLY (})
+     * |   `--SEMI (;)
+     * </pre>
+     *
+     *
+     * @see #LITERAL_SWITCH
+     * @see #CASE_GROUP
+     * @see #SLIST
+     * @see #SWITCH_RULE
+     *
+     * @see <a href="https://docs.oracle.com/javase/specs/jls/se13/preview/switch-expressions.html">
+     * Java Language Specification, &sect;14.21</a>
+     *
+     * @since 8.36
+     */
+    public static final int LITERAL_YIELD =
+            GeneratedJavaTokenTypes.LITERAL_yield;
+
+    /**
+     * Switch Expressions.
+     *
+     * <p>For example:</p>
+     * <pre>
+     * return switch (day) {
+     *     case SAT, SUN {@code ->} "Weekend";
+     *     default {@code ->} "Working day";
+     * };
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     *  LITERAL_RETURN (return)
+     *   |--EXPR
+     *   |   `--LITERAL_SWITCH (switch)
+     *   |       |--LPAREN (()
+     *   |       |--EXPR
+     *   |       |   `--IDENT (day)
+     *   |       |--RPAREN ())
+     *   |       |--LCURLY ({)
+     *   |       |--SWITCH_RULE
+     *   |       |   |--LITERAL_CASE (case)
+     *   |       |   |   |--EXPR
+     *   |       |   |   |   `--IDENT (SAT)
+     *   |       |   |   |--COMMA (,)
+     *   |       |   |   `--EXPR
+     *   |       |   |       `--IDENT (SUN)
+     *   |       |   |--LAMBDA {@code ->}
+     *   |       |   |--EXPR
+     *   |       |   |   `--STRING_LITERAL ("Weekend")
+     *   |       |   `--SEMI (;)
+     *   |       |--SWITCH_RULE
+     *   |       |   |--LITERAL_DEFAULT (default)
+     *   |       |   |--LAMBDA {@code ->}
+     *   |       |   |--EXPR
+     *   |       |   |   `--STRING_LITERAL ("Working day")
+     *   |       |   `--SEMI (;)
+     *   |       `--RCURLY (})
+     *   `--SEMI (;)
+     * </pre>
+     *
+     * @see #LITERAL_CASE
+     * @see #LITERAL_DEFAULT
+     * @see #LITERAL_SWITCH
+     * @see #LITERAL_YIELD
+     *
+     * @see <a href="https://docs.oracle.com/javase/specs/jls/se13/preview/switch-expressions.html">
+     * Java Language Specification, &sect;14.21</a>
+     *
+     * @since 8.36
+     */
+    public static final int SWITCH_RULE =
+            GeneratedJavaTokenTypes.SWITCH_RULE;
 
     /** Prevent instantiation. */
     private TokenTypes() {

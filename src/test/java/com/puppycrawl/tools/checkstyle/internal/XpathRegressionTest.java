@@ -40,6 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
+import com.puppycrawl.tools.checkstyle.Definitions;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.AbstractJavadocCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck;
 import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocStyleCheck;
@@ -78,6 +79,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
                     "JavadocType",
                     "MissingDeprecated",
                     "NonEmptyAtclauseDescription",
+                    "RequireEmptyLineBeforeBlockTagGroup",
                     "SingleLineJavadoc",
                     "SummaryJavadoc",
                     "WriteTag"
@@ -161,6 +163,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
 
     private static Set<String> simpleCheckNames;
     private static Map<String, String> allowedDirectoryAndChecks;
+    private static Set<String> internalModules;
 
     private Path javaDir;
     private Path inputDir;
@@ -173,6 +176,13 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
 
         for (String id : simpleCheckNames) {
             allowedDirectoryAndChecks.put(id.toLowerCase(Locale.ENGLISH), id);
+        }
+
+        internalModules = new HashSet<String>();
+
+        for (String moduleName : Definitions.INTERNAL_MODULES) {
+            final String[] packageTokens = moduleName.split("\\.");
+            internalModules.add(packageTokens[packageTokens.length - 1]);
         }
     }
 
@@ -203,9 +213,12 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
         }
         // add the extra checks
         abstractJavadocCheckNames.addAll(REGEXP_JAVADOC_CHECKS);
+        final Set<String> abstractJavadocCheckSimpleNames =
+                CheckUtil.getSimpleNames(abstractJavadocCheckNames);
+        abstractJavadocCheckSimpleNames.removeAll(internalModules);
         assertWithMessage("INCOMPATIBLE_JAVADOC_CHECK_NAMES should contains all descendants "
                     + "of AbstractJavadocCheck")
-            .that(CheckUtil.getSimpleNames(abstractJavadocCheckNames))
+            .that(abstractJavadocCheckSimpleNames)
             .isEqualTo(INCOMPATIBLE_JAVADOC_CHECK_NAMES);
     }
 
@@ -251,6 +264,7 @@ public class XpathRegressionTest extends AbstractModuleTestSupport {
         allChecks.removeAll(MISSING_CHECK_NAMES);
         allChecks.removeAll(NO_VIOLATION_MODULES);
         allChecks.removeAll(compatibleChecks);
+        allChecks.removeAll(internalModules);
 
         assertTrue(allChecks.isEmpty(), "XpathRegressionTest is missing for ["
                 + String7.join(", ", allChecks)

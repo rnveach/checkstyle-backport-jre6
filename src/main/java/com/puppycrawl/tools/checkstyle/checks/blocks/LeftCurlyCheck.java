@@ -46,7 +46,8 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#ANNOTATION_DEF">
  * ANNOTATION_DEF</a>,
@@ -91,7 +92,11 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#OBJBLOCK">
  * OBJBLOCK</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#STATIC_INIT">
- * STATIC_INIT</a>.
+ * STATIC_INIT</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_DEF">
+ * RECORD_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#COMPACT_CTOR_DEF">
+ * COMPACT_CTOR_DEF</a>.
  * </li>
  * </ul>
  * <p>
@@ -219,6 +224,8 @@ public class LeftCurlyCheck
             TokenTypes.METHOD_DEF,
             TokenTypes.OBJBLOCK,
             TokenTypes.STATIC_INIT,
+            TokenTypes.RECORD_DEF,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -227,6 +234,14 @@ public class LeftCurlyCheck
         return CommonUtil.EMPTY_INT_ARRAY;
     }
 
+    /**
+     * We cannot reduce the number of branches in this switch statement,
+     * since many tokens require specific methods to find the first left
+     * curly.
+     *
+     * @param ast the token to process
+     * @noinspection SwitchStatementWithTooManyBranches
+     */
     @Override
     public void visitToken(DetailAST ast) {
         final DetailAST startToken;
@@ -235,6 +250,7 @@ public class LeftCurlyCheck
         switch (ast.getType()) {
             case TokenTypes.CTOR_DEF:
             case TokenTypes.METHOD_DEF:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 startToken = skipModifierAnnotations(ast);
                 brace = ast.findFirstToken(TokenTypes.SLIST);
                 break;
@@ -243,6 +259,7 @@ public class LeftCurlyCheck
             case TokenTypes.ANNOTATION_DEF:
             case TokenTypes.ENUM_DEF:
             case TokenTypes.ENUM_CONSTANT_DEF:
+            case TokenTypes.RECORD_DEF:
                 startToken = skipModifierAnnotations(ast);
                 final DetailAST objBlock = ast.findFirstToken(TokenTypes.OBJBLOCK);
                 brace = objBlock;
@@ -271,7 +288,7 @@ public class LeftCurlyCheck
             case TokenTypes.LITERAL_CASE:
             case TokenTypes.LITERAL_DEFAULT:
                 startToken = ast;
-                brace = getBraceAsFirstChild(ast.getNextSibling());
+                brace = getBraceFromSwitchMember(ast);
                 break;
             default:
                 // ATTENTION! We have default here, but we expect case TokenTypes.METHOD_DEF,
@@ -287,6 +304,25 @@ public class LeftCurlyCheck
         if (brace != null) {
             verifyBrace(brace, startToken);
         }
+    }
+
+    /**
+     * Gets the brace of a switch statement/ expression member.
+     *
+     * @param ast {@code DetailAST}.
+     * @return {@code DetailAST} if the first child is {@code TokenTypes.SLIST},
+     * {@code null} otherwise.
+     */
+    private static DetailAST getBraceFromSwitchMember(DetailAST ast) {
+        final DetailAST brace;
+        final DetailAST parent = ast.getParent();
+        if (parent.getType() == TokenTypes.SWITCH_RULE) {
+            brace = parent.findFirstToken(TokenTypes.SLIST);
+        }
+        else {
+            brace = getBraceAsFirstChild(ast.getNextSibling());
+        }
+        return brace;
     }
 
     /**

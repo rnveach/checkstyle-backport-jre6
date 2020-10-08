@@ -91,7 +91,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  * <li>
  * Property {@code maxProtected} - Specify the maximum number of {@code protected} methods allowed.
  * Type is {@code int}.
- * Default value is 100.
+ * Default value is {@code 100}.
  * </li>
  * <li>
  * Property {@code maxPublic} - Specify the maximum number of {@code public} methods allowed.
@@ -100,7 +100,8 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#CLASS_DEF">
  * CLASS_DEF</a>,
@@ -111,11 +112,13 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
  * INTERFACE_DEF</a>,
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#INTERFACE_DEF">
- * ANNOTATION_DEF</a>.
+ * ANNOTATION_DEF</a>,
+ * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#RECORD_DEF">
+ * RECORD_DEF</a>.
  * </li>
  * </ul>
  * <p>
- * To configure the check with defaults:
+ * To configure the default check:
  * </p>
  * <pre>
  * &lt;module name="MethodCount"/&gt;
@@ -228,6 +231,7 @@ public final class MethodCountCheck extends AbstractCheck {
             TokenTypes.INTERFACE_DEF,
             TokenTypes.ANNOTATION_DEF,
             TokenTypes.METHOD_DEF,
+            TokenTypes.RECORD_DEF,
         };
     }
 

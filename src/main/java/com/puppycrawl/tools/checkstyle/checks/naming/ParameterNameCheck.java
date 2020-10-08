@@ -49,14 +49,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  * </li>
  * <li>
  * Property {@code ignoreOverridden} - Allows to skip methods with Override annotation from
- * validation. For example, the following method's parameter will be skipped from validation,
- * if ignoreOverridden is true:
- * <pre>
- * &#64;Override
- * public boolean equals(Object o) {
- *   return super.equals(o);
- * }
- * </pre>
+ * validation.
  * Type is {@code boolean}.
  * Default value is {@code false}.
  * </li>
@@ -68,7 +61,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
  * </li>
  * </ul>
  * <p>
- * An example of how to configure the check:
+ * To configure the check:
  * </p>
  * <pre>
  * &lt;module name=&quot;ParameterName&quot;/&gt;
@@ -181,14 +174,7 @@ import com.puppycrawl.tools.checkstyle.utils.ScopeUtil;
 public class ParameterNameCheck extends AbstractNameCheck {
 
     /**
-     * Allows to skip methods with Override annotation from validation. For example, the following
-     * method's parameter will be skipped from validation, if ignoreOverridden is true:
-     * <pre>
-     * &#64;Override
-     * public boolean equals(Object o) {
-     *   return super.equals(o);
-     * }
-     * </pre>
+     * Allows to skip methods with Override annotation from validation.
      */
     private boolean ignoreOverridden;
 
@@ -208,14 +194,7 @@ public class ParameterNameCheck extends AbstractNameCheck {
     }
 
     /**
-     * Setter to allows to skip methods with Override annotation from validation. For example, the
-     * following method's parameter will be skipped from validation, if ignoreOverridden is true:
-     * <pre>
-     * &#64;Override
-     * public boolean equals(Object o) {
-     *   return super.equals(o);
-     * }
-     * </pre>
+     * Setter to allows to skip methods with Override annotation from validation.
      *
      * @param ignoreOverridden Flag for skipping methods with Override annotation.
      */

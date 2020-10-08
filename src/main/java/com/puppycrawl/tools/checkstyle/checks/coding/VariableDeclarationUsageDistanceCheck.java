@@ -31,6 +31,9 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * <p>
@@ -109,6 +112,9 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * Default value is {@code true}.
  * </li>
  * </ul>
+ * <p>
+ * To configure the check:
+ * </p>
  * <p>
  * Example #1:
  * </p>
@@ -736,22 +742,24 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
      *         of this block, otherwise - null.
      */
     private static DetailAST getFirstNodeInsideSwitchBlock(
-            DetailAST block, DetailAST variable) {
-        DetailAST currentNode = block
-                .findFirstToken(TokenTypes.CASE_GROUP);
+            DetailAST block, final DetailAST variable) {
+        final DetailAST currentNode = getFirstCaseGroupOrSwitchRule(block);
         final List<DetailAST> variableUsageExpressions =
                 new ArrayList<DetailAST>();
 
-        // Checking variable usage inside all CASE blocks.
-        while (currentNode.getType() == TokenTypes.CASE_GROUP) {
-            final DetailAST lastNodeInCaseGroup =
-                    currentNode.getLastChild();
-
-            if (isChild(lastNodeInCaseGroup, variable)) {
-                variableUsageExpressions.add(lastNodeInCaseGroup);
-            }
-            currentNode = currentNode.getNextSibling();
-        }
+        // Checking variable usage inside all CASE_GROUP and SWITCH_RULE ast's.
+        TokenUtil.forEachChild(block, currentNode.getType(),
+                new Consumer<DetailAST>() {
+                    @Override
+                    public boolean accept(DetailAST node) {
+                        final DetailAST lastNodeInCaseGroup =
+                            node.getLastChild();
+                        if (isChild(lastNodeInCaseGroup, variable)) {
+                            variableUsageExpressions.add(lastNodeInCaseGroup);
+                        }
+                        return true;
+                    }
+                });
 
         // If variable usage exists in several related blocks, then
         // firstNodeInsideBlock = null, otherwise if variable usage exists
@@ -763,6 +771,18 @@ public class VariableDeclarationUsageDistanceCheck extends AbstractCheck {
         }
 
         return firstNodeInsideBlock;
+    }
+
+    /**
+     * Helper method for getFirstNodeInsideSwitchBlock to return the first CASE_GROUP or
+     * SWITCH_RULE ast.
+     *
+     * @param block the switch block to check.
+     * @return DetailAST of the first CASE_GROUP or SWITCH_RULE.
+     */
+    private static DetailAST getFirstCaseGroupOrSwitchRule(DetailAST block) {
+        return Optional.ofNullable(block.findFirstToken(TokenTypes.CASE_GROUP))
+            .orElse(block.findFirstToken(TokenTypes.SWITCH_RULE));
     }
 
     /**

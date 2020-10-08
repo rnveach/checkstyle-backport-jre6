@@ -27,9 +27,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -104,6 +108,19 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
             .put("URI", URI.class)
             .put("WrapOption", WrapOption.class)
             .put("PARAM_LITERAL", int[].class).build();
+
+    private static final Set<String> PATTERN_EXCEPTIONS = Collections.unmodifiableSet(
+        new HashSet<String>(Arrays.asList(new String[] {
+            "ClassDataAbstractionCoupling - excludeClassesRegexps",
+            "ClassFanOutComplexity - excludeClassesRegexps",
+            "IllegalTokenText - format",
+            "ImportOrder - groups",
+            "ImportOrder - staticGroups",
+            "SuppressionSingleFilter - checks",
+            "SuppressionXpathSingleFilter - files",
+            "SuppressionXpathSingleFilter - checks",
+            "SuppressionXpathSingleFilter - message",
+        })));
 
     private static final List<List<Node>> CHECK_PROPERTIES = new ArrayList<List<Node>>();
     private static final Map<String, String> CHECK_PROPERTY_DOC = new HashMap<String, String>();
@@ -282,8 +299,11 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
             result.append(temp);
             CHECK_PROPERTY_DOC.put(propertyName, temp);
 
-            String typeText = "int[]";
-            if (!property.get(2).getTextContent().contains("subset of tokens")) {
+            String typeText = "java.lang.String[]";
+            final String propertyType = property.get(2).getTextContent();
+            final boolean isPropertyTokenType = propertyType.contains("subset of tokens")
+                    || propertyType.contains("subset of javadoc tokens");
+            if (!isPropertyTokenType) {
                 final Node typeNode;
                 if (property.get(2).getFirstChild().getFirstChild() == null) {
                     typeNode = property.get(2).getFirstChild().getNextSibling();
@@ -296,6 +316,13 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
             }
             result.append(" Type is {@code ").append(typeText).append("}.");
 
+            if (isPropertyTokenType) {
+                result.append(" Validation type is {@code tokenSet}.");
+            }
+            else if (PATTERN_EXCEPTIONS.contains(checkName + " - " + propertyName)) {
+                result.append(" Validation type is {@code java.util.regex.Pattern}.");
+            }
+
             if (propertyName.endsWith("token") || propertyName.endsWith("tokens")) {
                 result.append(" Default value is: ");
             }
@@ -303,7 +330,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
                 result.append(" Default value is ");
             }
 
-            result.append(getNodeText(property.get(3)));
+            result.append(emptyStringArrayDefaultValue(property.get(3)));
 
             if (result.charAt(result.length() - 1) != '.') {
                 result.append('.');
@@ -315,6 +342,15 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         result.append("\n</ul>");
 
         return result.toString();
+    }
+
+    private static String emptyStringArrayDefaultValue(Node defaultValueNode) {
+        String defaultValueText = getNodeText(defaultValueNode);
+        if ("{@code {}}".equals(defaultValueText)
+            || "{@code all files}".equals(defaultValueText)) {
+            defaultValueText = "{@code \"\"}";
+        }
+        return defaultValueText;
     }
 
     private static String getNodeText(Node node) {

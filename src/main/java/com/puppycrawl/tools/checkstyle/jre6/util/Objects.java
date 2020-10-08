@@ -49,6 +49,10 @@ public final class Objects {
         return obj != null;
     }
 
+    public static boolean isNull(Object obj) {
+        return obj == null;
+    }
+
     public static String toString(Object o, String nullDefault) {
         if (o == null) {
             return nullDefault;

@@ -71,7 +71,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#LITERAL_WHILE">
  * LITERAL_WHILE</a>,
@@ -301,6 +302,7 @@ public class CyclomaticComplexityCheck
             TokenTypes.QUESTION,
             TokenTypes.LAND,
             TokenTypes.LOR,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -321,6 +323,7 @@ public class CyclomaticComplexityCheck
             TokenTypes.QUESTION,
             TokenTypes.LAND,
             TokenTypes.LOR,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -331,6 +334,7 @@ public class CyclomaticComplexityCheck
             TokenTypes.METHOD_DEF,
             TokenTypes.INSTANCE_INIT,
             TokenTypes.STATIC_INIT,
+            TokenTypes.COMPACT_CTOR_DEF,
         };
     }
 
@@ -341,6 +345,7 @@ public class CyclomaticComplexityCheck
             case TokenTypes.METHOD_DEF:
             case TokenTypes.INSTANCE_INIT:
             case TokenTypes.STATIC_INIT:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 visitMethodDef();
                 break;
             default:
@@ -355,6 +360,7 @@ public class CyclomaticComplexityCheck
             case TokenTypes.METHOD_DEF:
             case TokenTypes.INSTANCE_INIT:
             case TokenTypes.STATIC_INIT:
+            case TokenTypes.COMPACT_CTOR_DEF:
                 leaveMethodDef(ast);
                 break;
             default:

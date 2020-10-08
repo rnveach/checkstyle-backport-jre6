@@ -80,7 +80,8 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * <li>
  * Property {@code constantWaiverParentToken} - Specify tokens that are allowed in the AST path
  * from the number literal to the enclosing constant definition.
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#TYPECAST">
  * TYPECAST</a>,
@@ -111,7 +112,8 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
- * Type is {@code int[]}.
+ * Type is {@code java.lang.String[]}.
+ * Validation type is {@code tokenSet}.
  * Default value is:
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#NUM_DOUBLE">
  * NUM_DOUBLE</a>,
@@ -174,6 +176,27 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  *     int i = i + 1; // no violation
  *     int j = j + 8; // violation
  *   }
+ * }
+ * </pre>
+ * <p>
+ * To configure the check so that it ignores magic numbers in field declarations:
+ * </p>
+ * <pre>
+ * &lt;module name=&quot;MagicNumber&quot;&gt;
+ *   &lt;property name=&quot;ignoreFieldDeclaration&quot; value=&quot;false&quot;/&gt;
+ * &lt;/module&gt;
+ * </pre>
+ * <p>
+ * results in the following violations:
+ * </p>
+ * <pre>
+ * public record MyRecord() {
+ *     private static int myInt = 7; // ok, field declaration
+ *
+ *     void foo() {
+ *         int i = myInt + 1; // no violation, 1 is defined as non-magic
+ *         int j = myInt + 8; // violation
+ *     }
  * }
  * </pre>
  * <p>
@@ -515,9 +538,10 @@ public class MagicNumberCheck extends AbstractCheck {
         }
 
         // contains variable declaration
-        // and it is directly inside class declaration
+        // and it is directly inside class or record declaration
         return varDefAST != null
-                && varDefAST.getParent().getParent().getType() == TokenTypes.CLASS_DEF;
+                && (varDefAST.getParent().getParent().getType() == TokenTypes.CLASS_DEF
+                || varDefAST.getParent().getParent().getType() == TokenTypes.RECORD_DEF);
     }
 
     /**

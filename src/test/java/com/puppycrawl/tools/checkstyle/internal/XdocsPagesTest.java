@@ -233,7 +233,8 @@ public class XdocsPagesTest {
         final String availableChecks = new String(Files7.readAllBytes(AVAILABLE_CHECKS_PATH), UTF_8);
 
         for (String checkName : CheckUtil.getSimpleNames(CheckUtil.getCheckstyleChecks())) {
-            if (!isPresent(availableChecks, checkName)) {
+            if (!"JavadocMetadataScraper".equals(checkName)
+                    && !isPresent(availableChecks, checkName)) {
                 fail(checkName + " is not correctly listed on Available Checks page"
                     + " - add it to " + AVAILABLE_CHECKS_PATH);
             }
@@ -656,10 +657,11 @@ public class XdocsPagesTest {
             "Incompatible check list should match XpathRegressionTest.INCOMPATIBLE_CHECK_NAMES")
             .that(getListById(subSection, "SuppressionXpathFilter_IncompatibleChecks"))
             .isEqualTo(XpathRegressionTest.INCOMPATIBLE_CHECK_NAMES);
-
+        final Set<String> suppressionXpathFilterJavadocChecks = getListById(subSection,
+                "SuppressionXpathFilter_JavadocChecks");
         assertWithMessage(
             "Javadoc check list should match XpathRegressionTest.INCOMPATIBLE_JAVADOC_CHECK_NAMES")
-            .that(getListById(subSection, "SuppressionXpathFilter_JavadocChecks"))
+            .that(suppressionXpathFilterJavadocChecks)
             .isEqualTo(XpathRegressionTest.INCOMPATIBLE_JAVADOC_CHECK_NAMES);
     }
 
@@ -1094,7 +1096,7 @@ public class XdocsPagesTest {
             }
             else if (fieldClass == int.class) {
                 if (value.equals(Integer.MAX_VALUE)) {
-                    result = "java.lang.Integer.MAX_VALUE";
+                    result = "2147483647";
                 }
                 else {
                     result = value.toString();
@@ -1226,10 +1228,6 @@ public class XdocsPagesTest {
                 if (value != null) {
                     result = '"' + value.toString().replace("\n", "\\n").replace("\t", "\\t")
                             .replace("\r", "\\r").replace("\f", "\\f") + '"';
-
-                    if ("\"^$\"".equals(result)) {
-                        result += " (empty)";
-                    }
                 }
             }
             else if (fieldClass == Pattern[].class) {

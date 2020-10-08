@@ -343,7 +343,8 @@ public class PackageObjectFactoryTest {
 
         Class<?> optional1 = null;
         for (Class<?> clazz : classes) {
-            if (!canonicalNames.contains(clazz.getCanonicalName())) {
+            if (!canonicalNames.contains(clazz.getCanonicalName())
+                    && !Definitions.INTERNAL_MODULES.contains(clazz.getName())) {
                 optional1 = clazz;
                 break;
             }

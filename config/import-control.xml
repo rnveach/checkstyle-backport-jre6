@@ -175,7 +175,6 @@
     <!-- until https://github.com/checkstyle/checkstyle/issues/3095 -->
     <allow pkg="antlr"/>
     <allow class="com.puppycrawl.tools.checkstyle.DetailAstImpl"/>
-    <allow class="java.nio.charset.StandardCharsets" />
     <allow class="com.puppycrawl.tools.checkstyle.xpath.XpathQueryGenerator" />
 
 
@@ -197,6 +196,20 @@
       <allow class="com.puppycrawl.tools.checkstyle.JavaParser"/>
       <allow pkg="com.puppycrawl.tools.checkstyle.utils"/>
     </file>
+  </subpackage>
+
+  <subpackage name="meta">
+
+    <allow pkg="java.nio"/>
+    <allow pkg="javax.xml.transform"/>
+    <allow pkg="org.reflections"/>
+    <allow pkg="org.w3c.dom"/>
+
+    <allow class="com.puppycrawl.tools.checkstyle.Checker"/>
+    <allow class="com.puppycrawl.tools.checkstyle.DefaultConfiguration"/>
+    <allow class="com.puppycrawl.tools.checkstyle.FileStatefulCheck"/>
+    <allow class="com.puppycrawl.tools.checkstyle.TreeWalker"/>
+    <allow class="com.puppycrawl.tools.checkstyle.utils.TokenUtil"/>
   </subpackage>
 
   <subpackage name="xpath">

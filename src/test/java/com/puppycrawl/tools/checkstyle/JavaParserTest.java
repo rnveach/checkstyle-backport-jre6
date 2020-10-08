@@ -201,6 +201,31 @@ public class JavaParserTest extends AbstractModuleTestSupport {
                 counter.blockComments.toArray(), "Invalid block comments");
     }
 
+    @Test
+    public void testJava14TextBlocks() throws Exception {
+        final DetailAST root =
+            JavaParser.parseFile(new File(
+                    getNonCompilablePath("InputJavaParserTextBlocks.java")),
+                JavaParser.Options.WITHOUT_COMMENTS);
+
+        final Optional<DetailAST> textBlockContent = TestUtil.findTokenInAstByPredicate(root,
+            new Predicate<DetailAST>() {
+                @Override
+                public boolean test(DetailAST ast) {
+                    return ast.getType() == TokenTypes.TEXT_BLOCK_CONTENT;
+                }
+            });
+
+        assertTrue(textBlockContent.isPresent(), "Text block content should be present");
+
+        final DetailAST content = textBlockContent.get();
+        final String expectedContents = "\n                 string";
+
+        assertEquals(5, content.getLineNo(), "Unexpected line number");
+        assertEquals(32, content.getColumnNo(), "Unexpected column number");
+        assertEquals(expectedContents, content.getText(), "Unexpected text block content");
+    }
+
     private static final class CountComments {
         private final List<String> lineComments = new ArrayList<String>();
         private final List<String> blockComments = new ArrayList<String>();
