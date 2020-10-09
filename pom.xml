@@ -12,7 +12,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.36</version>
+  <version>8.36.1</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -1025,7 +1025,7 @@
                     <limit>
                       <counter>BRANCH</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.84</minimum>
+                      <minimum>0.88</minimum>
                     </limit>
                   </limits>
                 </rule>
@@ -1088,14 +1088,14 @@
                   <element>CLASS</element>
                   <includes>
                     <include>
-                       com.puppycrawl.tools.checkstyle.meta.MetadataGenerator
+                      com.puppycrawl.tools.checkstyle.meta.MetadataGeneratorUtil
                     </include>
                   </includes>
                   <limits>
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.96</minimum>
+                      <minimum>0.87</minimum>
                     </limit>
                     <limit>
                       <counter>BRANCH</counter>
@@ -1512,7 +1512,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
       </plugin>
 
       <plugin>

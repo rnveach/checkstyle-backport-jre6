@@ -31,11 +31,12 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /** Class which handles all the metadata generation and writing calls. */
-public final class MetadataGenerator {
+public final class MetadataGeneratorUtil {
 
-    private MetadataGenerator() {
+    private MetadataGeneratorUtil() {
     }
 
     /**
@@ -103,5 +104,18 @@ public final class MetadataGenerator {
                 }
             }
         }
+    }
+
+    /**
+     * Return all token types present in checkstyle.
+     *
+     * @return list of token type names
+     */
+    public static List<String> fetchAllTokens() {
+        final List<String> results = new ArrayList<String>();
+        for (int token : TokenUtil.getAllTokenIds()) {
+            results.add(TokenUtil.getTokenName(token));
+        }
+        return results;
     }
 }
