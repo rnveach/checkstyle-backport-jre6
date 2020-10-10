@@ -153,6 +153,29 @@ public class RootNodeTest extends AbstractPathTestSupport {
     }
 
     @Test
+    public void testRootWithNullDetailAst() {
+        final RootNode emptyRootNode = new RootNode(null);
+        assertFalse(emptyRootNode.hasChildNodes(), "Empty node should not have children");
+
+        final AxisIterator descendant = emptyRootNode.iterateAxis(AxisInfo.DESCENDANT);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, descendant,
+                    "Result iterator does not match expected");
+        }
+        finally {
+            descendant.close();
+        }
+        final AxisIterator child = emptyRootNode.iterateAxis(AxisInfo.CHILD);
+        try {
+            assertEquals(EmptyIterator.OfNodes.THE_INSTANCE, child,
+                    "Result iterator does not match expected");
+        }
+        finally {
+            child.close();
+        }
+    }
+
+    @Test
     public void testIterateWithoutArgument() {
         try {
             rootNode.iterate();
@@ -453,5 +476,4 @@ public class RootNodeTest extends AbstractPathTestSupport {
         assertFalse(rootNode.isSameNodeInfo(null),
                 "Should return false, because object does not equal null");
     }
-
 }

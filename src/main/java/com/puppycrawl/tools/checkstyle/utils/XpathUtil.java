@@ -33,6 +33,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
 import com.puppycrawl.tools.checkstyle.xpath.AbstractNode;
 import com.puppycrawl.tools.checkstyle.xpath.RootNode;
+import net.sf.saxon.Configuration;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
@@ -143,7 +144,7 @@ public final class XpathUtil {
      */
     public static String printXpathBranch(String xpath, File file) throws CheckstyleException,
             IOException {
-        final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+        final XPathEvaluator xpathEvaluator = new XPathEvaluator(Configuration.newConfiguration());
         try {
             final RootNode rootNode = new RootNode(JavaParser.parseFile(file,
                 JavaParser.Options.WITH_COMMENTS));

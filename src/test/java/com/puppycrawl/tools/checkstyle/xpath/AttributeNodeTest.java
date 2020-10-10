@@ -148,5 +148,4 @@ public class AttributeNodeTest {
                 ex.getMessage(), "Invalid exception message");
         }
     }
-
 }

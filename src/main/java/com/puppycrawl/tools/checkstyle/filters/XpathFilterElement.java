@@ -28,6 +28,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 import com.puppycrawl.tools.checkstyle.xpath.AbstractNode;
 import com.puppycrawl.tools.checkstyle.xpath.RootNode;
+import net.sf.saxon.Configuration;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
@@ -106,7 +107,8 @@ public class XpathFilterElement implements TreeWalkerFilter {
             xpathExpression = null;
         }
         else {
-            final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+            final XPathEvaluator xpathEvaluator = new XPathEvaluator(
+                    Configuration.newConfiguration());
             try {
                 xpathExpression = xpathEvaluator.createExpression(xpathQuery);
             }
@@ -157,7 +159,8 @@ public class XpathFilterElement implements TreeWalkerFilter {
             xpathExpression = null;
         }
         else {
-            final XPathEvaluator xpathEvaluator = new XPathEvaluator();
+            final XPathEvaluator xpathEvaluator = new XPathEvaluator(
+                    Configuration.newConfiguration());
             try {
                 xpathExpression = xpathEvaluator.createExpression(xpathQuery);
             }

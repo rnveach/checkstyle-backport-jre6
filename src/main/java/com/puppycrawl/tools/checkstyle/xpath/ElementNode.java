@@ -200,8 +200,14 @@ public class ElementNode extends AbstractNode {
      * Determines axis iteration algorithm. Throws {@code UnsupportedOperationException} in case,
      * when there is no axis iterator for given axisNumber.
      *
+     * <p>Reason of suppression for resource, IOResourceOpenedButNotSafelyClosed:
+     * {@link AxisIterator} implements {@link java.io.Closeable} interface,
+     * but none of the subclasses of the {@link AxisIterator}
+     * class has non-empty {@code close()} method.
+     *
      * @param axisNumber element from {@code AxisInfo}
      * @return {@code AxisIterator} object
+     * @noinspection resource, IOResourceOpenedButNotSafelyClosed
      */
     @Override
     public AxisIterator iterateAxis(byte axisNumber) {
@@ -227,16 +233,14 @@ public class ElementNode extends AbstractNode {
                 break;
             case AxisInfo.DESCENDANT:
                 if (hasChildNodes()) {
-                    result =
-                            new Navigator.DescendantEnumeration(this, false, true);
+                    result = new Navigator.DescendantEnumeration(this, false, true);
                 }
                 else {
                     result = EmptyIterator.OfNodes.THE_INSTANCE;
                 }
                 break;
             case AxisInfo.DESCENDANT_OR_SELF:
-                result =
-                        new Navigator.DescendantEnumeration(this, true, true);
+                result = new Navigator.DescendantEnumeration(this, true, true);
                 break;
             case AxisInfo.PARENT:
                 result = SingleNodeIterator.makeIterator(parent);
@@ -259,6 +263,7 @@ public class ElementNode extends AbstractNode {
             default:
                 throw throwUnsupportedOperationException();
         }
+
         return result;
     }
 
@@ -305,7 +310,13 @@ public class ElementNode extends AbstractNode {
     /**
      * Returns preceding sibling axis iterator.
      *
+     * <p>Reason of suppression for resource, IOResourceOpenedButNotSafelyClosed:
+     * {@link AxisIterator} implements {@link java.io.Closeable} interface,
+     * but none of the subclasses of the {@link AxisIterator}
+     * class has non-empty {@code close()} method.
+     *
      * @return iterator
+     * @noinspection resource, IOResourceOpenedButNotSafelyClosed
      */
     private AxisIterator getPrecedingSiblingsIterator() {
         final AxisIterator result;
@@ -322,7 +333,13 @@ public class ElementNode extends AbstractNode {
     /**
      * Returns following sibling axis iterator.
      *
+     * <p>Reason of suppression for resource, IOResourceOpenedButNotSafelyClosed:
+     * {@link AxisIterator} implements {@link java.io.Closeable} interface,
+     * but none of the subclasses of the {@link AxisIterator}
+     * class has non-empty {@code close()} method.
+     *
      * @return iterator
+     * @noinspection resource, IOResourceOpenedButNotSafelyClosed
      */
     private AxisIterator getFollowingSiblingsIterator() {
         final AxisIterator result;

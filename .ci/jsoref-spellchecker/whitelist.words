@@ -504,6 +504,7 @@ func
 Fwhitespace
 Fx
 gav
+gcp
 generalform
 genericwhitespace
 Getenv
@@ -908,6 +909,7 @@ newlineatendoffile
 Nfc
 Nfo
 Niederhauser
+nikitasavinov
 nio
 nlow
 NMTOKEN
@@ -1134,6 +1136,7 @@ requireemptylinebeforeblocktaggroup
 requirethis
 Rethrown
 returncount
+reviewdog
 revwalk
 rfe
 rga
@@ -1165,6 +1168,7 @@ rw
 rx
 sabaka
 Sameline
+Savinov
 saxonica
 sbe
 sbt
@@ -1358,6 +1362,7 @@ uncommentedmain
 Unconstructable
 unicode
 Uninstantiable
+uninterned
 uniq
 uniqueproperties
 Unitless
