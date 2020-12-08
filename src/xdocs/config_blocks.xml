@@ -265,7 +265,23 @@ switch (a) {
         <source>
 &lt;module name=&quot;EmptyBlock&quot;/&gt;
         </source>
+        <p>
+          Example:
+        </p>
+        <source>
+public class Test {
+  private void emptyLoop() {
+    for (int i = 0; i &#60; 10; i++) { // violation
+    }
 
+    try { // violation
+
+    } catch (Exception e) {
+      // ignored
+    }
+  }
+}
+        </source>
         <p>
           To configure the check for the <code>text</code>
           policy and only <code> try</code> blocks:
@@ -276,6 +292,23 @@ switch (a) {
   &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_TRY&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p> Example: </p>
+        <source>
+public class Test {
+  private void emptyLoop() {
+    for (int i = 0; i &#60; 10; i++) {
+      // ignored
+    }
+
+    // violation on next line
+    try {
+
+    } catch (Exception e) {
+      // ignored
+    }
+  }
+}
+        </source>
         <p>
           To configure the check for default in switch block:
         </p>
@@ -284,17 +317,19 @@ switch (a) {
   &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_DEFAULT&quot;/&gt;
 &lt;/module&gt;
         </source>
-        <p> Result: </p>
+        <p> Example: </p>
         <source>
-switch (a) {
-  default:        // no violation for "default:" as empty block belong to "case 1:"
-  case 1: { }
-}
-        </source>
-        <source>
-switch (a) {
-  case 1:
-  default: { } // violation
+public class Test {
+  private void test(int a) {
+    switch (a) {
+      case 1: someMethod();
+      default: // OK, as there is no block
+    }
+    switch (a) {
+      case 1: someMethod();
+      default: {} // violation
+    }
+  }
 }
         </source>
       </subsection>
@@ -551,7 +586,7 @@ try {
             <tr>
               <td>option</td>
               <td>Specify the policy on placement of a left curly brace (<code>'{'</code>).</td>
-              <td><a href="property_types.html>SeverityLevel">LeftCurlyOption</a></td>
+              <td><a href="property_types.html#LeftCurlyOption">LeftCurlyOption</a></td>
               <td><code>eol</code></td>
               <td>3.0</td>
             </tr>
@@ -679,6 +714,24 @@ try {
         <source>
 &lt;module name=&quot;LeftCurly&quot;/&gt;
         </source>
+        <source>
+class Test
+{ // Violation - '{' should be on the previous line
+  private interface TestInterface
+  { // Violation - '{' should be on the previous line
+  }
+
+  private
+  class
+  MyClass { // OK
+  }
+
+  enum Colors {RED, // OK
+    BLUE,
+    GREEN;
+  }
+}
+        </source>
         <p>
           To configure the check to apply the <code>nl</code> policy to
           type blocks:
@@ -689,6 +742,24 @@ try {
   &lt;property name=&quot;tokens&quot; value=&quot;CLASS_DEF,INTERFACE_DEF&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <source>
+class Test
+{ // OK
+  private interface TestInterface
+  { // OK
+  }
+
+  private
+  class
+  MyClass { // Violation - '{' should be on a new line
+  }
+
+  enum Colors {RED, // OK
+    BLUE,
+    GREEN;
+  }
+}
+        </source>
         <p>
           An example of how to configure the check to validate enum definitions:
         </p>
@@ -696,6 +767,24 @@ try {
 &lt;module name="LeftCurly"&gt;
   &lt;property name="ignoreEnums" value="false"/&gt;
 &lt;/module&gt;
+        </source>
+        <source>
+class Test
+{ // Violation - '{' should be on the previous line
+  private interface TestInterface
+  { // Violation - '{' should be on the previous line
+  }
+
+  private
+  class
+  MyClass { // OK
+  }
+
+  enum Colors {RED, // Violation - '{' should have line break after
+  BLUE,
+  GREEN;
+  }
+}
         </source>
       </subsection>
 

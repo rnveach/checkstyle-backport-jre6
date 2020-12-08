@@ -932,6 +932,7 @@ files=&quot;com[\\/]mycompany[\\/]app[\\/].*IT.java&quot;/&gt;
           <li>AtclauseOrder</li>
           <li>JavadocBlockTagLocation</li>
           <li>JavadocMethod</li>
+          <li>JavadocMissingLeadingAsterisk</li>
           <li>JavadocMissingWhitespaceAfterAsterisk</li>
           <li>JavadocParagraph</li>
           <li>JavadocStyle</li>
@@ -1271,15 +1272,15 @@ CLASS_DEF -> CLASS_DEF [1:0]
         <p>Next example is about suppressing method with certain annotation by its name and
         element value.</p>
         <source>
-        public class InputTest {
-            @Generated("first") // should not be suppressed
-            public void test1() {
-            }
+public class InputTest {
+    @Generated("first") // should not be suppressed
+    public void test1() {
+    }
 
-            @Generated("second") // should be suppressed
-            public void test2() {
-            }
-        }
+    @Generated("second") // should be suppressed
+    public void test2() {
+    }
+}
         </source>
         <p>First of all we need to look at AST tree printed by our CLI tool: </p>
         <source>
@@ -1545,9 +1546,9 @@ public class FileTwo {
         </p>
         <div class="wrapper">
           <pre>
-&lt;module name="SuppressionXpathSingleFilter&gt;
+&lt;module name="SuppressionXpathSingleFilter"&gt;
   &lt;property name="checks" value="PackageName"/&gt;
-  &lt;property name="query" query="/PACKAGE_DEF[@text='File']/IDENT"/&gt;
+  &lt;property name="query" value="/PACKAGE_DEF[@text='File']/IDENT"/&gt;
 &lt;/module&gt;
           </pre>
         </div>

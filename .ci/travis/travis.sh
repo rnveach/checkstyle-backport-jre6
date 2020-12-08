@@ -19,6 +19,14 @@ jacoco)
     jacoco:restore-instrumented-classes \
     jacoco:report@default-report \
     jacoco:check@default-check
+  # BUILD_REASON is variable from CI, if launch is not from CI, we skip this step
+  if [ -n "$BUILD_REASON" ];then
+    bash <(curl -s https://codecov.io/bash)
+  fi
+  ;;
+
+test)
+  mvn -e clean integration-test failsafe:verify -DargLine='-Xms1024m -Xmx2048m'
   ;;
 
 test-de)
@@ -129,6 +137,20 @@ javac14)
   fi
   ;;
 
+javac15)
+  files=($(grep -Rl --include='*.java' ': Compilable with Java15' \
+        src/test/resources-noncompilable || true))
+  if [[  ${#files[@]} -eq 0 ]]; then
+    echo "No Java15 files to process"
+  else
+      mkdir -p target
+      for file in "${files[@]}"
+      do
+        javac --release 15 --enable-preview -d target "${file}"
+      done
+  fi
+  ;;
+
 jdk14-assembly-site)
   mvn -e package -Passembly
   mvn -e site -Pno-validations
@@ -165,8 +187,8 @@ assembly-run-all-jar)
                      --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
   echo version:$CS_POM_VERSION
   mkdir -p .ci-temp
-  FOLDER=src/it/resources/com/google/checkstyle/test/chapter3filestructure/rule333orderingandspacing
-  FILE=InputCustomImportOrderNoImports.java
+  FOLDER=src/it/resources/com/google/checkstyle/test/chapter7javadoc/rule73wherejavadocrequired
+  FILE=InputMissingJavadocTypeCheckNoViolations.java
   java -jar target/checkstyle-$CS_POM_VERSION-all.jar -c /google_checks.xml \
         $FOLDER/$FILE > .ci-temp/output.log
   fail=0
@@ -331,61 +353,6 @@ check-since-version)
   else
     echo "No new Check, all is good."
   fi
-  ;;
-
-checkstyle-cli-run-openjdk14)
-  # Set up environment
-  CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
-                   --non-recursive org.codehaus.mojo:exec-maven-plugin:1.6.0:exec)
-  CHECKSTYLE_DIR=$(pwd)
-  TRAVIS_DIR="${CHECKSTYLE_DIR}/.ci/travis"
-  CHECKSTYLE_CONFIG="${CHECKSTYLE_DIR}/.ci/travis/openjdk14-test/single-module-config.xml"
-  FILTER_FILE="${CHECKSTYLE_DIR}/.ci/travis/openjdk14-test/jdk14-test-excluded-files.list"
-  OUTPUT_FILE="$(mktemp)"
-
-  # Build Checkstyle
-  mvn -e -P assembly package
-  CHECKSTYLE_JAR="${CHECKSTYLE_DIR}/target/checkstyle-${CS_POM_VERSION}-all.jar"
-
-  # Set up input file for Checkstyle run
-  echo "Downloading list of openjdk14 test files..."
-  mkdir -p .ci-temp/checkstyle-cli-run-openjdk14
-  cd .ci-temp/checkstyle-cli-run-openjdk14
-  # Below link is our copy of jdk14 test input file list, in case of download.java.net failure
-  # wget https://raw.githubusercontent.com/checkstyle/contribution/master/misc/jdk14-test-files.list
-  wget https://download.java.net/openjdk/testresults/14/archives/36/langtools-36-summary.txt
-  INPUT_FILE="langtools-36-summary.txt"
-
-  # Modify the list of files in place for Checkstyle run
-  echo "Removing non-compilable files from input list..."
-  sed -i '/failed as expected/d' ${INPUT_FILE} # remove non-compilable
-  sed -i '/.sh/d' ${INPUT_FILE} # remove script files
-  sed -r -i 's/\.java(.)*/.java/g' ${INPUT_FILE} # remove test information at end of line
-  sed -i 's/^/jdk14\/test\/langtools\//g' ${INPUT_FILE} # prepend each filename with full path
-
-  # Remove files from jdk14-test-files.list that match excludes
-  echo "Removing excluded files from input list..."
-  comm -23 <(sort ${INPUT_FILE}) <(sort "${FILTER_FILE}") > "${OUTPUT_FILE}"
-  NUMBER_OF_FILES=$(cat ${OUTPUT_FILE} | wc -w)
-
-  # Clone openjdk14
-  echo "Cloning openjdk 14 source from https://github.com/openjdk/jdk14..."
-  git clone --depth 1 https://github.com/openjdk/jdk14
-
-  CMD="java -jar ${CHECKSTYLE_JAR} -c ${CHECKSTYLE_CONFIG} @${OUTPUT_FILE}"
-
-  echo "Running Checkstyle on ${NUMBER_OF_FILES} files..."
-  RESULT=1
-  if $CMD; then
-    echo "Checkstyle successfully parsed all jdk14 test files."
-    RESULT=0
-  else
-    echo "Checkstyle did not successfully parse all jdk14 test files."
-  fi
-
-  cd ..
-  removeFolderWithProtectedFiles checkstyle-cli-run-openjdk14
-  exit $RESULT
   ;;
 
 spotbugs-and-pmd)

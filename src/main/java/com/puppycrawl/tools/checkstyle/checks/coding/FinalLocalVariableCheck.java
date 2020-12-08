@@ -469,11 +469,15 @@ public class FinalLocalVariableCheck extends AbstractCheck {
      */
     private void updateAllUninitializedVariables(
             Deque<DetailAST> prevScopeUninitializedVariableData) {
-        // Check for only previous scope
-        updateUninitializedVariables(prevScopeUninitializedVariableData);
-        // Check for rest of the scope
-        for (Deque<DetailAST> variable : prevScopeUninitializedVariables) {
-            updateUninitializedVariables(variable);
+
+        final boolean hasSomeScopes = !currentScopeAssignedVariables.isEmpty();
+        if (hasSomeScopes) {
+            // Check for only previous scope
+            updateUninitializedVariables(prevScopeUninitializedVariableData);
+            // Check for rest of the scope
+            for (Deque<DetailAST> variable : prevScopeUninitializedVariables) {
+                updateUninitializedVariables(variable);
+            }
         }
     }
 

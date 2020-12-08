@@ -60,7 +60,7 @@
             </tr>
             <tr>
               <td>target</td>
-              <td>Specify the list of targets to check at-clauses.</td>
+              <td>Specify the list of block tags targeted.</td>
               <td>subset of tokens
                 <a href="apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html">TokenTypes</a>
               </td>
@@ -102,13 +102,46 @@
             To configure the default check:
         </p>
         <source>
-&lt;module name=&quot;AtclauseOrder&quot;&gt;
-  &lt;property name=&quot;tagOrder&quot; value=&quot;&#64;author, &#64;version, &#64;param,
-  &#64;return, &#64;throws, &#64;exception, &#64;see, &#64;since, &#64;serial,
-  &#64;serialField, &#64;serialData, &#64;deprecated&quot;/&gt;
-  &lt;property name=&quot;target&quot; value=&quot;CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
-  METHOD_DEF, CTOR_DEF, VARIABLE_DEF&quot;/&gt;
-&lt;/module>
+&lt;module name=&quot;AtclauseOrder&quot;/&gt;
+        </source>
+        <p>
+          Example:
+        </p>
+        <source>
+/**
+* Some javadoc. // OK
+*
+* @author Some javadoc. // OK
+* @version Some javadoc. // OK
+* @param Some javadoc. // OK
+* @return Some javadoc. // OK
+* @throws Some javadoc. // OK
+* @exception Some javadoc. // OK
+* @see Some javadoc. // OK
+* @since Some javadoc. // OK
+* @serial Some javadoc. // OK
+* @serialField // OK
+* @serialData // OK
+* @deprecated Some javadoc. // OK
+*/
+
+class Valid implements Serializable
+{
+}
+
+/**
+* Some javadoc.
+*
+* @since Some javadoc. // OK
+* @version Some javadoc. // Violation - wrong order
+* @deprecated
+* @see Some javadoc. // Violation - wrong order
+* @author Some javadoc. // Violation - wrong order
+*/
+
+class Invalid implements Serializable
+{
+}
         </source>
       </subsection>
 
@@ -934,6 +967,145 @@ public Runnable printLater(String s) {
       </subsection>
     </section>
 
+    <section name="JavadocMissingLeadingAsterisk">
+      <p>Since Checkstyle 8.38</p>
+      <subsection name="Description" id="JavadocMissingLeadingAsterisk_Description">
+        <p>
+          Checks if the javadoc has
+          <a href="https://docs.oracle.com/en/java/javase/14/docs/specs/javadoc/doc-comment-spec.html#leading-asterisks">
+            leading asterisks
+          </a>
+          on each line.
+        </p>
+        <p>
+          The check does not require asterisks on the first line, nor on the last line
+          if it is blank. All other lines in a Javadoc should start with <code>*</code>,
+          including blank lines and code blocks.
+        </p>
+      </subsection>
+
+      <subsection name="Properties" id="JavadocMissingLeadingAsterisk_Properties">
+        <div class="wrapper">
+          <table>
+            <tr>
+              <th>name</th>
+              <th>description</th>
+              <th>type</th>
+              <th>default value</th>
+              <th>since</th>
+            </tr>
+            <tr>
+              <td>violateExecutionOnNonTightHtml</td>
+              <td>
+                Control when to print violations if the Javadoc being examined by this check
+                violates the tight html rules defined at
+                <a href="writingjavadocchecks.html#Tight-HTML_rules">Tight-HTML Rules</a>.
+              </td>
+              <td><a href="property_types.html#boolean">boolean</a></td>
+              <td><code>false</code></td>
+              <td>8.38</td>
+            </tr>
+          </table>
+        </div>
+      </subsection>
+
+      <subsection name="Examples" id="JavadocMissingLeadingAsterisk_Examples">
+        <p>
+          To configure the check:
+        </p>
+        <source>
+&lt;module name=&quot;JavadocMissingLeadingAsterisk&quot;/&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+/**
+ * Valid Java-style comment.
+ *
+ * &lt;pre&gt;
+ *   int value = 0;
+ * &lt;/pre&gt;
+ */
+class JavaStyle {} // ok
+
+/** Valid Scala-style comment.
+  * Some description here.
+  **/
+class ScalaStyle {} // ok
+
+/** **
+  * Asterisks on first and last lines are optional.
+  * */
+class Asterisks {} // ok
+
+/** No asterisks are required for single-line comments. */
+class SingleLine {} // ok
+
+/** // violation on next blank line, javadoc has lines without leading asterisk.
+
+ */
+class BlankLine {}
+
+/** Wrapped
+    single-line comment */ // violation, javadoc has lines without leading asterisk.
+class Wrapped {}
+
+/**
+  * &lt;pre&gt;
+    int value; // violation, javadoc has lines without leading asterisk.
+  * &lt;/pre&gt;
+  */
+class Code {}
+        </source>
+      </subsection>
+
+      <subsection name="Example of Usage" id="JavadocMissingLeadingAsterisk_Example_of_Usage">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+JavadocMissingLeadingAsterisk">
+              Checkstyle Style</a>
+          </li>
+        </ul>
+      </subsection>
+
+      <subsection name="Violation Messages"
+                  id="JavadocMissingLeadingAsterisk_Violation_Messages">
+        <ul>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fjavadoc+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22javadoc.missed.html.close%22">
+              javadoc.missed.html.close</a>
+          </li>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fjavadoc+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22javadoc.missing.asterisk%22">
+              javadoc.missing.asterisk</a>
+          </li>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fjavadoc+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22javadoc.parse.rule.error%22">
+              javadoc.parse.rule.error</a>
+          </li>
+          <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources%2Fcom%2Fpuppycrawl%2Ftools%2Fcheckstyle%2Fchecks%2Fjavadoc+filename%3Amessages*.properties+repo%3Acheckstyle%2Fcheckstyle+%22javadoc.wrong.singleton.html.tag%22">
+              javadoc.wrong.singleton.html.tag</a>
+          </li>
+        </ul>
+        <p>
+          All messages can be customized if the default message doesn't suit you.
+          Please <a href="config.html#Custom_messages">see the documentation</a> to learn how to.
+        </p>
+      </subsection>
+
+      <subsection name="Package" id="JavadocMissingLeadingAsterisk_Package">
+        <p>
+          com.puppycrawl.tools.checkstyle.checks.javadoc
+        </p>
+      </subsection>
+
+      <subsection name="Parent Module" id="JavadocMissingLeadingAsterisk_Parent_Module">
+        <p>
+          <a href="config.html#TreeWalker">TreeWalker</a>
+        </p>
+      </subsection>
+    </section>
+
     <section name="JavadocMissingWhitespaceAfterAsterisk">
       <p>Since Checkstyle 8.32</p>
       <subsection name="Description" id="JavadocMissingWhitespaceAfterAsterisk_Description">
@@ -1706,7 +1878,8 @@ public class Test {
       <p>Since Checkstyle 6.0</p>
       <subsection name="Description" id="JavadocTagContinuationIndentation_Description">
         <p>
-          Checks the indentation of the continuation lines in at-clauses. That is whether the
+          Checks the indentation of the continuation lines in block tags.
+          That is whether the
           continued description of at clauses should be indented or not. If the text is not properly
           indented it throws a violation. A continuation line is when the description starts/spans
           past the line with the tag. Default indentation required is at least 4, but this can be
@@ -2783,6 +2956,10 @@ class DatabaseConfiguration {}
       <subsection name="Example of Usage" id="MissingJavadocType_Example_of_Usage">
         <ul>
           <li>
+            <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+MissingJavadocType">
+            Google Style</a>
+          </li>
+          <li>
             <a href="https://github.com/search?q=path%3Aconfig+filename%3Acheckstyle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+MissingJavadocType">
             Checkstyle Style</a>
           </li>
@@ -2819,7 +2996,7 @@ class DatabaseConfiguration {}
       <p>Since Checkstyle 6.0</p>
       <subsection name="Description" id="NonEmptyAtclauseDescription_Description">
         <p>
-          Checks that the at-clause tag is followed by description.
+          Checks that the block tag is followed by description.
         </p>
       </subsection>
 
@@ -2888,6 +3065,25 @@ class DatabaseConfiguration {}
 &lt;module name=&quot;NonEmptyAtclauseDescription&quot;/&gt;
         </source>
         <p>
+        Example:
+        </p>
+        <source>
+class Test
+{
+  /**
+  * Violation for param "b" and at tags "deprecated", "throws".
+  * <code>@param</code> a Some javadoc // OK
+  * <code>@param</code> b
+  * <code>@deprecated</code>
+  * <code>@throws</code> Exception
+  */
+  public int method(String a, int b) throws Exception
+  {
+    return 1;
+  }
+}
+        </source>
+        <p>
           To configure the check to validate only <code>@param</code> and
           <code>@return</code> tags:
         </p>
@@ -2895,6 +3091,25 @@ class DatabaseConfiguration {}
 &lt;module name=&quot;NonEmptyAtclauseDescription&quot;&gt;
   &lt;property name="javadocTokens" value="PARAM_LITERAL,RETURN_LITERAL"/&gt;
 &lt;/module&gt;
+        </source>
+        <p>
+        Example:
+        </p>
+        <source>
+class Test
+{
+  /**
+  * Violation for param "b". Tags "deprecated", "throws" are ignored.
+  * <code>@param</code> a Some javadoc // OK
+  * <code>@param</code> b
+  * <code>@deprecated</code>
+  * <code>@throws</code> Exception
+  */
+  public int method(String a, int b) throws Exception
+  {
+    return 1;
+  }
+}
         </source>
       </subsection>
 
@@ -3076,7 +3291,7 @@ public boolean testMethod(int firstParam) {
       <subsection name="Description" id="SingleLineJavadoc_Description">
         <p>
            Checks that a Javadoc block can fit in a single line and doesn't
-           contain at-clauses. Javadoc comment that contains at least one at-clause
+           contain block tags. Javadoc comment that contains at least one block tag
            should be formatted in a few lines.
         </p>
       </subsection>
@@ -3104,7 +3319,7 @@ public boolean testMethod(int firstParam) {
             </tr>
             <tr>
               <td>ignoredTags</td>
-              <td>Specify at-clauses which are ignored by the check.</td>
+              <td>Specify block tags which are ignored by the check.</td>
               <td><a href="property_types.html#String.5B.5D">String[]</a></td>
               <td><code>{}</code></td>
               <td>6.8</td>
@@ -3128,8 +3343,8 @@ public boolean testMethod(int firstParam) {
 &lt;module name=&quot;SingleLineJavadoc&quot;/&gt;
         </source>
         <p>
-          To configure the check with a list of ignored at-clauses and make
-          inline at-clauses not ignored:
+          To configure the check with a list of ignored block tags and make
+          inline tags not ignored:
         </p>
         <source>
 &lt;module name=&quot;SingleLineJavadoc&quot;&gt;
@@ -3454,28 +3669,96 @@ public class TestClass {
 
       <subsection name="Examples" id="WriteTag_Examples">
         <p>
-        To configure the check for printing author name:
+          Example of default Check configuration that do nothing.
         </p>
-
+        <source>
+&lt;module name="WriteTag"/&gt;
+        </source>
+        <p>
+        Example:
+        </p>
+        <source>
+/**
+* Some class
+*/
+public class Test {
+  /** some doc */
+  void foo() {}
+}
+        </source>
+        <p>
+          To configure Check to demand some special tag (for example <code>@since</code>)
+          to be present on classes javadoc.
+        </p>
         <source>
 &lt;module name="WriteTag"&gt;
-  &lt;property name="tag" value="@author"/&gt;
-  &lt;property name="tagFormat" value="\S"/&gt;
+  &lt;property name="tag" value="@since"/&gt;
 &lt;/module&gt;
         </source>
-
         <p>
-         To configure the check to print warnings if an
-         "@incomplete" tag is found, and not print anything if it is not found:
+        Example:
         </p>
-
+        <source>
+/**
+* Some class
+*/
+public class Test { // violation as required tag is missed
+  /** some doc */
+  void foo() {} // OK, as methods are not checked by default
+}
+        </source>
+        <p>
+          To configure Check to demand some special tag (for example <code>@since</code>)
+          to be present on method javadocs also in addition to default tokens.
+        </p>
         <source>
 &lt;module name="WriteTag"&gt;
-  &lt;property name="tag" value="@incomplete"/&gt;
-  &lt;property name="tagFormat" value="\S"/&gt;
-  &lt;property name="severity" value="ignore"/&gt;
-  &lt;property name="tagSeverity" value="warning"/&gt;
+  &lt;property name="tag" value="@since"/&gt;
+  &lt;property name="tokens"
+            value="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF, METHOD_DEF" /&gt;
 &lt;/module&gt;
+        </source>
+        <p>
+        Example:
+        </p>
+        <source>
+/**
+* Some class
+*/
+public class Test { // violation as required tag is missed
+  /** some doc */
+  void foo() {} // violation as required tag is missed
+}
+        </source>
+        <p>
+          To configure Check to demand <code>@since</code> tag
+          to be present with digital value on method javadocs also in addition to default tokens.
+          Attention: usage of non "ignore" in tagSeverity will print violation with such severity
+          on each presence of such tag.
+        </p>
+        <source>
+&lt;module name="WriteTag"&gt;
+  &lt;property name="tag" value="@since"/&gt;
+  &lt;property name="tokens"
+            value="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF, METHOD_DEF" /&gt;
+  &lt;property name="tagFormat" value="[1-9\.]"/&gt;
+  &lt;property name="tagSeverity" value="ignore"/&gt;
+&lt;/module&gt;
+        </source>
+        <p>
+        Example:
+        </p>
+        <source>
+/**
+* Some class
+* @since 1.2
+*/
+public class Test {
+  /** some doc
+  * @since violation
+  */
+  void foo() {}
+}
         </source>
       </subsection>
 

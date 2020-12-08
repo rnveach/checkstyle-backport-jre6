@@ -19,6 +19,7 @@ Aconfig
 adb
 addons
 adf
+adoptopenjdk
 adr
 AFDF
 AFilter
@@ -82,6 +83,7 @@ atlassian
 attlist
 attr
 autoboxing
+autobuild
 autocomplete
 autocrlf
 Autoproxy
@@ -251,6 +253,7 @@ codeconventions
 codeconvtoc
 codecov
 codehaus
+codeql
 codeselectorpresentation
 codeship
 codestyle
@@ -329,6 +332,7 @@ Destructuring
 detailast
 detailastimpl
 detailnodetreestringprinter
+devops
 Dexec
 Dfile
 dfn
@@ -347,12 +351,14 @@ Dlinkcheck
 DMail
 Dmaven
 doccheck
+DOCKERHUB
 Dockter
 doclet
 DOCTYPE
 documentationcomments
 donotignoreexceptions
 Dorekit
+Dorg
 DOTALL
 doubletag
 Dpi
@@ -657,6 +663,7 @@ javadoccontentlocation
 javadocdetailnodeparser
 javadocmetadatascraper
 javadocmethod
+javadocmissingleadingasterisk
 javadocmissingwhitespaceafterasterisk
 javadocpackage
 javadocparagraph
@@ -763,7 +770,6 @@ Kotlin
 kused
 lambdabodylength
 lambdaparametername
-langtools
 lbc
 LBRACK
 lbt
@@ -835,7 +841,7 @@ methodparampad
 methodtypeparametername
 MEZk
 Micha
-Microsoft
+microsoft
 minimalistic
 Mipmap
 misconfigured
@@ -851,7 +857,6 @@ missingtag
 mixin
 mkdir
 mkordas
-mktemp
 MLINKCHECK
 mockfile
 mockito
@@ -1158,6 +1163,7 @@ rmdir
 rnveach
 romani
 romanivanov
+romanivanovjr
 Rootsmorejunk
 rp
 rparen
@@ -1312,7 +1318,6 @@ technotes
 tected
 Testik
 testmodules
-testresults
 textarea
 textlevel
 Tfo
@@ -1433,6 +1438,7 @@ webtoolkit
 Wellformedness
 wercker
 wget
+wherejavadocrequired
 wheretobreak
 whi
 Whitebox

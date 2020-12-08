@@ -58,8 +58,8 @@ public class ClassFanOutComplexityCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("max", "0");
 
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_KEY, 3, 0),
-            "38:1: " + getCheckMessage(MSG_KEY, 1, 0),
+            "7:1: " + getCheckMessage(MSG_KEY, 3, 0),
+            "39:1: " + getCheckMessage(MSG_KEY, 1, 0),
         };
 
         verify(checkConfig, getPath("InputClassFanOutComplexity.java"), expected);
@@ -203,8 +203,8 @@ public class ClassFanOutComplexityCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("excludeClassesRegexps", "^Inner.*");
 
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_KEY, 2, 0),
-            "38:1: " + getCheckMessage(MSG_KEY, 1, 0),
+            "7:1: " + getCheckMessage(MSG_KEY, 2, 0),
+            "39:1: " + getCheckMessage(MSG_KEY, 1, 0),
         };
 
         verify(checkConfig, getPath("InputClassFanOutComplexity.java"), expected);
@@ -219,8 +219,8 @@ public class ClassFanOutComplexityCheckTest extends AbstractModuleTestSupport {
         checkConfig.addAttribute("excludeClassesRegexps", "");
 
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_KEY, 3, 0),
-            "38:1: " + getCheckMessage(MSG_KEY, 1, 0),
+            "7:1: " + getCheckMessage(MSG_KEY, 3, 0),
+            "39:1: " + getCheckMessage(MSG_KEY, 1, 0),
         };
 
         verify(checkConfig, getPath("InputClassFanOutComplexity.java"), expected);

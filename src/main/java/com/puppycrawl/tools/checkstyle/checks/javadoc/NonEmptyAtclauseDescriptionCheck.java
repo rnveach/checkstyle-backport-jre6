@@ -27,7 +27,7 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
 
 /**
  * <p>
- * Checks that the at-clause tag is followed by description.
+ * Checks that the block tag is followed by description.
  * </p>
  * <ul>
  * <li>
@@ -62,12 +62,50 @@ import com.puppycrawl.tools.checkstyle.utils.JavadocUtil;
  * &lt;module name="NonEmptyAtclauseDescription"/&gt;
  * </pre>
  * <p>
+ * Example:
+ * </p>
+ * <pre>
+ * class Test
+ * {
+ * &#47;**
+ * * Violation for param "b" and at tags "deprecated", "throws".
+ * * &#64;param a Some javadoc // OK
+ * * &#64;param b
+ * * &#64;deprecated
+ * * &#64;throws Exception
+ * *&#47;
+ * public int method(String a, int b) throws Exception
+ * {
+ * return 1;
+ * }
+ * }
+ * </pre>
+ * <p>
  * To configure the check to validate only {@code @param} and {@code @return} tags:
  * </p>
  * <pre>
  * &lt;module name="NonEmptyAtclauseDescription"&gt;
  *   &lt;property name="javadocTokens" value="PARAM_LITERAL,RETURN_LITERAL"/&gt;
  * &lt;/module&gt;
+ * </pre>
+ * <p>
+ * Example:
+ * </p>
+ * <pre>
+ * class Test
+ * {
+ * &#47;**
+ * * Violation for param "b". Tags "deprecated", "throws" are ignored.
+ * * &#64;param a Some javadoc // OK
+ * * &#64;param b
+ * * &#64;deprecated
+ * * &#64;throws Exception
+ * *&#47;
+ * public int method(String a, int b) throws Exception
+ * {
+ * return 1;
+ * }
+ * }
  * </pre>
  * <p>
  * Parent is {@code com.puppycrawl.tools.checkstyle.TreeWalker}
@@ -120,10 +158,10 @@ public class NonEmptyAtclauseDescriptionCheck extends AbstractJavadocCheck {
     }
 
     /**
-     * Tests if at-clause tag is empty.
+     * Tests if block tag is empty.
      *
-     * @param tagNode at-clause tag.
-     * @return true, if at-clause tag is empty.
+     * @param tagNode block tag.
+     * @return true, if block tag is empty.
      */
     private static boolean isEmptyTag(DetailNode tagNode) {
         final DetailNode tagDescription =

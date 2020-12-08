@@ -13,18 +13,7 @@ Downloading and Using
 =====================
 
 Documentation on how to use backport as a standalone utility or as part of maven can be found here:
-https://rnveach.github.io/checkstyle-backport-jre6 
-
-## Support/Sponsor checkstyle
-
-If you want to speed up fixing of issue and want to encourage somebody in
-internet to resolve any issue:
-[![][bountysource img]][bountysource]
-[![][salt.bountysource img]][salt.bountysource]
-[![][flattr img]][flattr]
-[![][liberapay img]][liberapay]
-[![][backers.opencollective img]][backers.opencollective]
-[![][sponsors.opencollective img]][sponsors.opencollective]
+https://rnveach.github.io/checkstyle-backport-jre6
 
 ## Licensing
 

@@ -101,7 +101,8 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
     private static final Set<String> PROPERTIES_TO_NOT_WRITE = Collections.unmodifiableSet(
             new HashSet<String>(Arrays.asList(
                     "null",
-                    "the charset property of the parent"
+                    "the charset property of the parent <a href=https://checkstyle.org/"
+                        + "config.html#Checker>Checker</a> module"
     )));
 
     /** ModuleDetails instance for each module AST traversal. */
@@ -437,10 +438,16 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
     private static String getViolationMessages(DetailNode nodeLi) {
         final Optional<DetailNode> resultNode = getFirstChildOfType(nodeLi,
                 JavadocTokenTypes.JAVADOC_INLINE_TAG, 0);
-        String result = "";
+
+        final String result;
+
         if (resultNode.isPresent()) {
             result = getTextFromTag(resultNode.get());
         }
+        else {
+            result = "";
+        }
+
         return result;
     }
 
@@ -451,15 +458,15 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
      * @return text contained by the tag
      */
     private static String getTextFromTag(DetailNode nodeTag) {
-        String result = "";
-        if (nodeTag != null) {
-            final Optional<DetailNode> resultNode = getFirstChildOfType(
-                    nodeTag, JavadocTokenTypes.TEXT, 0);
-            if (resultNode.isPresent()) {
-                result = QUOTE_PATTERN
-                        .matcher(resultNode.get().getText().trim()).replaceAll("");
-            }
+        final String result;
+
+        if (nodeTag == null) {
+            result = "";
         }
+        else {
+            result = getText(nodeTag);
+        }
+
         return result;
     }
 
@@ -480,6 +487,32 @@ public class JavadocMetadataScraper extends AbstractJavadocCheck {
             if (child.getIndex() >= offset && child.getType() == tokenType) {
                 result = Optional.of(child);
                 break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Get joined text from all text children nodes.
+     *
+     * @param parentNode parent node
+     * @return the joined text of node
+     */
+    private static String getText(DetailNode parentNode) {
+        String result = "";
+        boolean first = true;
+
+        for (DetailNode child : parentNode.getChildren()) {
+            if (child.getType() == JavadocTokenTypes.TEXT) {
+                if (first) {
+                    first = false;
+                }
+                else {
+                    result += " ";
+                }
+
+                result += QUOTE_PATTERN.matcher(child.getText().trim()).replaceAll("");
             }
         }
 

@@ -390,6 +390,16 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testFinalInstanceVariable() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(RequireThisCheck.class);
+        final String[] expected = {
+            "13:9: " + getCheckMessage(MSG_VARIABLE, "y", ""),
+            "14:9: " + getCheckMessage(MSG_VARIABLE, "z", ""),
+        };
+        verify(checkConfig, getPath("InputRequireThisFinalInstanceVariable.java"), expected);
+    }
+
+    @Test
     public void test() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(RequireThisCheck.class);
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
@@ -425,6 +435,16 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testRecordCompactCtors() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(RequireThisCheck.class);
+        checkConfig.addAttribute("validateOnlyOverlapping", "false");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+        verify(checkConfig,
+                getNonCompilablePath("InputRequireThisRecordCompactCtors.java"),
+                expected);
+    }
+
+    @Test
     public void testRecordsAsTopLevel() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(RequireThisCheck.class);
         checkConfig.addAttribute("checkFields", "true");
@@ -433,10 +453,6 @@ public class RequireThisCheckTest extends AbstractModuleTestSupport {
             "14:9: " + getCheckMessage(MSG_METHOD, "method1", ""),
             "15:9: " + getCheckMessage(MSG_METHOD, "method2", ""),
             "16:9: " + getCheckMessage(MSG_METHOD, "method3", ""),
-            "17:17: " + getCheckMessage(MSG_VARIABLE, "x", ""),
-            "17:21: " + getCheckMessage(MSG_VARIABLE, "y", ""),
-            "18:28: " + getCheckMessage(MSG_VARIABLE, "y", ""),
-            "18:32: " + getCheckMessage(MSG_VARIABLE, "x", ""),
             "23:9: " + getCheckMessage(MSG_METHOD, "method1", ""),
             "27:21: " + getCheckMessage(MSG_VARIABLE, "x", ""),
             "35:17: " + getCheckMessage(MSG_VARIABLE, "y", ""),

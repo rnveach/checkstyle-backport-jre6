@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -31,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -534,8 +534,8 @@ public class TranslationCheck extends AbstractFileSetCheck {
 
     /**
      * Extracts path from a file name which contains the path.
-     * For example, if file nam is /xyz/messages.properties, then the method
-     * will return /xyz/.
+     * For example, if the file name is /xyz/messages.properties,
+     * then the method will return /xyz/.
      *
      * @param fileNameWithPath file name which contains the path.
      * @return file path.
@@ -556,7 +556,7 @@ public class TranslationCheck extends AbstractFileSetCheck {
         final Set<File> filesInBundle = bundle.getFiles();
         // build a map from files to the keys they contain
         final Set<String> allTranslationKeys = new HashSet<String>();
-        final Map<File, Set<String>> filesAssociatedWithKeys = new HashMap<File, Set<String>>();
+        final Map<File, Set<String>> filesAssociatedWithKeys = new TreeMap<File, Set<String>>();
         for (File currentFile : filesInBundle) {
             final Set<String> keysInCurrentFile = getTranslationKeys(currentFile);
             allTranslationKeys.addAll(keysInCurrentFile);
