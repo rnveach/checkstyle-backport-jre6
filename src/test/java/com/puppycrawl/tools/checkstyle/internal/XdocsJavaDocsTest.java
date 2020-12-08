@@ -333,7 +333,7 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
 
             result.append(getDefaultValueOfType(propertyName, isSpecialAllTokensType));
 
-            result.append(emptyStringArrayDefaultValue(property.get(3)));
+            result.append(emptyStringArrayDefaultValue(property.get(3), isPropertyTokenType));
 
             if (result.charAt(result.length() - 1) != '.') {
                 result.append('.');
@@ -386,10 +386,12 @@ public class XdocsJavaDocsTest extends AbstractModuleTestSupport {
         return result;
     }
 
-    private static String emptyStringArrayDefaultValue(Node defaultValueNode) {
+    private static String emptyStringArrayDefaultValue(Node defaultValueNode,
+                                                boolean isPropertyTokenType) {
         String defaultValueText = getNodeText(defaultValueNode);
         if ("{@code {}}".equals(defaultValueText)
-            || "{@code all files}".equals(defaultValueText)) {
+            || "{@code all files}".equals(defaultValueText)
+            || isPropertyTokenType && "{@code empty}".equals(defaultValueText)) {
             defaultValueText = "{@code \"\"}";
         }
         return defaultValueText;

@@ -152,7 +152,14 @@ public class BlockParentHandler extends AbstractExpressionHandler {
      * @return the curly brace indentation level
      */
     protected IndentLevel curlyIndent() {
-        return new IndentLevel(getIndent(), getBraceAdjustment());
+        final DetailAST lcurly = getLeftCurly();
+        IndentLevel expIndentLevel = new IndentLevel(getIndent(), getBraceAdjustment());
+        if (!isOnStartOfLine(lcurly)
+            || lcurly.getParent().getType() == TokenTypes.INSTANCE_INIT) {
+            expIndentLevel = new IndentLevel(getIndent(), 0);
+        }
+
+        return expIndentLevel;
     }
 
     /**
@@ -194,6 +201,11 @@ public class BlockParentHandler extends AbstractExpressionHandler {
         if (nonList != null) {
             final IndentLevel expected = new IndentLevel(getIndent(), getBasicOffset());
             checkExpressionSubtree(nonList, expected, false, false);
+
+            final DetailAST nonListStartAst = getFirstAstNode(nonList);
+            if (nonList != nonListStartAst) {
+                checkExpressionSubtree(nonListStartAst, expected, false, false);
+            }
         }
     }
 
@@ -270,6 +282,10 @@ public class BlockParentHandler extends AbstractExpressionHandler {
                 indentLevel = IndentLevel.addAcceptable(level, level.getFirstIndentLevel()
                         + getLineWrappingIndent());
             }
+        }
+        if (hasCurlies() && isOnStartOfLine(getLeftCurly())) {
+            indentLevel = IndentLevel.addAcceptable(indentLevel,
+                    curlyIndent().getFirstIndentLevel() + getBasicOffset());
         }
         return indentLevel;
     }

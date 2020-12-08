@@ -15,9 +15,7 @@ Downloading and Using
 Documentation on how to use backport as a standalone utility or as part of maven can be found here:
 https://rnveach.github.io/checkstyle-backport-jre6 
 
-
-Support/Sponsor checkstyle
-========
+## Support/Sponsor checkstyle
 
 If you want to speed up fixing of issue and want to encourage somebody in
 internet to resolve any issue:
@@ -28,9 +26,7 @@ internet to resolve any issue:
 [![][backers.opencollective img]][backers.opencollective]
 [![][sponsors.opencollective img]][sponsors.opencollective]
 
-
-Licensing
-=========
+## Licensing
 
 ![](https://img.shields.io/badge/license-GNU%20LGPL%20v2.1-blue.svg)
 
@@ -58,4 +54,3 @@ The software uses the Picocli Library
 are in the file named "LICENSE.apache20" in this directory.
 
 ![](https://raw.githubusercontent.com/checkstyle/resources/master/img/checkstyle-logos/checkstyle-logo-260x99.png)
-

@@ -219,6 +219,7 @@ chr
 ci
 cidfile
 circleci
+cirrusci
 Claira
 classdataabstractioncoupling
 classfanoutcomplexity
@@ -337,6 +338,7 @@ dghj
 Dgpg
 Dgui
 dhj
+Dhttp
 Diachenko
 dirname
 distelli
@@ -519,6 +521,7 @@ Gjs
 google
 googleapis
 googleblog
+googlecloudplatform
 googleecommon
 googlegroups
 googlesource
@@ -758,6 +761,7 @@ konstantinos
 Kordas
 Kotlin
 kused
+lambdabodylength
 lambdaparametername
 langtools
 lbc
@@ -812,11 +816,14 @@ mailhost
 mailto
 mainframemodel
 marazmatic
+markdownlint
 Massol
 mavenbadge
 maxmethods
 MCHECKSTYLE
 mct
+mdl
+mega
 membername
 MENFORCER
 metadata
@@ -968,6 +975,7 @@ nullness
 numberperline
 numericliterals
 nutsandbolts
+nvuillam
 nyu
 objblock
 oburn
@@ -1411,6 +1419,7 @@ Vladlis
 vm
 vscode
 Vtl
+Vuillamy
 Wadl
 Wakelock
 Warni
@@ -1435,6 +1444,7 @@ Wifi
 wiki
 wikipedia
 wiktionary
+windowsservercore
 woff
 wontfix
 wordpress

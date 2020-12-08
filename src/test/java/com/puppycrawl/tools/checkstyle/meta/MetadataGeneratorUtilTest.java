@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
+import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
 public final class MetadataGeneratorUtilTest {
@@ -51,15 +52,7 @@ public final class MetadataGeneratorUtilTest {
                 @Override
                 public Object apply(File file) {
                     if (file.isFile()) {
-                        final String fileName = file.getName().toString();
-                        final int lengthToOmit;
-                        if (fileName.contains("Check")) {
-                            lengthToOmit = "Check.xml".length();
-                        }
-                        else {
-                            lengthToOmit = ".xml".length();
-                        }
-                        metaFiles.add(fileName.substring(0, fileName.length() - lengthToOmit));
+                        metaFiles.add(getMetaFileName(new Path(file)));
                     }
                     return null;
                 }
@@ -69,6 +62,24 @@ public final class MetadataGeneratorUtilTest {
         checkstyleModules.removeAll(modulesContainingNoMetadataFile);
         assertEquals("Number of generated metadata files dont match with number of checkstyle "
                         + "module", checkstyleModules, metaFiles);
+    }
+
+    /**
+     * Get meta file name from full file name.
+     *
+     * @param file file to process
+     * @return meta file name
+     */
+    private static String getMetaFileName(Path file) {
+        final String fileName = file.getFileName().toString();
+        final int lengthToOmit;
+        if (fileName.contains("Check")) {
+            lengthToOmit = "Check.xml".length();
+        }
+        else {
+            lengthToOmit = ".xml".length();
+        }
+        return fileName.substring(0, fileName.length() - lengthToOmit);
     }
 
     private static void walk(File dir, Function<File, Object> func) {

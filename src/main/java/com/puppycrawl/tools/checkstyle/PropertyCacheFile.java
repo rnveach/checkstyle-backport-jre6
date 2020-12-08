@@ -362,18 +362,31 @@ public final class PropertyCacheFile {
     private boolean areExternalResourcesChanged(Set<ExternalResource> resources) {
         boolean result = false;
         for (ExternalResource resource : resources) {
-            if (isResourceLocationInCache(resource.location)) {
-                final String contentHashSum = resource.contentHashSum;
-                final String cachedHashSum = details.getProperty(resource.location);
-                if (!cachedHashSum.equals(contentHashSum)) {
-                    result = true;
-                    break;
-                }
-            }
-            else {
+            if (isResourceChanged(resource)) {
                 result = true;
                 break;
             }
+        }
+        return result;
+    }
+
+    /**
+     * Checks whether the resource is changed.
+     *
+     * @param resource resource to check.
+     * @return true if resource is changed.
+     */
+    private boolean isResourceChanged(ExternalResource resource) {
+        boolean result = false;
+        if (isResourceLocationInCache(resource.location)) {
+            final String contentHashSum = resource.contentHashSum;
+            final String cachedHashSum = details.getProperty(resource.location);
+            if (!cachedHashSum.equals(contentHashSum)) {
+                result = true;
+            }
+        }
+        else {
+            result = true;
         }
         return result;
     }
