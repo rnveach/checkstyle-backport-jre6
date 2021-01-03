@@ -20,6 +20,7 @@
 package org.junit.jupiter.api;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.function.Executable;
 
 public final class Assertions {
     private Assertions() {
@@ -71,5 +72,9 @@ public final class Assertions {
 
     public static void fail(String message) {
         Assert.fail(message);
+    }
+
+    public static <T extends Throwable> T assertThrows(Class<T> expectedType, Executable executable) {
+        return AssertThrows.assertThrows(expectedType, executable);
     }
 }

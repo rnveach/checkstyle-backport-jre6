@@ -1133,10 +1133,7 @@ public class XdocsPagesTest {
                 if (isPropertyTokenType(sectionName, propertyName)) {
                     boolean first = true;
 
-                    if (value == null) {
-                        result = "no tokens";
-                    }
-                    else if (value instanceof BitSet) {
+                    if (value instanceof BitSet) {
                         final BitSet list = (BitSet) value;
                         final StringBuilder sb = new StringBuilder(20);
 

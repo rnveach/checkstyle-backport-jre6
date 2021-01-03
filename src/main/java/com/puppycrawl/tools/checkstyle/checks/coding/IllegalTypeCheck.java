@@ -114,7 +114,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * This property does not affect method calls nor method references.
  * Type is {@code java.lang.String[]}.
  * Validation type is {@code tokenTypesSet}.
- * Default value is {@code no tokens}.
+ * Default value is {@code ""}.
  * </li>
  * <li>
  * Property {@code tokens} - tokens to check
@@ -349,7 +349,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * Control whether to check only methods and fields with any of the specified modifiers.
      * This property does not affect method calls nor method references.
      */
-    private List<Integer> memberModifiers;
+    private List<Integer> memberModifiers = Collections.emptyList();
 
     /** Specify RegExp for illegal abstract class names. */
     private Pattern illegalAbstractClassNameFormat = Pattern.compile("^(.*[.])?Abstract.*$");
@@ -463,7 +463,7 @@ public final class IllegalTypeCheck extends AbstractCheck {
      */
     private boolean isVerifiable(DetailAST methodOrVariableDef) {
         boolean result = true;
-        if (memberModifiers != null) {
+        if (!memberModifiers.isEmpty()) {
             final DetailAST modifiersAst = methodOrVariableDef
                     .findFirstToken(TokenTypes.MODIFIERS);
             result = isContainVerifiableType(modifiersAst);
@@ -844,7 +844,9 @@ public final class IllegalTypeCheck extends AbstractCheck {
     public void setMemberModifiers(String modifiers) {
         final List<Integer> modifiersList = new ArrayList<Integer>();
         for (String modifier : modifiers.split(",")) {
-            modifiersList.add(TokenUtil.getTokenId(modifier.trim()));
+            if (!modifier.isEmpty()) {
+                modifiersList.add(TokenUtil.getTokenId(modifier.trim()));
+            }
         }
         memberModifiers = modifiersList;
     }

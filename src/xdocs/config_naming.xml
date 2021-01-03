@@ -876,9 +876,19 @@ class MyClass5&lt;RequestT&gt; {} // OK
         <p>
           To configure the check:
         </p>
-
         <source>
 &lt;module name="ConstantName"/&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+class MyClass {
+  public final static int FIRST_CONSTANT1 = 10; // OK
+  protected final static int SECOND_CONSTANT2 = 100; // OK
+  final static int third_Constant3 = 1000; // violation, name 'third_Constant3' must
+                                          // match pattern '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+  private final static int fourth_Const4 = 50; // violation, name 'fourth_Const4' must match
+                                                // pattern '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+}
         </source>
         <p>
           The following configuration apart from names allowed by default allows <code>log</code>
@@ -2001,6 +2011,17 @@ class MyClass {
         </p>
         <source>
 &lt;module name=&quot;MethodName&quot;/&gt;
+        </source>
+        <p>Code Example:</p>
+        <source>
+class MyClass {
+  public void firstMethod1() {} // OK
+  protected void secondMethod() {} // OK
+  private void ThirdMethod() {} // violation, method name must match to the
+                                // default pattern '^[a-z][a-zA-Z0-9]*$'
+  public void fourth_Method4() {} // violation, method name must match to the
+                                 // default pattern '^[a-z][a-zA-Z0-9]*$'
+}
         </source>
         <p>
           An example of how to configure the check for names that begin with a lower case letter,

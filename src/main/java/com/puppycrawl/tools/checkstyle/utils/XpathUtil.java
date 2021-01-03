@@ -21,9 +21,11 @@ package com.puppycrawl.tools.checkstyle.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.AstTreeStringPrinter;
 import com.puppycrawl.tools.checkstyle.JavaParser;
@@ -31,7 +33,9 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.lang.System7;
+import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 import com.puppycrawl.tools.checkstyle.xpath.AbstractNode;
+import com.puppycrawl.tools.checkstyle.xpath.ElementNode;
 import com.puppycrawl.tools.checkstyle.xpath.RootNode;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.Item;
@@ -98,15 +102,39 @@ public final class XpathUtil {
      * Only these tokens support text attribute because they make our xpath queries more accurate.
      * These token types are listed below.
      * */
-    private static final List<Integer> TOKEN_TYPES_WITH_TEXT_ATTRIBUTE = Arrays.asList(
+    private static final Set<Integer> TOKEN_TYPES_WITH_TEXT_ATTRIBUTE =
+        Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.IDENT, TokenTypes.STRING_LITERAL, TokenTypes.CHAR_LITERAL,
-            TokenTypes.NUM_LONG, TokenTypes.NUM_INT, TokenTypes.NUM_DOUBLE, TokenTypes.NUM_FLOAT);
+            TokenTypes.NUM_LONG, TokenTypes.NUM_INT, TokenTypes.NUM_DOUBLE, TokenTypes.NUM_FLOAT)
+        );
 
     /** Delimiter to separate xpath results. */
     private static final String DELIMITER = "---------" + System7.lineSeparator();
 
     /** Stop instances being created. **/
     private XpathUtil() {
+    }
+
+    /**
+     * Iterates siblings of the given node and creates new Xpath-nodes.
+     *
+     * @param root the root node
+     * @param parent the parent node
+     * @param firstChild the first DetailAST
+     * @return children list
+     */
+    public static List<AbstractNode> createChildren(AbstractNode root, AbstractNode parent,
+                                                    DetailAST firstChild) {
+        DetailAST currentChild = firstChild;
+        final int depth = parent.getDepth() + 1;
+        final List<AbstractNode> result = new ArrayList<AbstractNode>();
+        while (currentChild != null) {
+            final int index = result.size();
+            final ElementNode child = new ElementNode(root, parent, currentChild, depth, index);
+            result.add(child);
+            currentChild = currentChild.getNextSibling();
+        }
+        return result;
     }
 
     /**

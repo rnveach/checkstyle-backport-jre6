@@ -287,8 +287,8 @@ verify-no-exception-configs)
   fail=0
   if [[ $DIFF_TEXT != "" ]]; then
     echo "Diff is detected."
-    if [[ $TRAVIS_PULL_REQUEST =~ ^([0-9]+)$ ]]; then
-      LINK_PR=https://api.github.com/repos/checkstyle/checkstyle/pulls/$TRAVIS_PULL_REQUEST
+    if [[ $PULL_REQUEST =~ ^([0-9]+)$ ]]; then
+      LINK_PR=https://api.github.com/repos/checkstyle/checkstyle/pulls/$PULL_REQUEST
       REGEXP="https://github.com/checkstyle/contribution/pull/"
       PR_DESC=$(curl -s -H "Authorization: token $READ_ONLY_TOKEN" $LINK_PR \
                   | jq '.body' | grep $REGEXP | cat )
@@ -300,6 +300,7 @@ verify-no-exception-configs)
         echo 'and add your new Check '
         echo '   to file checkstyle-tester/checks-nonjavadoc-error.xml'
         echo 'or to file checkstyle-tester/checks-only-javadoc-error.xml'
+        echo 'Place the contribution repository PR link in the description of this PR.'
         echo 'PR for contribution repository will be merged right after this PR.'
         fail=1;
       fi

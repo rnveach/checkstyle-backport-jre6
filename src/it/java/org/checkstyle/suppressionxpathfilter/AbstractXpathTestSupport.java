@@ -56,15 +56,7 @@ public abstract class AbstractXpathTestSupport extends AbstractCheckstyleModuleT
             Pattern.compile("([0-9]+):([0-9]+):");
 
     /**
-     * <p>
      * The temporary folder to hold intermediate files.
-     * </p>
-     * <p>
-     * Till https://github.com/junit-team/junit5/issues/1786
-     * we need to create and clean it manually.
-     * Once this issue will be resolved, it should be annotated with &#64;TempDir
-     * and methods setupTemporaryFolder and removeTemporaryFolder should be dropped.
-     * </p>
      */
     private Path temporaryFolder;
 
