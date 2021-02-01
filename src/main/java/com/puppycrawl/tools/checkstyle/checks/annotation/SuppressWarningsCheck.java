@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -348,7 +348,7 @@ public class SuppressWarningsCheck extends AbstractCheck {
      * logging violations.
      *
      * @param cond a Conditional type
-     * {@link TokenTypes#QUESTION QUESTION}
+     *     {@link TokenTypes#QUESTION QUESTION}
      */
     private void walkConditional(final DetailAST cond) {
         if (cond.getType() == TokenTypes.QUESTION) {
@@ -366,7 +366,7 @@ public class SuppressWarningsCheck extends AbstractCheck {
      * Retrieves the left side of a conditional.
      *
      * @param cond cond a conditional type
-     * {@link TokenTypes#QUESTION QUESTION}
+     *     {@link TokenTypes#QUESTION QUESTION}
      * @return either the value
      *     or another conditional
      */
@@ -379,7 +379,7 @@ public class SuppressWarningsCheck extends AbstractCheck {
      * Retrieves the right side of a conditional.
      *
      * @param cond a conditional type
-     * {@link TokenTypes#QUESTION QUESTION}
+     *     {@link TokenTypes#QUESTION QUESTION}
      * @return either the value
      *     or another conditional
      */

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -463,7 +463,18 @@ public class AllChecksTest extends AbstractModuleTestSupport {
 
     private static void validateDefaultTokens(Configuration checkConfig, AbstractCheck check,
                                               Set<String> configTokens) {
-        if (Arrays.equals(check.getDefaultTokens(), check.getRequiredTokens())) {
+
+        final Set<Integer> defaultTokensSet = new HashSet<Integer>();
+        for (int token : check.getDefaultTokens()) {
+            defaultTokensSet.add(token);
+        }
+
+        final Set<Integer> requiredTokensSet = new HashSet<Integer>();
+        for (int token : check.getRequiredTokens()) {
+            requiredTokensSet.add(token);
+        }
+
+        if (defaultTokensSet.equals(requiredTokensSet)) {
             configTokens.addAll(
                     CheckUtil.getTokenNameSet(check.getDefaultTokens()));
         }

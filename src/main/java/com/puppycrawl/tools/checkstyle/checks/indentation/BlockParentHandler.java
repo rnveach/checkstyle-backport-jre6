@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -254,18 +254,10 @@ public class BlockParentHandler extends AbstractExpressionHandler {
         else {
             // NOTE: switch statements usually don't have curlies
             if (!hasCurlies() || !TokenUtil.areOnSameLine(getLeftCurly(), getRightCurly())) {
-                // Note: For Annotation Array Init only:
-                // If its a annotation array init block with strict cond being false then,
-                // we want flexible child indents with any indentLevel above minimum requirement
-                // All the other block elements will follow strict discrete indentation levels.
-                final boolean doesAnnotationArrayInitFollowsStrictCond =
-                    !TokenUtil.isOfType(listChild, TokenTypes.ANNOTATION_ARRAY_INIT)
-                        || getIndentCheck().isForceStrictCondition();
-
                 checkChildren(listChild,
                         getCheckedChildren(),
                         getChildrenExpectedIndent(),
-                        doesAnnotationArrayInitFollowsStrictCond,
+                        true,
                         canChildrenBeNested());
             }
         }

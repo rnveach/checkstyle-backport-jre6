@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -115,6 +115,13 @@ public class LambdaHandler extends AbstractExpressionHandler {
         }
     }
 
+    /**
+     * Checks that given indent is acceptable or not.
+     *
+     * @param astColumnNo indent value to check
+     * @param level indent level
+     * @return true if indent is not acceptable
+     */
     private boolean isNonAcceptableIndent(int astColumnNo, IndentLevel level) {
         return astColumnNo < level.getFirstIndentLevel()
             || getIndentCheck().isForceStrictCondition()

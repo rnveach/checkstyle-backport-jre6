@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -280,21 +280,22 @@ public final class FileContents implements CommentListener {
      */
     private boolean hasIntersectionWithBlockComment(int startLineNo, int startColNo,
             int endLineNo, int endColNo) {
-        boolean hasIntersection = false;
         // Check C comments (all comments should be checked)
         final Collection<List<TextBlock>> values = clangComments.values();
-        for (final List<TextBlock> row : values) {
-            for (final TextBlock comment : row) {
+        boolean result = false;
+        for (List<TextBlock> list : values) {
+            for (TextBlock comment : list) {
                 if (comment.intersects(startLineNo, startColNo, endLineNo, endColNo)) {
-                    hasIntersection = true;
+                    result = true;
                     break;
                 }
             }
-            if (hasIntersection) {
+
+            if (result) {
                 break;
             }
         }
-        return hasIntersection;
+        return result;
     }
 
     /**

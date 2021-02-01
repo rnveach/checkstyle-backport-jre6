@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -59,6 +59,18 @@ import com.puppycrawl.tools.checkstyle.api.BeforeExecutionFileFilter;
  * <pre>
  * &lt;module name=&quot;BeforeExecutionExclusionFileFilter&quot;&gt;
  *   &lt;property name=&quot;fileNamePattern&quot; value=&quot;module\-info\.java$&quot;/&gt;
+ * &lt;/module&gt;
+ * </pre>
+ * <p>
+ * To configure the filter to run only on required files for example that ends with "Remote"
+ * or end with "Client" in names or named as "Remote.java" or "Client.java"
+ * use <a href="https://www.regular-expressions.info/lookaround.html">negative lookahead</a>:
+ * </p>
+ *
+ * <pre>
+ * &lt;module name=&quot;BeforeExecutionExclusionFileFilter&quot;&gt;
+ *   &lt;property name=&quot;fileNamePattern&quot;
+ *  value=&quot;^(?!.*(Remote\.java|Client\.java|[\\/]Remote\.java|[\\/]Client\.java)).*$&quot;/&gt;
  * &lt;/module&gt;
  * </pre>
  * <p>

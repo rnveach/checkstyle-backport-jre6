@@ -7,13 +7,6 @@
 
   <head>
     <title>Google's Style</title>
-    <script type="text/javascript"
-            src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
-    <script type="text/javascript" src="js/anchors.js"/>
-    <script type="text/javascript" src="js/google-analytics.js"/>
-    <script type="text/javascript" src="js/checkstyle.js"/>
-    <link rel="icon" href="images/favicon.png" type="image/x-icon" />
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/ico" />
   </head>
 
   <body>
@@ -1667,6 +1660,13 @@
                   </span>
                   <a href="config_naming.html#LambdaParameterName">
                     LambdaParameterName</a>
+                  <br/>
+                  <br/>
+                  <span class="wrapper inline">
+                    <img src="images/ok_green.png" alt=""/>
+                  </span>
+                  <a href="config_naming.html#RecordComponentName">
+                    RecordComponentName</a>
                 </td>
                 <td>
                   <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+ParameterName">
@@ -1687,6 +1687,12 @@
                     config</a>
                   <br />
                   <a href="https://github.com/checkstyle/checkstyle/blob/master/src/it/java/com/google/checkstyle/test/chapter5naming/rule526parameternames/LambdaParameterNameTest.java">
+                    test</a>
+                  <br/>
+                  <a href="https://github.com/search?q=path%3Asrc%2Fmain%2Fresources+filename%3Agoogle_checks.xml+repo%3Acheckstyle%2Fcheckstyle+RecordComponentName">
+                    config</a>
+                  <br />
+                  <a href="https://github.com/checkstyle/checkstyle/blob/master/src/it/java/com/google/checkstyle/test/chapter5naming/rule526parameternames/RecordComponentNameTest.java">
                     test</a>
                 </td>
               </tr>

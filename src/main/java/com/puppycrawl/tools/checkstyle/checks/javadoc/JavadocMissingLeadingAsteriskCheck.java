@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,8 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * Property {@code violateExecutionOnNonTightHtml} - Control when to print violations if the
  * Javadoc being examined by this check violates the tight html rules defined at
  * <a href="https://checkstyle.org/writingjavadocchecks.html#Tight-HTML_rules">Tight-HTML Rules</a>.
- * Type is {@code boolean}. Default value is {@code false}.
+ * Type is {@code boolean}.
+ * Default value is {@code false}.
  * </li>
  * </ul>
  * <p>

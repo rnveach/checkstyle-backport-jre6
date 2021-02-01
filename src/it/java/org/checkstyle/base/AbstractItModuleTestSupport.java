@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -317,6 +317,12 @@ public abstract class AbstractItModuleTestSupport extends AbstractPathTestSuppor
         return checkMessage;
     }
 
+    /**
+     * Remove device from path string for windows path.
+     *
+     * @param path path to correct.
+     * @return Path without device name.
+     */
     private static String removeDeviceFromPathOnWindows(String path) {
         String fixedPath = path;
         final String os = System.getProperty("os.name", "Unix");

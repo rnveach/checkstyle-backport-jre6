@@ -21,7 +21,9 @@ package com.puppycrawl.tools.checkstyle.jre6.util;
 
 import java.util.NoSuchElementException;
 
+import com.google.common.base.Supplier;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
 public final class Optional<T> {
     private static final Optional<?> EMPTY = new Optional<Object>();
@@ -65,9 +67,26 @@ public final class Optional<T> {
         return value != null ? value : other;
     }
 
+    public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
+        if (value != null) {
+            return value;
+        } else {
+            throw exceptionSupplier.get();
+        }
+    }
+
     public void ifPresent(Consumer<? super T> consumer) {
         if (value != null) {
             consumer.accept(value);
+        }
+    }
+
+    public<U> Optional<U> map(Function<? super T, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent())
+            return empty();
+        else {
+            return Optional.<U>ofNullable(mapper.apply(value));
         }
     }
 }

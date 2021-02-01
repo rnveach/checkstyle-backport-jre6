@@ -12,7 +12,7 @@
 
   <groupId>com.puppycrawl.tools</groupId>
   <artifactId>checkstyle-backport-jre6</artifactId>
-  <version>8.39</version>
+  <version>8.40</version>
   <packaging>jar</packaging>
 
   <name>checkstyle-backport-jre6</name>
@@ -53,24 +53,31 @@
       </roles>
     </developer>
     <developer>
+      <id>strkkk</id>
+      <name>Andrei Paikin</name>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
       <id>sabaka</id>
       <name>Ilja Dubinin</name>
       <roles>
-        <role>developer</role>
+        <role>former developer</role>
       </roles>
     </developer>
     <developer>
       <id>MEZk</id>
       <name>Andrei Selkin</name>
       <roles>
-        <role>developer</role>
+        <role>former developer</role>
       </roles>
     </developer>
     <developer>
       <id>Vladlis</id>
       <name>Vladislav Lisetskii</name>
       <roles>
-        <role>developer</role>
+        <role>former developer</role>
       </roles>
     </developer>
     <developer>
@@ -184,7 +191,7 @@
     <projectVersion>${project.version}</projectVersion>
     <antlr4.version>4.5.3</antlr4.version>
     <maven.site.plugin.version>3.9.1</maven.site.plugin.version>
-    <maven.spotbugs.plugin.version>4.1.4</maven.spotbugs.plugin.version>
+    <maven.spotbugs.plugin.version>4.2.0</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.14.0</maven.pmd.plugin.version>
     <pmd.version>6.30.0</pmd.version>
     <maven.jacoco.plugin.version>0.8.6</maven.jacoco.plugin.version>
@@ -197,7 +204,7 @@
     </maven.sevntu-checkstyle-check.checkstyle.version>
     <maven.versions.plugin.version>2.8.1</maven.versions.plugin.version>
     <java.version>1.6</java.version>
-    <pitest.plugin.version>1.4.9</pitest.plugin.version>
+    <pitest.plugin.version>1.6.2</pitest.plugin.version>
     <pitest.plugin.timeout.factor>10</pitest.plugin.timeout.factor>
     <pitest.plugin.timeout.constant>50000</pitest.plugin.timeout.constant>
     <pitest.plugin.threads>4</pitest.plugin.threads>
@@ -214,7 +221,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.5.2</version>
+      <version>4.6.1</version>
     </dependency>
     <dependency>
       <groupId>antlr</groupId>
@@ -1431,7 +1438,7 @@
               <includes>
                 <include>site.xml</include>
               </includes>
-              <systemId>.ci/travis/decoration-1.0.0.xsd</systemId>
+              <systemId>.ci/travis/decoration-1.8.0.xsd</systemId>
             </validationSet>
             <validationSet>
               <validating>true</validating>
@@ -1504,7 +1511,7 @@
       <plugin>
         <groupId>edu.illinois</groupId>
         <artifactId>nondex-maven-plugin</artifactId>
-        <version>1.1.1</version>
+        <version>1.1.2</version>
       </plugin>
     </plugins>
   </build>
@@ -3042,6 +3049,15 @@
                 <mutator>TRUE_RETURNS</mutator>
                 <mutator>VOID_METHOD_CALLS</mutator>
               </mutators>
+              <avoidCallsTo>
+                <!-- Till https://github.com/hcoles/pitest/issues/766
+                 Pitest complains about redundant call to close() method.
+                 This is unavoidable, since this method is called deep inside
+                 try-with-resources statement. As a workaround, we can exclude
+                 all methods of these classes from mutation. -->
+                <avoidCallsTo>java.io.BufferedReader</avoidCallsTo>
+                <avoidCallsTo>java.io.Reader</avoidCallsTo>
+              </avoidCallsTo>
               <targetClasses>
                 <param>com.puppycrawl.tools.checkstyle.api.*</param>
               </targetClasses>
@@ -3156,6 +3172,8 @@
                 <!-- 12% mutation in CommonUtil,
                      3% coverage in CommonUtil, 2% coverage in JavadocUtil -->
                 <param>com.puppycrawl.tools.checkstyle.AstTreeStringPrinterTest</param>
+                <!-- 1% mutation in CommonUtil.getUriByFilename -->
+                <param>com.puppycrawl.tools.checkstyle.ConfigurationLoaderTest</param>
                 <!-- 2% mutation in CommonUtil -->
                 <param>com.puppycrawl.tools.checkstyle.DetailNodeTreeStringPrinterTest</param>
                 <!-- ModuleReflectionUtil -->

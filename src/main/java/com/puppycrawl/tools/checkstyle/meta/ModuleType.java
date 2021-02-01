@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,11 @@ public enum ModuleType {
     /** String representation of the module type. */
     private final String label;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param label label of module
+     */
     ModuleType(String label) {
         this.label = label;
     }

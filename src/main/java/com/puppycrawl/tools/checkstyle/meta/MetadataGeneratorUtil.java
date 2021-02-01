@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,11 +31,11 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
-import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /** Class which handles all the metadata generation and writing calls. */
 public final class MetadataGeneratorUtil {
 
+    /** Stop instances being created. **/
     private MetadataGeneratorUtil() {
     }
 
@@ -104,18 +104,5 @@ public final class MetadataGeneratorUtil {
                 }
             }
         }
-    }
-
-    /**
-     * Return all token types present in checkstyle.
-     *
-     * @return list of token type names
-     */
-    public static List<String> fetchAllTokens() {
-        final List<String> results = new ArrayList<String>();
-        for (int token : TokenUtil.getAllTokenIds()) {
-            results.add(TokenUtil.getTokenName(token));
-        }
-        return results;
     }
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -272,6 +272,13 @@ public class MatchXpathCheck extends AbstractCheck {
         }
     }
 
+    /**
+     * Find nodes that match query.
+     *
+     * @param rootAST root node
+     * @return list of matching nodes
+     * @throws IllegalStateException if evaluation of xpath query fails
+     */
     private List<DetailAST> findMatchingNodesByXpathQuery(DetailAST rootAST) {
         try {
             final RootNode rootNode = new RootNode(rootAST);

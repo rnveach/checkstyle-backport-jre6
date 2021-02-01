@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -74,7 +74,16 @@ public class ArrayInitHandler extends BlockParentHandler {
 
     @Override
     protected IndentLevel curlyIndent() {
-        final IndentLevel level = new IndentLevel(getIndent(), getBraceAdjustment());
+        int offset = 0;
+
+        final DetailAST lcurly = getLeftCurly();
+
+        if (isOnStartOfLine(lcurly)
+            && lcurly.getParent().getType() != TokenTypes.ARRAY_INIT) {
+            offset = getBraceAdjustment();
+        }
+
+        final IndentLevel level = new IndentLevel(getIndent(), offset);
         return IndentLevel.addAcceptable(level, level.getLastIndentLevel()
                 + getLineWrappingIndentation());
     }

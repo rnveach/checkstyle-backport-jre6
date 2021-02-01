@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -138,4 +138,29 @@ public class DesignForExtensionCheckTest
             getNonCompilablePath("InputDesignForExtensionRecords.java"), expected);
     }
 
+    @Test
+    public void testRequiredJavadocPhrase() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(DesignForExtensionCheck.class);
+        checkConfig.addAttribute("requiredJavadocPhrase", "This implementation");
+        final String className = "InputDesignForExtensionRequiredJavadocPhrase";
+        final String[] expected = {
+            "37:5: " + getCheckMessage(MSG_KEY, className, "foo5"),
+            "44:5: " + getCheckMessage(MSG_KEY, className, "foo8"),
+            "47:5: " + getCheckMessage(MSG_KEY, className, "foo9"),
+            "63:5: " + getCheckMessage(MSG_KEY, className, "foo12"),
+        };
+        verify(checkConfig, getPath("InputDesignForExtensionRequiredJavadocPhrase.java"), expected);
+    }
+
+    @Test
+    public void testRequiredJavadocPhraseMultiLine() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(DesignForExtensionCheck.class);
+        checkConfig.addAttribute("requiredJavadocPhrase", "This[\\s\\S]*implementation");
+        final String className = "InputDesignForExtensionRequiredJavadocPhraseMultiLine";
+        final String[] expected = {
+            "19:5: " + getCheckMessage(MSG_KEY, className, "foo2"),
+        };
+        verify(checkConfig, getPath("InputDesignForExtensionRequiredJavadocPhraseMultiLine.java"),
+            expected);
+    }
 }

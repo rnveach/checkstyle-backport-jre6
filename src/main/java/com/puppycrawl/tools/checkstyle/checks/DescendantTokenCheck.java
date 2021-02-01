@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -557,12 +557,12 @@ public class DescendantTokenCheck extends AbstractCheck {
      *
      * @param message the violation message for maximum count exceeded.
      *     Used as a {@code MessageFormat} pattern with arguments
-     * <ul>
-     * <li>{0} - token count</li>
-     * <li>{1} - maximum number</li>
-     * <li>{2} - name of token</li>
-     * <li>{3} - name of limited token</li>
-     * </ul>
+     *     <ul>
+     *     <li>{0} - token count</li>
+     *     <li>{1} - maximum number</li>
+     *     <li>{2} - name of token</li>
+     *     <li>{3} - name of limited token</li>
+     *     </ul>
      */
 
     public void setMaximumMessage(String message) {

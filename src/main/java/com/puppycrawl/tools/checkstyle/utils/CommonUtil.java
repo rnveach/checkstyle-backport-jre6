@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -403,7 +403,7 @@ public final class CommonUtil {
      * @param prefix
      *            the prefix to find
      * @return {@code true} if the {@code char} is a prefix of the given {@code String};
-     *  {@code false} otherwise.
+     *     {@code false} otherwise.
      */
     public static boolean startsWithChar(String value, char prefix) {
         return !value.isEmpty() && value.charAt(0) == prefix;
@@ -423,7 +423,7 @@ public final class CommonUtil {
      * @param suffix
      *            the suffix to find
      * @return {@code true} if the {@code char} is a suffix of the given {@code String};
-     *  {@code false} otherwise.
+     *     {@code false} otherwise.
      */
     public static boolean endsWithChar(String value, char suffix) {
         return !value.isEmpty() && value.charAt(value.length() - 1) == suffix;

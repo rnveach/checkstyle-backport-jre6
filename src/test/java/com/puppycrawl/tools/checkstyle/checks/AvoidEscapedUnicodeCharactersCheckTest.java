@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -427,6 +427,24 @@ public class AvoidEscapedUnicodeCharactersCheckTest extends AbstractModuleTestSu
         verify(checkConfig,
             getNonCompilablePath("InputAvoidEscapedUnicodeCharactersTextBlocks.java"),
             expected);
+    }
+
+    @Test
+    public void testAvoidEscapedUnicodeCharactersEscapedS() throws Exception {
+        final DefaultConfiguration checkConfig =
+                createModuleConfig(AvoidEscapedUnicodeCharactersCheck.class);
+        checkConfig.addAttribute("allowIfAllCharactersEscaped", "true");
+        final String[] expected = {
+            "14:21: " + getCheckMessage(MSG_KEY),
+            "15:22: " + getCheckMessage(MSG_KEY),
+            "24:39: " + getCheckMessage(MSG_KEY),
+            "27:39: " + getCheckMessage(MSG_KEY),
+            "30:39: " + getCheckMessage(MSG_KEY),
+            "33:22: " + getCheckMessage(MSG_KEY),
+        };
+        verify(checkConfig,
+                getNonCompilablePath("InputAvoidEscapedUnicodeCharactersEscapedS.java"),
+                expected);
     }
 
     @Test

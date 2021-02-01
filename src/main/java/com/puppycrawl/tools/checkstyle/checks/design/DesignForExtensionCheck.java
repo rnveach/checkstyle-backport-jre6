@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,6 +22,8 @@ package com.puppycrawl.tools.checkstyle.checks.design;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
@@ -160,6 +162,12 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * Type is {@code java.lang.String[]}.
  * Default value is {@code After, AfterClass, Before, BeforeClass, Test}.
  * </li>
+ * <li>
+ * Property {@code requiredJavadocPhrase} - Specify the comment text pattern which qualifies a
+ * method as designed for extension. Supports multi-line regex.
+ * Type is {@code java.util.regex.Pattern}.
+ * Default value is {@code ".*"}.
+ * </li>
  * </ul>
  * <p>
  * To configure the check:
@@ -177,7 +185,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * &lt;/module&gt;
  * </pre>
  * <pre>
- * public class A extends B {
+ * public class A {
  *   &#64;Override
  *   public int foo() {
  *     return 2;
@@ -206,6 +214,58 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  *   }
  *
  *   public int foo4() {return 4;} // violation
+ * }
+ * </pre>
+ * <p>
+ * To configure the check to allow methods which contain a specified comment text
+ * pattern in their javadoc to be designed for extension.
+ * </p>
+ * <pre>
+ * &lt;module name=&quot;DesignForExtension&quot;&gt;
+ *   &lt;property name=&quot;requiredJavadocPhrase&quot;
+ *     value=&quot;This implementation&quot;/&gt;
+ * &lt;/module&gt;
+ * </pre>
+ * <pre>
+ * public class A {
+ *   /&#42;&#42;
+ *   &#42; This implementation ...
+ *   &#42;/
+ *   public int foo() {return 2;} // ok, required javadoc phrase in comment
+ *
+ *   /&#42;&#42;
+ *   &#42; Do not extend ...
+ *   &#42;/
+ *   public int foo2() {return 8;} // violation, required javadoc phrase not in comment
+ *
+ *   public int foo3() {return 3;} // violation, required javadoc phrase not in comment
+ * }
+ * </pre>
+ * <p>
+ * To configure the check to allow methods which contain a specified comment text
+ * pattern in their javadoc which can span multiple lines
+ * to be designed for extension.
+ * </p>
+ * <pre>
+ * &lt;module name=&quot;DesignForExtension&quot;&gt;
+ *   &lt;property name=&quot;requiredJavadocPhrase&quot;
+ *     value=&quot;This[\s\S]*implementation&quot;/&gt;
+ * &lt;/module&gt;
+ * </pre>
+ * <pre>
+ * public class A {
+ *   /&#42;&#42;
+ *   &#42; This
+ *   &#42; implementation ...
+ *   &#42;/
+ *   public int foo() {return 2;} // ok, required javadoc phrase in comment
+ *
+ *   /&#42;&#42;
+ *   &#42; Do not extend ...
+ *   &#42;/
+ *   public int foo2() {return 8;} // violation, required javadoc phrase not in comment
+ *
+ *   public int foo3() {return 3;} // violation, required javadoc phrase not in comment
  * }
  * </pre>
  * <p>
@@ -238,6 +298,12 @@ public class DesignForExtensionCheck extends AbstractCheck {
         "BeforeClass", "AfterClass");
 
     /**
+     * Specify the comment text pattern which qualifies a method as designed for extension.
+     * Supports multi-line regex.
+     */
+    private Pattern requiredJavadocPhrase = Pattern.compile(".*");
+
+    /**
      * Setter to specify annotations which allow the check to skip the method from validation.
      *
      * @param ignoredAnnotations method annotations.
@@ -245,6 +311,16 @@ public class DesignForExtensionCheck extends AbstractCheck {
     public void setIgnoredAnnotations(String... ignoredAnnotations) {
         this.ignoredAnnotations = new HashSet<String>();
         Collections.addAll(this.ignoredAnnotations, ignoredAnnotations);
+    }
+
+    /**
+     * Setter to specify the comment text pattern which qualifies a
+     * method as designed for extension. Supports multi-line regex.
+     *
+     * @param requiredJavadocPhrase method annotations.
+     */
+    public void setRequiredJavadocPhrase(Pattern requiredJavadocPhrase) {
+        this.requiredJavadocPhrase = requiredJavadocPhrase;
     }
 
     @Override
@@ -293,7 +369,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @param methodDef method definition token.
      * @return true if a method has a javadoc comment.
      */
-    private static boolean hasJavadocComment(DetailAST methodDef) {
+    private boolean hasJavadocComment(DetailAST methodDef) {
         return hasJavadocCommentOnToken(methodDef, TokenTypes.MODIFIERS)
                 || hasJavadocCommentOnToken(methodDef, TokenTypes.TYPE);
     }
@@ -305,7 +381,7 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @param tokenType token type.
      * @return true if a token has a javadoc comment.
      */
-    private static boolean hasJavadocCommentOnToken(DetailAST methodDef, int tokenType) {
+    private boolean hasJavadocCommentOnToken(DetailAST methodDef, int tokenType) {
         final DetailAST token = methodDef.findFirstToken(tokenType);
         return branchContainsJavadocComment(token);
     }
@@ -316,13 +392,13 @@ public class DesignForExtensionCheck extends AbstractCheck {
      * @param token tree token.
      * @return true if a javadoc comment exists under the token.
      */
-    private static boolean branchContainsJavadocComment(DetailAST token) {
+    private boolean branchContainsJavadocComment(DetailAST token) {
         boolean result = false;
         DetailAST curNode = token;
         while (curNode != null) {
             if (curNode.getType() == TokenTypes.BLOCK_COMMENT_BEGIN
                     && JavadocUtil.isJavadocComment(curNode)) {
-                result = true;
+                result = hasValidJavadocComment(curNode);
                 break;
             }
 
@@ -339,6 +415,23 @@ public class DesignForExtensionCheck extends AbstractCheck {
         }
 
         return result;
+    }
+
+    /**
+     * Checks whether a javadoc contains the specified comment pattern that denotes
+     * a method as designed for extension.
+     *
+     * @param detailAST the ast we are checking for possible extension
+     * @return true if the javadoc of this ast contains the required comment pattern
+     */
+    private boolean hasValidJavadocComment(DetailAST detailAST) {
+        final String javadocString =
+            JavadocUtil.getBlockCommentContent(detailAST);
+
+        final Matcher requiredJavadocPhraseMatcher =
+            requiredJavadocPhrase.matcher(javadocString);
+
+        return requiredJavadocPhraseMatcher.find();
     }
 
     /**

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -219,8 +219,7 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
         check.finishProcessing();
 
         assertEquals(1, dispatcher.errorList.size(), "errors should still have 1 after re-run");
-        assertEquals(2, MultiFileViolationFileSetCheck.finishProcessingCount,
-                "finishProcessing was called twice");
+        assertEquals(2, check.finishProcessingCount, "finishProcessing was called twice");
     }
 
     public static class DummyFileSetCheck extends AbstractFileSetCheck {
@@ -250,7 +249,7 @@ public class AbstractFileSetCheckTest extends AbstractModuleTestSupport {
     public static class MultiFileViolationFileSetCheck extends AbstractFileSetCheck {
 
         private static final String MSG_KEY = "Violation.";
-        private static int finishProcessingCount;
+        private int finishProcessingCount;
 
         @Override
         protected void processFiltered(File file, FileText fileText) {

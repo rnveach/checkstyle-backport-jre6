@@ -6,13 +6,6 @@
 
   <head>
     <title>Checkstyle ${projectVersion}</title>
-    <script type="text/javascript"
-            src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
-    <script type="text/javascript" src="js/anchors.js"/>
-    <script type="text/javascript" src="js/google-analytics.js"/>
-    <script type="text/javascript" src="js/checkstyle.js"/>
-    <link rel="icon" href="images/favicon.png" type="image/x-icon" />
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/ico" />
   </head>
 
   <body>
@@ -286,7 +279,7 @@
               </td>
               <td>
                 Provides analysis per pull request as GitHub
-                <a href="https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#runs">
+                <a href="https://docs.github.com/en/rest/reference/checks#check-runs">
                   Check Run</a>
                 annotations. Supports CheckStyle config files.
               </td>

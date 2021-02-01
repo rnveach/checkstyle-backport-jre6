@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,9 @@
 
 package com.puppycrawl.tools.checkstyle.meta;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.util.Arrays;
@@ -28,12 +30,19 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.Test;
+import org.junit.jupiter.api.function.Executable;
 
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.internal.utils.CheckUtil;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 
 public final class MetadataGeneratorUtilTest {
+
+    private final String invalidMetadataPackage = System.getProperty("user.dir")
+        + "/src/test/resources/com/puppycrawl/tools/checkstyle"
+        + "/meta/javadocmetadatascraper/invalid_metadata";
+
     private final List<String> modulesContainingNoMetadataFile = Arrays.asList(
             "Checker",
             "TreeWalker",
@@ -41,7 +50,7 @@ public final class MetadataGeneratorUtilTest {
     );
 
     @Test
-    public void generateMetadataFiles() throws Exception {
+    public void testMetadataFilesGenerationAllFiles() throws Exception {
         MetadataGeneratorUtil.generate(System.getProperty("user.dir")
                 + "/src/main/java/com/puppycrawl/tools/checkstyle");
         final Set<String> metaFiles = new TreeSet<String>();
@@ -62,6 +71,62 @@ public final class MetadataGeneratorUtilTest {
         checkstyleModules.removeAll(modulesContainingNoMetadataFile);
         assertEquals("Number of generated metadata files dont match with number of checkstyle "
                         + "module", checkstyleModules, metaFiles);
+    }
+
+    @Test
+    public void testMetadataFileGenerationDefaultValueMisplaced() {
+        final CheckstyleException exc = assertThrows(CheckstyleException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                MetadataGeneratorUtil.generate(invalidMetadataPackage
+                    + "/InputJavadocMetadataScraperPropertyMisplacedDefaultValueCheck.java");
+            }
+        });
+        assertThat(exc.getCause()).isInstanceOf(MetadataGenerationException.class);
+        assertThat(exc.getCause().getMessage()).isEqualTo(
+            "Default value for property 'misplacedDefaultValue' is missing");
+    }
+
+    @Test
+    public void testMetadataFileGenerationTypeMisplaced() {
+        final CheckstyleException exc = assertThrows(CheckstyleException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                MetadataGeneratorUtil.generate(invalidMetadataPackage
+                    + "/InputJavadocMetadataScraperPropertyMisplacedTypeCheck.java");
+            }
+        });
+        assertThat(exc.getCause()).isInstanceOf(MetadataGenerationException.class);
+        assertThat(exc.getCause().getMessage()).isEqualTo(
+            "Type for property 'misplacedType' is missing");
+    }
+
+    @Test
+    public void testMetadataFileGenerationTypeMissing() {
+        final CheckstyleException exc = assertThrows(CheckstyleException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                MetadataGeneratorUtil.generate(invalidMetadataPackage
+                    + "/InputJavadocMetadataScraperPropertyMissingTypeCheck.java");
+            }
+        });
+        assertThat(exc.getCause()).isInstanceOf(MetadataGenerationException.class);
+        assertThat(exc.getCause().getMessage()).isEqualTo(
+            "Type for property 'missingType' is missing");
+    }
+
+    @Test
+    public void testMetadataFileGenerationDefaultValueMissing() {
+        final CheckstyleException exc = assertThrows(CheckstyleException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                MetadataGeneratorUtil.generate(invalidMetadataPackage
+                    + "/InputJavadocMetadataScraperPropertyMissingDefaultValueCheck.java");
+            }
+        });
+        assertThat(exc.getCause()).isInstanceOf(MetadataGenerationException.class);
+        assertThat(exc.getCause().getMessage()).isEqualTo(
+            "Default value for property 'missingDefaultValue' is missing");
     }
 
     /**

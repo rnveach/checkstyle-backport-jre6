@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -729,8 +729,8 @@ public final class IllegalTypeCheck extends AbstractCheck {
      * Extends illegal class names set via imported short type name.
      *
      * @param canonicalName
-     *  <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.7">
-     *  Canonical</a> name of imported type.
+     *     <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.7">
+     *     Canonical</a> name of imported type.
      */
     private void extendIllegalClassNamesWithShortName(String canonicalName) {
         if (illegalClassNames.contains(canonicalName)) {

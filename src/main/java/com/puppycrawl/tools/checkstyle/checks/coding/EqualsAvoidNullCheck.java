@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -170,7 +170,7 @@ public class EqualsAvoidNullCheck extends AbstractCheck {
      * Setter to control whether to ignore {@code String.equalsIgnoreCase(String)} invocations.
      *
      * @param newValue whether to ignore checking
-     *    {@code String.equalsIgnoreCase(String)}.
+     *     {@code String.equalsIgnoreCase(String)}.
      */
     public void setIgnoreEqualsIgnoreCase(boolean newValue) {
         ignoreEqualsIgnoreCase = newValue;

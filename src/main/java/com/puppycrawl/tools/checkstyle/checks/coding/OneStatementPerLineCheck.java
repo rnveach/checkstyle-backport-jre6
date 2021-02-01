@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -276,6 +276,12 @@ public final class OneStatementPerLineCheck extends AbstractCheck {
         }
     }
 
+    /**
+     * Checks semicolon placement in lambda.
+     *
+     * @param ast semicolon to check
+     * @param currentStatement current statement
+     */
     private void checkLambda(DetailAST ast, DetailAST currentStatement) {
         int countOfSemiInCurrentLambda = countOfSemiInLambda.pop();
         countOfSemiInCurrentLambda++;
@@ -288,12 +294,23 @@ public final class OneStatementPerLineCheck extends AbstractCheck {
         }
     }
 
+    /**
+     * Checks that given node is a resource.
+     *
+     * @param ast semicolon to check
+     * @return true if node is a resource
+     */
     private static boolean isResource(DetailAST ast) {
         return ast != null
             && (ast.getType() == TokenTypes.RESOURCES
                  || ast.getType() == TokenTypes.RESOURCE_SPECIFICATION);
     }
 
+    /**
+     * Checks resource variable.
+     *
+     * @param currentStatement current statement
+     */
     private void checkResourceVariable(DetailAST currentStatement) {
         if (treatTryResourcesAsStatement) {
             final DetailAST nextNode = currentStatement.getNextSibling();

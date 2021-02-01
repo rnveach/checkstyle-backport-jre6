@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -68,6 +68,21 @@ public class LineWrappingHandler {
         }
 
     }
+
+    /**
+     * The list of ignored token types for being checked by lineWrapping indentation
+     * inside {@code checkIndentation()} as these tokens are checked for lineWrapping
+     * inside their dedicated handlers.
+     *
+     * @see NewHandler#getIndentImpl()
+     * @see BlockParentHandler#curlyIndent()
+     * @see ArrayInitHandler#getIndentImpl()
+     */
+    private static final int[] IGNORED_LIST = {
+        TokenTypes.RCURLY,
+        TokenTypes.LITERAL_NEW,
+        TokenTypes.ARRAY_INIT,
+    };
 
     /**
      * The current instance of {@code IndentationCheck} class using this
@@ -162,7 +177,7 @@ public class LineWrappingHandler {
             if (currentType == TokenTypes.RPAREN) {
                 logWarningMessage(node, firstNodeIndent);
             }
-            else if (currentType != TokenTypes.RCURLY && currentType != TokenTypes.ARRAY_INIT) {
+            else if (!TokenUtil.isOfType(currentType, IGNORED_LIST)) {
                 logWarningMessage(node, currentIndent);
             }
         }
@@ -305,6 +320,13 @@ public class LineWrappingHandler {
         return endOfScope;
     }
 
+    /**
+     * Checks that some parent of given node contains given token type.
+     *
+     * @param node node to check
+     * @param type type to look for
+     * @return true if there is a parent of given type
+     */
     private static boolean isParentContainsTokenType(final DetailAST node, int type) {
         boolean returnValue = false;
         for (DetailAST ast = node.getParent(); ast != null; ast = ast.getParent()) {
