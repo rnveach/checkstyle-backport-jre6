@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // checkstyle: Checks Java source code for adherence to a set of rules.
-// Copyright (C) 2001-2020 the original author or authors.
+// Copyright (C) 2001-2021 the original author or authors.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -21,9 +21,9 @@ package com.puppycrawl.tools.checkstyle.jre6.util;
 
 import java.util.NoSuchElementException;
 
-import com.google.common.base.Supplier;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Consumer;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Supplier;
 
 public final class Optional<T> {
     private static final Optional<?> EMPTY = new Optional<Object>();
@@ -70,7 +70,8 @@ public final class Optional<T> {
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         if (value != null) {
             return value;
-        } else {
+        }
+        else {
             throw exceptionSupplier.get();
         }
     }
@@ -81,12 +82,13 @@ public final class Optional<T> {
         }
     }
 
-    public<U> Optional<U> map(Function<? super T, ? extends U> mapper) {
+    public <U> Optional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
-            return empty();
-        else {
+        if (isPresent()) {
             return Optional.<U>ofNullable(mapper.apply(value));
+        }
+        else {
+            return empty();
         }
     }
 }

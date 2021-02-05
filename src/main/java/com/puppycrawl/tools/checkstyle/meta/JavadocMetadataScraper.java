@@ -35,7 +35,6 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import com.google.common.base.Supplier;
 import com.puppycrawl.tools.checkstyle.FileStatefulCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.DetailNode;
@@ -46,6 +45,7 @@ import com.puppycrawl.tools.checkstyle.jre6.lang.String7;
 import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Function;
 import com.puppycrawl.tools.checkstyle.jre6.util.function.Predicate;
+import com.puppycrawl.tools.checkstyle.jre6.util.function.Supplier;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**

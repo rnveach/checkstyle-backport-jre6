@@ -93,6 +93,13 @@ public final class MetadataGeneratorUtil {
         checker.process(validFiles);
     }
 
+    /**
+     * Walks the files in the directory, and sub-directories, and executes the
+     * provided function for each file.
+     *
+     * @param dir The directory to walk.
+     * @param func The function to execute for each file.
+     */
     private static void walk(File dir, Function<File, Object> func) {
         final File[] list = dir.listFiles();
 

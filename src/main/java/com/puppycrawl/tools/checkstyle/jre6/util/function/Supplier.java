@@ -17,13 +17,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ////////////////////////////////////////////////////////////////////////////////
 
-package org.junit.jupiter.api;
+package com.puppycrawl.tools.checkstyle.jre6.util.function;
 
-public final class Assumptions {
-    private Assumptions() {
-    }
-
-    public static void assumeTrue(boolean assumption, String message) {
-        Assertions.assertTrue(assumption, message);
-    }
+public interface Supplier<T> {
+    T get();
 }
