@@ -57,6 +57,8 @@ import com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocParagraphCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.TypeNameCheck;
+import com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck;
+import com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck;
 import com.puppycrawl.tools.checkstyle.filters.SuppressWithNearbyCommentFilter;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionCommentFilter;
 import com.puppycrawl.tools.checkstyle.filters.SuppressionXpathFilter;
@@ -65,6 +67,11 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
 
+/**
+ * TreeWalkerTest.
+ *
+ * @noinspection ClassWithTooManyDependencies because we are less strict with tests.
+ */
 public class TreeWalkerTest extends AbstractModuleTestSupport {
 
     @Rule
@@ -395,8 +402,6 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
 
         final DefaultConfiguration checkerConfig = createRootConfig(treeWalkerConfig);
 
-        final File file = new File(getPath("InputTreeWalkerSuppressionCommentFilter.java"));
-
         final String[] expected = {
             "9:17: " + getCheckMessage(MemberNameCheck.class, "name.invalidPattern", "P",
                     "^[a-z][a-zA-Z0-9]*$"),
@@ -405,7 +410,24 @@ public class TreeWalkerTest extends AbstractModuleTestSupport {
         };
 
         verify(checkerConfig,
-                file.getPath(),
+                getPath("InputTreeWalkerSuppressionCommentFilter.java"),
+                expected);
+    }
+
+    @Test
+    public void testMultiCheckOrder() throws Exception {
+        final DefaultConfiguration treeWalkerConfig = createModuleConfig(TreeWalker.class);
+        treeWalkerConfig.addChild(createModuleConfig(WhitespaceAroundCheck.class));
+        treeWalkerConfig.addChild(createModuleConfig(WhitespaceAfterCheck.class));
+
+        final DefaultConfiguration checkerConfig = createRootConfig(treeWalkerConfig);
+
+        final String[] expected = {
+            "6:9: " + getCheckMessage(WhitespaceAfterCheck.class, "ws.notFollowed", "if"),
+        };
+
+        verify(checkerConfig,
+                getPath("InputTreeWalkerMultiCheckOrder.java"),
                 expected);
     }
 

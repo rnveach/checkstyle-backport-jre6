@@ -724,37 +724,89 @@ public class A {
         <source>
 &lt;module name=&quot;DeclarationOrder&quot;/&gt;
         </source>
+        <p>Example:</p>
+        <source>
+public class Test {
 
-        <p>
-          With default options:
-        </p>
-        <source>
-class K {
-  int a;
-  void m(){}
-  K(){}  &lt;-- "Constructor definition in wrong order"
-  int b; &lt;-- "Instance variable definition in wrong order"
+  public int a;
+  protected int b;
+  public int c;            // violation, variable access definition in wrong order
+
+  Test() {
+    this.a = 0;
+  }
+
+  public void foo() {
+    // This method does nothing
+  }
+
+  Test(int a) {            // violation, constructor definition in wrong order
+    this.a = a;
+  }
+
+  private String name;     // violation, instance variable declaration in wrong order
 }
         </source>
         <p>
-          With <b>ignoreConstructors</b> option:
+          To configure the check to ignore validation of constructors:
         </p>
         <source>
-class K {
-  int a;
-  void m(){}
-  K(){}
-  int b; &lt;-- "Instance variable definition in wrong order"
+&lt;module name=&quot;DeclarationOrder&quot;&gt;
+  &lt;property name=&quot;ignoreConstructors&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class Test {
+
+  public int a;
+  protected int b;
+  public int c;            // violation, variable access definition in wrong order
+
+  Test() {
+    this.a = 0;
+  }
+
+  public void foo() {
+    // This method does nothing
+  }
+
+  Test(int a) {            // OK, validation of constructors ignored
+    this.a = a;
+  }
+
+  private String name;     // violation, instance variable declaration in wrong order
 }
         </source>
         <p>
-          With <b>ignoreConstructors</b> option and without a method definition in a source class:
+          To configure the check to ignore modifiers:
         </p>
         <source>
-class K {
-  int a;
-  K(){}
-  int b; &lt;-- "Instance variable definition in wrong order"
+&lt;module name=&quot;DeclarationOrder&quot;&gt;
+  &lt;property name=&quot;ignoreModifiers&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class Test {
+
+  public int a;
+  protected int b;
+  public int c;            // OK, access modifiers not considered while validating
+
+  Test() {
+    this.a = 0;
+  }
+
+  public void foo() {
+    // This method does nothing
+  }
+
+  Test(int a) {            // violation, constructor definition in wrong order
+    this.a = a;
+  }
+
+  private String name;     // violation, instance variable declaration in wrong order
 }
         </source>
       </subsection>
@@ -1951,6 +2003,26 @@ class PageBuilder {
         <source>
 &lt;module name=&quot;HiddenField&quot;/&gt;
         </source>
+        <source>
+public class SomeClass {
+
+  private String field;
+  private String testField;
+
+  public SomeClass(String testField) { // violation, 'testField' param hides 'testField' field
+  }
+  public void method(String param) { // OK
+      String field = param; // violation, 'field' variable hides 'field' field
+  }
+  public void setTestField(String testField) { // violation, 'testField' param
+                                               // hides 'testField' field
+      this.field = field;
+  }
+  public SomeClass setField(String field) { // violation, 'field' param hides 'field' field
+      this.field = field;
+  }
+}
+        </source>
 
         <p>
           To configure the check so that it checks local variables but not
@@ -1961,6 +2033,25 @@ class PageBuilder {
   &lt;property name=&quot;tokens&quot; value=&quot;VARIABLE_DEF&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <source>
+public class SomeClass {
+
+  private String field;
+  private String testField;
+
+  public SomeClass(String testField) { // OK, 'testField' param doesn't hide any field
+  }
+  public void method(String param) { // OK
+      String field = param; // violation, 'field' variable hides 'field' field
+  }
+  public void setTestField(String testField) { // OK, 'testField' param doesn't hide any field
+      this.field = field;
+  }
+  public SomeClass setField(String field) { // OK, 'field' param doesn't hide any field
+      this.field = field;
+  }
+}
+        </source>
 
         <p>
           To configure the check so that it ignores the variables and parameters named
@@ -1968,24 +2059,26 @@ class PageBuilder {
         </p>
         <source>
 &lt;module name=&quot;HiddenField&quot;&gt;
-  &lt;property name=&quot;ignoreFormat&quot; value=&quot;^test$&quot;/&gt;
+  &lt;property name=&quot;ignoreFormat&quot; value=&quot;^testField&quot;/&gt;
 &lt;/module&gt;
         </source>
 
         <source>
-class SomeClass
-{
-  private List&lt;String&gt; test;
+public class SomeClass {
 
-  private void addTest(List&lt;String&gt; test) // no violation
-  {
-    this.test.addAll(test);
+  private String field;
+  private String testField;
+
+  public SomeClass(String testField) { // OK, because it match ignoreFormat
   }
-
-  private void foo()
-  {
-    final List&lt;String&gt; test = new ArrayList&lt;&gt;(); // no violation
-    ...
+  public void method(String param) { // OK
+      String field = param; // violation, 'field' variable hides 'field' field
+  }
+  public void setTestField(String testField) { // OK, because it match ignoreFormat
+      this.field = field;
+  }
+  public SomeClass setField(String field) { // violation, 'field' param hides 'field' field
+      this.field = field;
   }
 }
         </source>
@@ -1998,6 +2091,26 @@ class SomeClass
   &lt;property name=&quot;ignoreConstructorParameter&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <source>
+public class SomeClass {
+
+  private String field;
+  private String testField;
+
+  public SomeClass(String testField) { // OK, 'testField' param doesn't hide any field
+  }
+  public void method(String param) { // OK
+      String field = param; // violation, 'field' variable hides 'field' field
+  }
+  public void setTestField(String testField) { // violation, 'testField' variable
+                                               // hides 'testField' field
+      this.field = field;
+  }
+  public SomeClass setField(String field) { // violation, 'field' param hides 'field' field
+      this.field = field;
+  }
+}
+        </source>
 
         <p>
           To configure the check so that it ignores the parameter of setter
@@ -2008,17 +2121,81 @@ class SomeClass
   &lt;property name=&quot;ignoreSetter&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <source>
+public class SomeClass {
+
+  private String field;
+  private String testField;
+
+  public SomeClass(String testField) { // violation, 'testField' param hides 'testField' field
+  }
+  public void method(String param) { // OK
+      String field = param; // violation, 'field' variable hides 'field' field
+  }
+  public void setTestField(String testField) { // OK, 'testField' param doesn't hide any field
+      this.field = field;
+  }
+  public SomeClass setField(String field) { // violation, 'field' param hides 'field' field
+      this.field = field;
+  }
+}
+        </source>
 
         <p>
           To configure the check so that it ignores the parameter of setter
           methods recognizing setter as returning either <code>void</code> or
-              a class in which it is declared:
+          a class in which it is declared:
         </p>
         <source>
 &lt;module name=&quot;HiddenField&quot;&gt;
   &lt;property name=&quot;ignoreSetter&quot; value=&quot;true&quot;/&gt;
   &lt;property name=&quot;setterCanReturnItsClass&quot; value=&quot;true&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <source>
+public class SomeClass {
+
+  private String field;
+  private String testField;
+
+  public SomeClass(String testField) { // violation, 'testField' param hides 'testField' field
+  }
+  public void method(String param) { // OK
+      String field = param; // violation, 'field' variable hides 'field' field
+  }
+  public void setTestField(String testField) { // OK, 'testField' param doesn't hide any field
+      this.field = field;
+  }
+  public SomeClass setField(String field) { // OK, 'field' param doesn't hide any field
+      this.field = field;
+  }
+}
+        </source>
+        <p>
+          To configure the check so that it ignores parameters of abstract methods:
+        </p>
+        <source>
+&lt;module name=&quot;HiddenField&quot;&gt;
+  &lt;property name=&quot;ignoreAbstractMethods&quot; value=&quot;true&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <source>
+abstract class SomeClass {
+
+  private String field;
+
+  public SomeClass(int field) { // violation, 'field' param hides a 'field' field
+    float field; // violation, 'field' variable hides a 'field' field
+  }
+  public abstract int method(String field); // OK
+}
+
+public class Demo extends SomeClass {
+
+  public int method(String param){
+    return param;
+  }
+}
         </source>
       </subsection>
 
@@ -2299,12 +2476,118 @@ try {
 
       <subsection name="Examples" id="IllegalInstantiation_Examples">
         <p>
-          To configure the check to find instantiations of <code>java.lang.Boolean</code>:
+          To configure the check:
+        </p>
+        <source>
+&lt;module name=&quot;IllegalInstantiation&quot;/&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class MyTest {
+  public class Boolean {
+    boolean a;
+
+    public Boolean (boolean a) { this.a = a; }
+  }
+
+  public void myTest (boolean a, int b) {
+    Boolean c = new Boolean(a); // OK
+    java.lang.Boolean d = new java.lang.Boolean(a); // OK
+
+    Integer e = new Integer(b); // OK
+    Integer f = Integer.valueOf(b); // OK
+  }
+}
+        </source>
+        <p>
+          To configure the check to find instantiations of <code>java.lang.Boolean</code>
+          and <code>java.lang.Integer</code>. NOTE: Even if property <code>tokens</code>
+          is completely removed from the following configuration, Checkstyle will produce the
+          same results for violation. This is because if property <code>tokens</code> is not
+          defined in the configuration, Checkstyle will supply it with list of default tokens
+          <code>CLASS_DEF, LITERAL_NEW, PACKAGE_DEF, IMPORT</code> for this check. The property is
+          defined in this example only to provide clarity:
         </p>
         <source>
 &lt;module name=&quot;IllegalInstantiation&quot;&gt;
-  &lt;property name=&quot;classes&quot; value=&quot;java.lang.Boolean&quot;/&gt;
+  &lt;property name=&quot;classes&quot; value=&quot;java.lang.Boolean,
+    java.lang.Integer&quot;/&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;CLASS_DEF, LITERAL_NEW,
+    PACKAGE_DEF, IMPORT&quot;/&gt;
 &lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class MyTest {
+  public class Boolean {
+    boolean a;
+
+    public Boolean (boolean a) { this.a = a; }
+  }
+
+  public void myTest (boolean a, int b) {
+    Boolean c = new Boolean(a); // OK
+    java.lang.Boolean d = new java.lang.Boolean(a); // violation, instantiation of
+                                                    // java.lang.Boolean should be avoided
+
+    Integer e = new Integer(b); // violation, instantiation of
+                                // java.lang.Integer should be avoided
+    Integer f = Integer.valueOf(b); // OK
+  }
+}
+        </source>
+        <p>
+          To configure the check to allow violations for local classes vs classes
+          defined in the check, for example <code>java.lang.Boolean</code>, property
+          <code>tokens</code> must be defined to not mention <code>CLASS_DEF</code>, so its
+          value should be <code>LITERAL_NEW, PACKAGE_DEF, IMPORT</code>:
+        </p>
+        <source>
+&lt;module name=&quot;IllegalInstantiation&quot;&gt;
+  &lt;property name=&quot;classes&quot; value=&quot;java.lang.Boolean,
+    java.lang.Integer&quot;/&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;LITERAL_NEW, PACKAGE_DEF,
+    IMPORT&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class MyTest {
+  public class Boolean {
+    boolean a;
+
+    public Boolean (boolean a) { this.a = a; }
+  }
+
+  public void myTest (boolean a, int b) {
+    Boolean c = new Boolean(a); // violation, instantiation of
+                                // java.lang.Boolean should be avoided
+    java.lang.Boolean d = new java.lang.Boolean(a); // violation, instantiation of
+                                                    // java.lang.Boolean should be avoided
+
+    Integer e = new Integer(b); // violation, instantiation of
+                                // java.lang.Integer should be avoided
+    Integer f = Integer.valueOf(b); // OK
+  }
+}
+        </source>
+        <p>
+          Finally, there is a limitation that it is currently not possible to specify array classes:
+        </p>
+        <source>
+&lt;module name=&quot;IllegalInstantiation&quot;&gt;
+  &lt;property name=&quot;classes&quot; value=&quot;java.lang.Boolean[],
+     Boolean[], java.lang.Integer[], Integer[]&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class MyTest {
+  public void myTest () {
+    Boolean[] newBoolArray = new Boolean[]{true,true,false}; // OK
+    Integer[] newIntArray = new Integer[]{1,2,3}; // OK
+  }
+}
         </source>
       </subsection>
 
@@ -3130,6 +3413,39 @@ public class Test {
     return new TreeSet&lt;Foo&lt;Boolean&gt;&gt;();
   }
 
+}
+        </source>
+        <p>
+          To configure the check to target fields types only:
+        </p>
+        <source>
+&lt;module name="IllegalType"&gt;
+  &lt;property name=&quot;illegalClassNames&quot; value=&quot;java.util.Optional&quot;/&gt;
+  &lt;property name=&quot;tokens&quot; value=&quot;VARIABLE_DEF&quot;/&gt;
+  &lt;property name=&quot;id&quot; value=&quot;IllegalTypeOptionalAsField&quot;/&gt;
+&lt;/module&gt;
+&lt;module name="SuppressionXpathSingleFilter"&gt;
+  &lt;property name=&quot;query&quot; value=&quot;//METHOD_DEF//*&quot;/&gt;
+  &lt;property name=&quot;id&quot; value=&quot;IllegalTypeOptionalAsField&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <source>
+import java.util.Optional;
+
+public class Main {
+
+  static int field1 = 4; // OK
+  public Optional&lt;String&gt; field2; // violation, usage of type 'Optional' is not allowed
+  protected String field3; // OK
+  Optional&lt;String&gt; field4; // violation, usage of type 'Optional' is not allowed
+  private Optional&lt;String&gt; field5; // violation, usage of type 'Optional' is not allowed
+
+  void foo() {
+    Optional&lt;String&gt; i; // OK
+  }
+  public &lt;T extends java.util.Optional&gt; void method(T t) { // OK
+    Optional&lt;T&gt; i; // OK
+  }
 }
         </source>
       </subsection>
@@ -5520,6 +5836,29 @@ public class AnnotationLocationCheck extends AbstractCheck {
         <source>
 &lt;module name=&quot;ParameterAssignment&quot;/&gt;
         </source>
+        <p>
+          Example:
+        </p>
+        <source>
+class MyClass {
+  int methodOne(int parameter) {
+    if (parameter &lt;= 0 ) {
+      throw new IllegalArgumentException("A positive value is expected");
+    }
+    parameter -= 2;  // violation
+    return parameter;
+  }
+
+  int methodTwo(int parameter) {
+    if (parameter &lt;= 0 ) {
+      throw new IllegalArgumentException("A positive value is expected");
+    }
+    int local = parameter;
+    local -= 2;  // OK
+    return local;
+  }
+}
+        </source>
       </subsection>
 
       <subsection name="Example of Usage" id="ParameterAssignment_Example_of_Usage">
@@ -5639,55 +5978,112 @@ public class AnnotationLocationCheck extends AbstractCheck {
         <source>
 &lt;module name=&quot;RequireThis&quot;/&gt;
         </source>
+        <p>Example:</p>
+        <source>
+public class Test {
+  private int a;
+  private int b;
+  private int c;
 
+  public Test(int a) {
+    // overlapping by constructor argument
+    this.a = a;       // OK, this keyword used
+    b = 0;            // OK, no overlap
+    foo(5);           // OK
+  }
+
+  public void foo(int c) {
+    // overlapping by method argument
+    c = c;            // violation, reference to instance variable "c" requires "this"
+  }
+}
+        </source>
         <p>
-          To configure to check the <code>this</code> qualifier for fields only:
+          To configure the check for fields only:
         </p>
         <source>
 &lt;module name="RequireThis"&gt;
   &lt;property name=&quot;checkMethods&quot; value=&quot;false&quot;/&gt;
 &lt;/module&gt;
         </source>
+        <p>Example:</p>
+        <source>
+public class Test {
+  private int a;
+  private int b;
+  private int c;
 
+  public Test(int a) {
+    // overlapping by constructor argument
+    this.a = a;       // OK, this keyword used
+    b = 0;            // OK, no overlap
+    foo(5);           // OK, no validation for methods
+  }
+
+  public void foo(int c) {
+    // overlapping by method argument
+    c = c;            // violation, reference to instance variable "c" requires "this"
+  }
+}
+        </source>
         <p>
-          Examples of how the check works if validateOnlyOverlapping option is set to true:
+            To configure the check for methods only:
         </p>
         <source>
-public static class A {
-  private int field1;
-  private int field2;
+&lt;module name="RequireThis"&gt;
+  &lt;property name=&quot;checkFields&quot; value=&quot;false&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class Test {
+  private int a;
+  private int b;
+  private int c;
 
-  public A(int field1) {
-    // Overlapping by constructor argument.
-    field1 = field1; // violation: Reference to instance variable "field1" needs "this".
-    field2 = 0;
+  public Test(int a) {
+    // overlapping by constructor argument
+    this.a = a;       // OK, no validation for fields
+    b = 0;            // OK, no validation for fields
+    foo(5);           // OK, no overlap
   }
 
-  void foo3() {
-    String field1 = "values";
-    // Overlapping by local variable.
-    field1 = field1; // violation:  Reference to instance variable "field1" needs "this".
-  }
-}
-
-public static class B {
-  private int field;
-
-  public A(int f) {
-    field = f;
-  }
-
-  String addSuffixToField(String field) {
-    // Overlapping by method argument. Equal to "return field = field + "suffix";"
-    return field += "suffix"; // violation: Reference to instance variable "field" needs "this".
+  public void foo(int c) {
+    // overlapping by method argument
+    c = c;            // OK, no validation for fields
   }
 }
+        </source>
+        <p>
+          Note that method call foo(5) does not raise a violation
+          because methods cannot be overlapped in java.
+        </p>
+        <p>
+            To configure the check to validate for non-overlapping fields and methods:
+        </p>
+        <source>
+&lt;module name="RequireThis"&gt;
+  &lt;property name=&quot;validateOnlyOverlapping&quot; value=&quot;false&quot;/&gt;
+&lt;/module&gt;
+        </source>
+        <p>Example:</p>
+        <source>
+public class Test {
+  private int a;
+  private int b;
+  private int c;
 
-public static record C(int x) {
-    void getTwoX(int x) {
-        // Overlapping by method argument.
-        return x += x; // violation: Reference to instance variable "x" needs "this".
-    }
+  public Test(int a) {
+    // overlapping by constructor argument
+    this.a = a;       // OK, no validation for fields
+    b = 0;            // violation, reference to instance variable "b" requires "this"
+    foo(5);           // violation, method call "foo(5)" requires "this"
+  }
+
+  public void foo(int c) {
+    // overlapping by method argument
+    c = c;            // violation, reference to instance variable "c" requires "this"
+  }
 }
         </source>
         <p>
@@ -5701,10 +6097,12 @@ public static record C(int x) {
 public class C {
   private int scale;
   private int x;
+
   public void foo(int scale) {
-    scale = this.scale; // no violation
+    scale = this.scale;      // no violation
+
     if (scale > 0) {
-      scale = -scale; // no violation
+      scale = -scale;        // no violation
     }
     x *= scale;
   }
@@ -5717,63 +6115,11 @@ public class C {
         <source>
 public class D {
   private String prefix;
+
   public String modifyPrefix(String prefix) {
-    prefix = "^" + prefix + "$" // no violation (modification of parameter)
-    return prefix; // modified method parameter is returned from the method
+    prefix = "^" + prefix + "$";  // no violation, because method parameter is returned
+    return prefix;
   }
-}
-        </source>
-        <p>
-          Examples of how the check works if validateOnlyOverlapping option is set to false:
-        </p>
-        <source>
-public static class A {
-  private int field1;
-  private int field2;
-
-  public A(int field1) {
-    field1 = field1; // violation: Reference to instance variable "field1" needs "this".
-    field2 = 0; // violation: Reference to instance variable "field2" needs "this".
-    String field2;
-    field2 = "0"; // No violation. Local var allowed
-  }
-
-  void foo3() {
-    String field1 = "values";
-    field1 = field1; // violation:  Reference to instance variable "field1" needs "this".
-  }
-}
-
-public static class B {
-  private int field;
-
-  public A(int f) {
-    field = f; // violation:  Reference to instance variable "field" needs "this".
-  }
-
-  String addSuffixToField(String field) {
-    return field += "suffix"; // violation: Reference to instance variable "field" needs "this".
-  }
-}
-
-// If the variable is locally defined, there won't be a violation provided the variable
-// doesn't overlap.
-class C {
-  private String s1 = "foo1";
-  String s2 = "foo2";
-
-  C() {
-    s1 = "bar1"; // Violation. Reference to instance variable 's1' needs "this.".
-    String s2;
-    s2 = "bar2"; // No violation. Local var allowed.
-    s2 += s2; // Violation. Overlapping. Reference to instance variable 's2' needs "this.".
-  }
-}
-
-public static record D(int x) {
-    public D {
-        x = x; // violation: Reference to instance variable "x" needs "this".
-    }
 }
         </source>
       </subsection>
@@ -7514,59 +7860,6 @@ public class Test {
   }
 }
         </source>
-      </subsection>
-
-      <subsection name="Notes" id="VariableDeclarationUsageDistance_Notes">
-        <p>
-          ATTENTION! (Unsupported cases)
-        </p>
-        <p>
-          Case #1:
-        </p>
-        <source>
-{
-  int c;
-  int a = 3;
-  int b = 2;
-  {
-    a = a + b;
-    c = b;
-  }
-}
-        </source>
-        <p>
-         Distance for variable 'a' = 1;
-         Distance for variable 'b' = 1;
-         Distance for variable 'c' = 2.
-        </p>
-        <p>
-          As distance by default is 1 the check doesn't raise warning for
-          variables 'a' and 'b' to move them into the block.
-        </p>
-        <p>
-          Case #2:
-        </p>
-        <source>
-int sum = 0;
-for (int i = 0; i &lt; 20; i++) {
-  a++;
-  b--;
-  sum++;
-  if (sum > 10) {
-    res = true;
-  }
-}
-        </source>
-        <p>
-          Distance for variable 'sum' = 3.
-        </p>
-        <p>
-          As the distance is more than the default (=1), the check
-          raises warning for variable 'sum' to move it into the 'for(...)' block.
-          But there is situation when variable 'sum' hasn't to be 0 within each iteration.
-          So, to avoid such warnings you can use the Suppression Filter, provided by
-          Checkstyle, for the whole class.
-        </p>
       </subsection>
 
       <subsection name="Example of Usage" id="VariableDeclarationUsageDistance_Example_of_Usage">

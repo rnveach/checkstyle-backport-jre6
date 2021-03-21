@@ -548,7 +548,7 @@ annotationMemberArrayInitializer
     ;
 
 // The two things that can initialize an annotation array element are a conditional expression
-//   and an annotation (nested annotation array initialisers are not valid)
+//   and an annotation (nested annotation array initializers are not valid)
 annotationMemberArrayValueInitializer
     :    (annotationExpression)=>annotationExpression
     |   annotation
@@ -566,7 +566,7 @@ recordDefinition![AST modifiers]
         ic:implementsClause
         rb:recordBodyDeclaration
         {#recordDefinition = #(#[RECORD_DEF, "RECORD_DEF"],
-                              modifiers, r, id, tp, ic, rc, rb);}
+                              modifiers, r, id, tp, rc, ic, rb);}
     ;
 
 recordComponentsList
@@ -757,7 +757,8 @@ annotationDefault
 // followed by any number of fields like a regular class
 enumBlock
     :    LCURLY
-            ( enumConstant ( options{greedy=true;}: COMMA enumConstant )* ( COMMA )? )?
+            ( enumConstant ( options{greedy=true;}: COMMA enumConstant )* )?
+            ( COMMA )?
             ( SEMI ( field | SEMI )* )?
         RCURLY
         {#enumBlock = #([OBJBLOCK, "OBJBLOCK"], #enumBlock);}

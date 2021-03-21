@@ -22,6 +22,7 @@ package com.puppycrawl.tools.checkstyle;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -52,18 +53,18 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 public final class TreeWalker extends AbstractFileSetCheck implements ExternalResourceHolder {
 
     /** Maps from token name to ordinary checks. */
-    private final Map<String, Set<AbstractCheck>> tokenToOrdinaryChecks =
-        new HashMap<String, Set<AbstractCheck>>();
+    private final Map<Integer, Set<AbstractCheck>> tokenToOrdinaryChecks =
+        new HashMap<Integer, Set<AbstractCheck>>();
 
     /** Maps from token name to comment checks. */
-    private final Map<String, Set<AbstractCheck>> tokenToCommentChecks =
-            new HashMap<String, Set<AbstractCheck>>();
+    private final Map<Integer, Set<AbstractCheck>> tokenToCommentChecks =
+            new HashMap<Integer, Set<AbstractCheck>>();
 
     /** Registered ordinary checks, that don't use comment nodes. */
-    private final Set<AbstractCheck> ordinaryChecks = new HashSet<AbstractCheck>();
+    private final Set<AbstractCheck> ordinaryChecks = createNewCheckSortedSet();
 
     /** Registered comment checks. */
-    private final Set<AbstractCheck> commentChecks = new HashSet<AbstractCheck>();
+    private final Set<AbstractCheck> commentChecks = createNewCheckSortedSet();
 
     /** The ast filters. */
     private final Set<TreeWalkerFilter> filters = new HashSet<TreeWalkerFilter>();
@@ -211,7 +212,7 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
             for (String token : checkTokens) {
                 final int tokenId = TokenUtil.getTokenId(token);
                 if (Arrays.binarySearch(acceptableTokens, tokenId) >= 0) {
-                    registerCheck(token, check);
+                    registerCheck(tokenId, check);
                 }
                 else {
                     final String message = String.format(Locale.ROOT, "Token \"%s\" was "
@@ -240,40 +241,29 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      * @throws CheckstyleException if Check is misconfigured
      */
     private void registerCheck(int tokenId, AbstractCheck check) throws CheckstyleException {
-        registerCheck(TokenUtil.getTokenName(tokenId), check);
-    }
-
-    /**
-     * Register a check for a specified token name.
-     *
-     * @param token the name of the token
-     * @param check the check to register
-     * @throws CheckstyleException if Check is misconfigured
-     */
-    private void registerCheck(String token, AbstractCheck check) throws CheckstyleException {
         if (check.isCommentNodesRequired()) {
-            Set<AbstractCheck> checks = tokenToCommentChecks.get(token);
+            Set<AbstractCheck> checks = tokenToCommentChecks.get(tokenId);
 
             if (checks == null) {
-                checks = new HashSet<AbstractCheck>();
-                tokenToCommentChecks.put(token, checks);
+                checks = createNewCheckSortedSet();
+                tokenToCommentChecks.put(tokenId, checks);
             }
 
             checks.add(check);
         }
-        else if (TokenUtil.isCommentType(token)) {
+        else if (TokenUtil.isCommentType(tokenId)) {
             final String message = String.format(Locale.ROOT, "Check '%s' waits for comment type "
                     + "token ('%s') and should override 'isCommentNodesRequired()' "
-                    + "method to return 'true'", check.getClass().getName(), token);
+                    + "method to return 'true'", check.getClass().getName(),
+                    TokenUtil.getTokenName(tokenId));
             throw new CheckstyleException(message);
         }
         else {
-
-            Set<AbstractCheck> checks = tokenToOrdinaryChecks.get(token);
+            Set<AbstractCheck> checks = tokenToOrdinaryChecks.get(tokenId);
 
             if (checks == null) {
-                checks = new HashSet<AbstractCheck>();
-                tokenToOrdinaryChecks.put(token, checks);
+                checks = createNewCheckSortedSet();
+                tokenToOrdinaryChecks.put(tokenId, checks);
             }
 
             checks.add(check);
@@ -385,13 +375,13 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
      */
     private Collection<AbstractCheck> getListOfChecks(DetailAST ast, AstState astState) {
         final Collection<AbstractCheck> visitors;
-        final String tokenType = TokenUtil.getTokenName(ast.getType());
+        final int tokenId = ast.getType();
 
         if (astState == AstState.WITH_COMMENTS) {
-            visitors = tokenToCommentChecks.get(tokenType);
+            visitors = tokenToCommentChecks.get(tokenId);
         }
         else {
-            visitors = tokenToOrdinaryChecks.get(tokenType);
+            visitors = tokenToOrdinaryChecks.get(tokenId);
         }
         return visitors;
     }
@@ -479,6 +469,47 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
             }
             curNode = toVisit;
         }
+    }
+
+    /**
+     * Creates a new {@link SortedSet} with a deterministic order based on the
+     * Check's name before the default ordering.
+     *
+     * @return The new {@link SortedSet}.
+     */
+    private static SortedSet<AbstractCheck> createNewCheckSortedSet() {
+        return new TreeSet<AbstractCheck>(new Comparator<AbstractCheck>() {
+            @Override
+            public int compare(AbstractCheck o1, AbstractCheck o2) {
+                int result = o1.getClass().getName().compareTo(o2.getClass().getName());
+
+                if (result == 0) {
+                    final String id1 = o1.getId();
+                    final String id2 = o2.getId();
+
+                    if (id1 == null) {
+                        if (id2 == null) {
+                            result = 0;
+                        }
+                        else {
+                            result = 1;
+                        }
+                    }
+                    else if (id2 == null) {
+                        result = -1;
+                    }
+                    else {
+                        result = id1.compareTo(id2);
+                    }
+
+                    if (result == 0) {
+                        result = o1.hashCode() - o2.hashCode();
+                    }
+                }
+
+                return result;
+            }
+        });
     }
 
     /**

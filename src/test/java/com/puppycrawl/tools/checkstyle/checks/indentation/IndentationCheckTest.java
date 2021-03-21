@@ -2627,23 +2627,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
         checkConfig.addAttribute("tabWidth", "4");
         final String[] expected = {
-            "8:1: " + getCheckMessage(MSG_ERROR, "Object", 0, 12),
-            "10:1: " + getCheckMessage(MSG_ERROR, "(", 0, 12),
-            "13:1: " + getCheckMessage(MSG_CHILD_ERROR, "new", 0, 8),
-            "15:1: " + getCheckMessage(MSG_ERROR, "new lparen", 0, 8),
-        };
-        verifyWarns(checkConfig, getPath("InputIndentationNewHandler.java"), expected);
-    }
-
-    @Test
-    public void testNewHandler2() throws Exception {
-        final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        final String[] expected = {
-            "8:1: " + getCheckMessage(MSG_ERROR, "Object", 0, 12),
-            "10:1: " + getCheckMessage(MSG_ERROR, "(", 0, 12),
-            "13:1: " + getCheckMessage(MSG_CHILD_ERROR, "new", 0, 8),
-            "15:1: " + getCheckMessage(MSG_ERROR, "new lparen", 0, 8),
+            "10:1: " + getCheckMessage(MSG_ERROR, "Object", 0, 12),
+            "12:1: " + getCheckMessage(MSG_ERROR, "(", 0, 12),
+            "15:1: " + getCheckMessage(MSG_CHILD_ERROR, "new", 0, 8),
+            "17:1: " + getCheckMessage(MSG_ERROR, "new lparen", 0, 8),
         };
         verifyWarns(checkConfig, getPath("InputIndentationNewHandler.java"), expected);
     }
@@ -2752,7 +2739,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             "13:1: " + getCheckMessage(MSG_ERROR, "(", 0, 8),
             "25:1: " + getCheckMessage(MSG_ERROR, "String", 0, 12),
             "38:1: " + getCheckMessage(MSG_CHILD_ERROR, "compact ctor def", 0, 12),
-            "48:1: " + getCheckMessage(MSG_ERROR, "record def modifier", 0, 4),
+            "48:8: " + getCheckMessage(MSG_ERROR, "record def ident", 0, 4),
             "53:1: " + getCheckMessage(MSG_ERROR, "compact ctor def rcurly", 0, 8),
             "61:1: " + getCheckMessage(MSG_ERROR, "ctor def rcurly", 0, 8),
         };
@@ -2773,6 +2760,44 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
 
         verifyWarns(checkConfig,
             getNonCompilablePath("InputIndentationCheckSwitchExpressionNewLine.java"),
+            expected);
+    }
+
+    @Test
+    public void testIndentationLineWrappedRecordDeclaration() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
+        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addAttribute("basicOffset", "4");
+        checkConfig.addAttribute("braceAdjustment", "0");
+        checkConfig.addAttribute("caseIndent", "4");
+        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addAttribute("arrayInitIndent", "4");
+        checkConfig.addAttribute("lineWrappingIndentation", "4");
+
+        final String[] expected = {
+            "33:1: " + getCheckMessage(MSG_ERROR, ")", 0, 4),
+            "55:11: " + getCheckMessage(MSG_ERROR, "interface def ident", 0, 4),
+            "56:1: " + getCheckMessage(MSG_ERROR, "method def modifier", 0, 8),
+            "57:1: " + getCheckMessage(MSG_ERROR, "void", 0, 4),
+            "58:1: " + getCheckMessage(MSG_ERROR, "method", 0, 4),
+            "59:1: " + getCheckMessage(MSG_ERROR, "throws", 0, 4),
+            "60:1: " + getCheckMessage(MSG_ERROR, "IOException", 0, 4),
+            "61:1: " + getCheckMessage(MSG_ERROR, "method def rcurly", 0, 8),
+            "62:1: " + getCheckMessage(MSG_ERROR, "interface def rcurly", 0, 4),
+            "75:8: " + getCheckMessage(MSG_ERROR, "record def ident", 0, 4),
+            "76:1: " + getCheckMessage(MSG_ERROR, "record def rparen", 0, 4),
+            "77:1: " + getCheckMessage(MSG_ERROR, "implements", 0, 4),
+            "78:1: " + getCheckMessage(MSG_ERROR, "SimpleInterface2", 0, 4),
+            "79:8: " + getCheckMessage(MSG_ERROR, "record def ident", 0, 8),
+            "80:1: " + getCheckMessage(MSG_ERROR, "(", 0, 4),
+            "81:1: " + getCheckMessage(MSG_ERROR, "record def rparen", 0, 8),
+            "82:1: " + getCheckMessage(MSG_ERROR, "record def lcurly", 0, 8),
+            "83:1: " + getCheckMessage(MSG_ERROR, "record def rcurly", 0, 8),
+            "84:1: " + getCheckMessage(MSG_ERROR, "record def rcurly", 0, 4),
+        };
+
+        verifyWarns(checkConfig,
+            getNonCompilablePath("InputIndentationLineWrappedRecordDeclaration.java"),
             expected);
     }
 

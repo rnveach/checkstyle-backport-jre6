@@ -38,14 +38,16 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.Dictionary;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.AbstractPathTestSupport;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
+import com.puppycrawl.tools.checkstyle.PropertiesExpander;
+import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public class CommonUtilTest extends AbstractPathTestSupport {
@@ -124,27 +126,6 @@ public class CommonUtilTest extends AbstractPathTestSupport {
             assertEquals("Failed to initialise regular expression [", ex.getMessage(),
                     "Invalid exception message");
         }
-    }
-
-    @Test
-    public void testCreationOfFakeCommentBlock() {
-        final DetailAST testCommentBlock =
-                CommonUtil.createBlockCommentNode("test_comment");
-        assertEquals(TokenTypes.BLOCK_COMMENT_BEGIN, testCommentBlock.getType(),
-                "Invalid token type");
-        assertEquals("/*", testCommentBlock.getText(), "Invalid text");
-        assertEquals(0, testCommentBlock.getLineNo(), "Invalid line number");
-
-        final DetailAST contentCommentBlock = testCommentBlock.getFirstChild();
-        assertEquals(TokenTypes.COMMENT_CONTENT, contentCommentBlock.getType(),
-                "Invalid token type");
-        assertEquals("*test_comment", contentCommentBlock.getText(), "Invalid text");
-        assertEquals(0, contentCommentBlock.getLineNo(), "Invalid line number");
-        assertEquals(-1, contentCommentBlock.getColumnNo(), "Invalid column number");
-
-        final DetailAST endCommentBlock = contentCommentBlock.getNextSibling();
-        assertEquals(TokenTypes.BLOCK_COMMENT_END, endCommentBlock.getType(), "Invalid token type");
-        assertEquals("*/", endCommentBlock.getText(), "Invalid text");
     }
 
     @Test
@@ -445,7 +426,11 @@ public class CommonUtilTest extends AbstractPathTestSupport {
         final String filename =
             "/" + getPackageLocation() + "/InputCommonUtilTest_empty_checks.xml";
         final URI uri = CommonUtil.getUriByFilename(filename);
-        assertThat("URI is null for: " + filename, uri, is(not(nullValue())));
+
+        final Properties properties = System.getProperties();
+        final Configuration config = ConfigurationLoader.loadConfiguration(uri.toString(),
+            new PropertiesExpander(properties));
+        assertEquals("Checker", config.getName(), "Unexpected config name!");
     }
 
     @Test
@@ -453,7 +438,11 @@ public class CommonUtilTest extends AbstractPathTestSupport {
         final String filename =
             getPackageLocation() + "/InputCommonUtilTest_empty_checks.xml";
         final URI uri = CommonUtil.getUriByFilename(filename);
-        assertThat("URI is null for: " + filename, uri, is(not(nullValue())));
+
+        final Properties properties = System.getProperties();
+        final Configuration config = ConfigurationLoader.loadConfiguration(uri.toString(),
+            new PropertiesExpander(properties));
+        assertEquals("Checker", config.getName(), "Unexpected config name!");
     }
 
     /**
@@ -477,6 +466,30 @@ public class CommonUtilTest extends AbstractPathTestSupport {
         final String content = IOUtils.toString(uri.toURL(), StandardCharsets.UTF_8);
         assertThat("Content mismatches for: " + uri,
                 content, startsWith("good"));
+    }
+
+    @Test
+    public void testGetUriByFilenameClasspathPrefixLoadConfig() throws Exception {
+        final String filename = CommonUtil.CLASSPATH_URL_PROTOCOL
+            + getPackageLocation() + "/InputCommonUtilTestWithChecks.xml";
+        final URI uri = CommonUtil.getUriByFilename(filename);
+
+        final Properties properties = System.getProperties();
+        final Configuration config = ConfigurationLoader.loadConfiguration(uri.toString(),
+            new PropertiesExpander(properties));
+        assertEquals("Checker", config.getName(), "Unexpected config name!");
+    }
+
+    @Test
+    public void testGetUriByFilenameFindsRelativeResourceOnClasspathPrefix() throws Exception {
+        final String filename = CommonUtil.CLASSPATH_URL_PROTOCOL
+            + getPackageLocation() + "/InputCommonUtilTest_empty_checks.xml";
+        final URI uri = CommonUtil.getUriByFilename(filename);
+
+        final Properties properties = System.getProperties();
+        final Configuration config = ConfigurationLoader.loadConfiguration(uri.toString(),
+            new PropertiesExpander(properties));
+        assertEquals("Checker", config.getName(), "Unexpected config name!");
     }
 
     private static class TestCloseable implements Closeable {

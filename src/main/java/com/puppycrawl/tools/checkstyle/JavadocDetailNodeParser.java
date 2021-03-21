@@ -90,11 +90,6 @@ public class JavadocDetailNodeParser {
     private int blockCommentLineNumber;
 
     /**
-     * Custom error listener.
-     */
-    private DescriptiveErrorListener errorListener;
-
-    /**
      * Parses Javadoc comment as DetailNode tree.
      *
      * @param javadocCommentAst
@@ -109,7 +104,7 @@ public class JavadocDetailNodeParser {
         // Use a new error listener each time to be able to use
         // one check instance for multiple files to be checked
         // without getting side effects.
-        errorListener = new DescriptiveErrorListener();
+        final DescriptiveErrorListener errorListener = new DescriptiveErrorListener();
 
         // Log messages should have line number in scope of file,
         // not in scope of Javadoc comment.
@@ -119,7 +114,7 @@ public class JavadocDetailNodeParser {
         final ParseStatus result = new ParseStatus();
 
         try {
-            final JavadocParser javadocParser = createJavadocParser(javadocComment);
+            final JavadocParser javadocParser = createJavadocParser(javadocComment, errorListener);
 
             final ParseTree javadocParseTree = javadocParser.javadoc();
 
@@ -129,7 +124,8 @@ public class JavadocDetailNodeParser {
                         javadocCommentAst.getColumnNo()
                                 + JAVADOC_START.length());
             result.setTree(tree);
-            result.firstNonTightHtmlTag = getFirstNonTightHtmlTag(javadocParser);
+            result.firstNonTightHtmlTag = getFirstNonTightHtmlTag(javadocParser,
+                    errorListener.offset);
         }
         catch (ParseCancellationException ex) {
             ParseErrorMessage parseErrorMessage = null;
@@ -190,9 +186,11 @@ public class JavadocDetailNodeParser {
      *
      * @param blockComment
      *        block comment content.
+     * @param errorListener custom error listener
      * @return parse tree
      */
-    private JavadocParser createJavadocParser(String blockComment) {
+    private static JavadocParser createJavadocParser(String blockComment,
+            DescriptiveErrorListener errorListener) {
         final JavadocLexer lexer = new JavadocLexer(new ANTLRInputStream(blockComment));
 
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -544,9 +542,11 @@ public class JavadocDetailNodeParser {
      * or the ones which are supposed to log violation for non-tight javadocs can utilize that.
      *
      * @param javadocParser The ANTLR recognizer instance which has been used to parse the javadoc
+     * @param javadocLineOffset The line number of beginning of the Javadoc comment
      * @return First non-tight HTML tag if one exists; null otherwise
      */
-    private Token getFirstNonTightHtmlTag(JavadocParser javadocParser) {
+    private static Token getFirstNonTightHtmlTag(JavadocParser javadocParser,
+            int javadocLineOffset) {
         final CommonToken offendingToken;
         final ParserRuleContext nonTightTagStartContext = javadocParser.nonTightTagStartContext;
         if (nonTightTagStartContext == null) {
@@ -556,7 +556,7 @@ public class JavadocDetailNodeParser {
             final Token token = ((TerminalNode) nonTightTagStartContext.getChild(1))
                     .getSymbol();
             offendingToken = new CommonToken(token);
-            offendingToken.setLine(offendingToken.getLine() + errorListener.offset);
+            offendingToken.setLine(offendingToken.getLine() + javadocLineOffset);
         }
         return offendingToken;
     }

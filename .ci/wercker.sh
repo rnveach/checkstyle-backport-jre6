@@ -38,7 +38,7 @@ sonarqube)
   fi
   if [[ -z $SONAR_TOKEN ]]; then echo "SONAR_TOKEN is not set"; sleep 5s; exit 1; fi
   export MAVEN_OPTS='-Xmx2000m'
-  mvn -e -Pno-validations clean package sonar:sonar $SONAR_PR_VARIABLES \
+  mvn -e -Pno-validations --no-transfer-progress clean package sonar:sonar $SONAR_PR_VARIABLES \
        -Dsonar.host.url=https://sonarcloud.io \
        -Dsonar.login=$SONAR_TOKEN \
        -Dsonar.projectKey=org.checkstyle:checkstyle \
@@ -92,19 +92,6 @@ no-error-orekit)
   cd ..
   removeFolderWithProtectedFiles Orekit
   removeFolderWithProtectedFiles hipparchus
-  ;;
-
-no-error-xwiki)
-  CS_POM_VERSION=$(mvn -e -q -Dexec.executable='echo' -Dexec.args='${project.version}' \
-                     --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
-  echo CS_version: ${CS_POM_VERSION}
-  checkout_from https://github.com/xwiki/xwiki-commons.git
-  cd .ci-temp/xwiki-commons
-  mvn -e -f xwiki-commons-tools/xwiki-commons-tool-verification-resources/pom.xml \
-    install -DskipTests -Dcheckstyle.version=${CS_POM_VERSION}
-  mvn -e test-compile checkstyle:check@default -Dcheckstyle.version=${CS_POM_VERSION}
-  cd ..
-  removeFolderWithProtectedFiles xwiki-commons
   ;;
 
 no-error-apex-core)

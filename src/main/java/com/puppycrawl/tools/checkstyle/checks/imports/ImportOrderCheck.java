@@ -847,7 +847,7 @@ public class ImportOrderCheck
             staticImportSeparator = isStatic && separatedStaticGroups;
         }
         else {
-            staticImportSeparator = isStatic && separated;
+            staticImportSeparator = separated;
         }
         final boolean separatorBetween = isStatic != lastImportStatic
             && (separated || separatedStaticGroups);
@@ -875,7 +875,7 @@ public class ImportOrderCheck
      * @return true if there is separator before current import which isn't the first import.
      */
     private boolean isSeparatorBeforeImport(int line) {
-        return !beforeFirstImport && line - lastImportLine > 1;
+        return line - lastImportLine > 1;
     }
 
     /**

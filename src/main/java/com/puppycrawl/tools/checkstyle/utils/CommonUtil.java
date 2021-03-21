@@ -28,17 +28,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.AbstractMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import antlr.Token;
-import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 import com.puppycrawl.tools.checkstyle.jre6.util.Objects;
@@ -64,16 +58,11 @@ public final class CommonUtil {
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     /** Copied from org.apache.commons.lang3.ArrayUtils. */
     public static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
+    /** Pseudo URL protocol for loading from the class path. */
+    public static final String CLASSPATH_URL_PROTOCOL = "classpath:";
 
     /** Prefix for the exception when unable to find resource. */
     private static final String UNABLE_TO_FIND_EXCEPTION_PREFIX = "Unable to find: ";
-
-    /** Symbols with which javadoc starts. */
-    private static final String JAVADOC_START = "/**";
-    /** Symbols with which multiple comment starts. */
-    private static final String BLOCK_MULTIPLE_COMMENT_BEGIN = "/*";
-    /** Symbols with which multiple comment ends. */
-    private static final String BLOCK_MULTIPLE_COMMENT_END = "*/";
 
     /** Stop instances being created. **/
     private CommonUtil() {
@@ -111,115 +100,6 @@ public final class CommonUtil {
             throw new IllegalArgumentException(
                 "Failed to initialise regular expression " + pattern, ex);
         }
-    }
-
-    /**
-     * Create block comment from string content.
-     *
-     * @param content comment content.
-     * @return DetailAST block comment
-     */
-    public static DetailAST createBlockCommentNode(String content) {
-        final DetailAstImpl blockCommentBegin = new DetailAstImpl();
-        blockCommentBegin.setType(TokenTypes.BLOCK_COMMENT_BEGIN);
-        blockCommentBegin.setText(BLOCK_MULTIPLE_COMMENT_BEGIN);
-        blockCommentBegin.setLineNo(0);
-        blockCommentBegin.setColumnNo(-JAVADOC_START.length());
-
-        final DetailAstImpl commentContent = new DetailAstImpl();
-        commentContent.setType(TokenTypes.COMMENT_CONTENT);
-        commentContent.setText("*" + content);
-        commentContent.setLineNo(0);
-        // javadoc should starts at 0 column, so COMMENT_CONTENT node
-        // that contains javadoc identifier has -1 column
-        commentContent.setColumnNo(-1);
-
-        final DetailAstImpl blockCommentEnd = new DetailAstImpl();
-        blockCommentEnd.setType(TokenTypes.BLOCK_COMMENT_END);
-        blockCommentEnd.setText(BLOCK_MULTIPLE_COMMENT_END);
-
-        blockCommentBegin.setFirstChild(commentContent);
-        commentContent.setNextSibling(blockCommentEnd);
-        return blockCommentBegin;
-    }
-
-    /**
-     * Create block comment from token.
-     *
-     * @param token
-     *        Token object.
-     * @return DetailAST with BLOCK_COMMENT type.
-     */
-    public static DetailAST createBlockCommentNode(Token token) {
-        final DetailAstImpl blockComment = new DetailAstImpl();
-        blockComment.initialize(TokenTypes.BLOCK_COMMENT_BEGIN, BLOCK_MULTIPLE_COMMENT_BEGIN);
-
-        // column counting begins from 0
-        blockComment.setColumnNo(token.getColumn() - 1);
-        blockComment.setLineNo(token.getLine());
-
-        final DetailAstImpl blockCommentContent = new DetailAstImpl();
-        blockCommentContent.setType(TokenTypes.COMMENT_CONTENT);
-
-        // column counting begins from 0
-        // plus length of '/*'
-        blockCommentContent.setColumnNo(token.getColumn() - 1 + 2);
-        blockCommentContent.setLineNo(token.getLine());
-        blockCommentContent.setText(token.getText());
-
-        final DetailAstImpl blockCommentClose = new DetailAstImpl();
-        blockCommentClose.initialize(TokenTypes.BLOCK_COMMENT_END, BLOCK_MULTIPLE_COMMENT_END);
-
-        final Map.Entry<Integer, Integer> linesColumns = countLinesColumns(
-                token.getText(), token.getLine(), token.getColumn());
-        blockCommentClose.setLineNo(linesColumns.getKey());
-        blockCommentClose.setColumnNo(linesColumns.getValue());
-
-        blockComment.addChild(blockCommentContent);
-        blockComment.addChild(blockCommentClose);
-        return blockComment;
-    }
-
-    /**
-     * Count lines and columns (in last line) in text.
-     *
-     * @param text
-     *        String.
-     * @param initialLinesCnt
-     *        initial value of lines counter.
-     * @param initialColumnsCnt
-     *        initial value of columns counter.
-     * @return entry(pair), first element is lines counter, second - columns
-     *         counter.
-     */
-    private static Map.Entry<Integer, Integer> countLinesColumns(
-            String text, int initialLinesCnt, int initialColumnsCnt) {
-        int lines = initialLinesCnt;
-        int columns = initialColumnsCnt;
-        boolean foundCr = false;
-        for (char c : text.toCharArray()) {
-            if (c == '\n') {
-                foundCr = false;
-                lines++;
-                columns = 0;
-            }
-            else {
-                if (foundCr) {
-                    foundCr = false;
-                    lines++;
-                    columns = 0;
-                }
-                if (c == '\r') {
-                    foundCr = true;
-                }
-                columns++;
-            }
-        }
-        if (foundCr) {
-            lines++;
-            columns = 0;
-        }
-        return new AbstractMap.SimpleEntry<Integer, Integer>(lines, columns);
     }
 
     /**
@@ -500,48 +380,98 @@ public final class CommonUtil {
     /**
      * Resolve the specified filename to a URI.
      *
-     * @param filename name os the file
-     * @return resolved header file URI
+     * @param filename name of the file
+     * @return resolved file URI
      * @throws CheckstyleException on failure
      */
     public static URI getUriByFilename(String filename) throws CheckstyleException {
-        // figure out if this is a File or a URL
+        URI uri = getWebOrFileProtocolUri(filename);
+
+        if (uri == null) {
+            uri = getFilepathOrClasspathUri(filename);
+        }
+
+        return uri;
+    }
+
+    /**
+     * Resolves the specified filename containing 'http', 'https', 'ftp',
+     * and 'file' protocols (or any RFC 2396 compliant URL) to a URI.
+     *
+     * @param filename name of the file
+     * @return resolved file URI or null if URL is malformed or non-existent
+     */
+    public static URI getWebOrFileProtocolUri(String filename) {
         URI uri;
         try {
             final URL url = new URL(filename);
             uri = url.toURI();
         }
-        catch (final URISyntaxException ignored) {
+        catch (URISyntaxException ignored) {
             uri = null;
         }
-        catch (final MalformedURLException ignored) {
+        catch (MalformedURLException ignored) {
             uri = null;
         }
+        return uri;
+    }
 
-        if (uri == null) {
-            final File file = new File(filename);
-            if (file.exists()) {
-                uri = file.toURI();
+    /**
+     * Resolves the specified local filename, possibly with 'classpath:'
+     * protocol, to a URI.  First we attempt to create a new file with
+     * given filename, then attempt to load file from class path.
+     *
+     * @param filename name of the file
+     * @return resolved file URI
+     * @throws CheckstyleException on failure
+     */
+    private static URI getFilepathOrClasspathUri(String filename) throws CheckstyleException {
+        final URI uri;
+        final File file = new File(filename);
+
+        if (file.exists()) {
+            uri = file.toURI();
+        }
+        else {
+            final int lastIndexOfClasspathProtocol;
+            if (filename.lastIndexOf(CLASSPATH_URL_PROTOCOL) == 0) {
+                lastIndexOfClasspathProtocol = CLASSPATH_URL_PROTOCOL.length();
             }
             else {
-                // check to see if the file is in the classpath
-                try {
-                    final URL configUrl;
-                    if (filename.charAt(0) == '/') {
-                        configUrl = CommonUtil.class.getResource(filename);
-                    }
-                    else {
-                        configUrl = ClassLoader.getSystemResource(filename);
-                    }
-                    if (configUrl == null) {
-                        throw new CheckstyleException(UNABLE_TO_FIND_EXCEPTION_PREFIX + filename);
-                    }
-                    uri = configUrl.toURI();
-                }
-                catch (final URISyntaxException ex) {
-                    throw new CheckstyleException(UNABLE_TO_FIND_EXCEPTION_PREFIX + filename, ex);
-                }
+                lastIndexOfClasspathProtocol = 0;
             }
+            uri = getResourceFromClassPath(filename
+                .substring(lastIndexOfClasspathProtocol));
+        }
+        return uri;
+    }
+
+    /**
+     * Gets a resource from the classpath.
+     *
+     * @param filename name of file
+     * @return URI of file in classpath
+     * @throws CheckstyleException on failure
+     */
+    public static URI getResourceFromClassPath(String filename) throws CheckstyleException {
+        final URL configUrl;
+        if (filename.charAt(0) == '/') {
+            configUrl = CommonUtil.class.getResource(filename);
+        }
+        else {
+            configUrl = ClassLoader.getSystemResource(filename);
+        }
+
+        if (configUrl == null) {
+            throw new CheckstyleException(UNABLE_TO_FIND_EXCEPTION_PREFIX + filename);
+        }
+
+        final URI uri;
+        try {
+            uri = configUrl.toURI();
+        }
+        catch (final URISyntaxException ex) {
+            throw new CheckstyleException(UNABLE_TO_FIND_EXCEPTION_PREFIX + filename, ex);
         }
 
         return uri;
