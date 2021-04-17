@@ -74,6 +74,10 @@ public final class Assertions {
         Assert.fail(message);
     }
 
+    public static <T extends Throwable> T assertDoesNotThrow(Executable executable) {
+        return AssertDoesNotThrow.assertDoesNotThrow(executable);
+    }
+
     public static <T extends Throwable> T assertThrows(Class<T> expectedType, Executable executable) {
         return AssertThrows.assertThrows(expectedType, executable);
     }

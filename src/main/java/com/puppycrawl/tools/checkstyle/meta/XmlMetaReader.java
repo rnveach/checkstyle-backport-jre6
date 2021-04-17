@@ -50,6 +50,14 @@ public final class XmlMetaReader {
     /** Description tag of metadata XML files. */
     private static final String XML_TAG_DESCRIPTION = "description";
 
+    /** Access External DTD. */
+    private static final String ACCESS_EXTERNAL_DTD =
+        "http://javax.xml.XMLConstants/property/accessExternalDTD";
+
+    /** Access External Schema. */
+    private static final String ACCESS_EXTERNAL_SCHEMA =
+        "http://javax.xml.XMLConstants/property/accessExternalSchema";
+
     /**
      * Do no allow {@code XmlMetaReader} instances to be created.
      */
@@ -67,6 +75,7 @@ public final class XmlMetaReader {
      * @param thirdPartyPackages list of fully qualified third party package names(can be only a
      *                           hint, e.g. for SevNTU it can be com.github.sevntu / com.github)
      * @return list of module details found in the classpath satisfying the above conditions
+     * @throws IllegalStateException if there was a problem reading the module metadata files
      */
     public static List<ModuleDetails> readAllModulesIncludingThirdPartyIfAny(
             String... thirdPartyPackages) {
@@ -131,6 +140,8 @@ public final class XmlMetaReader {
         ModuleDetails result = null;
         if (moduleType != null) {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setAttribute(ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(ACCESS_EXTERNAL_SCHEMA, "");
             final DocumentBuilder builder = factory.newDocumentBuilder();
             final Document document = builder.parse(moduleMetadataStream);
             final Element root = document.getDocumentElement();

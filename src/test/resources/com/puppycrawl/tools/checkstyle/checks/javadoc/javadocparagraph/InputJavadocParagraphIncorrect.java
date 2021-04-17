@@ -1,54 +1,57 @@
 package com.puppycrawl.tools.checkstyle.checks.javadoc.javadocparagraph;
 
-
+/* Config:
+ * allowNewlineParagraph = true
+ * violateExecutionOnNonTightHtml = false
+ */
 
 /**
  * Some Javadoc.
  * <p>
- * /^ WARN/   Some Javadoc.<p> //WARN
+ * /^ WARN/   Some Javadoc.<p> // violation
  *
  */
 class InputJavadocParagraphIncorrect {
 
     /**
-     * Some Javadoc.<P>  //WARN
+     * Some Javadoc.<P> // violation
      *
-     * <p>  Some Javadoc. //WARN
+     * <p>  Some Javadoc. // violation
      *
      * @since 8.0
      */
     public static final byte NUL = 0;
 
     /**
-     * Some <p>Javadoc.//WARN
+     * Some <p>Javadoc. // violation
      *
-     * <p>    Some Javadoc.//WARN
+     * <p>    Some Javadoc. // violation
      *
      * @see <a href="http://www.gwtproject.org/doc/latest/DevGuideOrganizingProjects.html#DevGuideModules">
      *     Documentation about GWT emulated source</a>
      */
     boolean emulated() {return false;}
 
-    /**<p>Some Javadoc.<p>  //WARN
-     * <p>  //WARN
-     * <p><p>  //WARN
-     * <p>/^WARN/   Some Javadoc.<p>*/  //WARN
+    /**<p>Some Javadoc.<p>  // violation
+     * <p>  // violation
+     * <p><p>  // violation
+     * <p>/^WARN/   Some Javadoc.<p>*/  // violation
      class InnerInputJavadocParagraphIncorrect {
 
         /**
-         * Some Javadoc./WARN/<p>  //WARN
+         * Some Javadoc./WARN/<p>  // violation
          *
          * @since 8.0
          */
         public static final byte NUL = 0;
 
-        /**<p>  //WARN
+        /**<p>  // violation
          * /^WARN/ Some Javadoc.
          *
-         * <P> //WARN
+         * <P> // violation
          * /^WARN/
-         * <p> //WARN
-         *  /^WARN/ Some Javadoc.<p> //WARN
+         * <p> // violation
+         *  /^WARN/ Some Javadoc.<p> // violation
          * @see <a href="http://www.gwtproject.org/doc/latest/DevGuideOrganizingProjects.html#DevGuideModules">
          *     Documentation about GWT emulated source</a>
          */
@@ -58,7 +61,7 @@ class InputJavadocParagraphIncorrect {
     InnerInputJavadocParagraphIncorrect anon = new InnerInputJavadocParagraphIncorrect() {
 
             /**
-         * <p>Some Javadoc. //WARN
+         * <p>Some Javadoc. // violation
          *
          * Some Javadoc.
          *
@@ -67,12 +70,12 @@ class InputJavadocParagraphIncorrect {
         public static final byte NUL = 0;
 
         /**
-         * /WARN/  Some Javadoc.<p> //WARN
+         * /WARN/  Some Javadoc.<p> // violation
          *
-         *  <p>  Some Javadoc. //WARN
+         *  <p>  Some Javadoc. // violation
          *
          * @see <a href="http://www.gwtproject.org/doc/latest/DevGuideOrganizingProjects.html#DevGuideModules">
-         *     Documentation about <p> GWT emulated source</a> //WARN
+         *     Documentation about <p> GWT emulated source</a> // violation
          */
         boolean emulated() {return false;}
 

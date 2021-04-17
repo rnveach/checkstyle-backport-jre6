@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.AstTreeStringPrinter;
 import com.puppycrawl.tools.checkstyle.JavaParser;
@@ -105,8 +106,19 @@ public final class XpathUtil {
     private static final Set<Integer> TOKEN_TYPES_WITH_TEXT_ATTRIBUTE =
         Collections.unmodifiableSet(Collections7.newHashSet(
             TokenTypes.IDENT, TokenTypes.STRING_LITERAL, TokenTypes.CHAR_LITERAL,
-            TokenTypes.NUM_LONG, TokenTypes.NUM_INT, TokenTypes.NUM_DOUBLE, TokenTypes.NUM_FLOAT)
+            TokenTypes.NUM_LONG, TokenTypes.NUM_INT, TokenTypes.NUM_DOUBLE, TokenTypes.NUM_FLOAT,
+            TokenTypes.TEXT_BLOCK_CONTENT)
         );
+
+    /**
+     * This regexp is used to convert new line to newline tag.
+     */
+    private static final Pattern NEWLINE_TO_TAG = Pattern.compile("[\n]");
+
+    /**
+     * This regexp is used to convert carriage return to carriage-return tag.
+     */
+    private static final Pattern CARRIAGE_RETURN_TO_TAG = Pattern.compile("[\r]");
 
     /** Delimiter to separate xpath results. */
     private static final String DELIMITER = "---------" + System7.lineSeparator();
@@ -158,6 +170,8 @@ public final class XpathUtil {
         if (ast.getType() == TokenTypes.STRING_LITERAL) {
             text = text.substring(1, text.length() - 1);
         }
+        text = CARRIAGE_RETURN_TO_TAG.matcher(text).replaceAll("\\\\r");
+        text = NEWLINE_TO_TAG.matcher(text).replaceAll("\\\\n");
         return text;
     }
 

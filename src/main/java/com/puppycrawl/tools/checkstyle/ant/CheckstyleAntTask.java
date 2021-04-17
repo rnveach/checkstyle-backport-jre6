@@ -341,6 +341,8 @@ public class CheckstyleAntTask extends Task {
      * @param rootModule Root module to process files
      * @param warningCounter Root Module's counter of warnings
      * @param checkstyleVersion Checkstyle compile version
+     * @throws BuildException if the files could not be processed,
+     *     or if the build failed due to violations.
      */
     private void processFiles(RootModule rootModule, final SeverityLevelCounter warningCounter,
             final String checkstyleVersion) {
@@ -390,6 +392,7 @@ public class CheckstyleAntTask extends Task {
      * Creates new instance of the root module.
      *
      * @return new instance of the root module
+     * @throws BuildException if the root module could not be created.
      */
     private RootModule createRootModule() {
         final RootModule rootModule;
@@ -430,6 +433,7 @@ public class CheckstyleAntTask extends Task {
      * to the ANT task.
      *
      * @return the properties for property expansion expansion
+     * @throws BuildException if the properties file could not be loaded.
      */
     private Properties createOverridingProperties() {
         final Properties returnValue = new Properties();
@@ -472,6 +476,7 @@ public class CheckstyleAntTask extends Task {
      * Return the list of listeners set in this task.
      *
      * @return the list of listeners.
+     * @throws BuildException if the listeners could not be created.
      */
     private AuditListener[] getListeners() {
         final int formatterCount = Math.max(1, formatters.size());

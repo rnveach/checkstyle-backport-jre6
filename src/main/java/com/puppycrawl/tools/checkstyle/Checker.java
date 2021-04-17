@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -246,22 +247,25 @@ public class Checker extends AutomaticBean implements MessageDispatcher, RootMod
      *         checks and filters.
      */
     private Set<String> getExternalResourceLocations() {
-        final Set<String> externalResources = new HashSet<String>();
-        for (FileSetCheck check : fileSetChecks) {
-            if (check instanceof ExternalResourceHolder) {
-                final Set<String> locations =
-                    ((ExternalResourceHolder) check).getExternalResourceLocations();
-                externalResources.addAll(locations);
+        final Set<String> results = new HashSet<String>();
+        populateExternalResourceLocations(results, fileSetChecks);
+        populateExternalResourceLocations(results, filters.getFilters());
+        return results;
+    }
+
+    /**
+     * Populates a set of external configuration resource locations.
+     *
+     * @param results The set to add the results to.
+     * @param list The list of possible external resources to examine.
+     */
+    private static void populateExternalResourceLocations(Set<String> results,
+            Collection<?> list) {
+        for (Object item : list) {
+            if (item instanceof ExternalResourceHolder) {
+                results.addAll(((ExternalResourceHolder) item).getExternalResourceLocations());
             }
         }
-        for (Filter filter : filters.getFilters()) {
-            if (filter instanceof ExternalResourceHolder) {
-                final Set<String> locations =
-                    ((ExternalResourceHolder) filter).getExternalResourceLocations();
-                externalResources.addAll(locations);
-            }
-        }
-        return externalResources;
     }
 
     /** Notify all listeners about the audit start. */

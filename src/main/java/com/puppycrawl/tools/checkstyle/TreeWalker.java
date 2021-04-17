@@ -399,55 +399,26 @@ public final class TreeWalker extends AbstractFileSetCheck implements ExternalRe
 
     @Override
     public Set<String> getExternalResourceLocations() {
-        final Set<String> ordinaryChecksResources =
-                getExternalResourceLocationsOfChecks(ordinaryChecks);
-        final Set<String> commentChecksResources =
-                getExternalResourceLocationsOfChecks(commentChecks);
-        final Set<String> filtersResources =
-                getExternalResourceLocationsOfFilters();
-        final int resultListSize = commentChecksResources.size()
-                + ordinaryChecksResources.size()
-                + filtersResources.size();
-        final Set<String> resourceLocations = new HashSet<String>(resultListSize);
-        resourceLocations.addAll(ordinaryChecksResources);
-        resourceLocations.addAll(commentChecksResources);
-        resourceLocations.addAll(filtersResources);
-        return resourceLocations;
+        final Set<String> results = new HashSet<String>();
+        populateExternalResourceLocations(results, filters);
+        populateExternalResourceLocations(results, ordinaryChecks);
+        populateExternalResourceLocations(results, commentChecks);
+        return results;
     }
 
     /**
-     * Returns a set of external configuration resource locations which are used by the filters set.
+     * Populates a set of external configuration resource locations.
      *
-     * @return a set of external configuration resource locations which are used by the filters set.
+     * @param results The set to add the results to.
+     * @param list The list of possible external resources to examine.
      */
-    private Set<String> getExternalResourceLocationsOfFilters() {
-        final Set<String> externalConfigurationResources = new HashSet<String>();
-        for (TreeWalkerFilter filter : filters) {
-            if (filter instanceof ExternalResourceHolder) {
-                final Set<String> checkExternalResources =
-                    ((ExternalResourceHolder) filter).getExternalResourceLocations();
-                externalConfigurationResources.addAll(checkExternalResources);
+    private static void populateExternalResourceLocations(Set<String> results,
+            Collection<?> list) {
+        for (Object item : list) {
+            if (item instanceof ExternalResourceHolder) {
+                results.addAll(((ExternalResourceHolder) item).getExternalResourceLocations());
             }
         }
-        return externalConfigurationResources;
-    }
-
-    /**
-     * Returns a set of external configuration resource locations which are used by the checks set.
-     *
-     * @param checks a set of checks.
-     * @return a set of external configuration resource locations which are used by the checks set.
-     */
-    private static Set<String> getExternalResourceLocationsOfChecks(Set<AbstractCheck> checks) {
-        final Set<String> externalConfigurationResources = new HashSet<String>();
-        for (AbstractCheck check : checks) {
-            if (check instanceof ExternalResourceHolder) {
-                final Set<String> checkExternalResources =
-                    ((ExternalResourceHolder) check).getExternalResourceLocations();
-                externalConfigurationResources.addAll(checkExternalResources);
-            }
-        }
-        return externalConfigurationResources;
     }
 
     /**
