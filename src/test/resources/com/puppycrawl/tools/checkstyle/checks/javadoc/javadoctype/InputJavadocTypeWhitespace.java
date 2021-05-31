@@ -6,11 +6,16 @@ package com . puppycrawl
     .tools.
     checkstyle.checks.javadoc.javadoctype;
 
+/* Config:
+ *
+ * authorFormat = "\\S"
+ */
+
 /**
  * Class for testing javadoc issues.
  * violation missing author tag
  **/
-class InputJavadocTypeWhitespace
+class InputJavadocTypeWhitespace // violation
 {
     /** another check */
     void donBradman(Runnable aRun)

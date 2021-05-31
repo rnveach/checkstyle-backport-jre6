@@ -7,6 +7,7 @@ case $1 in
 
 guava-with-google-checks)
   CS_POM_VERSION="$(getCheckstylePomVersion)"
+  BRANCH=$(git rev-parse --abbrev-ref HEAD)
   echo CS_version: $CS_POM_VERSION
   checkout_from https://github.com/checkstyle/contribution
   cd .ci-temp/contribution/checkstyle-tester
@@ -18,8 +19,10 @@ guava-with-google-checks)
   sed -i.'' 's/warning/ignore/' .ci-temp/google_checks.xml
   cd .ci-temp/contribution/checkstyle-tester
   export MAVEN_OPTS="-Xmx2048m"
-  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
-      --config ../../google_checks.xml --checkstyleVersion $CS_POM_VERSION
+  groovy ./diff.groovy --listOfProjects projects-to-test-on.properties \
+      --patchConfig ../../google_checks.xml \
+      --mode single -xm "-Dcheckstyle.failsOnError=false \
+      -Dcheckstyle.version=${CS_POM_VERSION}" -p "$BRANCH" -r ../../..
   cd ../..
   removeFolderWithProtectedFiles contribution
   rm google_checks.*
@@ -27,6 +30,7 @@ guava-with-google-checks)
 
 guava-with-sun-checks)
   CS_POM_VERSION="$(getCheckstylePomVersion)"
+  BRANCH=$(git rev-parse --abbrev-ref HEAD)
   echo CS_version: $CS_POM_VERSION
   checkout_from https://github.com/checkstyle/contribution
   cd .ci-temp/contribution/checkstyle-tester
@@ -38,8 +42,10 @@ guava-with-sun-checks)
   sed -i.'' 's/value=\"error\"/value=\"ignore\"/' .ci-temp/sun_checks.xml
   cd .ci-temp/contribution/checkstyle-tester
   export MAVEN_OPTS="-Xmx2048m"
-  groovy ./launch.groovy --listOfProjects projects-to-test-on.properties \
-      --config ../../sun_checks.xml --checkstyleVersion $CS_POM_VERSION
+  groovy ./diff.groovy --listOfProjects projects-to-test-on.properties \
+      --patchConfig ../../sun_checks.xml \
+      --mode single -xm "-Dcheckstyle.failsOnError=false \
+      -Dcheckstyle.version=${CS_POM_VERSION}"  -p "$BRANCH" -r ../../..
   cd ../..
   removeFolderWithProtectedFiles contribution
   rm sun_checks.*
@@ -59,7 +65,7 @@ openjdk14-with-checks-nonjavadoc-error)
       --mode single \
       --patchConfig checks-nonjavadoc-error.xml \
       --localGitRepo  "$LOCAL_GIT_REPO" \
-      --patchBranch "$BRANCH"
+      --patchBranch "$BRANCH" -xm "-Dcheckstyle.failsOnError=false"
 
   cd ../../
   removeFolderWithProtectedFiles contribution

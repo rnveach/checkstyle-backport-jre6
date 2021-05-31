@@ -5,29 +5,34 @@
 package com.puppycrawl.tools.checkstyle.checks.javadoc.javadocvariable;
 
 /**
+ * Config:
+ * scope = private
+ * excludeScope =null
+ *
+ *
  * Tests having inner types
  * @author Oliver Burn
- **/
+ */
 class InputJavadocVariableInner
 {
     // Ignore - two violations
     class InnerInner2
     {
         // Ignore
-        public int fData;
+        public int fData; // violation
     }
 
     // Ignore - 2 violations
     interface InnerInterface2
     {
         // Ignore - should be all upper case
-        String data = "zxzc";
+        String data = "zxzc"; // violation
 
         // Ignore
         class InnerInterfaceInnerClass
         {
             // Ignore - need Javadoc and made private
-            public int rData;
+            public int rData; // violation
 
             /** needs to be made private unless allowProtected. */
             protected int protectedVariable;

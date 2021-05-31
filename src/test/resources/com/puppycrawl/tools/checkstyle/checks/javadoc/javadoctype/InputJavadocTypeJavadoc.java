@@ -5,12 +5,17 @@
 
 package com.puppycrawl.tools.checkstyle.checks.javadoc.javadoctype;
 
+/* Config:
+ *
+ * authorFormat = "0*"
+ */
+
 /**
  * Testing author and version tag patterns
  ****    @author Oliver Burn
  * @version 1.0
  */
-class InputJavadocTypeJavadoc
+class InputJavadocTypeJavadoc // violation
 {
 }
 
@@ -19,7 +24,7 @@ class InputJavadocTypeJavadoc
  * SomeText @author Oliver Burn
  * *@version 1.0
  */
-class InputJavadocTypeJavadoc1
+class InputJavadocTypeJavadoc1 // violation
 {
 }
 
@@ -55,7 +60,7 @@ enum InputJavadocTypeEnum
  * SomeText @author Oliver Burn
  * *@version 1.0
  */
-enum InputJavadocTypeEnum1
+enum InputJavadocTypeEnum1 // violation
 {
 }
 
@@ -91,7 +96,7 @@ enum InputJavadocTypeEnum2
  * SomeText @author Oliver Burn
  * *@version 1.0
  */
-@interface InputJavadocInterface1
+@interface InputJavadocInterface1 // violation
 {
 }
 

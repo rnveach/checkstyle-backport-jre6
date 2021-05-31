@@ -54,8 +54,8 @@ import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.api.AutomaticBean;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.FileText;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.MessageDispatcher;
+import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.internal.utils.XmlUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
@@ -244,11 +244,11 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
         assertTrue(keys.isEmpty(), "Translation keys should be empty when File is not found");
 
         assertEquals(1, dispatcher.savedErrors.size(), "expected number of errors to fire");
-        final LocalizedMessage localizedMessage = new LocalizedMessage(1,
+        final Violation violation = new Violation(1,
                 Definitions.CHECKSTYLE_BUNDLE, "general.fileNotFound",
                 null, null, getClass(), null);
-        assertEquals(localizedMessage.getMessage(),
-                dispatcher.savedErrors.iterator().next().getMessage(), "Invalid message");
+        assertEquals(violation.getViolation(),
+                dispatcher.savedErrors.iterator().next().getViolation(), "Invalid violation");
     }
 
     @Test
@@ -266,11 +266,11 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
         Whitebox.invokeMethod(check, "logException", exception, new File(""));
 
         assertEquals(1, dispatcher.savedErrors.size(), "expected number of errors to fire");
-        final LocalizedMessage localizedMessage = new LocalizedMessage(1,
+        final Violation violation = new Violation(1,
                 Definitions.CHECKSTYLE_BUNDLE, "general.exception",
                 new String[] {exception.getMessage()}, null, getClass(), null);
-        assertEquals(localizedMessage.getMessage(),
-                dispatcher.savedErrors.iterator().next().getMessage(), "Invalid message");
+        assertEquals(violation.getViolation(),
+                dispatcher.savedErrors.iterator().next().getViolation(), "Invalid violation");
     }
 
     @Test
@@ -278,9 +278,9 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
         checkConfig.addAttribute("baseName", "^bad.*$");
         final String[] expected = {
-            "0: " + new LocalizedMessage(1, Definitions.CHECKSTYLE_BUNDLE, "general.exception",
-                new String[] {"Malformed \\uxxxx encoding." }, null, getClass(), null).getMessage(),
-            "1: " + getCheckMessage(MSG_KEY, "test"),
+            "0: " + new Violation(1, Definitions.CHECKSTYLE_BUNDLE, "general.exception",
+                new String[] {"Malformed \\uxxxx encoding." }, null, getClass(),
+                    null).getViolation(), "1: " + getCheckMessage(MSG_KEY, "test"),
         };
         final File[] propertyFiles = {
             new File(getPath("bad.properties")),
@@ -639,7 +639,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
 
     private static class TestMessageDispatcher implements MessageDispatcher {
 
-        private Set<LocalizedMessage> savedErrors;
+        private Set<Violation> savedErrors;
 
         @Override
         public void fireFileStarted(String fileName) {
@@ -652,8 +652,8 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
         }
 
         @Override
-        public void fireErrors(String fileName, SortedSet<LocalizedMessage> errors) {
-            savedErrors = new TreeSet<LocalizedMessage>(errors);
+        public void fireErrors(String fileName, SortedSet<Violation> errors) {
+            savedErrors = new TreeSet<Violation>(errors);
         }
 
     }

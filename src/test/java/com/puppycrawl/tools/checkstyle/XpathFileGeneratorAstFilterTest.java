@@ -32,9 +32,9 @@ import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck;
 import com.puppycrawl.tools.checkstyle.internal.utils.TestUtil;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
@@ -44,14 +44,14 @@ public class XpathFileGeneratorAstFilterTest {
 
     @Test
     public void testAcceptNoToken() {
-        final LocalizedMessage message = new LocalizedMessage(0, 0, 0, null, null, null, null,
+        final Violation violation = new Violation(0, 0, 0, null, null, null, null,
                 null, XpathFileGeneratorAstFilterTest.class, null);
-        final TreeWalkerAuditEvent event = new TreeWalkerAuditEvent(null, null, message, null);
+        final TreeWalkerAuditEvent event = new TreeWalkerAuditEvent(null, null, violation, null);
         final XpathFileGeneratorAstFilter filter = new XpathFileGeneratorAstFilter();
 
         assertTrue(filter.accept(event), "filter accepted");
 
-        final AuditEvent auditEvent = new AuditEvent(this, "Test.java", message);
+        final AuditEvent auditEvent = new AuditEvent(this, "Test.java", violation);
 
         assertNull(XpathFileGeneratorAstFilter.findCorrespondingXpathQuery(auditEvent),
                 "filter has no queries");
@@ -59,17 +59,17 @@ public class XpathFileGeneratorAstFilterTest {
 
     @Test
     public void test() throws Exception {
-        final LocalizedMessage message = new LocalizedMessage(3, 47, TokenTypes.LCURLY,
+        final Violation violation = new Violation(3, 47, TokenTypes.LCURLY,
                 "messages.properties", null, null, SeverityLevel.ERROR, null, LeftCurlyCheck.class,
                 null);
         final TreeWalkerAuditEvent event = createTreeWalkerAuditEvent(
-                "InputXpathFileGeneratorAstFilter.java", message);
+                "InputXpathFileGeneratorAstFilter.java", violation);
         final XpathFileGeneratorAstFilter filter = new XpathFileGeneratorAstFilter();
 
         assertTrue(filter.accept(event), "filter accepted");
 
         final AuditEvent auditEvent = new AuditEvent(this,
-                getPath("InputXpathFileGeneratorAstFilter.java"), message);
+                getPath("InputXpathFileGeneratorAstFilter.java"), violation);
 
         assertEquals(
                 "/CLASS_DEF[./IDENT[@text='InputXpathFileGeneratorAstFilter']]/OBJBLOCK/LCURLY",
@@ -79,17 +79,17 @@ public class XpathFileGeneratorAstFilterTest {
 
     @Test
     public void testNoXpathQuery() throws Exception {
-        final LocalizedMessage message = new LocalizedMessage(10, 10, TokenTypes.LCURLY,
+        final Violation violation = new Violation(10, 10, TokenTypes.LCURLY,
                 "messages.properties", null, null, SeverityLevel.ERROR, null, LeftCurlyCheck.class,
                 null);
         final TreeWalkerAuditEvent event = createTreeWalkerAuditEvent(
-                "InputXpathFileGeneratorAstFilter.java", message);
+                "InputXpathFileGeneratorAstFilter.java", violation);
         final XpathFileGeneratorAstFilter filter = new XpathFileGeneratorAstFilter();
 
         assertTrue(filter.accept(event), "filter accepted");
 
         final AuditEvent auditEvent = new AuditEvent(this,
-                getPath("InputXpathFileGeneratorAstFilter.java"), message);
+                getPath("InputXpathFileGeneratorAstFilter.java"), violation);
 
         assertNull(XpathFileGeneratorAstFilter.findCorrespondingXpathQuery(auditEvent),
                 "expected null");
@@ -97,18 +97,18 @@ public class XpathFileGeneratorAstFilterTest {
 
     @Test
     public void testTabWidth() throws Exception {
-        final LocalizedMessage message = new LocalizedMessage(6, 7, TokenTypes.LITERAL_RETURN,
+        final Violation violation = new Violation(6, 7, TokenTypes.LITERAL_RETURN,
                 "messages.properties", null, null, SeverityLevel.ERROR, null,
                 XpathFileGeneratorAstFilterTest.class, null);
         final TreeWalkerAuditEvent event = createTreeWalkerAuditEvent(
-                "InputXpathFileGeneratorAstFilter.java", message);
+                "InputXpathFileGeneratorAstFilter.java", violation);
         final XpathFileGeneratorAstFilter filter = new XpathFileGeneratorAstFilter();
         filter.setTabWidth(6);
 
         assertTrue(filter.accept(event), "filter accepted");
 
         final AuditEvent auditEvent = new AuditEvent(this,
-                getPath("InputXpathFileGeneratorAstFilter.java"), message);
+                getPath("InputXpathFileGeneratorAstFilter.java"), violation);
 
         assertEquals(
                 "/CLASS_DEF[./IDENT[@text='InputXpathFileGeneratorAstFilter']]/OBJBLOCK"
@@ -127,11 +127,11 @@ public class XpathFileGeneratorAstFilterTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testClearState() throws Exception {
-        final LocalizedMessage message = new LocalizedMessage(3, 47, TokenTypes.LCURLY,
+        final Violation violation = new Violation(3, 47, TokenTypes.LCURLY,
                 "messages.properties", null, null, SeverityLevel.ERROR, null, LeftCurlyCheck.class,
                 null);
         final TreeWalkerAuditEvent event = createTreeWalkerAuditEvent(
-                "InputXpathFileGeneratorAstFilter.java", message);
+                "InputXpathFileGeneratorAstFilter.java", violation);
 
         final XpathFileGeneratorAstFilter filter = new XpathFileGeneratorAstFilter();
 
@@ -140,21 +140,21 @@ public class XpathFileGeneratorAstFilterTest {
                     new Predicate<Object>() {
                         @Override
                         public boolean test(Object variableStack) {
-                            return ((Map<LocalizedMessage, String>) variableStack).isEmpty();
+                            return ((Map<Violation, String>) variableStack).isEmpty();
                         }
                     }),
                 "State is not cleared on finishLocalSetup");
     }
 
     private static TreeWalkerAuditEvent createTreeWalkerAuditEvent(String fileName,
-            LocalizedMessage message) throws Exception {
+            Violation violation) throws Exception {
         final File file = new File(getPath(fileName));
         final FileText fileText = new FileText(file.getAbsoluteFile(), System.getProperty(
                 "file.encoding", StandardCharsets.UTF_8.name()));
         final FileContents fileContents = new FileContents(fileText);
         final DetailAST rootAst = JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS);
 
-        return new TreeWalkerAuditEvent(fileContents, fileName, message, rootAst);
+        return new TreeWalkerAuditEvent(fileContents, fileName, violation, rootAst);
     }
 
     private static String getPath(String filename) {

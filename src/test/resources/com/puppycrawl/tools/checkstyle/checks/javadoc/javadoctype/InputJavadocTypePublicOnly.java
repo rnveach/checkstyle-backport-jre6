@@ -4,16 +4,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.puppycrawl.tools.checkstyle.checks.javadoc.javadoctype;
 
-public class InputJavadocTypePublicOnly // ignore - need javadoc
-{
-    private interface InnerInterface // ignore - when not relaxed about Javadoc
-    {
-        String CONST = "InnerInterface"; // ignore - w.n.r.a.j
-        void method(); // ignore - when not relaxed about Javadoc
+/* Config: default */
 
-        class InnerInnerClass // ignore - when not relaxed about Javadoc
+public class InputJavadocTypePublicOnly // ok
+{
+    private interface InnerInterface // ok
+    {
+        String CONST = "InnerInterface"; // ok
+        void method(); // ok
+
+        class InnerInnerClass // ok
         {
-            private int mData; // ignore - when not relaxed about Javadoc
+            private int mData; // ok
 
             private InnerInnerClass()
             {
@@ -22,7 +24,7 @@ public class InputJavadocTypePublicOnly // ignore - need javadoc
                     };
             }
 
-            void method2() // ignore - when not relaxed about Javadoc
+            void method2() // ok
             {
                 final Runnable r = new Runnable() {
                         public void run() {};
@@ -31,21 +33,21 @@ public class InputJavadocTypePublicOnly // ignore - need javadoc
         }
     }
 
-    private class InnerClass // ignore
+    private class InnerClass // ok
     {
-        private int mDiff; // ignore - when not relaxed about Javadoc
+        private int mDiff; // ok
 
-        void method() // ignore - when not relaxed about Javadoc
+        void method() // ok
         {
         }
     }
 
-    private int mSize; // ignore - when not relaxed about Javadoc
-    int mLen; // ignore - when not relaxed about Javadoc
-    protected int mDeer; // ignore
-    public int aFreddo; // ignore
+    private int mSize; // ok
+    int mLen; // ok
+    protected int mDeer; // ok
+    public int aFreddo; // ok
 
-    // ignore - need Javadoc
+    // ok
     private InputJavadocTypePublicOnly(int aA)
     {
     }

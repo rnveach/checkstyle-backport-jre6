@@ -1,5 +1,12 @@
 package com.puppycrawl.tools.checkstyle.checks.coding.variabledeclarationusagedistance;
 import java.util.*;
+/*
+ * Config:
+ * allowedDistance = 3
+ * ignoreVariablePattern = ""
+ * validateBetweenScopes = true
+ * ignoreFinal = false
+ */
 public class InputVariableDeclarationUsageDistance {
 
     private static int test1 = 0;
@@ -68,7 +75,7 @@ public class InputVariableDeclarationUsageDistance {
     }
 
     public void testMethod3() {
-        int count;
+        int count; // violation
         int a = 3;
         int b = 3;
         a = a + b;
@@ -216,7 +223,7 @@ public class InputVariableDeclarationUsageDistance {
 
     public void testMethod14() {
         Session s = openSession();
-        Transaction t = s.beginTransaction();
+        Transaction t = s.beginTransaction(); // violation
         A a = new A();
         E d1 = new E();
         C1 c = new C1();
@@ -476,7 +483,7 @@ public class InputVariableDeclarationUsageDistance {
 
     public void testIssue32_9() {
         Options options = new Options();
-        Option myOption = null;
+        Option myOption = null; // violation
         options.addBindFile(null);
         options.addBindFile(null);
         options.addBindFile(null);
@@ -488,7 +495,7 @@ public class InputVariableDeclarationUsageDistance {
 
     public void testIssue32_10() {
         Options options = new Options();
-        Option myOption = null;
+        Option myOption = null; // violation
         options.addBindFile(null);
         options.addBindFile(null);
         options.addBindFile(null);
@@ -501,7 +508,7 @@ public class InputVariableDeclarationUsageDistance {
     public int testIssue32_11(String toDir)
             throws Exception
     {
-        int count = 0;
+        int count = 0; // violation
         String[] files = {};
 
         System.identityHashCode("Data archival started");
@@ -838,7 +845,7 @@ public class InputVariableDeclarationUsageDistance {
 
 }
 
-class New {
+class New2 {
     void a() {
         int a = 1;
         System.lineSeparator();
@@ -888,7 +895,7 @@ class New {
     }
 
     void f() {
-        int a = 1;
+        int a = 1; // violation
         System.lineSeparator();
         System.lineSeparator();
         System.lineSeparator();
@@ -898,7 +905,7 @@ class New {
     }
 
     void h() {
-        int a = 1;
+        int a = 1; // violation
         System.lineSeparator();
         System.lineSeparator();
         System.lineSeparator();
@@ -964,7 +971,7 @@ class New {
     }
 
     void tryWithoutFinally() {
-        int a = 1;
+        int a = 1; // violation
         System.lineSeparator();
         System.lineSeparator();
         System.lineSeparator();
@@ -1051,12 +1058,12 @@ class New {
     static int field;
 
     private void n() {
-        long a = 0;
+        long a = 0; // violation
 
-        New.field = 1;
-        New.field = 2;
-        New.field = 3;
-        New.field = (int)a;
+        New2.field = 1;
+        New2.field = 2;
+        New2.field = 3;
+        New2.field = (int)a;
     }
 
 }

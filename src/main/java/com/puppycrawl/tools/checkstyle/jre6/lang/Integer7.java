@@ -48,7 +48,7 @@ public final class Integer7 {
                 // Integer.MAX_VALUE in Character.MAX_RADIX is 6 digits
                 len <= 5
                     // Integer.MAX_VALUE in base 10 is 10 digits
-                    || (radix == 10 && len <= 9)) {
+                    || radix == 10 && len <= 9) {
                 result = Integer.parseInt(s, radix);
             }
             else {

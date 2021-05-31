@@ -1,15 +1,8 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: 2001
-////////////////////////////////////////////////////////////////////////////////
-package com . puppycrawl
-    .tools.
-    checkstyle.checks.whitespace.typecastparenpad;
+package com.puppycrawl.tools.checkstyle.checks.whitespace.typecastparenpad;
 
-/**
- * Class for testing whitespace issues.
- * violation missing author tag
- **/
+/*
+ * Config: default
+ */
 class InputTypecastParenPadWhitespace
 {
     /** ignore assignment **/

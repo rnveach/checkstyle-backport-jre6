@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtil;
 
 /**
@@ -208,10 +208,10 @@ public class PackageObjectFactory implements ModuleFactory {
                         + STRING_SEPARATOR + nameCheck + STRING_SEPARATOR
                         + joinPackageNamesWithClassName(nameCheck, packages);
             }
-            final LocalizedMessage exceptionMessage = new LocalizedMessage(1,
+            final Violation exceptionMessage = new Violation(1,
                 Definitions.CHECKSTYLE_BUNDLE, UNABLE_TO_INSTANTIATE_EXCEPTION_MESSAGE,
                 new String[] {name, attemptedNames}, null, getClass(), null);
-            throw new CheckstyleException(exceptionMessage.getMessage());
+            throw new CheckstyleException(exceptionMessage.getViolation());
         }
         return instance;
     }
@@ -289,10 +289,10 @@ public class PackageObjectFactory implements ModuleFactory {
 
                 optionalNames += fullModuleName;
             }
-            final LocalizedMessage exceptionMessage = new LocalizedMessage(1,
+            final Violation exceptionMessage = new Violation(1,
                     Definitions.CHECKSTYLE_BUNDLE, AMBIGUOUS_MODULE_NAME_EXCEPTION_MESSAGE,
                     new String[] {name, optionalNames}, null, getClass(), null);
-            throw new CheckstyleException(exceptionMessage.getMessage());
+            throw new CheckstyleException(exceptionMessage.getViolation());
         }
         return returnValue;
     }

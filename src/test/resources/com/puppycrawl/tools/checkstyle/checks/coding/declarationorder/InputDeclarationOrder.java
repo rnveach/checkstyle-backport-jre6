@@ -1,37 +1,40 @@
 package com.puppycrawl.tools.checkstyle.checks.coding.declarationorder;
 
+/*
+ * Config: default
+ */
 public class InputDeclarationOrder
 {
     static final int FOO2 = 3;
 
-    // violation public before package
-    public static final int FOO = 3;
+    // public before package
+    public static final int FOO = 3; // violation
 
     private static final int FOO3 = 3;
 
-    // violation public before package and private
-    public static final int FOO4 = 3;
+    // public before package and private
+    public static final int FOO4 = 3; // violation
 
     private static final String ERROR = "error";
 
-    // violation protected before private
-    protected static final String ERROR1 = "error";
+    // protected before private
+    protected static final String ERROR1 = "error"; // violation
 
-    // violation public before private
-    public static final String WARNING = "warning";
+    // public before private
+    public static final String WARNING = "warning"; // violation
 
     private int mMaxInitVars = 3;
 
-    // violation statics should be before instance members
-    // violation publics before private
-    public static final int MAX_ITER_VARS = 3;
+    // statics should be before instance members
+    // publics before private
+    public static final int MAX_ITER_VARS = 3; // violation
 
     private class InnerClass
     {
         private static final int INNER_FOO = 2;
 
-        // violation public before private
-        public static final int INNER_FOO2 = 2;
+        // public before private
+        public static final int INNER_FOO2 = 2; // violation
 
         public InnerClass()
         {
@@ -47,9 +50,9 @@ public class InputDeclarationOrder
             foo += INNER_FOO3;
         }
 
-        // violation member variables should be before methods or ctors
-        // violation public before private
-        public static final int INNER_FOO3 = 2;
+        // member variables should be before methods or ctors
+        // public before private
+        public static final int INNER_FOO3 = 2; // violation
     }
 
     public int getFoo1()
@@ -57,8 +60,8 @@ public class InputDeclarationOrder
         return mFoo;
     }
 
-    //  violation ctors before methods
-    public InputDeclarationOrder()
+    //  ctors before methods
+    public InputDeclarationOrder() // violation
     {
         String foo = ERROR;
         foo += ERROR1;
@@ -83,8 +86,8 @@ public class InputDeclarationOrder
         return 14;
     }
 
-    // violation member variables should be before methods or ctors
-    private int mFoo = 0;
+    // member variables should be before methods or ctors
+    private int mFoo = 0; // violation
 }
 
 enum InputDeclarationOrderEnum
@@ -95,48 +98,48 @@ enum InputDeclarationOrderEnum
     {
         private static final int INNER_FOO = 2;
 
-        // violation public before private
-        public static final int INNER_FOO2 = 2;
+        // public before private
+        public static final int INNER_FOO2 = 2; // violation
 
         public void doIt()
         {
         }
 
-        // violation member variables should be before methods or ctors
-        // violation public before private
-        public static final int INNER_FOO3 = 2;
+        // member variables should be before methods or ctors
+        // public before private
+        public static final int INNER_FOO3 = 2; // violation
     };
 
     static final int FOO2 = 3;
 
-    // violation: public before package
-    public static final int FOO = 3;
+    // public before package
+    public static final int FOO = 3; // violation
 
     private static final int FOO3 = 3;
 
-    // violation: public before package and private
-    public static final int FOO4 = 3;
+    // public before package and private
+    public static final int FOO4 = 3; // violation
 
     private static final String ERROR = "error";
 
-    // violation: protected before private
-    protected static final String ERROR1 = "error";
+    // protected before private
+    protected static final String ERROR1 = "error"; // violation
 
-    // violation: public before private
-    public static final String WARNING = "warning";
+    // public before private
+    public static final String WARNING = "warning"; // violation
 
     private int mMaxInitVars = 3;
 
-    // violation: statics should be before instance members
-    // violation: publics before private
-    public static final int MAX_ITER_VARS = 3;
+    // statics should be before instance members
+    // publics before private
+    public static final int MAX_ITER_VARS = 3; // violation
 
     private class InnerClass
     {
         private static final int INNER_FOO = 2;
 
-        // violation: public before private
-        public static final int INNER_FOO2 = 2;
+        // public before private
+        public static final int INNER_FOO2 = 2; // violation
 
         public InnerClass()
         {
@@ -145,9 +148,9 @@ enum InputDeclarationOrderEnum
             foo += INNER_FOO3;
         }
 
-        // violation: member variables should be before methods or ctors
-        // violation: public before private
-        public static final int INNER_FOO3 = 2;
+        // member variables should be before methods or ctors
+        // public before private
+        public static final int INNER_FOO3 = 2; // violation
     }
 
     public int getFoo1()
@@ -155,8 +158,8 @@ enum InputDeclarationOrderEnum
         return mFoo;
     }
 
-    //  violation ctors before methods
-    InputDeclarationOrderEnum()
+    //  ctors before methods
+    InputDeclarationOrderEnum() // violation
     {
         String foo = ERROR;
         foo += ERROR1;
@@ -181,11 +184,12 @@ enum InputDeclarationOrderEnum
         return 1;
     }
 
-    // violation: member variables should be before methods or ctors
-    private int mFoo = 0;
+    // member variables should be before methods or ctors
+    private int mFoo = 0; // violation
 
     class AsyncProcess {
         private final int startLogErrorsCnt = 0;
-        protected final int maxTotalConcurrentTasks = 0;
+
+        protected final int maxTotalConcurrentTasks = 0; // violation
     }
 }

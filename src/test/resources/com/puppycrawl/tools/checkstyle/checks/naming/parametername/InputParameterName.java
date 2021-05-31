@@ -1,18 +1,8 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: Feb-2001
-// Ignore violation
-////////////////////////////////////////////////////////////////////////////////
 package com.puppycrawl.tools.checkstyle.checks.naming.parametername;
 import java.io.*;
-/**
- * Contains simple mistakes:
- * - Long lines
- * - Tabs
- * - Format of variables and parameters
- * - Order of modifiers
- * @author Oliver Burn
- **/
+
+/* Config: default */
+
 final class InputParameterName
 {
     // Long line ----------------------------------------------------------------
@@ -68,15 +58,15 @@ final class InputParameterName
      * @param badFormat3 bad format
      * @throws java.lang.Exception abc
      **/
-    int test1(int badFormat1,int badFormat2,
-              final int badFormat3)
+    int test1(int badFormat1,int badFormat2, // ok
+              final int badFormat3)          // ok
         throws java.lang.Exception
     {
         return 0;
     }
 
     /** method that is 20 lines long **/
-    private void longMethod()
+    private void longMethod() // ok
     {
         // a line
         // a line
@@ -99,7 +89,7 @@ final class InputParameterName
     }
 
     /** constructor that is 10 lines long **/
-    private InputParameterName()
+    private InputParameterName()  // ok
     {
         // a line
         // a line
@@ -112,7 +102,7 @@ final class InputParameterName
     }
 
     /** test local variables */
-    private void localVariables()
+    private void localVariables() // ok
     {
         // normal decl
         int abc = 0;
@@ -134,7 +124,7 @@ final class InputParameterName
     }
 
     /** test method pattern */
-    void ALL_UPPERCASE_METHOD()
+    void ALL_UPPERCASE_METHOD()  // ok
     {
     }
 
@@ -146,7 +136,7 @@ final class InputParameterName
     // tabs that count as one char because of their position ->        <-   ->        <-, OK
 
     /** some lines to test the violation column after tabs */
-    void errorColumnAfterTabs()
+    void errorColumnAfterTabs()  // ok
     {
         // with tab-width 8 all statements below start at the same column,
         // with different combinations of ' ' and '\t' before the statement
@@ -167,7 +157,7 @@ final class InputParameterName
     /* YES */ /* MEMME: x */ /* YES!! */
 
     /** test long comments **/
-    void veryLong()
+    void veryLong()  // ok
     {
         /*
           blah blah blah blah
@@ -191,8 +181,8 @@ final class InputParameterName
     /**
      * @see to lazy to document all args. Testing excessive # args
      **/
-    void toManyArgs(int aArg1, int aArg2, int aArg3, int aArg4, int aArg5,
-                    int aArg6, int aArg7, int aArg8, int aArg9)
+    void toManyArgs(int aArg1, int aArg2, int aArg3, int aArg4, int aArg5,  // ok
+                    int aArg6, int aArg7, int aArg8, int aArg9)  // ok
     {
     }
 }
@@ -201,7 +191,7 @@ final class InputParameterName
 class InputParameterName2
 {
     /** Some more Javadoc. */
-    public void doSomething()
+    public void doSomething()  // ok
     {
         //"O" should be named "o"
         for (Object O : new java.util.ArrayList())

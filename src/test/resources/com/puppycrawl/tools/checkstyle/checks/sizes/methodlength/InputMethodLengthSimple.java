@@ -1,18 +1,9 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: Feb-2001
-// Ignore violation
-////////////////////////////////////////////////////////////////////////////////
 package com.puppycrawl.tools.checkstyle.checks.sizes.methodlength;
 import java.io.*;
-/**
- * Contains simple mistakes:
- * - Long lines
- * - Tabs
- * - Format of variables and parameters
- * - Order of modifiers
- * @author Oliver Burn
- **/
+/*
+ * Config:
+ * max = 19
+ */
 final class InputMethodLengthSimple
 {
     // Long line ----------------------------------------------------------------
@@ -75,7 +66,7 @@ final class InputMethodLengthSimple
         return 0;
     }
 
-    /** method that is 20 lines long **/
+    /** method that is 20 lines long **/ // violation
     private void longMethod()
     {
         // a line

@@ -33,7 +33,7 @@ import org.junit.Test;
 import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.api.FileText;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.jre6.file.Files7;
 import com.puppycrawl.tools.checkstyle.jre6.file.Path;
 import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
@@ -128,16 +128,16 @@ public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
                 getPath("InputOrderedPropertiesCheckNotExisting.properties");
         final File file = new File(fileName);
         final FileText fileText = new FileText(file, Collections.<String>emptyList());
-        final SortedSet<LocalizedMessage> messages =
+        final SortedSet<Violation> violations =
                 check.process(file, fileText);
-        assertEquals(1, messages.size(), "Wrong messages count: " + messages.size());
-        final LocalizedMessage message = messages.iterator().next();
-        final String retrievedMessage = messages.iterator().next().getKey();
+        assertEquals(1, violations.size(), "Wrong violations count: " + violations.size());
+        final Violation violation = violations.iterator().next();
+        final String retrievedMessage = violations.iterator().next().getKey();
         assertEquals("unable.open.cause", retrievedMessage,
-                "Message key '" + retrievedMessage + "' is not valid");
-        assertEquals(message.getMessage(),
+                "violation key '" + retrievedMessage + "' is not valid");
+        assertEquals(violation.getViolation(),
                 getCheckMessage(MSG_IO_EXCEPTION_KEY, fileName, getFileNotFoundDetail(file)),
-                "Message '" + message.getMessage() + "' is not valid");
+                "violation '" + violation.getViolation() + "' is not valid");
     }
 
     /**
@@ -160,9 +160,9 @@ public class OrderedPropertiesCheckTest extends AbstractModuleTestSupport {
                 getPath("InputOrderedProperties2EmptyValue.properties");
         final File file = new File(fileName);
         final FileText fileText = new FileText(file, Collections.<String>emptyList());
-        final SortedSet<LocalizedMessage> messages = check.process(file, fileText);
+        final SortedSet<Violation> violations = check.process(file, fileText);
 
-        assertEquals(1, messages.size(), "Wrong messages count: " + messages.size());
+        assertEquals(1, violations.size(), "Wrong violations count: " + violations.size());
     }
 
     @Test

@@ -1,22 +1,24 @@
 package com.puppycrawl.tools.checkstyle.checks.annotation.annotationusestyle;
 //this file compiles in eclipse 3.4 but not with Sun's JDK 1.6.0.11
 
-/**
-
-*/
+/* Config:
+ * closingParens = ignore
+ * elementStyle = ignore
+ * trailingArrayComma = ALWAYS
+ */
 public class InputAnnotationUseStyleWithTrailingComma
 {
-    @SuppressWarnings({"common",})
+    @SuppressWarnings({"common",}) // ok
     public void foo() {
 
 
-        @SuppressWarnings({"common","foo",})
+        @SuppressWarnings({"common","foo",}) // ok
         Object o = new Object() {
 
-            @SuppressWarnings(value={"common",})
+            @SuppressWarnings(value={"common",}) // ok
             public String toString() {
 
-                @SuppressWarnings(value={"leo","herbie",})
+                @SuppressWarnings(value={"leo","herbie",}) // ok
                 final String pooches = "leo.herbie";
 
                 return pooches;
@@ -24,13 +26,13 @@ public class InputAnnotationUseStyleWithTrailingComma
         };
     }
 
-    @Test(value={"foo",}, more={"bar",})
+    @Test(value={"foo",}, more={"bar",}) // ok
     /**
 
     */
     enum P {
 
-        @Pooches(tokens={Pooches.class,},other={1,})
+        @Pooches(tokens={Pooches.class,},other={1,}) // ok
         L,
 
         /**
@@ -44,9 +46,6 @@ public class InputAnnotationUseStyleWithTrailingComma
 @interface Test {
     String[] value();
     String[] more() default {};
-    /**
-
-    */
 }
 
 @interface Pooches {

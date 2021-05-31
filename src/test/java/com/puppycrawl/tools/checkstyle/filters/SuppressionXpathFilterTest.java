@@ -35,8 +35,8 @@ import com.puppycrawl.tools.checkstyle.AbstractModuleTestSupport;
 import com.puppycrawl.tools.checkstyle.JavaParser;
 import com.puppycrawl.tools.checkstyle.TreeWalkerAuditEvent;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.api.Violation;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
@@ -139,7 +139,7 @@ public class SuppressionXpathFilterTest extends AbstractModuleTestSupport {
         final SuppressionXpathFilter filter = createSuppressionXpathFilter(
                         getPath("InputSuppressionXpathFilterIdAndQuery.xml"), optional);
         final File file = new File(getPath("InputSuppressionXpathFilter.java"));
-        final LocalizedMessage message = new LocalizedMessage(3, 0, TokenTypes.CLASS_DEF, "", "",
+        final Violation message = new Violation(3, 0, TokenTypes.CLASS_DEF, "", "",
                 null, null, "777", getClass(), null);
         final TreeWalkerAuditEvent ev = new TreeWalkerAuditEvent(null, "file1.java",
                 message, JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));
@@ -235,7 +235,7 @@ public class SuppressionXpathFilterTest extends AbstractModuleTestSupport {
     private static TreeWalkerAuditEvent createTreeWalkerAudit(int lineNo, int columnNo,
                                                               int tokenTypes, File file)
             throws IOException, CheckstyleException {
-        final LocalizedMessage message = new LocalizedMessage(lineNo, columnNo, tokenTypes, "", "",
+        final Violation message = new Violation(lineNo, columnNo, tokenTypes, "", "",
                 null, null, "777", SuppressionXpathFilterTest.class, null);
         return new TreeWalkerAuditEvent(null, "Test.java", message,
                 JavaParser.parseFile(file, JavaParser.Options.WITHOUT_COMMENTS));

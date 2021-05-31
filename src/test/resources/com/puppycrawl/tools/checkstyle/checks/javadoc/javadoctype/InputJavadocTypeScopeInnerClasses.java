@@ -4,6 +4,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.puppycrawl.tools.checkstyle.checks.javadoc.javadoctype;
 
+/* Config:
+ *
+ * scope = package
+ */
+
 /**
    Checks javadoc scoping for inner classes.
 
@@ -40,7 +45,7 @@ public class InputJavadocTypeScopeInnerClasses
         }
     }
     /** */
-    protected class InnerPublic2<T>
+    protected class InnerPublic2<T> // violation
     {
     }
 }

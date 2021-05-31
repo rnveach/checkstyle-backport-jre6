@@ -103,7 +103,7 @@ public class EmptyLineSeparatorCheckTest
             "33:5: " + getCheckMessage(MSG_MULTIPLE_LINES, "VARIABLE_DEF"),
             "38:5: " + getCheckMessage(MSG_MULTIPLE_LINES, "VARIABLE_DEF"),
             "43:5: " + getCheckMessage(MSG_MULTIPLE_LINES, "METHOD_DEF"),
-            "45:5: " + getCheckMessage(MSG_MULTIPLE_LINES_AFTER, "METHOD_DEF"),
+            "45:33: " + getCheckMessage(MSG_MULTIPLE_LINES_AFTER, "}"),
         };
         verify(checkConfig, getPath("InputEmptyLineSeparatorMultipleEmptyLines.java"), expected);
     }
@@ -177,6 +177,62 @@ public class EmptyLineSeparatorCheckTest
         verify(checkConfig,
             getPath("InputEmptyLineSeparatorModifierUnderPackage.java"),
             expected);
+    }
+
+    @Test
+    public void testCommentAfterPackageWithImports() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = {
+            "2:1: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "//"),
+        };
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorSingleLineCommentAfterPackage.java"),
+                expected);
+    }
+
+    @Test
+    public void testJavadocCommentAfterPackageWithImports() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = {
+            "2:1: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "/*"),
+        };
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorJavadocCommentAfterPackage.java"),
+                expected);
+    }
+
+    @Test
+    public void testPackageImportsClassInSingleLine() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        final String[] expected = {
+            "1:79: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "import"),
+            "1:101: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "CLASS_DEF"),
+        };
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorPackageImportClassInOneLine.java"),
+                expected);
+    }
+
+    @Test
+    public void testEmptyLineAfterPackageForPackageAst() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        checkConfig.addAttribute("tokens", "PACKAGE_DEF");
+        final String[] expected = {
+            "2:1: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "/*"),
+        };
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorEmptyLineAfterPackageForPackageAst.java"),
+                expected);
+    }
+
+    @Test
+    public void testEmptyLineAfterPackageForImportAst() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        checkConfig.addAttribute("tokens", "IMPORT");
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorEmptyLineAfterPackageForImportAst.java"),
+                expected);
     }
 
     @Test
@@ -256,10 +312,12 @@ public class EmptyLineSeparatorCheckTest
         final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
         checkConfig.addAttribute("allowMultipleEmptyLinesInsideClassMembers", "false");
         final String[] expected = {
-            "11: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "16: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "22: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "31: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "13:30: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "18:5: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "24:67: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "33:48: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "43:21: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+
         };
         verify(checkConfig,
                 getPath("InputEmptyLineSeparatorPreviousLineEmptiness.java"), expected);
@@ -270,12 +328,11 @@ public class EmptyLineSeparatorCheckTest
         final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
         checkConfig.addAttribute("allowMultipleEmptyLinesInsideClassMembers", "false");
         final String[] expected = {
-            "27: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "39: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "45: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "50: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "55: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "56: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "25:11: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "37:11: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "43:11: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "48:31: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "53:11: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
             "60:1: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "CLASS_DEF"),
         };
         verify(checkConfig,
@@ -464,8 +521,8 @@ public class EmptyLineSeparatorCheckTest
 
         final String[] expected = {
             "2:1: " + getCheckMessage(MSG_SHOULD_BE_SEPARATED, "package"),
-            "16: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
-            "22: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "14:27: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "20:29: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
         };
 
         verify(checkConfig,
@@ -483,6 +540,57 @@ public class EmptyLineSeparatorCheckTest
 
         verify(checkConfig,
                 getPath("InputEmptyLineSeparatorSingleTypeVariables.java"),
+                expected);
+    }
+
+    @Test
+    public void testEmptyLineSeparatorEmptyLinesInsideClassMembersRecursive() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        checkConfig.addAttribute("allowMultipleEmptyLinesInsideClassMembers", "false");
+        final String[] expected = {
+            "19:15: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+        };
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorRecursive.java"),
+                expected);
+    }
+
+    @Test
+    public void testEmptyLineSeparatorNewMethodDef() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        checkConfig.addAttribute("allowMultipleEmptyLinesInsideClassMembers", "false");
+        final String[] expected = {
+            "21:34: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "30:26: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+        };
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorNewMethodDef.java"),
+                expected);
+    }
+
+    @Test
+    public void testEmptyLineSeparatorPostFixCornerCases() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        checkConfig.addAttribute("allowMultipleEmptyLinesInsideClassMembers", "false");
+        final String[] expected = {
+            "10:19: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "24:29: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+            "35:29: " + getCheckMessage(MSG_MULTIPLE_LINES_INSIDE),
+        };
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorPostFixCornerCases.java"),
+                expected);
+    }
+
+    @Test
+    public void testEmptyLineSeparatorAnnotation() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(EmptyLineSeparatorCheck.class);
+        checkConfig.addAttribute("allowMultipleEmptyLines", "false");
+        final String[] expected = {
+            "10:22: " + getCheckMessage(MSG_MULTIPLE_LINES_AFTER, "}"),
+        };
+        verify(checkConfig,
+                getPath("InputEmptyLineSeparatorAnnotations.java"),
                 expected);
     }
 

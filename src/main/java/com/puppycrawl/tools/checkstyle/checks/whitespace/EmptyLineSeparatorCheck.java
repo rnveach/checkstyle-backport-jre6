@@ -35,9 +35,13 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
  * <p>
- * Checks for empty line separators after header, package, all import declarations,
+ * Checks for empty line separators before package, all import declarations,
  * fields, constructors, methods, nested classes,
  * static initializers and instance initializers.
+ * </p>
+ * <p>
+ * Checks for empty line separators before not only statements but
+ * implementation and documentation comments and blocks as well.
  * </p>
  * <p>
  * ATTENTION: empty line separator is required between token siblings,
@@ -114,11 +118,11 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * ///////////////////////////////////////////////////
  * //HEADER
  * ///////////////////////////////////////////////////
- * package com.puppycrawl.tools.checkstyle.whitespace;
- * import java.io.Serializable;
- * class Foo {
+ * package com.whitespace; // violation, 'package' should be separated from previous line.
+ * import java.io.Serializable; // violation, 'import' should be separated from previous line.
+ * class Foo { // violation, 'CLASS_DEF' should be separated from previous line.
  *   public static final int FOO_CONST = 1;
- *   public void foo() {} //should be separated from previous statement.
+ *   public void foo() {} // violation, 'METHOD_DEF' should be separated from previous line.
  * }
  * </pre>
  *
@@ -143,7 +147,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * }
  * </pre>
  * <p>
- * To check empty line after
+ * To check empty line before
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#VARIABLE_DEF">
  * VARIABLE_DEF</a> and
  * <a href="https://checkstyle.org/apidocs/com/puppycrawl/tools/checkstyle/api/TokenTypes.html#METHOD_DEF">
@@ -198,7 +202,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  *
  *
  *
- *   public void foo() {} //should be separated from previous statement.
+ *   public void foo() {} // OK
  * }
  * </pre>
  * <p>
@@ -208,6 +212,26 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  * &lt;module name=&quot;EmptyLineSeparator&quot;&gt;
  *   &lt;property name=&quot;allowMultipleEmptyLines&quot; value=&quot;false&quot;/&gt;
  * &lt;/module&gt;
+ * </pre>
+ * <pre>
+ * ///////////////////////////////////////////////////
+ * //HEADER
+ * ///////////////////////////////////////////////////
+ *
+ *
+ * package com.checkstyle.whitespace; // violation, 'package' has more than 1 empty lines before.
+ *
+ *
+ * import java.io.Serializable; // violation, 'import' has more than 1 empty lines before.
+ *
+ *
+ * class Foo { // violation, 'CLASS_DEF' has more than 1 empty lines before.
+ *   public static final int FOO_CONST = 1;
+ *
+ *
+ *
+ *   public void foo() {} // violation, 'METHOD_DEF' has more than 1 empty lines before.
+ * }
  * </pre>
  *
  * <p>
@@ -252,7 +276,8 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  *   public void foo() {
  *
  *
- *     System.out.println(1); // violation since method has 2 empty lines subsequently
+ *     System.out.println(1); // violation, There is more than 1 empty line one after another
+ *                            // in previous line.
  *   }
  * }
  * </pre>
@@ -273,7 +298,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  *     private int k;
  *
  *
- *     private static void foo() {} // violation, before this like there two empty lines
+ *     private static void foo() {} // violation, 'METHOD_DEF' has more than 1 empty lines before.
  *
  * }
  * </pre>
@@ -414,7 +439,7 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
             checkCommentInModifiers(ast);
         }
         DetailAST nextToken = ast.getNextSibling();
-        while (isComment(nextToken)) {
+        while (nextToken != null && TokenUtil.isCommentType(nextToken.getType())) {
             nextToken = nextToken.getNextSibling();
         }
         if (nextToken != null) {
@@ -444,7 +469,9 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
             default:
                 if (nextToken.getType() == TokenTypes.RCURLY) {
                     if (hasNotAllowedTwoEmptyLinesBefore(nextToken)) {
-                        log(ast, MSG_MULTIPLE_LINES_AFTER, ast.getText());
+                        final DetailAST result = getLastElementBeforeEmptyLines(ast,
+                                nextToken.getLineNo());
+                        log(result, MSG_MULTIPLE_LINES_AFTER, result.getText());
                     }
                 }
                 else if (!hasEmptyLineAfter(ast)) {
@@ -477,12 +504,65 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
         if (isClassMemberBlock(astType)) {
             final List<Integer> emptyLines = getEmptyLines(ast);
             final List<Integer> emptyLinesToLog = getEmptyLinesToLog(emptyLines);
-
             for (Integer lineNo : emptyLinesToLog) {
-                // Checkstyle counts line numbers from 0 but IDE from 1
-                log(lineNo + 1, MSG_MULTIPLE_LINES_INSIDE);
+                log(getLastElementBeforeEmptyLines(ast, lineNo), MSG_MULTIPLE_LINES_INSIDE);
             }
         }
+    }
+
+    /**
+     * Returns the element after which empty lines exist.
+     *
+     * @param ast the ast to check.
+     * @param line the empty line which gives violation.
+     * @return The DetailAST after which empty lines are present.
+     */
+    private static DetailAST getLastElementBeforeEmptyLines(DetailAST ast, int line) {
+        DetailAST result = ast;
+        if (ast.getFirstChild().getLineNo() <= line) {
+            result = ast.getFirstChild();
+            while (result.getNextSibling() != null
+                    && result.getNextSibling().getLineNo() <= line) {
+                result = result.getNextSibling();
+            }
+            if (result.hasChildren()) {
+                result = getLastElementBeforeEmptyLines(result, line);
+            }
+        }
+
+        if (result.getNextSibling() != null) {
+            final Optional<DetailAST> postFixNode = getPostFixNode(result.getNextSibling());
+            if (postFixNode.isPresent()) {
+                // A post fix AST will always have a sibling METHOD CALL
+                // METHOD CALL will at least have two children
+                // The first first child is DOT in case of POSTFIX which have at least 2 children
+                // First child of DOT again puts us back to normal AST tree which will
+                // recurse down below from here
+                final DetailAST firstChildAfterPostFix = postFixNode.get();
+                result = getLastElementBeforeEmptyLines(firstChildAfterPostFix, line);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets postfix Node from AST if present.
+     *
+     * @param ast the AST used to get postfix Node.
+     * @return Optional postfix node.
+     */
+    private static Optional<DetailAST> getPostFixNode(DetailAST ast) {
+        Optional<DetailAST> result = Optional.empty();
+        if (ast.getType() == TokenTypes.EXPR
+            // EXPR always has at least one child
+            && ast.getFirstChild().getType() == TokenTypes.METHOD_CALL) {
+            // METHOD CALL always has at two least child
+            final DetailAST node = ast.getFirstChild().getFirstChild();
+            if (node.getType() == TokenTypes.DOT) {
+                result = Optional.of(node);
+            }
+        }
+        return result;
     }
 
     /**
@@ -534,7 +614,7 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
             int previousEmptyLineNo = emptyLines.get(0);
             for (int emptyLineNo : emptyLines) {
                 if (previousEmptyLineNo + 1 == emptyLineNo) {
-                    emptyLinesToLog.add(emptyLineNo);
+                    emptyLinesToLog.add(previousEmptyLineNo);
                 }
                 previousEmptyLineNo = emptyLineNo;
             }
@@ -575,9 +655,44 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
                 log(ast, MSG_SHOULD_BE_SEPARATED, ast.getText());
             }
         }
-        if (!hasEmptyLineAfter(ast)) {
+        if (isLineEmptyAfterPackage(ast)) {
+            final DetailAST elementAst = getViolationAstForPackage(ast);
+            log(elementAst, MSG_SHOULD_BE_SEPARATED, elementAst.getText());
+        }
+        else if (!hasEmptyLineAfter(ast)) {
             log(nextToken, MSG_SHOULD_BE_SEPARATED, nextToken.getText());
         }
+    }
+
+    /**
+     * Checks if there is another element at next line of package declaration.
+     *
+     * @param ast Package ast.
+     * @return true, if there is an element.
+     */
+    private static boolean isLineEmptyAfterPackage(DetailAST ast) {
+        DetailAST nextElement = ast.getNextSibling();
+        final int lastChildLineNo = ast.getLastChild().getLineNo();
+        while (nextElement.getLineNo() < lastChildLineNo + 1
+                && nextElement.getNextSibling() != null) {
+            nextElement = nextElement.getNextSibling();
+        }
+        return nextElement.getLineNo() == lastChildLineNo + 1;
+    }
+
+    /**
+     * Gets the Ast on which violation is to be given for package declaration.
+     *
+     * @param ast Package ast.
+     * @return Violation ast.
+     */
+    private static DetailAST getViolationAstForPackage(DetailAST ast) {
+        DetailAST nextElement = ast.getNextSibling();
+        final int lastChildLineNo = ast.getLastChild().getLineNo();
+        while (nextElement.getLineNo() < lastChildLineNo + 1) {
+            nextElement = nextElement.getNextSibling();
+        }
+        return nextElement;
     }
 
     /**
@@ -715,7 +830,7 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
             lastToken = token.getLastChild();
         }
         DetailAST nextToken = token.getNextSibling();
-        if (isComment(nextToken)) {
+        if (TokenUtil.isCommentType(nextToken.getType())) {
             nextToken = nextToken.getNextSibling();
         }
         // Start of the next token
@@ -741,8 +856,8 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
             if (modifiers != null) {
                 final DetailAST comment = modifiers.getFirstChild();
 
-                if ((comment != null) && (isComment(comment))
-                        && (comment.getLineNo() == packageDef.getLineNo() + 1)) {
+                if (comment != null && TokenUtil.isCommentType(comment.getType())
+                        && comment.getLineNo() == packageDef.getLineNo() + 1) {
                     result = Optional.of(comment);
                 }
             }
@@ -822,17 +937,6 @@ public class EmptyLineSeparatorCheck extends AbstractCheck {
             result = true;
         }
         return result;
-    }
-
-    /**
-     * Check if token is a comment.
-     *
-     * @param ast ast node
-     * @return true, if given ast is comment.
-     */
-    private static boolean isComment(DetailAST ast) {
-        return TokenUtil.isOfType(ast,
-            TokenTypes.SINGLE_LINE_COMMENT, TokenTypes.BLOCK_COMMENT_BEGIN);
     }
 
     /**

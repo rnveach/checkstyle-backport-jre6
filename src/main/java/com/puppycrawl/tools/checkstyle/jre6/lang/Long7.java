@@ -43,7 +43,7 @@ public final class Long7 {
                 // Long.MAX_VALUE in Character.MAX_RADIX is 13 digits
                 len <= 12
                     // Long.MAX_VALUE in base 10 is 19 digits
-                    || (radix == 10 && len <= 18)) {
+                    || radix == 10 && len <= 18) {
                 result = Long.parseLong(s, radix);
             }
             else {

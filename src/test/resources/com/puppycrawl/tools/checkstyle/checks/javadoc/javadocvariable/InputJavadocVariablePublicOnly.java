@@ -4,16 +4,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.puppycrawl.tools.checkstyle.checks.javadoc.javadocvariable;
 
+/**
+ * Config:
+ * scope = private
+ */
 public class InputJavadocVariablePublicOnly // ignore - need javadoc
 {
     private interface InnerInterface // ignore - when not relaxed about Javadoc
     {
-        String CONST = "InnerInterface"; // ignore - w.n.r.a.j
+        String CONST = "InnerInterface"; // ignore - w.n.r.a.j // violation
         void method(); // ignore - when not relaxed about Javadoc
 
         class InnerInnerClass // ignore - when not relaxed about Javadoc
         {
-            private int mData; // ignore - when not relaxed about Javadoc
+            private int mData; // ignore - when not relaxed about Javadoc // violation
 
             private InnerInnerClass()
             {
@@ -33,17 +37,17 @@ public class InputJavadocVariablePublicOnly // ignore - need javadoc
 
     private class InnerClass // ignore
     {
-        private int mDiff; // ignore - when not relaxed about Javadoc
+        private int mDiff; // ignore - when not relaxed about Javadoc // violation
 
         void method() // ignore - when not relaxed about Javadoc
         {
         }
     }
 
-    private int mSize; // ignore - when not relaxed about Javadoc
-    int mLen; // ignore - when not relaxed about Javadoc
-    protected int mDeer; // ignore
-    public int aFreddo; // ignore
+    private int mSize; // ignore - when not relaxed about Javadoc // violation
+    int mLen; // ignore - when not relaxed about Javadoc // violation
+    protected int mDeer; // ignore // violation
+    public int aFreddo; // ignore // violation
 
     // ignore - need Javadoc
     private InputJavadocVariablePublicOnly(int aA)

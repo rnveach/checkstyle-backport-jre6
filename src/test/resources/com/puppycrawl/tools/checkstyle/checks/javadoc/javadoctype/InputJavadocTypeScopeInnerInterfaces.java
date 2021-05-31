@@ -4,11 +4,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 package com.puppycrawl.tools.checkstyle.checks.javadoc.javadoctype;
 
-public class InputJavadocTypeScopeInnerInterfaces
+/* Config:
+ *
+ * scope = public
+ */
+
+public class InputJavadocTypeScopeInnerInterfaces // ok
 {
-    // inner interfaces with different scopes
 
-    private interface PrivateInterface
+
+    private interface PrivateInterface // ok
     {
         public String CA = "CONST A";
         String CB = "CONST b";
@@ -17,7 +22,7 @@ public class InputJavadocTypeScopeInnerInterfaces
         void mb();
     }
 
-    interface PackageInnerInterface
+    interface PackageInnerInterface // ok
     {
         public String CA = "CONST A";
         String CB = "CONST b";
@@ -26,7 +31,7 @@ public class InputJavadocTypeScopeInnerInterfaces
         void mb();
     }
 
-    protected interface ProtectedInnerInterface
+    protected interface ProtectedInnerInterface // ok
     {
         public String CA = "CONST A";
         String CB = "CONST b";
@@ -35,7 +40,7 @@ public class InputJavadocTypeScopeInnerInterfaces
         void mb();
     }
 
-    public interface PublicInnerInterface
+    public interface PublicInnerInterface // ok
     {
         public String CA = "CONST A";
         String CB = "CONST b";

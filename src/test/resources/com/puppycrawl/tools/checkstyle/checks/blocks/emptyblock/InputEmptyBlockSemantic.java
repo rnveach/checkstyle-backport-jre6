@@ -1,17 +1,13 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: 2001
-////////////////////////////////////////////////////////////////////////////////
 package com.puppycrawl.tools.checkstyle.checks.blocks.emptyblock;
 
 import java.io.*; // star import for instantiation tests
 import java.awt.Dimension; // explicit import for instantiation tests
 import java.awt.Color;
 
+/* Config = default */
 /**
  * Test case for detecting empty block statements.
- * @author Lars Kühne
- **/
+**/
 class InputEmptyBlockSemantic
 {
     static {
@@ -30,20 +26,20 @@ class InputEmptyBlockSemantic
 
     void exHandlerTest()
     {
-        try {
+        try {   // violation
         }
-        finally {
+        finally {   // violation
         }
-        try {
+        try {   // violation
         // something
         }
-        finally {
+        finally {   // violation
             // something
         }
-        try {
+        try {   // ok
             ; // something
         }
-        finally {
+        finally {   // ok
             ; // statement
         }
     }
@@ -60,7 +56,7 @@ class InputEmptyBlockSemantic
     }
 
     // empty instance initializer
-    {
+    {   // violation
     }
 
     private class InputBraces {
@@ -68,10 +64,10 @@ class InputEmptyBlockSemantic
     }
 
     synchronized void foo() {
-        synchronized (this) {} // not OK
-        synchronized (Class.class) { // OK
-            synchronized (new Object()) {
-                // not OK if checking statements
+        synchronized (this) {}  // violation
+        synchronized (Class.class) { // ok
+            synchronized (new Object()) {   // violation
+                // text
             }
         }
     }
@@ -81,7 +77,7 @@ class InputEmptyBlockSemantic
 
     int a = 0;}
 
-    static {
+    static {    // violation
 
     }
 }

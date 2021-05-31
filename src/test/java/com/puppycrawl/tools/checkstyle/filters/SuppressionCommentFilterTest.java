@@ -44,7 +44,7 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
-import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.api.Violation;
 import com.puppycrawl.tools.checkstyle.checks.coding.IllegalCatchCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.AbstractNameCheck;
 import com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck;
@@ -390,7 +390,7 @@ public class SuppressionCommentFilterTest
     }
 
     @Test
-    public void testAcceptNullLocalizedMessage() {
+    public void testAcceptNullViolation() {
         final SuppressionCommentFilter filter = new SuppressionCommentFilter();
         final FileContents contents = new FileContents(new FileText(new File("filename"),
                 Arrays.asList("//CHECKSTYLE:OFF: ConstantNameCheck", "line2")));
@@ -406,7 +406,7 @@ public class SuppressionCommentFilterTest
         final SuppressionCommentFilter filter = new SuppressionCommentFilter();
         final FileContents contents = null;
         final TreeWalkerAuditEvent auditEvent = new TreeWalkerAuditEvent(contents, null,
-                new LocalizedMessage(1, null, null, null, null, Object.class, null), null);
+                new Violation(1, null, null, null, null, Object.class, null), null);
         assertTrue(filter.accept(auditEvent), "Filter should accept audit event");
     }
 
@@ -417,7 +417,7 @@ public class SuppressionCommentFilterTest
         filterConfig.addAttribute("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
         filterConfig.addAttribute("onCommentFormat", "CSON (\\w+)");
         filterConfig.addAttribute("checkFormat", "MemberNameCheck");
-        final String[] suppressedViolationMessages = {
+        final String[] suppressedViolation = {
             "6:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
@@ -425,7 +425,7 @@ public class SuppressionCommentFilterTest
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "line_length", "^[a-z][a-zA-Z0-9]*$"),
             };
-        final String[] expectedViolationMessages = {
+        final String[] expectedViolation = {
             "6:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
@@ -447,7 +447,7 @@ public class SuppressionCommentFilterTest
             };
 
         verifySuppressed(filterConfig, getPath("InputSuppressionCommentFilterSuppressById.java"),
-                expectedViolationMessages, suppressedViolationMessages);
+                expectedViolation, suppressedViolation);
     }
 
     @Test
@@ -457,7 +457,7 @@ public class SuppressionCommentFilterTest
         filterConfig.addAttribute("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
         filterConfig.addAttribute("onCommentFormat", "CSON (\\w+)");
         filterConfig.addAttribute("idFormat", "$1");
-        final String[] suppressedViolationMessages = {
+        final String[] suppressedViolation = {
             "6:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
@@ -465,7 +465,7 @@ public class SuppressionCommentFilterTest
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "line_length", "^[a-z][a-zA-Z0-9]*$"),
             };
-        final String[] expectedViolationMessages = {
+        final String[] expectedViolation = {
             "6:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
@@ -487,7 +487,7 @@ public class SuppressionCommentFilterTest
             };
 
         verifySuppressed(filterConfig, getPath("InputSuppressionCommentFilterSuppressById.java"),
-                expectedViolationMessages, suppressedViolationMessages);
+                expectedViolation, suppressedViolation);
     }
 
     @Test
@@ -498,7 +498,7 @@ public class SuppressionCommentFilterTest
         filterConfig.addAttribute("onCommentFormat", "CSON (\\w+)");
         filterConfig.addAttribute("checkFormat", "MemberNameCheck");
         filterConfig.addAttribute("idFormat", "$1");
-        final String[] suppressedViolationMessages = {
+        final String[] suppressedViolation = {
             "6:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
@@ -506,7 +506,7 @@ public class SuppressionCommentFilterTest
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "line_length", "^[a-z][a-zA-Z0-9]*$"),
             };
-        final String[] expectedViolationMessages = {
+        final String[] expectedViolation = {
             "6:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
@@ -528,7 +528,7 @@ public class SuppressionCommentFilterTest
             };
 
         verifySuppressed(filterConfig, getPath("InputSuppressionCommentFilterSuppressById.java"),
-                expectedViolationMessages, suppressedViolationMessages);
+                expectedViolation, suppressedViolation);
     }
 
     @Test
@@ -539,12 +539,12 @@ public class SuppressionCommentFilterTest
         filterConfig.addAttribute("onCommentFormat", "CSON (\\w+)");
         filterConfig.addAttribute("idFormat", "$1");
         filterConfig.addAttribute("messageFormat", "$2");
-        final String[] suppressedViolationMessages = {
+        final String[] suppressedViolation = {
             "18:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "DEF", "^[a-z][a-zA-Z0-9]*$"),
             };
-        final String[] expectedViolationMessages = {
+        final String[] expectedViolation = {
             "6:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
@@ -566,7 +566,7 @@ public class SuppressionCommentFilterTest
             };
 
         verifySuppressed(filterConfig, getPath("InputSuppressionCommentFilterSuppressById.java"),
-                expectedViolationMessages, suppressedViolationMessages);
+                expectedViolation, suppressedViolation);
     }
 
     @Test
@@ -577,12 +577,12 @@ public class SuppressionCommentFilterTest
         filterConfig.addAttribute("onCommentFormat", "CSON (\\w+)");
         filterConfig.addAttribute("checkFormat", "MemberNameCheck");
         filterConfig.addAttribute("messageFormat", "$2");
-        final String[] suppressedViolationMessages = {
+        final String[] suppressedViolation = {
             "18:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "DEF", "^[a-z][a-zA-Z0-9]*$"),
             };
-        final String[] expectedViolationMessages = {
+        final String[] expectedViolation = {
             "6:17: "
                 + getCheckMessage(AbstractNameCheck.class,
                     MSG_INVALID_PATTERN, "A1", "^[a-z][a-zA-Z0-9]*$"),
@@ -604,7 +604,7 @@ public class SuppressionCommentFilterTest
             };
 
         verifySuppressed(filterConfig, getPath("InputSuppressionCommentFilterSuppressById.java"),
-                expectedViolationMessages, suppressedViolationMessages);
+                expectedViolation, suppressedViolation);
     }
 
     @Test
@@ -614,7 +614,7 @@ public class SuppressionCommentFilterTest
                 Arrays.asList("//CHECKSTYLE:OFF: ConstantNameCheck", "line2")));
         contents.reportSingleLineComment(1, 0);
         final TreeWalkerAuditEvent dummyEvent = new TreeWalkerAuditEvent(contents, "filename",
-                new LocalizedMessage(1, null, null, null, null, Object.class, null), null);
+                new Violation(1, null, null, null, null, Object.class, null), null);
         final boolean result = suppressionCommentFilter.accept(dummyEvent);
         assertFalse(result, "Filter should not accept event");
     }
@@ -654,7 +654,7 @@ public class SuppressionCommentFilterTest
             }
         }
         final TreeWalkerAuditEvent dummyEvent = new TreeWalkerAuditEvent(contents, filename,
-                new LocalizedMessage(1, null, null, null, null, Object.class, ""), null);
+                new Violation(1, null, null, null, null, Object.class, ""), null);
         filter.accept(dummyEvent);
         return Whitebox.getInternalState(filter, "tags");
     }
