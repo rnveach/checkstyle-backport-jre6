@@ -63,6 +63,7 @@
     <property name="id" value="header"/>
   </module>
   <module name="RegexpHeader">
+    <property name="id" value="regexpHeader"/>
     <property name="headerFile" value="${checkstyle.regexp.header.file}"/>
     <property name="fileExtensions" value="java"/>
   </module>
@@ -417,6 +418,13 @@
       <property name="query" value="//ANNOTATION[./IDENT[@text='Issue']]"/>
       <message key="matchxpath.match" value="Avoid using @Issue annotation."/>
     </module>
+    <!-- until https://github.com/checkstyle/checkstyle/issues/5234 -->
+    <module name="MatchXpath">
+      <property name="id" value="MatchXPathBranchContains"/>
+      <property name="query" value="//METHOD_CALL//DOT[.//IDENT[@text = 'branchContains']]"/>
+      <message key="matchxpath.match"
+               value="Avoid using deprecated method 'DetailAst.branchContains()'."/>
+    </module>
     <module name="MissingCtor">
       <!--
         we will not use that fanatic validation, extra code is not good
@@ -734,9 +742,14 @@
     <module name="IllegalIdentifierName"/>
 
     <!-- Regexp -->
-    <module name="Regexp"/>
-    <module name="RegexpSinglelineJava"/>
+    <module name="Regexp">
+      <property name="id" value="regexpDefault"/>
+    </module>
     <module name="RegexpSinglelineJava">
+      <property name="id" value="regexpSingleLineDefault"/>
+    </module>
+    <module name="RegexpSinglelineJava">
+      <property name="id" value="checkASCII"/>
       <property name="format" value="[^\p{ASCII}]"/>
       <property name="ignoreComments" value="true"/>
     </module>

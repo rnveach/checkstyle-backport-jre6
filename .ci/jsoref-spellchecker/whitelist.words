@@ -91,6 +91,7 @@ avoidstarimport
 avoidstaticimport
 aws
 awt
+azurewebsites
 backend
 backport
 Backquote
@@ -491,6 +492,7 @@ gradlew
 Grenner
 grep
 grepped
+groupon
 grp
 Gsp
 GString
@@ -535,6 +537,7 @@ icu
 identifiernames
 Idref
 idx
+ietf
 Igno
 IGNORETHIS
 igorminar
@@ -920,6 +923,7 @@ onevariableperline
 oo
 OOL
 oopsla
+OOQ
 opencollective
 openjdk
 openstreetmap
@@ -997,6 +1001,7 @@ pmdruleset
 PModel
 png
 Pno
+poetix
 Pointcut
 POJO
 Popup
@@ -1066,6 +1071,7 @@ Rethrown
 returncount
 reviewdog
 revwalk
+rfc
 rfe
 rga
 Rgb
@@ -1093,6 +1099,8 @@ rw
 rx
 sabaka
 Sameline
+sariflogger
+sarifweb
 Savinov
 saxonica
 sbe
@@ -1297,7 +1305,7 @@ utf
 UUID
 UWF
 uxxxx
-Validator
+validator
 VALUEEEE
 vararg
 variabledeclarationusagedistance

@@ -71,7 +71,7 @@ import com.puppycrawl.tools.checkstyle.jre6.util.Collections7;
 public class CommitValidationTest {
 
     private static final List<String> USERS_EXCLUDED_FROM_VALIDATION =
-            Arrays.asList("Roman Ivanov", "rnveach", "dependabot-preview[bot]");
+            Arrays.asList("Roman Ivanov", "rnveach", "dependabot[bot]");
 
     private static final String ISSUE_COMMIT_MESSAGE_REGEX_PATTERN = "^Issue #\\d+: .*$";
     private static final String PR_COMMIT_MESSAGE_REGEX_PATTERN = "^Pull #\\d+: .*$";
