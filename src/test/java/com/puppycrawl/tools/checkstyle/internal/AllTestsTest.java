@@ -250,7 +250,9 @@ public class AllTestsTest {
                     // JavadocMetadataScraper and related classes are temporarily hosted in test
                     && !filePath.contains("meta")
                     // junit 5 wrapper class
-                    && !filePath.contains(File.separatorChar + "jupiter" + File.separatorChar)) {
+                    && !filePath.contains(File.separatorChar + "jupiter" + File.separatorChar)
+                    // InlineConfigParser is hosted in test
+                    && !filePath.contains("bdd")) {
                 final String path;
 
                 try {

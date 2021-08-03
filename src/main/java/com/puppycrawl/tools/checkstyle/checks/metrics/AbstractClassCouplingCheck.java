@@ -86,6 +86,9 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
     /** Package names to ignore. */
     private static final Set<String> DEFAULT_EXCLUDED_PACKAGES = Collections.emptySet();
 
+    /** Pattern to match brackets in a full type name. */
+    private static final Pattern BRACKET_PATTERN = Pattern.compile("\\[[^]]*]");
+
     /** Specify user-configured regular expressions to ignore classes. */
     private final List<Pattern> excludeClassesRegexps = new ArrayList<Pattern>();
 
@@ -384,7 +387,9 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
          */
         public void visitType(DetailAST ast) {
             final String fullTypeName = CheckUtil.createFullType(ast).getText();
-            addReferencedClassName(fullTypeName);
+            final String trimmed = BRACKET_PATTERN
+                    .matcher(fullTypeName).replaceAll("");
+            addReferencedClassName(trimmed);
         }
 
         /**
@@ -403,7 +408,9 @@ public abstract class AbstractClassCouplingCheck extends AbstractCheck {
          */
         private void addReferencedClassName(DetailAST ast) {
             final String fullIdentName = FullIdent.createFullIdent(ast).getText();
-            addReferencedClassName(fullIdentName);
+            final String trimmed = BRACKET_PATTERN
+                    .matcher(fullIdentName).replaceAll("");
+            addReferencedClassName(trimmed);
         }
 
         /**

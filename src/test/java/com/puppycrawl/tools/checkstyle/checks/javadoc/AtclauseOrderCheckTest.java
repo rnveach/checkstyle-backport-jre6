@@ -162,6 +162,19 @@ public class AtclauseOrderCheckTest extends AbstractModuleTestSupport {
     }
 
     @Test
+    public void testMethodReturningArrayType() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(AtclauseOrderCheck.class);
+        final String tagOrder = "[@author, @version, @param, @return, @throws, @exception, @see,"
+                + " @since, @serial, @serialField, @serialData, @deprecated]";
+        final String[] expected = {
+            "11: " + getCheckMessage(MSG_KEY, tagOrder),
+            "23: " + getCheckMessage(MSG_KEY, tagOrder),
+            "24: " + getCheckMessage(MSG_KEY, tagOrder),
+        };
+        verify(checkConfig, getPath("InputAtclauseOrderMethodReturningArrayType.java"), expected);
+    }
+
+    @Test
     public void testAtclauseOrderLotsOfRecords() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(AtclauseOrderCheck.class);
         checkConfig.addAttribute("target", "CLASS_DEF , INTERFACE_DEF , ENUM_DEF , METHOD_DEF ,"
@@ -175,4 +188,54 @@ public class AtclauseOrderCheckTest extends AbstractModuleTestSupport {
         verify(checkConfig, getNonCompilablePath("InputAtclauseOrderLotsOfRecords.java"), expected);
     }
 
+    @Test
+    public void testAtclause() throws Exception {
+        final String tagOrder = "[@author, @version, @param, @return, @throws, @exception, @see,"
+                + " @since, @serial, @serialField, @serialData, @deprecated]";
+        final DefaultConfiguration checkConfig = createModuleConfig(AtclauseOrderCheck.class);
+        final String[] expected = {
+            "12: " + getCheckMessage(MSG_KEY, tagOrder),
+            "13: " + getCheckMessage(MSG_KEY, tagOrder),
+            "14: " + getCheckMessage(MSG_KEY, tagOrder),
+            "24: " + getCheckMessage(MSG_KEY, tagOrder),
+            "25: " + getCheckMessage(MSG_KEY, tagOrder),
+            "26: " + getCheckMessage(MSG_KEY, tagOrder),
+            "36: " + getCheckMessage(MSG_KEY, tagOrder),
+            "37: " + getCheckMessage(MSG_KEY, tagOrder),
+            "38: " + getCheckMessage(MSG_KEY, tagOrder),
+            "51: " + getCheckMessage(MSG_KEY, tagOrder),
+            "52: " + getCheckMessage(MSG_KEY, tagOrder),
+            "53: " + getCheckMessage(MSG_KEY, tagOrder),
+            "65: " + getCheckMessage(MSG_KEY, tagOrder),
+            "66: " + getCheckMessage(MSG_KEY, tagOrder),
+            "67: " + getCheckMessage(MSG_KEY, tagOrder),
+            "80: " + getCheckMessage(MSG_KEY, tagOrder),
+            "81: " + getCheckMessage(MSG_KEY, tagOrder),
+            "82: " + getCheckMessage(MSG_KEY, tagOrder),
+            "92: " + getCheckMessage(MSG_KEY, tagOrder),
+            "93: " + getCheckMessage(MSG_KEY, tagOrder),
+            "94: " + getCheckMessage(MSG_KEY, tagOrder),
+        };
+
+        verify(checkConfig,
+                getPath("InputAtclauseOrderWithAnnotationsOutsideJavadoc.java"), expected);
+    }
+
+    @Test
+    public void testNewArrayDeclaratorStructure() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(AtclauseOrderCheck.class);
+        final String tagOrder = "[@author, @version, @param, @return, @throws, @exception, @see,"
+                + " @since, @serial, @serialField, @serialData, @deprecated]";
+
+        final String[] expected = {
+            "32: " + getCheckMessage(MSG_KEY, tagOrder),
+            "49: " + getCheckMessage(MSG_KEY, tagOrder),
+            "69: " + getCheckMessage(MSG_KEY, tagOrder),
+            "70: " + getCheckMessage(MSG_KEY, tagOrder),
+            "71: " + getCheckMessage(MSG_KEY, tagOrder),
+        };
+
+        verify(checkConfig,
+                getPath("InputAtclauseOrderNewArrayDeclaratorStructure.java"), expected);
+    }
 }

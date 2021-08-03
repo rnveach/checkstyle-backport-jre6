@@ -341,34 +341,28 @@ public class SummaryJavadocCheck extends AbstractJavadocCheck {
      * @return {@code true} if first sentence contains @summary tag.
      */
     private static boolean containsSummaryTag(DetailNode javadoc) {
-        final DetailNode node = getFirstInlineTag(javadoc);
-        return node != null && isSummaryTag(node);
-    }
-
-    /**
-     * Finds and returns the first inline tag node from a javadoc root node.
-     *
-     * @param javadoc javadoc root node.
-     * @return first inline tag node or null if no node is found.
-     */
-    private static DetailNode getFirstInlineTag(DetailNode javadoc) {
-        DetailNode node = null;
-        final DetailNode[] children = javadoc.getChildren();
-        for (DetailNode child: children) {
-            // If present as a children of javadoc
-            if (child.getType() == JavadocTokenTypes.JAVADOC_INLINE_TAG) {
-                node = child;
-            }
-            // If nested inside html tag
-            else if (child.getType() == JavadocTokenTypes.HTML_ELEMENT) {
-                node = getInlineTagNodeWithinHtmlElement(child);
-            }
-
-            if (node != null) {
+        boolean result = false;
+        for (DetailNode child : javadoc.getChildren()) {
+            if (isInlineTagPresent(child)) {
+                final DetailNode node = getInlineTagNodeWithinHtmlElement(child);
+                result = isSummaryTag(node);
                 break;
             }
         }
-        return node;
+
+        return result;
+    }
+
+    /**
+     * Checks if the inline tag node is present.
+     *
+     * @param ast ast node to check.
+     * @return true, if the inline tag node is present.
+     */
+    private static boolean isInlineTagPresent(DetailNode ast) {
+        return ast.getType() == JavadocTokenTypes.JAVADOC_INLINE_TAG
+                || ast.getType() == JavadocTokenTypes.HTML_ELEMENT
+                && getInlineTagNodeWithinHtmlElement(ast) != null;
     }
 
     /**

@@ -35,6 +35,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
@@ -111,6 +113,25 @@ public final class Files7 {
         }
         finally {
             f.close();
+        }
+    }
+
+    public static List<String> readAllLines(Path filePath) throws IOException {
+        final BufferedReader reader = newBufferedReader(filePath, StandardCharsets.UTF_8);
+        try {
+            final List<String> result = new ArrayList<String>();
+            for (;;) {
+                final String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                result.add(line);
+            }
+            return result;
+        }
+        finally {
+            reader.close();
         }
     }
 

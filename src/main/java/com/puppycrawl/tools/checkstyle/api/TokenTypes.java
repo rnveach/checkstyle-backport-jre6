@@ -507,14 +507,14 @@ public final class TokenTypes {
      * </pre>
      * <p>parses as:</p>
      * <pre>
-     * |--VARIABLE_DEF -&gt; VARIABLE_DEF
-     * |   |--MODIFIERS -&gt; MODIFIERS
-     * |   |--TYPE -&gt; TYPE
-     * |   |   `--ARRAY_DECLARATOR -&gt; [
-     * |   |       |--LITERAL_INT -&gt; int
-     * |   |       `--RBRACK -&gt; ]
-     * |   |--IDENT -&gt; x
-     * |--SEMI -&gt; ;
+     * VARIABLE_DEF -&gt; VARIABLE_DEF
+     *  |--MODIFIERS -&gt; MODIFIERS
+     *  |--TYPE -&gt; TYPE
+     *  |   |--LITERAL_INT -&gt; int
+     *  |   `--ARRAY_DECLARATOR -&gt; [
+     *  |       `--RBRACK -&gt; ]
+     *  |--IDENT -&gt; x
+     *  `--SEMI -&gt; ;
      * </pre>
      *
      * <p>The array declaration may also represent an inline array
@@ -951,23 +951,23 @@ public final class TokenTypes {
      * </pre>
      * <p>parses as:</p>
      * <pre>
-     * |--VARIABLE_DEF -&gt; VARIABLE_DEF
-     * |   |--MODIFIERS -&gt; MODIFIERS
-     * |   |--TYPE -&gt; TYPE
-     * |   |   `--ARRAY_DECLARATOR -&gt; [
-     * |   |       |--LITERAL_INT -&gt; int
-     * |   |       `--RBRACK -&gt; ]
-     * |   |--IDENT -&gt; y
-     * |   `--ASSIGN -&gt; =
-     * |       `--ARRAY_INIT -&gt; {
-     * |           |--EXPR -&gt; EXPR
-     * |           |   `--NUM_INT -&gt; 1
-     * |           |--COMMA -&gt; ,
-     * |           |--EXPR -&gt; EXPR
-     * |           |   `--NUM_INT -&gt; 2
-     * |           |--COMMA -&gt; ,
-     * |           `--RCURLY -&gt; }
-     * |--SEMI -&gt; ;
+     * VARIABLE_DEF -&gt; VARIABLE_DEF
+     *  |--MODIFIERS -&gt; MODIFIERS
+     *  |--TYPE -&gt; TYPE
+     *  |   |--LITERAL_INT -&gt; int
+     *  |   `--ARRAY_DECLARATOR -&gt; [
+     *  |       `--RBRACK -&gt; ]
+     *  |--IDENT -&gt; y
+     *  |--ASSIGN -&gt; =
+     *  |   `--ARRAY_INIT -&gt; {
+     *  |       |--EXPR -&gt; EXPR
+     *  |       |   `--NUM_INT -&gt; 1
+     *  |       |--COMMA -&gt; ,
+     *  |       |--EXPR -&gt; EXPR
+     *  |       |   `--NUM_INT -&gt; 2
+     *  |       |--COMMA -&gt; ,
+     *  |       `--RCURLY -&gt; }
+     *  `--SEMI -&gt; ;
      * </pre>
      *
      * <p>Also consider:</p>
@@ -980,28 +980,28 @@ public final class TokenTypes {
      * </pre>
      * <p>which parses as:</p>
      * <pre>
-     * |--VARIABLE_DEF -&gt; VARIABLE_DEF
-     * |   |--MODIFIERS -&gt; MODIFIERS
-     * |   |--TYPE -&gt; TYPE
-     * |   |   `--ARRAY_DECLARATOR -&gt; [
-     * |   |       |--LITERAL_INT -&gt; int
-     * |   |       `--RBRACK -&gt; ]
-     * |   |--IDENT -&gt; z
-     * |   `--ASSIGN -&gt; =
-     * |       `--EXPR -&gt; EXPR
-     * |           `--LITERAL_NEW -&gt; new
-     * |               |--LITERAL_INT -&gt; int
-     * |               |--ARRAY_DECLARATOR -&gt; [
-     * |               |   `--RBRACK -&gt; ]
-     * |               `--ARRAY_INIT -&gt; {
-     * |                   |--EXPR -&gt; EXPR
-     * |                   |   `--NUM_INT -&gt; 1
-     * |                   |--COMMA -&gt; ,
-     * |                   |--EXPR -&gt; EXPR
-     * |                   |   `--NUM_INT -&gt; 2
-     * |                   |--COMMA -&gt; ,
-     * |                   `--RCURLY -&gt; }
-     * |--SEMI -&gt; ;
+     * VARIABLE_DEF -&gt; VARIABLE_DEF
+     *  |--MODIFIERS -&gt; MODIFIERS
+     *  |--TYPE -&gt; TYPE [2:4]
+     *  |   |--LITERAL_INT -&gt; int
+     *  |   `--ARRAY_DECLARATOR -&gt; [
+     *  |       `--RBRACK -&gt; ]
+     *  |--IDENT -&gt; z
+     *  |--ASSIGN -&gt; =
+     *  |   `--EXPR -&gt; EXPR
+     *  |       `--LITERAL_NEW -&gt; new
+     *  |           |--LITERAL_INT -&gt; int
+     *  |           |--ARRAY_DECLARATOR -&gt; [
+     *  |           |   `--RBRACK -&gt; ]
+     *  |           `--ARRAY_INIT -&gt; {
+     *  |               |--EXPR -&gt; EXPR
+     *  |               |   `--NUM_INT -&gt; 1
+     *  |               |--COMMA -&gt; ,
+     *  |               |--EXPR -&gt; EXPR
+     *  |               |   `--NUM_INT -&gt; 2
+     *  |               |--COMMA -&gt; ,
+     *  |               `--RCURLY -&gt; }
+     *  `--SEMI -&gt; ;
      * </pre>
      *
      * @see #ARRAY_DECLARATOR
@@ -1103,35 +1103,27 @@ public final class TokenTypes {
      * </pre>
      * <p>parses as:</p>
      * <pre>
-     * +--CASE_GROUP
-     *     |
-     *     +--LITERAL_CASE (case)
-     *         |
-     *         +--EXPR
-     *             |
-     *             +--NUM_INT (0)
-     *     +--LITERAL_CASE (case)
-     *         |
-     *         +--EXPR
-     *             |
-     *             +--NUM_INT (1)
-     *     +--LITERAL_CASE (case)
-     *         |
-     *         +--EXPR
-     *             |
-     *             +--NUM_INT (2)
-     *     +--SLIST
-     *         |
-     *         +--EXPR
-     *             |
-     *             +--ASSIGN (=)
-     *                 |
-     *                 +--IDENT (x)
-     *                 +--NUM_INT (3)
-     *         +--SEMI (;)
-     *         +--LITERAL_BREAK (break)
-     *             |
-     *             +--SEMI (;)
+     * CASE_GROUP -&gt; CASE_GROUP
+     *  |--LITERAL_CASE -&gt; case
+     *  |   |--EXPR -&gt; EXPR
+     *  |   |   `--NUM_INT -&gt; 0
+     *  |   `--COLON -&gt; :
+     *  |--LITERAL_CASE -&gt; case
+     *  |   |--EXPR -&gt; EXPR
+     *  |   |   `--NUM_INT -&gt; 1
+     *  |   `--COLON -&gt; :
+     *  |--LITERAL_CASE -&gt; case
+     *  |   |--EXPR -&gt; EXPR
+     *  |   |   `--NUM_INT -&gt; 2
+     *  |   `--COLON -&gt; :
+     *  `--SLIST -&gt; SLIST
+     *      |--EXPR -&gt; EXPR
+     *      |   `--ASSIGN -&gt; =
+     *      |       |--IDENT -&gt; x
+     *      |       `--NUM_INT -&gt; 3
+     *      |--SEMI -&gt; ;
+     *      `--LITERAL_BREAK -&gt; break
+     *          `--SEMI -&gt; ;
      * </pre>
      *
      * @see #LITERAL_CASE
@@ -1455,14 +1447,14 @@ public final class TokenTypes {
      * </pre>
      * <p>parses as:</p>
      * <pre>
-     * |--VARIABLE_DEF -&gt; VARIABLE_DEF
-     * |   |--MODIFIERS -&gt; MODIFIERS
-     * |   |--TYPE -&gt; TYPE
-     * |   |   `--ARRAY_DECLARATOR -&gt; [
-     * |   |       |--LITERAL_INT -&gt; int
-     * |   |       `--RBRACK -&gt; ]
-     * |   `--IDENT -&gt; a
-     * |--SEMI -&gt; ;
+     * VARIABLE_DEF -&gt; VARIABLE_DEF
+     *  |--MODIFIERS -&gt; MODIFIERS
+     *  |--TYPE -&gt; TYPE
+     *  |   |--LITERAL_INT -&gt; int
+     *  |   `--ARRAY_DECLARATOR -&gt; [
+     *  |       `--RBRACK -&gt; ]
+     *  |--IDENT -&gt; a
+     *  `--SEMI -&gt; ;
      * </pre>
      *
      * @see #INDEX_OP
@@ -1500,6 +1492,21 @@ public final class TokenTypes {
 
     /**
      * The {@code byte} keyword.
+     *
+     * <p>For example:</p>
+     * <pre>
+     * public byte x;
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * VARIABLE_DEF -&gt; VARIABLE_DEF
+     *  |--MODIFIERS -&gt; MODIFIERS
+     *  |   `--LITERAL_PUBLIC -&gt; public
+     *  |--TYPE -&gt; TYPE
+     *  |   `--LITERAL_BYTE -&gt; byte
+     *  |--IDENT -&gt; x
+     *  `--SEMI -&gt; ;
+     * </pre>
      *
      * @see #TYPE
      **/
@@ -4456,18 +4463,17 @@ public final class TokenTypes {
      * <p>parses as:</p>
      *
      * <pre>
-     * +--ANNOTATION_FIELD_DEF
-     *     |
-     *     +--MODIFIERS
-     *     +--TYPE
-     *         |
-     *         +--IDENT (String)
-     *     +--IDENT (someField)
-     *     +--LPAREN (()
-     *     +--RPAREN ())
-     *     +--LITERAL_DEFAULT (default)
-     *     +--STRING_LITERAL ("Hello world")
-     *     +--SEMI (;)
+     * ANNOTATION_FIELD_DEF -&gt; ANNOTATION_FIELD_DEF
+     *  |--MODIFIERS -&gt; MODIFIERS
+     *  |--TYPE -&gt; TYPE
+     *  |   `--IDENT -&gt; String
+     *  |--IDENT -&gt; someField
+     *  |--LPAREN -&gt; (
+     *  |--RPAREN -&gt; )
+     *  |--LITERAL_DEFAULT -&gt; default
+     *  |   `--EXPR -&gt; EXPR
+     *  |       `--STRING_LITERAL -&gt; "Hello world"
+     *  `--SEMI -&gt; ;
      * </pre>
      *
      * @see <a href="https://www.jcp.org/en/jsr/detail?id=201">
@@ -5252,7 +5258,7 @@ public final class TokenTypes {
      * |   `--ASSIGN -&gt; =
      * |       `--EXPR -&gt; EXPR
      * |           `--TEXT_BLOCK_LITERAL_BEGIN -&gt; """
-     * |               |--TEXT_BLOCK_CONTENT -&gt; \n                Hello, world!\n
+     * |               |--TEXT_BLOCK_CONTENT -&gt; \r\n                 Hello, world!\r\n
      * |               `--TEXT_BLOCK_LITERAL_END -&gt; """
      * |--SEMI -&gt; ;
      * </pre>

@@ -19,8 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,16 +32,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.puppycrawl.tools.checkstyle.api.Violation;
+import com.puppycrawl.tools.checkstyle.bdd.InlineConfigParser;
+import com.puppycrawl.tools.checkstyle.bdd.InputConfiguration;
 import com.puppycrawl.tools.checkstyle.internal.utils.BriefUtLogger;
 import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.ModuleReflectionUtil;
@@ -214,6 +217,25 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
     }
 
     /**
+     * Performs verification of the file with the given file path using specified configuration
+     * and the array expected messages. Also performs verification of the config specified in
+     * input file.
+     *
+     * @param aConfig configuration.
+     * @param filePath file path to verify.
+     * @param expected an array of expected messages.
+     * @throws Exception if exception occurs during verification process.
+     */
+    protected final void verifyWithInlineConfigParser(Configuration aConfig,
+                                             String filePath, String... expected)
+            throws Exception {
+        final InputConfiguration inputConfiguration = InlineConfigParser.parse(filePath);
+        final Configuration parsedConfig = inputConfiguration.createConfiguration();
+        verifyConfig(aConfig, parsedConfig, inputConfiguration);
+        verify(parsedConfig, filePath, expected);
+    }
+
+    /**
      * Performs verification of the file with the given file name. Uses specified configuration.
      * Expected messages are represented by the array of strings.
      * This implementation uses overloaded
@@ -270,8 +292,8 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
     }
 
     /**
-     *  We keep two verify methods with separate logic only for convenience of debugging.
-     *  We have minimum amount of multi-file test cases.
+     *  Performs verification of the given files against the array of
+     *  expected messages using the provided {@link Checker} instance.
      *
      *  @param checker {@link Checker} instance.
      *  @param processedFiles list of files to verify.
@@ -284,42 +306,9 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                           String messageFileName,
                           String... expected)
             throws Exception {
-        stream.flush();
-        stream.reset();
-        final List<File> theFiles = new ArrayList<File>();
-        Collections.addAll(theFiles, processedFiles);
-        final int errs = checker.process(theFiles);
-
-        // process each of the lines
-        final ByteArrayInputStream inputStream =
-                new ByteArrayInputStream(stream.toByteArray());
-        final LineNumberReader lnr = new LineNumberReader(
-                new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        try {
-            final List<String> actuals = new ArrayList<String>();
-            if (expected.length > 0) {
-                for (String line = lnr.readLine(); line != null && lnr.getLineNumber() <= expected.length;
-                        line = lnr.readLine()) {
-                    actuals.add(line);
-                }
-            }
-            Collections.sort(actuals);
-            Arrays.sort(expected);
-
-            for (int i = 0; i < expected.length; i++) {
-                final String expectedResult = messageFileName + ":" + expected[i];
-                assertEquals("error message " + i, expectedResult, actuals.get(i));
-            }
-
-            assertEquals("unexpected output: " + lnr.readLine(),
-                    expected.length, errs);
-        }
-        finally {
-            inputStream.close();
-            lnr.close();
-        }
-
-        checker.destroy();
+        final Map<String, List<String>> expectedViolations = new HashMap<String, List<String>>();
+        expectedViolations.put(messageFileName, Arrays.asList(expected));
+        verify(checker, processedFiles, expectedViolations);
     }
 
     /**
@@ -349,39 +338,45 @@ public abstract class AbstractModuleTestSupport extends AbstractPathTestSupport 
                         return !input.isEmpty();
                     }
                 });
-        final MapDifference<String, List<String>> violationDifferences =
-                Maps.difference(realExpectedViolations, actualViolations);
 
-        final Map<String, List<String>> missingViolations =
-                violationDifferences.entriesOnlyOnLeft();
-        final Map<String, List<String>> unexpectedViolations =
-                violationDifferences.entriesOnlyOnRight();
-        final Map<String, MapDifference.ValueDifference<List<String>>> differingViolations =
-                violationDifferences.entriesDiffering();
+        assertWithMessage("Files with expected violations and actual violations differ.")
+            .that(actualViolations.keySet())
+            .isEqualTo(realExpectedViolations.keySet());
 
-        final StringBuilder message = new StringBuilder(256);
-        if (!missingViolations.isEmpty()) {
-            message.append("missing violations: ").append(missingViolations);
+        for (Entry<String, List<String>> entry : realExpectedViolations.entrySet()) {
+            assertWithMessage("Violations for %s differ.", entry.getKey())
+                .that(actualViolations.get(entry.getKey()))
+                .containsExactlyElementsIn(entry.getValue());
         }
-        if (!unexpectedViolations.isEmpty()) {
-            if (message.length() > 0) {
-                message.append('\n');
-            }
-            message.append("unexpected violations: ").append(unexpectedViolations);
-        }
-        if (!differingViolations.isEmpty()) {
-            if (message.length() > 0) {
-                message.append('\n');
-            }
-            message.append("differing violations: ").append(differingViolations);
-        }
-
-        assertTrue(message.toString(),
-                missingViolations.isEmpty()
-                        && unexpectedViolations.isEmpty()
-                        && differingViolations.isEmpty());
 
         checker.destroy();
+    }
+
+    /**
+     * Performs verification of the config read from input file.
+     *
+     * @param testConfig hardcoded test config.
+     * @param parsedConfig parsed config from input file.
+     */
+    private static void verifyConfig(Configuration testConfig, Configuration parsedConfig,
+                                     InputConfiguration inputConfiguration)
+            throws CheckstyleException {
+        assertWithMessage("Check name differs from expected.")
+                .that(testConfig.getName())
+                .isEqualTo(parsedConfig.getName());
+        for (String property : parsedConfig.getAttributeNames()) {
+            assertWithMessage("Property value for key %s differs from expected.", property)
+                    .that(testConfig.getAttribute(property))
+                    .isEqualTo(parsedConfig.getAttribute(property));
+        }
+        final List<String> testProperties =
+                new LinkedList<String>(Arrays.asList(testConfig.getAttributeNames()));
+        testProperties.removeAll(Arrays.asList(parsedConfig.getAttributeNames()));
+        for (String property : testProperties) {
+            assertWithMessage("Property value for key %s differs from expected.", property)
+                    .that(inputConfiguration.getDefaultPropertyValue(property))
+                    .isEqualTo(testConfig.getAttribute(property));
+        }
     }
 
     private Map<String, List<String>> getActualViolations(int errorCount) throws IOException {
