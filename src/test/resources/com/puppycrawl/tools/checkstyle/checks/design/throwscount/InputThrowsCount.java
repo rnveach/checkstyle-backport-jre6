@@ -1,3 +1,11 @@
+/*
+ThrowsCount
+max = (default)4
+ignorePrivateMethods = (default)true
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.design.throwscount;
 
 import java.awt.AWTException;
@@ -14,17 +22,17 @@ public class InputThrowsCount {
     {
     }
 
-    void method3() throws Exception, AWTException, SQLException,
+    void method3() throws Exception, AWTException, SQLException, // violation
             FileNotFoundException, EOFException
     {
     }
 
-    void method4() throws Exception, java.awt.AWTException, java.sql.SQLException,
+    void method4() throws Exception, java.awt.AWTException, java.sql.SQLException, // violation
             java.io.FileNotFoundException, java.io.EOFException
     {
     }
 
-    void method5() throws Exception, AWTException, Throwable, SQLException,
+    void method5() throws Exception, AWTException, Throwable, SQLException, // violation
             FileNotFoundException, EOFException
     {
     }
@@ -52,8 +60,8 @@ class SubClass extends InputThrowsCount {
     }
 
     @SuppressWarnings("deprecation")
-    final void method2(Object ...objects) throws Exception, AWTException, SQLException,
-            FileNotFoundException, EOFException{
+    final void method2(Object ...objects) throws Exception, // violation
+            AWTException, SQLException, FileNotFoundException, EOFException{
     }
 
     @java.lang.Override

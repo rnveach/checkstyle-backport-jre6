@@ -117,7 +117,7 @@ public abstract class AbstractGoogleModuleTestSupport extends AbstractItModuleTe
             result = null;
             for (Configuration conf : configs) {
                 try {
-                    if (conf.getAttribute("id").equals(moduleId)) {
+                    if (conf.getProperty("id").equals(moduleId)) {
                         result = conf;
                         break;
                     }

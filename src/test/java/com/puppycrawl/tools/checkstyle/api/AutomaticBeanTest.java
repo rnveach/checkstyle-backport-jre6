@@ -44,7 +44,7 @@ public class AutomaticBeanTest {
     public void testConfigureNoSuchAttribute() {
         final TestBean testBean = new TestBean();
         final DefaultConfiguration conf = new DefaultConfiguration("testConf");
-        conf.addAttribute("NonExistent", "doesn't matter");
+        conf.addProperty("NonExistent", "doesn't matter");
         try {
             testBean.configure(conf);
             assertWithMessage("Exception is expected")
@@ -65,7 +65,7 @@ public class AutomaticBeanTest {
     public void testConfigureNoSuchAttribute2() {
         final TestBean testBean = new TestBean();
         final DefaultConfiguration conf = new DefaultConfiguration("testConf");
-        conf.addAttribute("privateField", "doesn't matter");
+        conf.addProperty("privateField", "doesn't matter");
         try {
             testBean.configure(conf);
             assertWithMessage("Exception is expected")
@@ -205,12 +205,12 @@ public class AutomaticBeanTest {
         bean.setAccessModifiers(AccessModifierOption.PACKAGE);
 
         final DefaultConfiguration config = new DefaultConfiguration("bean");
-        config.addAttribute("strings", "a, b, c");
-        config.addAttribute("pattern", ".*");
-        config.addAttribute("severityLevel", "error");
-        config.addAttribute("scope", "public");
-        config.addAttribute("uri", "http://github.com");
-        config.addAttribute("accessModifiers", "public, private");
+        config.addProperty("strings", "a, b, c");
+        config.addProperty("pattern", ".*");
+        config.addProperty("severityLevel", "error");
+        config.addProperty("scope", "public");
+        config.addProperty("uri", "http://github.com");
+        config.addProperty("accessModifiers", "public, private");
         bean.configure(config);
 
         final String message = "invalid result";
@@ -240,7 +240,7 @@ public class AutomaticBeanTest {
     public void testBeanConvertersUri2() throws Exception {
         final ConverterBean bean = new ConverterBean();
         final DefaultConfiguration config = new DefaultConfiguration("bean");
-        config.addAttribute("uri", "");
+        config.addProperty("uri", "");
         bean.configure(config);
 
         assertWithMessage("invalid result")
@@ -252,7 +252,7 @@ public class AutomaticBeanTest {
     public void testBeanConvertersUri3() {
         final ConverterBean bean = new ConverterBean();
         final DefaultConfiguration config = new DefaultConfiguration("bean");
-        config.addAttribute("uri", "BAD");
+        config.addProperty("uri", "BAD");
 
         try {
             bean.configure(config);

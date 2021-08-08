@@ -72,6 +72,7 @@ ATest
 atid
 ation
 atlassian
+atn
 attlist
 attr
 autoboxing
@@ -303,6 +304,7 @@ detailastimpl
 detailnodetreestringprinter
 devops
 Dexec
+dfa
 Dfile
 dfn
 Dfoo
@@ -376,6 +378,7 @@ equalsavoidnull
 equalshashcode
 equalsverifier
 erial
+erreur
 ERRORLEVEL
 errorprone
 esac
@@ -579,6 +582,7 @@ intercell
 interfaceistype
 interfacememberimpliedmodifier
 interfacetypeparametername
+interp
 intqueue
 invalidformat
 invalidinherit
@@ -639,6 +643,7 @@ jayway
 JB
 JBoss
 JButton
+JCheck
 JCombo
 JComponent
 jcp
@@ -887,7 +892,9 @@ nonnull
 nonrequiredjavadoc
 nonvalidating
 noparentfile
+NOPMD
 noscript
+NOSONAR
 nospace
 Nothin
 notjava
@@ -895,6 +902,7 @@ NOTNULL
 nowarn
 nowhitespaceafter
 nowhitespacebefore
+nowhitespacebeforecasedefaultcolon
 nowildcard
 nowrap
 npath
@@ -1209,6 +1217,7 @@ suppresswarningsfilter
 suppresswarningsholder
 suppresswithnearbycommentfilter
 suppresswithplaintextcommentfilter
+survenue
 svg
 svn
 sxpath

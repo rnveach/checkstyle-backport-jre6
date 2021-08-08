@@ -1,13 +1,20 @@
+/*
+NPathComplexity
+max = 0
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.metrics.npathcomplexity;
 
 public class InputNPathComplexityDefault {
     // NP = 2
-    public void foo() {
+    public void foo() { // violation
         //NP(while-statement) = (while-range=1) + (expr=0) + 1 = 2
         while (true) {
             Runnable runnable = new Runnable() {
                // NP = 2
-                public void run() {
+                public void run() { // violation
                     // NP(while-statement) = (while-range=1) + (expr=0) + 1 = 2
                     while (true) {
                     }
@@ -19,7 +26,7 @@ public class InputNPathComplexityDefault {
     }
 
     // NP = 10
-    public void bar() {
+    public void bar() { // violation
         // NP = (if-range=3*3) + (expr=0) + 1 = 10
         if (System.currentTimeMillis() == 0) {
             //NP = (if-range=1) + 1 + (expr=1) = 3
@@ -32,7 +39,7 @@ public class InputNPathComplexityDefault {
     }
 
     // NP = 3
-    public void simpleElseIf() {
+    public void simpleElseIf() { // violation
         // NP = (if-range=1) + (else-range=2) + 0 = 3
         if (System.currentTimeMillis() == 0) {
         // NP(else-range) = (if-range=1) + (else-range=1) + (expr=0) = 2
@@ -42,7 +49,7 @@ public class InputNPathComplexityDefault {
     }
 
     // NP = 7
-    public void stupidElseIf() {
+    public void stupidElseIf() { // violation
         // NP = (if-range=1) + (else-range=3*2) + (expr=0) = 7
         if (System.currentTimeMillis() == 0) {
         } else {
@@ -60,7 +67,7 @@ public class InputNPathComplexityDefault {
     }
 
     // NP = 3
-    public InputNPathComplexityDefault()
+    public InputNPathComplexityDefault() // violation
     {
         int i = 1;
         // NP = (if-range=1) + (else-range=2) + 0 = 3
@@ -73,7 +80,7 @@ public class InputNPathComplexityDefault {
 
     // STATIC_INIT
     // NP = 3
-    static {
+    static { // violation
         int i = 1;
         // NP = (if-range=1) + (else-range=2) + 0 = 3
         if (System.currentTimeMillis() == 0) {
@@ -85,7 +92,7 @@ public class InputNPathComplexityDefault {
 
     // INSTANCE_INIT
     // NP = 3
-    {
+    { // violation
         int i = 1;
         // NP = (if-range=1) + (else-range=2) + 0 = 3
         if (System.currentTimeMillis() == 0) {
@@ -101,7 +108,7 @@ public class InputNPathComplexityDefault {
     {
         Runnable runnable = new Runnable() {
             // NP = 2
-            public void run() {
+            public void run() { // violation
                 // NP(while-statement) = (while-range=1) + (expr=0) + 1 = 2
                 while (true) {
                 }
@@ -110,7 +117,7 @@ public class InputNPathComplexityDefault {
         new Thread(runnable).start();
     }
 
-    public void InputNestedTernaryCheck() {
+    public void InputNestedTernaryCheck() { // violation
         double x = (getSmth() || Math.random() == 5) ? null : (int) Math
                 .cos(400 * (10 + 40)); // good
         double y = (0.2 == Math.random()) ? (0.3 == Math.random()) ? null : (int) Math
@@ -120,14 +127,14 @@ public class InputNPathComplexityDefault {
                         .sin(300 * (12 + 30))); // bad (nested in second
                                                 // position)
     }
-    public boolean getSmth() { return true; };
-    public int apply(Object o) { return 0; }
+    public boolean getSmth() { return true; }; // violation
+    public int apply(Object o) { return 0; } // violation
 
     public void inClass(int type, Short s, int color) {
         switch (type) {
         case 3:
             new Object() {
-                public void anonymousMethod() {
+                public void anonymousMethod() { // violation
                     {
                         switch (s) {
                         case 5:
@@ -141,7 +148,7 @@ public class InputNPathComplexityDefault {
         default:
             new Object() {
                 class SwitchClass {
-                    {
+                    { // violation
                         switch (color) {
                         case 5:
                             switch (type) {

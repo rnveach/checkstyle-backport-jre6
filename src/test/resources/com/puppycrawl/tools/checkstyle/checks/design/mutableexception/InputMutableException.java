@@ -1,9 +1,17 @@
+/*
+MutableException
+format = (default)^.*Exception$|^.*Error$|^.*Throwable$
+extendedClassNameFormat = (default)^.*Exception$|^.*Error$|^.*Throwable$
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.design.mutableexception;
 
 public class InputMutableException {
     public class FooException extends Exception {
         private final int finalErrorCode;
-        private int errorCode = 1;
+        private int errorCode = 1; // violation
 
         public FooException() {
             finalErrorCode = 1;
@@ -20,7 +28,7 @@ public class InputMutableException {
     }
 
     public class BarError extends Throwable {
-        private int errorCode;
+        private int errorCode; // violation
     }
 
     public class BazDoesNotExtendError {
@@ -43,7 +51,7 @@ public class InputMutableException {
     class CustomException extends java.lang.Exception {}
 
     class CustomMutableException extends java.lang.Exception {
-        int errorCode;
+        int errorCode; // violation
     }
 
     class ExampleException extends java.lang.Exception {

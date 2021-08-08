@@ -48,8 +48,8 @@ public class EmptyCatchBlockCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig =
             createModuleConfig(EmptyCatchBlockCheck.class);
         final String[] expected = {
-            "35:31: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "42:83: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "25:31: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "32:83: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
         };
         verify(checkConfig, getPath("InputEmptyCatchBlockDefault.java"), expected);
     }
@@ -58,36 +58,36 @@ public class EmptyCatchBlockCheckTest extends AbstractModuleTestSupport {
     public void testWithUserSetValues() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(EmptyCatchBlockCheck.class);
-        checkConfig.addAttribute("exceptionVariableName", "expected|ignore|myException");
-        checkConfig.addAttribute("commentFormat", "This is expected");
+        checkConfig.addProperty("exceptionVariableName", "expected|ignore|myException");
+        checkConfig.addProperty("commentFormat", "This is expected");
         final String[] expected = {
-            "35:31: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "63:78: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "97:29: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "26:31: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "54:78: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "88:29: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "177:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
             "186:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "195:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "214:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "205:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "221:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
             "230:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "239:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
         };
-        verify(checkConfig, getPath("InputEmptyCatchBlockDefault.java"), expected);
+        verify(checkConfig, getPath("InputEmptyCatchBlockDefault2.java"), expected);
     }
 
     @Test
     public void testLinesAreProperlySplitSystemIndependently() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(EmptyCatchBlockCheck.class);
-        checkConfig.addAttribute("exceptionVariableName", "expected|ignore|myException");
-        checkConfig.addAttribute("commentFormat", "This is expected");
+        checkConfig.addProperty("exceptionVariableName", "expected|ignore|myException");
+        checkConfig.addProperty("commentFormat", "This is expected");
         final String[] expected = {
-            "35:31: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "63:78: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "97:29: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "186:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "195:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "214:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "230:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
-            "239:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "25:31: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "53:78: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "87:29: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "176:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "185:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "204:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "220:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
+            "229:33: " + getCheckMessage(MSG_KEY_CATCH_BLOCK_EMPTY),
         };
         final String originalLineSeparator = System.getProperty("line.separator");
         try {

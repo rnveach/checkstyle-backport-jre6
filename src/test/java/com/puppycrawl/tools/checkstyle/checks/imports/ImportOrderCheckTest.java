@@ -60,11 +60,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
-            "9:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.JComponent"),
-            "11:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
-            "13:1: " + getCheckMessage(MSG_ORDERING, "java.io.IOException"),
-            "18:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP,
+            "21:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
+            "25:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.JComponent"),
+            "27:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
+            "29:1: " + getCheckMessage(MSG_ORDERING, "java.io.IOException"),
+            "34:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP,
                     "sun.tools.util.ModifierFilter.ALL_ACCESS"),
         };
 
@@ -75,12 +75,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testWrongSequenceInNonStaticImports() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "false");
-        checkConfig.addAttribute("option", "bottom");
+        checkConfig.addProperty("useContainerOrderingForStatic", "false");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "false");
+        checkConfig.addProperty("option", "bottom");
 
         final String[] expected = {
-            "3:1: " + getCheckMessage(MSG_ORDERING,
+            "19:1: " + getCheckMessage(MSG_ORDERING,
                     "java.util.HashMap"),
         };
 
@@ -99,14 +99,14 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testGroups() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java.awt");
-        checkConfig.addAttribute("groups", "javax.swing");
-        checkConfig.addAttribute("groups", "java.io");
+        checkConfig.addProperty("groups", "java.awt");
+        checkConfig.addProperty("groups", "javax.swing");
+        checkConfig.addProperty("groups", "java.io");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
-            "13:1: " + getCheckMessage(MSG_ORDERING, "java.io.IOException"),
-            "16:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.WindowConstants.*"),
-            "18:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP,
+            "21:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
+            "29:1: " + getCheckMessage(MSG_ORDERING, "java.io.IOException"),
+            "32:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.WindowConstants.*"),
+            "34:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP,
                     "sun.tools.util.ModifierFilter.ALL_ACCESS"),
         };
 
@@ -116,11 +116,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testGroupsRegexp() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java, /^javax?\\.(awt|swing)\\./");
-        checkConfig.addAttribute("ordered", "false");
+        checkConfig.addProperty("groups", "java, /^javax?\\.(awt|swing)\\./");
+        checkConfig.addProperty("ordered", "false");
         final String[] expected = {
-            "11:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
-            "18:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP,
+            "27:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
+            "34:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP,
                     "sun.tools.util.ModifierFilter.ALL_ACCESS"),
         };
 
@@ -130,13 +130,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSeparated() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java.awt, javax.swing, java.io, java.util");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("ordered", "false");
+        checkConfig.addProperty("groups", "java.awt, javax.swing, java.io, java.util");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("ordered", "false");
         final String[] expected = {
-            "9:1: " + getCheckMessage(MSG_SEPARATION, "javax.swing.JComponent"),
-            "11:1: " + getCheckMessage(MSG_SEPARATION, "java.io.File"),
-            "16:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.WindowConstants.*"),
+            "25:1: " + getCheckMessage(MSG_SEPARATION, "javax.swing.JComponent"),
+            "27:1: " + getCheckMessage(MSG_SEPARATION, "java.io.File"),
+            "32:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.WindowConstants.*"),
         };
 
         verify(checkConfig, getNonCompilablePath("InputImportOrder4.java"), expected);
@@ -145,13 +145,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticImportSeparated() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java, org");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("option", "top");
+        checkConfig.addProperty("groups", "java, org");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("option", "top");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.cos"),
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.junit.Assert.assertEquals"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.cos"),
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.junit.Assert.assertEquals"),
         };
 
         verify(checkConfig, getPath("InputImportOrderStaticGroupSeparated.java"), expected);
@@ -160,10 +160,10 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testNoGapBetweenStaticImports() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java, javax, org");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("option", "bottom");
+        checkConfig.addProperty("groups", "java, javax, org");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("option", "bottom");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputImportOrderNoGapBetweenStaticImports.java"), expected);
@@ -172,11 +172,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSortStaticImportsAlphabeticallyFalse() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java, javax, org");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "false");
+        checkConfig.addProperty("groups", "java, javax, org");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "false");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputImportOrderSortStaticImportsAlphabetically1.java"),
@@ -186,16 +186,16 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSortStaticImportsAlphabeticallyTrue() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java, javax, org");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("groups", "java, javax, org");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "4:1: " + getCheckMessage(MSG_ORDERING,
+            "20:1: " + getCheckMessage(MSG_ORDERING,
                 "javax.xml.transform.TransformerFactory.newInstance"),
-            "5:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.cos"),
-            "6:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.abs"),
+            "21:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.cos"),
+            "22:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.abs"),
         };
 
         verify(checkConfig, getPath("InputImportOrderSortStaticImportsAlphabetically2.java"),
@@ -205,7 +205,7 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testCaseInsensitive() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("caseSensitive", "false");
+        checkConfig.addProperty("caseSensitive", "false");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getPath("InputImportOrderCaseInsensitive.java"), expected);
@@ -214,9 +214,9 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testContainerCaseInsensitive() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("caseSensitive", "false");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("caseSensitive", "false");
+        checkConfig.addProperty("useContainerOrderingForStatic", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderEclipseStaticCaseSensitive.java"),
@@ -226,7 +226,7 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSimilarGroupPattern() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "/java.util/,/java.io/");
+        checkConfig.addProperty("groups", "/java.util/,/java.io/");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderSimilarGroupPattern.java"),
@@ -237,7 +237,7 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testInvalidOption() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "invalid_option");
+        checkConfig.addProperty("option", "invalid_option");
 
         try {
             final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
@@ -259,13 +259,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testTop() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
+        checkConfig.addProperty("option", "top");
         final String[] expected = {
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.awt.Button"),
-            "12:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.IOException"),
-            "15:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "javax.swing.JComponent"),
-            "18:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.*"),
-            "18:1: " + getCheckMessage(MSG_ORDERING, "java.io.File.*"),
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.awt.Button"),
+            "28:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.IOException"),
+            "31:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "javax.swing.JComponent"),
+            "34:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.*"),
+            "34:1: " + getCheckMessage(MSG_ORDERING, "java.io.File.*"),
         };
 
         verify(checkConfig, getPath("InputImportOrder_Top2.java"), expected);
@@ -275,13 +275,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testAbove() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "above");
+        checkConfig.addProperty("option", "above");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Button.ABORT"),
-            "8:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
-            "13:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
-            "13:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File"),
-            "14:1: " + getCheckMessage(MSG_ORDERING, "java.io.File.createTempFile"),
+            "21:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Button.ABORT"),
+            "24:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
+            "29:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
+            "29:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File"),
+            "30:1: " + getCheckMessage(MSG_ORDERING, "java.io.File.createTempFile"),
         };
 
         verify(checkConfig, getPath("InputImportOrder_Above.java"), expected);
@@ -291,17 +291,17 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testInFlow() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "inflow");
+        checkConfig.addProperty("option", "inflow");
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
-            "9:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "javax.swing.JComponent"),
-            "11:1: " + getCheckMessage(MSG_ORDERING,
+            "22:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
+            "25:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "javax.swing.JComponent"),
+            "27:1: " + getCheckMessage(MSG_ORDERING,
                      "javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE"),
-            "12:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.WindowConstants.*"),
-            "13:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.JTable"),
-            "15:1: " + getCheckMessage(MSG_ORDERING, "java.io.File.createTempFile"),
-            "15:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.createTempFile"),
-            "16:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
+            "28:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.WindowConstants.*"),
+            "29:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.JTable"),
+            "31:1: " + getCheckMessage(MSG_ORDERING, "java.io.File.createTempFile"),
+            "31:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.createTempFile"),
+            "32:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
         };
 
         verify(checkConfig, getPath("InputImportOrder_InFlow.java"), expected);
@@ -312,12 +312,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
         // is default (testDefault)
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "under");
+        checkConfig.addProperty("option", "under");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
-            "11:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Button.ABORT"),
-            "13:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.createTempFile"),
-            "14:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
+            "21:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
+            "27:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Button.ABORT"),
+            "29:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.createTempFile"),
+            "30:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
         };
 
         verify(checkConfig, getPath("InputImportOrder_Under.java"), expected);
@@ -327,15 +327,15 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testBottom() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "bottom");
+        checkConfig.addProperty("option", "bottom");
         final String[] expected = {
-            "8:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.IOException"),
-            "11:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "javax.swing.JComponent"),
-            "14:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.*"),
-            "15:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
-            "17:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.createTempFile"),
-            "21:1: " + getCheckMessage(MSG_ORDERING, "java.io.Reader"),
-            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.Reader"),
+            "24:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.IOException"),
+            "27:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "javax.swing.JComponent"),
+            "30:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.*"),
+            "31:1: " + getCheckMessage(MSG_ORDERING, "java.io.File"),
+            "33:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.File.createTempFile"),
+            "37:1: " + getCheckMessage(MSG_ORDERING, "java.io.Reader"),
+            "37:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.io.Reader"),
         };
 
         verify(checkConfig, getPath("InputImportOrder_Bottom.java"), expected);
@@ -345,7 +345,7 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testGetGroupNumber() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "/javax/, sun, /^java/, org, /java/");
+        checkConfig.addProperty("groups", "/javax/, sun, /^java/, org, /java/");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig,
@@ -356,9 +356,9 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testHonorsTokenProperty() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("tokens", "IMPORT");
+        checkConfig.addProperty("tokens", "IMPORT");
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Button"),
+            "22:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Button"),
         };
 
         verify(checkConfig, getPath("InputImportOrder_HonorsTokensProperty.java"), expected);
@@ -367,9 +367,9 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testWildcard() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "com,*,java");
+        checkConfig.addProperty("groups", "com,*,java");
         final String[] expected = {
-            "9:1: " + getCheckMessage(MSG_ORDERING, "javax.crypto.Cipher"),
+            "25:1: " + getCheckMessage(MSG_ORDERING, "javax.crypto.Cipher"),
         };
 
         verify(checkConfig, getPath("InputImportOrder_Wildcard.java"), expected);
@@ -379,9 +379,9 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testWildcardUnspecified() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
 
-        checkConfig.addAttribute("groups", "java,javax,org");
+        checkConfig.addProperty("groups", "java,javax,org");
         final String[] expected = {
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP,
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP,
                 "com.puppycrawl.tools.checkstyle.checks.imports.importorder.InputImportOrderBug"),
         };
 
@@ -401,12 +401,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticGroupsAlphabeticalOrder() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.antlr.v4.runtime.*"),
-            "8:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "22:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.antlr.v4.runtime.*"),
+            "24:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
         };
 
         verify(checkConfig, getPath("InputImportOrderStaticGroupOrder1.java"), expected);
@@ -416,11 +416,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticGroupsOrder() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("groups", "org, java");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("groups", "org, java");
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.antlr.v4.runtime.*"),
-            "8:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "22:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.antlr.v4.runtime.*"),
+            "24:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticGroupOrder2.java"), expected);
     }
@@ -429,12 +429,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticGroupsAlphabeticalOrderBottom() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "bottom");
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "bottom");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.PI"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.PI"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticGroupOrderBottom1.java"), expected);
     }
@@ -443,12 +443,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticGroupsAlphabeticalOrderBottomNegative() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "bottom");
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "bottom");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "8:1: " + getCheckMessage(MSG_ORDERING, "java.util.Set"),
+            "24:1: " + getCheckMessage(MSG_ORDERING, "java.util.Set"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticGroupOrderBottom_Negative1.java"),
             expected);
@@ -462,12 +462,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticGroupsAlphabeticalOrderTopNegative() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.PI"),
+            "21:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.PI"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticGroupOrderBottom_Negative2.java"),
             expected);
@@ -481,12 +481,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticGroupsAlphabeticalOrderBottomNegative2() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "bottom");
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "bottom");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "8:1: " + getCheckMessage(MSG_ORDERING, "java.util.Set"),
+            "24:1: " + getCheckMessage(MSG_ORDERING, "java.util.Set"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticGroupOrderBottom_Negative3.java"),
             expected);
@@ -496,11 +496,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticGroupsOrderBottom() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "bottom");
-        checkConfig.addAttribute("groups", "org, java");
+        checkConfig.addProperty("option", "bottom");
+        checkConfig.addProperty("groups", "org, java");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.PI"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.PI"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticGroupOrderBottom2.java"), expected);
     }
@@ -509,8 +509,8 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testImportReception() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("groups", "java, javax");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("groups", "java, javax");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputImportOrderRepetition.java"), expected);
     }
@@ -519,10 +519,10 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticImportReceptionTop() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("groups", "java, org");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("groups", "java, org");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputImportOrderStaticRepetition1.java"), expected);
     }
@@ -531,11 +531,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticImportReception() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("groups", "java, org");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("groups", "java, org");
         final String[] expected = {
-            "4:1: " + getCheckMessage(MSG_SEPARATION, "org.antlr.v4.runtime.CommonToken.*"),
-            "7:1: " + getCheckMessage(MSG_ORDERING, "java.util.Set"),
+            "20:1: " + getCheckMessage(MSG_SEPARATION, "org.antlr.v4.runtime.CommonToken.*"),
+            "23:1: " + getCheckMessage(MSG_ORDERING, "java.util.Set"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticRepetition2.java"), expected);
     }
@@ -544,14 +544,14 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticGroupsOrderAbove() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "above");
-        checkConfig.addAttribute("groups", "org, java, sun");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "above");
+        checkConfig.addProperty("groups", "org, java, sun");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.PI"),
-            "7:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.PI"),
-            "8:1: " + getCheckMessage(MSG_ORDERING, "org.antlr.v4.runtime.Recognizer.EOF"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.PI"),
+            "23:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.PI"),
+            "24:1: " + getCheckMessage(MSG_ORDERING, "org.antlr.v4.runtime.Recognizer.EOF"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticGroupOrderBottom3.java"), expected);
     }
@@ -560,12 +560,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticOnDemandGroupsOrder() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("groups", "org, java");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("groups", "org, java");
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.antlr.v4.runtime.*"),
-            "8:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
-            "9:1: " + getCheckMessage(MSG_ORDERING, "org.junit.Test"),
+            "22:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.antlr.v4.runtime.*"),
+            "24:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "25:1: " + getCheckMessage(MSG_ORDERING, "org.junit.Test"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticOnDemandGroupOrder1.java"), expected);
     }
@@ -574,13 +574,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticOnDemandGroupsAlphabeticalOrder() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.antlr.v4.runtime.*"),
-            "8:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
-            "9:1: " + getCheckMessage(MSG_ORDERING, "org.junit.Test"),
+            "22:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.antlr.v4.runtime.*"),
+            "24:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "25:1: " + getCheckMessage(MSG_ORDERING, "org.junit.Test"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticOnDemandGroupOrder2.java"), expected);
     }
@@ -589,11 +589,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticOnDemandGroupsOrderBottom() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "bottom");
-        checkConfig.addAttribute("groups", "org, java");
+        checkConfig.addProperty("option", "bottom");
+        checkConfig.addProperty("groups", "org, java");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.*"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.*"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticOnDemandGroupOrderBottom1.java"),
             expected);
@@ -603,12 +603,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticOnDemandGroupsAlphabeticalOrderBottom() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "bottom");
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "bottom");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.*"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.*"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticOnDemandGroupOrderBottom2.java"),
             expected);
@@ -618,14 +618,14 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticOnDemandGroupsOrderAbove() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "above");
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("option", "above");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
-            "7:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.*"),
-            "7:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.*"),
-            "8:1: " + getCheckMessage(MSG_ORDERING, "org.antlr.v4.runtime.CommonToken.*"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.util.Set"),
+            "23:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "java.lang.Math.*"),
+            "23:1: " + getCheckMessage(MSG_ORDERING, "java.lang.Math.*"),
+            "24:1: " + getCheckMessage(MSG_ORDERING, "org.antlr.v4.runtime.CommonToken.*"),
         };
         verify(checkConfig, getPath("InputImportOrderStaticOnDemandGroupOrderBottom3.java"),
             expected);
@@ -634,7 +634,7 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testGroupWithSlashes() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "/^javax");
+        checkConfig.addProperty("groups", "/^javax");
 
         try {
             final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
@@ -657,10 +657,10 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testGroupWithDot() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "javax.swing.,java.awt.");
+        checkConfig.addProperty("groups", "javax.swing.,java.awt.");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
-            "7:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.JComponent"),
+            "21:1: " + getCheckMessage(MSG_ORDERING, "java.awt.Dialog"),
+            "23:1: " + getCheckMessage(MSG_ORDERING, "javax.swing.JComponent"),
         };
         verify(checkConfig, getPath("InputImportOrder_DotPackageName.java"),
             expected);
@@ -669,9 +669,9 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testMultiplePatternMatches() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "/java/,/rga/,/myO/,/org/,/organ./");
+        checkConfig.addProperty("groups", "/java/,/rga/,/myO/,/org/,/organ./");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.*"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.*"),
         };
 
         verify(checkConfig, getNonCompilablePath("InputImportOrder_MultiplePatternMatches1.java"),
@@ -735,11 +735,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testEclipseDefaultPositive() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java,javax,org,com");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("groups", "java,javax,org,com");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig,
@@ -750,11 +750,11 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     public void testStaticImportEclipseRepetition() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("groups", "java, org");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("groups", "java, org");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig,
             getNonCompilablePath("InputImportOrderEclipseStaticRepetition.java"), expected);
@@ -763,15 +763,15 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testEclipseDefaultNegative() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "java,javax,org,com");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("groups", "java,javax,org,com");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
         final String[] expected = {
-            "12:1: " + getCheckMessage(MSG_SEPARATION, "javax.swing.JComponent"),
-            "17:1: " + getCheckMessage(MSG_ORDERING, "org.junit.Test"),
-            };
+            "28:1: " + getCheckMessage(MSG_SEPARATION, "javax.swing.JComponent"),
+            "33:1: " + getCheckMessage(MSG_ORDERING, "org.junit.Test"),
+        };
 
         verify(checkConfig,
             getNonCompilablePath("InputImportOrder_EclipseDefaultNegative.java"), expected);
@@ -780,13 +780,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testUseContainerOrderingForStaticTrue() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "/^javax?\\./,org");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("caseSensitive", "false");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "true");
+        checkConfig.addProperty("groups", "/^javax?\\./,org");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("caseSensitive", "false");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getNonCompilablePath("InputImportOrderEclipseStatic1.java"), expected);
     }
@@ -794,15 +794,15 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testUseContainerOrderingForStaticFalse() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "/^javax?\\./,org");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("caseSensitive", "false");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        checkConfig.addProperty("groups", "/^javax?\\./,org");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("caseSensitive", "false");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "false");
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_ORDERING,
+            "22:1: " + getCheckMessage(MSG_ORDERING,
                 "io.netty.handler.codec.http.HttpHeaders.Names.addDate"),
         };
         verify(checkConfig, getNonCompilablePath("InputImportOrderEclipseStatic2.java"), expected);
@@ -811,14 +811,14 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testUseContainerOrderingForStaticTrueCaseSensitive() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "/^javax?\\./,org");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "true");
+        checkConfig.addProperty("groups", "/^javax?\\./,org");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "true");
         final String[] expected = {
-            "7:1: " + getCheckMessage(MSG_ORDERING,
+            "23:1: " + getCheckMessage(MSG_ORDERING,
                 "io.netty.handler.codec.http.HttpHeaders.Names.DATE"),
             };
         verify(checkConfig, getNonCompilablePath("InputImportOrderEclipseStatic3.java"), expected);
@@ -827,13 +827,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testUseContainerOrderingForStatic() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "true");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "true");
         final String[] expected = {
-            "6:1: " + getCheckMessage(MSG_ORDERING,
+            "22:1: " + getCheckMessage(MSG_ORDERING,
                     "io.netty.handler.Codec.HTTP.HttpHeaders.tmp.same"),
-            "7:1: " + getCheckMessage(MSG_ORDERING,
+            "23:1: " + getCheckMessage(MSG_ORDERING,
                     "io.netty.handler.Codec.HTTP.HttpHeaders.TKN.same"),
         };
         verify(checkConfig, getNonCompilablePath("InputImportOrderContainerOrdering.java"),
@@ -843,12 +843,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testImportGroupsRedundantSeparatedInternally() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "/^javax\\./,com");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("option", "bottom");
+        checkConfig.addProperty("groups", "/^javax\\./,com");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("option", "bottom");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.*"),
+            "21:1: " + getCheckMessage(MSG_SEPARATED_IN_GROUP, "org.*"),
         };
         verify(checkConfig, getNonCompilablePath("InputImportOrder_MultiplePatternMatches2.java"),
                 expected);
@@ -857,9 +857,9 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticGroupsAbove() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "");
-        checkConfig.addAttribute("staticGroups", "");
-        checkConfig.addAttribute("option", "above");
+        checkConfig.addProperty("groups", "");
+        checkConfig.addProperty("staticGroups", "");
+        checkConfig.addProperty("option", "above");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsAbove.java"),
@@ -869,13 +869,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticGroupsBottom() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "org, java");
-        checkConfig.addAttribute("staticGroups", "java, org");
-        checkConfig.addAttribute("option", "bottom");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        checkConfig.addProperty("groups", "org, java");
+        checkConfig.addProperty("staticGroups", "java, org");
+        checkConfig.addProperty("option", "bottom");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "false");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsBottom.java"),
@@ -885,14 +885,14 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticGroupsBottomSeparated() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "android,com,net,junit,org,java,javax");
-        checkConfig.addAttribute("staticGroups", "android,com,net,junit,org,java,javax");
-        checkConfig.addAttribute("option", "bottom");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("separatedStaticGroups", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        checkConfig.addProperty("groups", "android,com,net,junit,org,java,javax");
+        checkConfig.addProperty("staticGroups", "android,com,net,junit,org,java,javax");
+        checkConfig.addProperty("option", "bottom");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("separatedStaticGroups", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "false");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig,
@@ -902,9 +902,9 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticGroupsInflow() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "");
-        checkConfig.addAttribute("staticGroups", "");
-        checkConfig.addAttribute("option", "inflow");
+        checkConfig.addProperty("groups", "");
+        checkConfig.addProperty("staticGroups", "");
+        checkConfig.addProperty("option", "inflow");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsInflow.java"),
@@ -914,15 +914,15 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticGroupsNegative() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("staticGroups", "org, java");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        checkConfig.addProperty("staticGroups", "org, java");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "false");
         final String[] expected = {
-            "5:1: " + getCheckMessage(MSG_ORDERING, "org.junit.Assert.fail"),
-            "7:1: " + getCheckMessage(MSG_ORDERING, "org.infinispan.test.TestingUtil.extract"),
+            "21:1: " + getCheckMessage(MSG_ORDERING, "org.junit.Assert.fail"),
+            "23:1: " + getCheckMessage(MSG_ORDERING, "org.infinispan.test.TestingUtil.extract"),
         };
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsNegative.java"),
@@ -932,13 +932,13 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticGroupsTop() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "org, com, java, javax");
-        checkConfig.addAttribute("staticGroups", "org, com, java, javax");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        checkConfig.addProperty("groups", "org, com, java, javax");
+        checkConfig.addProperty("staticGroups", "org, com, java, javax");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "false");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsTop.java"),
@@ -948,14 +948,14 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticGroupsTopSeparated() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "android, androidx, java");
-        checkConfig.addAttribute("staticGroups", "android, androidx, java");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "true");
-        checkConfig.addAttribute("separated", "false");
-        checkConfig.addAttribute("separatedStaticGroups", "true");
-        checkConfig.addAttribute("useContainerOrderingForStatic", "false");
+        checkConfig.addProperty("groups", "android, androidx, java");
+        checkConfig.addProperty("staticGroups", "android, androidx, java");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "true");
+        checkConfig.addProperty("separated", "false");
+        checkConfig.addProperty("separatedStaticGroups", "true");
+        checkConfig.addProperty("useContainerOrderingForStatic", "false");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsTopSeparated.java"),
@@ -965,12 +965,12 @@ public class ImportOrderCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStaticGroupsUnordered() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(ImportOrderCheck.class);
-        checkConfig.addAttribute("groups", "org, com, java");
-        checkConfig.addAttribute("staticGroups", "");
-        checkConfig.addAttribute("option", "top");
-        checkConfig.addAttribute("ordered", "true");
-        checkConfig.addAttribute("separated", "false");
-        checkConfig.addAttribute("sortStaticImportsAlphabetically", "false");
+        checkConfig.addProperty("groups", "org, com, java");
+        checkConfig.addProperty("staticGroups", "");
+        checkConfig.addProperty("option", "top");
+        checkConfig.addProperty("ordered", "true");
+        checkConfig.addProperty("separated", "false");
+        checkConfig.addProperty("sortStaticImportsAlphabetically", "false");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verify(checkConfig, getNonCompilablePath("InputImportOrderStaticGroupsUnordered.java"),

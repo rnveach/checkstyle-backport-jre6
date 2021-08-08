@@ -1,3 +1,16 @@
+/*
+AbbreviationAsWordInName
+allowedAbbreviationLength = (default)3
+allowedAbbreviations = (default)
+ignoreFinal = (default)true
+ignoreStatic = (default)true
+ignoreStaticFinal = (default)true
+ignoreOverriddenMethods = (default)true
+tokens = CLASS_DEF, METHOD_DEF
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.naming.abbreviationaswordinname;
 
 import org.junit.Before;
@@ -19,7 +32,7 @@ abstract class InputAbbreviationAsWordInNameOverridableMethod extends Class1 {
 
 class Class1 {
     @SuppressWarnings(value = { "" })
-    protected void oveRRRRRrriddenMethod(){
+    protected void oveRRRRRrriddenMethod(){ // violation
         int a = 0;
         // blah-blah
     }

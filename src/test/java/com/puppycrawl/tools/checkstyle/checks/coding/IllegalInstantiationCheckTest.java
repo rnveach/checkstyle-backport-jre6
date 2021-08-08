@@ -60,7 +60,7 @@ public class IllegalInstantiationCheckTest
     public void testClasses() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(IllegalInstantiationCheck.class);
-        checkConfig.addAttribute(
+        checkConfig.addProperty(
             "classes",
             "java.lang.Boolean,"
                 + "com.puppycrawl.tools.checkstyle.checks.coding."
@@ -84,7 +84,7 @@ public class IllegalInstantiationCheckTest
     public void testSameClassNameAsJavaLang() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(IllegalInstantiationCheck.class);
-        checkConfig.addAttribute(
+        checkConfig.addProperty(
             "classes",
             "java.lang.InputTest");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
@@ -106,7 +106,7 @@ public class IllegalInstantiationCheckTest
     public void testNoPackage() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(IllegalInstantiationCheck.class);
-        checkConfig.addAttribute(
+        checkConfig.addProperty(
                 "classes",
                 "java.lang.Boolean");
         final String[] expected = {
@@ -119,7 +119,7 @@ public class IllegalInstantiationCheckTest
     public void testJavaLangPackage() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(IllegalInstantiationCheck.class);
-        checkConfig.addAttribute(
+        checkConfig.addProperty(
                 "classes",
                 "java.lang.Boolean,java.lang.String");
         final String[] expected = {
@@ -135,7 +135,7 @@ public class IllegalInstantiationCheckTest
     public void testWrongPackage() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(IllegalInstantiationCheck.class);
-        checkConfig.addAttribute(
+        checkConfig.addProperty(
                 "classes",
                 "jjva.lang.Boolean,java.lang*Boolean");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;

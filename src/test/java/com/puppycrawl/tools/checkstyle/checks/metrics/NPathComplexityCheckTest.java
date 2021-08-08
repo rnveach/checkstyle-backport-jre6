@@ -58,22 +58,22 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig =
             createModuleConfig(NPathComplexityCheck.class);
 
-        checkConfig.addAttribute("max", "0");
+        checkConfig.addProperty("max", "0");
         final String[] expected = {
-            "5:5: " + getCheckMessage(MSG_KEY, 2, 0),
-            "10:17: " + getCheckMessage(MSG_KEY, 2, 0),
-            "22:5: " + getCheckMessage(MSG_KEY, 10, 0),
-            "35:5: " + getCheckMessage(MSG_KEY, 3, 0),
-            "45:5: " + getCheckMessage(MSG_KEY, 7, 0),
-            "63:5: " + getCheckMessage(MSG_KEY, 3, 0),
-            "76:5: " + getCheckMessage(MSG_KEY, 3, 0),
-            "88:5: " + getCheckMessage(MSG_KEY, 3, 0),
-            "104:13: " + getCheckMessage(MSG_KEY, 2, 0),
-            "113:5: " + getCheckMessage(MSG_KEY, 48, 0),
-            "123:5: " + getCheckMessage(MSG_KEY, 1, 0),
-            "124:5: " + getCheckMessage(MSG_KEY, 1, 0),
-            "130:17: " + getCheckMessage(MSG_KEY, 3, 0),
-            "144:21: " + getCheckMessage(MSG_KEY, 3, 0),
+            "12:5: " + getCheckMessage(MSG_KEY, 2, 0),
+            "17:17: " + getCheckMessage(MSG_KEY, 2, 0),
+            "29:5: " + getCheckMessage(MSG_KEY, 10, 0),
+            "42:5: " + getCheckMessage(MSG_KEY, 3, 0),
+            "52:5: " + getCheckMessage(MSG_KEY, 7, 0),
+            "70:5: " + getCheckMessage(MSG_KEY, 3, 0),
+            "83:5: " + getCheckMessage(MSG_KEY, 3, 0),
+            "95:5: " + getCheckMessage(MSG_KEY, 3, 0),
+            "111:13: " + getCheckMessage(MSG_KEY, 2, 0),
+            "120:5: " + getCheckMessage(MSG_KEY, 48, 0),
+            "130:5: " + getCheckMessage(MSG_KEY, 1, 0),
+            "131:5: " + getCheckMessage(MSG_KEY, 1, 0),
+            "137:17: " + getCheckMessage(MSG_KEY, 3, 0),
+            "151:21: " + getCheckMessage(MSG_KEY, 3, 0),
         };
 
         verify(checkConfig, getPath("InputNPathComplexityDefault.java"), expected);
@@ -84,22 +84,22 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig =
             createModuleConfig(NPathComplexityCheck.class);
 
-        checkConfig.addAttribute("max", "0");
+        checkConfig.addProperty("max", "0");
         final String[] expected = {
-            "5:5: " + getCheckMessage(MSG_KEY, 5, 0),
-            "11:5: " + getCheckMessage(MSG_KEY, 5, 0),
-            "18:5: " + getCheckMessage(MSG_KEY, 4, 0),
-            "33:5: " + getCheckMessage(MSG_KEY, 4, 0),
-            "49:5: " + getCheckMessage(MSG_KEY, 6, 0),
-            "65:5: " + getCheckMessage(MSG_KEY, 15, 0),
-            "90:5: " + getCheckMessage(MSG_KEY, 11, 0),
-            "100:5: " + getCheckMessage(MSG_KEY, 8, 0),
-            "113:5: " + getCheckMessage(MSG_KEY, 120, 0),
-            "125:5: " + getCheckMessage(MSG_KEY, 6, 0),
-            "135:5: " + getCheckMessage(MSG_KEY, 21, 0),
-            "148:5: " + getCheckMessage(MSG_KEY, 35, 0),
-            "156:5: " + getCheckMessage(MSG_KEY, 25, 0),
-            "171:5: " + getCheckMessage(MSG_KEY, 2, 0),
+            "12:5: " + getCheckMessage(MSG_KEY, 5, 0),
+            "18:5: " + getCheckMessage(MSG_KEY, 5, 0),
+            "25:5: " + getCheckMessage(MSG_KEY, 4, 0),
+            "40:5: " + getCheckMessage(MSG_KEY, 4, 0),
+            "56:5: " + getCheckMessage(MSG_KEY, 6, 0),
+            "72:5: " + getCheckMessage(MSG_KEY, 15, 0),
+            "97:5: " + getCheckMessage(MSG_KEY, 11, 0),
+            "107:5: " + getCheckMessage(MSG_KEY, 8, 0),
+            "120:5: " + getCheckMessage(MSG_KEY, 120, 0),
+            "132:5: " + getCheckMessage(MSG_KEY, 6, 0),
+            "142:5: " + getCheckMessage(MSG_KEY, 21, 0),
+            "155:5: " + getCheckMessage(MSG_KEY, 35, 0),
+            "163:5: " + getCheckMessage(MSG_KEY, 25, 0),
+            "178:5: " + getCheckMessage(MSG_KEY, 2, 0),
         };
 
         verify(checkConfig, getPath("InputNPathComplexity.java"), expected);
@@ -110,9 +110,9 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig =
             createModuleConfig(NPathComplexityCheck.class);
 
-        checkConfig.addAttribute("max", "0");
+        checkConfig.addProperty("max", "0");
         final String[] expected = {
-            "4:5: " + getCheckMessage(MSG_KEY, 64, 0),
+            "11:5: " + getCheckMessage(MSG_KEY, 64, 0),
         };
 
         verify(checkConfig, getNonCompilablePath("InputNPathComplexityDefault2.java"), expected);
@@ -123,12 +123,12 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
         final DefaultConfiguration checkConfig =
             createModuleConfig(NPathComplexityCheck.class);
 
-        checkConfig.addAttribute("max", "0");
+        checkConfig.addProperty("max", "0");
 
         final long largerThanMaxInt = 3486784401L;
 
         final String[] expected = {
-            "13:5: " + getCheckMessage(MSG_KEY, largerThanMaxInt, 0),
+            "20:5: " + getCheckMessage(MSG_KEY, largerThanMaxInt, 0),
         };
 
         verify(checkConfig, getPath("InputNPathComplexityOverflow.java"), expected);
@@ -227,21 +227,21 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
 
         createChecker(checkConfig);
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
-        verify(checkConfig, getPath("InputNPathComplexityDefault.java"), expected);
+        verify(checkConfig, getPath("InputNPathComplexityDefault2.java"), expected);
     }
 
     @Test
     public void testNpathComplexityRecords() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(NPathComplexityCheck.class);
-        checkConfig.addAttribute("max", "1");
+        checkConfig.addProperty("max", "1");
 
         final int max = 1;
 
         final String[] expected = {
-            "11:5: " + getCheckMessage(MSG_KEY, 3, max),
-            "21:9: " + getCheckMessage(MSG_KEY, 2, max),
-            "26:21: " + getCheckMessage(MSG_KEY, 2, max),
-            "40:9: " + getCheckMessage(MSG_KEY, 3, max),
+            "15:5: " + getCheckMessage(MSG_KEY, 3, max),
+            "25:9: " + getCheckMessage(MSG_KEY, 2, max),
+            "30:21: " + getCheckMessage(MSG_KEY, 2, max),
+            "44:9: " + getCheckMessage(MSG_KEY, 3, max),
         };
 
         verify(checkConfig,
@@ -251,16 +251,16 @@ public class NPathComplexityCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testNpathComplexitySwitchExpression() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(NPathComplexityCheck.class);
-        checkConfig.addAttribute("max", "1");
+        checkConfig.addProperty("max", "1");
 
         final int max = 1;
 
         final String[] expected = {
-            "8:5: " + getCheckMessage(MSG_KEY, 5, max),
-            "25:5: " + getCheckMessage(MSG_KEY, 5, max),
-            "40:5: " + getCheckMessage(MSG_KEY, 6, max),
-            "56:5: " + getCheckMessage(MSG_KEY, 6, max),
-            };
+            "12:5: " + getCheckMessage(MSG_KEY, 5, max),
+            "29:5: " + getCheckMessage(MSG_KEY, 5, max),
+            "44:5: " + getCheckMessage(MSG_KEY, 6, max),
+            "60:5: " + getCheckMessage(MSG_KEY, 6, max),
+        };
 
         verify(checkConfig,
             getNonCompilablePath("InputNPathComplexityCheckSwitchExpression.java"),

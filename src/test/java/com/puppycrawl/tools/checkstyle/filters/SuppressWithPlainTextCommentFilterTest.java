@@ -63,7 +63,7 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
 
         final DefaultConfiguration checkCfg = createModuleConfig(FileTabCharacterCheck.class);
-        checkCfg.addAttribute("eachLine", "true");
+        checkCfg.addProperty("eachLine", "true");
 
         final String[] suppressed = {
             "5:7: " + getCheckMessage(FileTabCharacterCheck.class, MSG_FILE_CONTAINS_TAB),
@@ -87,11 +87,11 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testChangeOffAndOnFormat() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("onCommentFormat", "cs-on");
-        filterCfg.addAttribute("offCommentFormat", "cs-off");
+        filterCfg.addProperty("onCommentFormat", "cs-on");
+        filterCfg.addProperty("offCommentFormat", "cs-off");
 
         final DefaultConfiguration checkCfg = createModuleConfig(FileTabCharacterCheck.class);
-        checkCfg.addAttribute("eachLine", "true");
+        checkCfg.addProperty("eachLine", "true");
 
         final String[] suppressed = {
             "5:7: " + getCheckMessage(FileTabCharacterCheck.class, MSG_FILE_CONTAINS_TAB),
@@ -118,11 +118,11 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressionCommentsInXmlFile() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "CS-OFF");
-        filterCfg.addAttribute("onCommentFormat", "CS-ON");
+        filterCfg.addProperty("offCommentFormat", "CS-OFF");
+        filterCfg.addProperty("onCommentFormat", "CS-ON");
 
         final DefaultConfiguration checkCfg = createModuleConfig(FileTabCharacterCheck.class);
-        checkCfg.addAttribute("eachLine", "true");
+        checkCfg.addProperty("eachLine", "true");
 
         final String[] suppressed = {
             "7:1: " + getCheckMessage(FileTabCharacterCheck.class, MSG_CONTAINS_TAB),
@@ -144,11 +144,11 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressionCommentsInPropertiesFile() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "# CHECKSTYLE:OFF");
-        filterCfg.addAttribute("onCommentFormat", "# CHECKSTYLE:ON");
+        filterCfg.addProperty("offCommentFormat", "# CHECKSTYLE:OFF");
+        filterCfg.addProperty("onCommentFormat", "# CHECKSTYLE:ON");
 
         final DefaultConfiguration checkCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        checkCfg.addAttribute("format", "^key[0-9]=$");
+        checkCfg.addProperty("format", "^key[0-9]=$");
 
         final String[] suppressed = {
             "2: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
@@ -173,11 +173,11 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressionCommentsInSqlFile() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "-- CHECKSTYLE OFF");
-        filterCfg.addAttribute("onCommentFormat", "-- CHECKSTYLE ON");
+        filterCfg.addProperty("offCommentFormat", "-- CHECKSTYLE OFF");
+        filterCfg.addProperty("onCommentFormat", "-- CHECKSTYLE ON");
 
         final DefaultConfiguration checkCfg = createModuleConfig(FileTabCharacterCheck.class);
-        checkCfg.addAttribute("eachLine", "true");
+        checkCfg.addProperty("eachLine", "true");
 
         final String[] suppressed = {
             "2:1: " + getCheckMessage(FileTabCharacterCheck.class, MSG_CONTAINS_TAB),
@@ -199,11 +199,11 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressionCommentsInJavaScriptFile() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "// CS-OFF");
-        filterCfg.addAttribute("onCommentFormat", "// CS-ON");
+        filterCfg.addProperty("offCommentFormat", "// CS-OFF");
+        filterCfg.addProperty("onCommentFormat", "// CS-ON");
 
         final DefaultConfiguration checkCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        checkCfg.addAttribute("format", ".*===.*");
+        checkCfg.addProperty("format", ".*===.*");
 
         final String[] suppressed = {
             "2: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED, ".*===.*"),
@@ -225,12 +225,12 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testInvalidCheckFormat() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("checkFormat", "e[l");
-        filterCfg.addAttribute("onCommentFormat", "// cs-on");
-        filterCfg.addAttribute("offCommentFormat", "// cs-off");
+        filterCfg.addProperty("checkFormat", "e[l");
+        filterCfg.addProperty("onCommentFormat", "// cs-on");
+        filterCfg.addProperty("offCommentFormat", "// cs-off");
 
         final DefaultConfiguration checkCfg = createModuleConfig(FileTabCharacterCheck.class);
-        checkCfg.addAttribute("eachLine", "true");
+        checkCfg.addProperty("eachLine", "true");
 
         final String[] suppressed = CommonUtil.EMPTY_STRING_ARRAY;
 
@@ -259,12 +259,12 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testInvalidIdFormat() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("idFormat", "e[l");
-        filterCfg.addAttribute("onCommentFormat", "// cs-on");
-        filterCfg.addAttribute("offCommentFormat", "// cs-off");
+        filterCfg.addProperty("idFormat", "e[l");
+        filterCfg.addProperty("onCommentFormat", "// cs-on");
+        filterCfg.addProperty("offCommentFormat", "// cs-off");
 
         final DefaultConfiguration checkCfg = createModuleConfig(FileTabCharacterCheck.class);
-        checkCfg.addAttribute("eachLine", "true");
+        checkCfg.addProperty("eachLine", "true");
 
         try {
             verifySuppressed(
@@ -284,12 +284,12 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testInvalidMessageFormat() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("messageFormat", "e[l");
-        filterCfg.addAttribute("onCommentFormat", "// cs-on");
-        filterCfg.addAttribute("offCommentFormat", "// cs-off");
+        filterCfg.addProperty("messageFormat", "e[l");
+        filterCfg.addProperty("onCommentFormat", "// cs-on");
+        filterCfg.addProperty("offCommentFormat", "// cs-off");
 
         final DefaultConfiguration checkCfg = createModuleConfig(FileTabCharacterCheck.class);
-        checkCfg.addAttribute("eachLine", "true");
+        checkCfg.addProperty("eachLine", "true");
 
         final String[] suppressed = CommonUtil.EMPTY_STRING_ARRAY;
 
@@ -318,11 +318,11 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testInvalidMessageFormatInSqlFile() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("onCommentFormat", "CSON (\\w+)");
-        filterCfg.addAttribute("messageFormat", "e[l");
+        filterCfg.addProperty("onCommentFormat", "CSON (\\w+)");
+        filterCfg.addProperty("messageFormat", "e[l");
 
         final DefaultConfiguration checkCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        checkCfg.addAttribute("format", "^.*COUNT\\(\\*\\).*$");
+        checkCfg.addProperty("format", "^.*COUNT\\(\\*\\).*$");
 
         final String[] suppressed = CommonUtil.EMPTY_STRING_ARRAY;
 
@@ -372,18 +372,18 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressByCheck() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
-        filterCfg.addAttribute("onCommentFormat", "CSON (\\w+)");
-        filterCfg.addAttribute("checkFormat", "FileTabCharacterCheck");
+        filterCfg.addProperty("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
+        filterCfg.addProperty("onCommentFormat", "CSON (\\w+)");
+        filterCfg.addProperty("checkFormat", "FileTabCharacterCheck");
 
         final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        regexpCheckCfg.addAttribute("id", "ignore");
-        regexpCheckCfg.addAttribute("format", ".*[a-zA-Z][0-9].*");
+        regexpCheckCfg.addProperty("id", "ignore");
+        regexpCheckCfg.addProperty("format", ".*[a-zA-Z][0-9].*");
 
         final DefaultConfiguration fileTabCheckCfg =
             createModuleConfig(FileTabCharacterCheck.class);
-        fileTabCheckCfg.addAttribute("eachLine", "true");
-        fileTabCheckCfg.addAttribute("id", "foo");
+        fileTabCheckCfg.addProperty("eachLine", "true");
+        fileTabCheckCfg.addProperty("id", "foo");
 
         final String[] suppressedViolationMessages = {
             "9:1: " + getCheckMessage(FileTabCharacterCheck.class, MSG_CONTAINS_TAB),
@@ -412,18 +412,18 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressByModuleId() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
-        filterCfg.addAttribute("onCommentFormat", "CSON (\\w+)");
-        filterCfg.addAttribute("idFormat", "$1");
+        filterCfg.addProperty("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
+        filterCfg.addProperty("onCommentFormat", "CSON (\\w+)");
+        filterCfg.addProperty("idFormat", "$1");
 
         final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        regexpCheckCfg.addAttribute("id", "ignore");
-        regexpCheckCfg.addAttribute("format", ".*[a-zA-Z][0-9].*");
+        regexpCheckCfg.addProperty("id", "ignore");
+        regexpCheckCfg.addProperty("format", ".*[a-zA-Z][0-9].*");
 
         final DefaultConfiguration fileTabCheckCfg =
             createModuleConfig(FileTabCharacterCheck.class);
-        fileTabCheckCfg.addAttribute("eachLine", "true");
-        fileTabCheckCfg.addAttribute("id", "foo");
+        fileTabCheckCfg.addProperty("eachLine", "true");
+        fileTabCheckCfg.addProperty("id", "foo");
 
         final String[] suppressedViolationMessages = {
             "6: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
@@ -457,19 +457,19 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressByCheckAndModuleId() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
-        filterCfg.addAttribute("onCommentFormat", "CSON (\\w+)");
-        filterCfg.addAttribute("checkFormat", "FileTabCharacterCheck");
-        filterCfg.addAttribute("idFormat", "foo");
+        filterCfg.addProperty("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
+        filterCfg.addProperty("onCommentFormat", "CSON (\\w+)");
+        filterCfg.addProperty("checkFormat", "FileTabCharacterCheck");
+        filterCfg.addProperty("idFormat", "foo");
 
         final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        regexpCheckCfg.addAttribute("id", "ignore");
-        regexpCheckCfg.addAttribute("format", ".*[a-zA-Z][0-9].*");
+        regexpCheckCfg.addProperty("id", "ignore");
+        regexpCheckCfg.addProperty("format", ".*[a-zA-Z][0-9].*");
 
         final DefaultConfiguration fileTabCheckCfg =
             createModuleConfig(FileTabCharacterCheck.class);
-        fileTabCheckCfg.addAttribute("eachLine", "true");
-        fileTabCheckCfg.addAttribute("id", "foo");
+        fileTabCheckCfg.addProperty("eachLine", "true");
+        fileTabCheckCfg.addProperty("id", "foo");
 
         final String[] suppressedViolationMessages = {
             "9:1: " + getCheckMessage(FileTabCharacterCheck.class, MSG_CONTAINS_TAB),
@@ -498,19 +498,19 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressByCheckAndNonMatchingModuleId() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
-        filterCfg.addAttribute("onCommentFormat", "CSON (\\w+)");
-        filterCfg.addAttribute("checkFormat", "FileTabCharacterCheck");
-        filterCfg.addAttribute("idFormat", "$1");
+        filterCfg.addProperty("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
+        filterCfg.addProperty("onCommentFormat", "CSON (\\w+)");
+        filterCfg.addProperty("checkFormat", "FileTabCharacterCheck");
+        filterCfg.addProperty("idFormat", "$1");
 
         final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        regexpCheckCfg.addAttribute("id", "ignore");
-        regexpCheckCfg.addAttribute("format", ".*[a-zA-Z][0-9].*");
+        regexpCheckCfg.addProperty("id", "ignore");
+        regexpCheckCfg.addProperty("format", ".*[a-zA-Z][0-9].*");
 
         final DefaultConfiguration fileTabCheckCfg =
             createModuleConfig(FileTabCharacterCheck.class);
-        fileTabCheckCfg.addAttribute("eachLine", "true");
-        fileTabCheckCfg.addAttribute("id", "foo");
+        fileTabCheckCfg.addProperty("eachLine", "true");
+        fileTabCheckCfg.addProperty("id", "foo");
 
         final String[] suppressedViolationMessages = CommonUtil.EMPTY_STRING_ARRAY;
 
@@ -537,18 +537,18 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testSuppressByModuleIdWithNullModuleId() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
-        filterCfg.addAttribute("onCommentFormat", "CSON (\\w+)");
-        filterCfg.addAttribute("idFormat", "$1");
+        filterCfg.addProperty("offCommentFormat", "CSOFF (\\w+) \\(\\w+\\)");
+        filterCfg.addProperty("onCommentFormat", "CSON (\\w+)");
+        filterCfg.addProperty("idFormat", "$1");
 
         final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        regexpCheckCfg.addAttribute("id", "ignore");
-        regexpCheckCfg.addAttribute("format", ".*[a-zA-Z][0-9].*");
+        regexpCheckCfg.addProperty("id", "ignore");
+        regexpCheckCfg.addProperty("format", ".*[a-zA-Z][0-9].*");
 
         final DefaultConfiguration fileTabCheckCfg =
             createModuleConfig(FileTabCharacterCheck.class);
-        fileTabCheckCfg.addAttribute("eachLine", "true");
-        fileTabCheckCfg.addAttribute("id", null);
+        fileTabCheckCfg.addProperty("eachLine", "true");
+        fileTabCheckCfg.addProperty("id", null);
 
         final String[] suppressedViolationMessages = {
             "6: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
@@ -609,15 +609,15 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
         final String messageFormat =
             ".*" + getCheckMessage(FileTabCharacterCheck.class, MSG_CONTAINS_TAB) + ".*";
         // -@cs[CheckstyleTestMakeup] need to test dynamic property
-        filterCfg.addAttribute("messageFormat", messageFormat);
+        filterCfg.addProperty("messageFormat", messageFormat);
 
         final DefaultConfiguration fileTabCheckCfg =
             createModuleConfig(FileTabCharacterCheck.class);
-        fileTabCheckCfg.addAttribute("eachLine", "true");
+        fileTabCheckCfg.addProperty("eachLine", "true");
 
         final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        regexpCheckCfg.addAttribute("id", "ignore");
-        regexpCheckCfg.addAttribute("format", ".*[a-zA-Z][0-9].*");
+        regexpCheckCfg.addProperty("id", "ignore");
+        regexpCheckCfg.addProperty("format", ".*[a-zA-Z][0-9].*");
 
         final String[] suppressed = {
             "8:1: " + getCheckMessage(FileTabCharacterCheck.class, MSG_CONTAINS_TAB),
@@ -646,14 +646,14 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testFilterWithIdAndCustomMessageFormat() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "CHECKSTYLE stop (\\w+) (\\w+)");
-        filterCfg.addAttribute("onCommentFormat", "CHECKSTYLE resume (\\w+) (\\w+)");
-        filterCfg.addAttribute("idFormat", "$1");
-        filterCfg.addAttribute("messageFormat", "$2");
+        filterCfg.addProperty("offCommentFormat", "CHECKSTYLE stop (\\w+) (\\w+)");
+        filterCfg.addProperty("onCommentFormat", "CHECKSTYLE resume (\\w+) (\\w+)");
+        filterCfg.addProperty("idFormat", "$1");
+        filterCfg.addProperty("messageFormat", "$2");
 
         final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        regexpCheckCfg.addAttribute("id", "warning");
-        regexpCheckCfg.addAttribute("format", "^.*COUNT\\(\\*\\).*$");
+        regexpCheckCfg.addProperty("id", "warning");
+        regexpCheckCfg.addProperty("format", "^.*COUNT\\(\\*\\).*$");
 
         final String[] suppressedViolationMessages = {
             "2: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
@@ -680,14 +680,14 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
     public void testFilterWithCheckAndCustomMessageFormat() throws Exception {
         final DefaultConfiguration filterCfg =
             createModuleConfig(SuppressWithPlainTextCommentFilter.class);
-        filterCfg.addAttribute("offCommentFormat", "CHECKSTYLE stop (\\w+) (\\w+)");
-        filterCfg.addAttribute("onCommentFormat", "CHECKSTYLE resume (\\w+) (\\w+)");
-        filterCfg.addAttribute("checkFormat", "RegexpSinglelineCheck");
-        filterCfg.addAttribute("messageFormat", "$2");
+        filterCfg.addProperty("offCommentFormat", "CHECKSTYLE stop (\\w+) (\\w+)");
+        filterCfg.addProperty("onCommentFormat", "CHECKSTYLE resume (\\w+) (\\w+)");
+        filterCfg.addProperty("checkFormat", "RegexpSinglelineCheck");
+        filterCfg.addProperty("messageFormat", "$2");
 
         final DefaultConfiguration regexpCheckCfg = createModuleConfig(RegexpSinglelineCheck.class);
-        regexpCheckCfg.addAttribute("id", "warning");
-        regexpCheckCfg.addAttribute("format", "^.*COUNT\\(\\*\\).*$");
+        regexpCheckCfg.addProperty("id", "warning");
+        regexpCheckCfg.addProperty("format", "^.*COUNT\\(\\*\\).*$");
 
         final String[] suppressedViolationMessages = {
             "2: " + getCheckMessage(RegexpSinglelineCheck.class, MSG_REGEXP_EXCEEDED,
@@ -729,7 +729,7 @@ public class SuppressWithPlainTextCommentFilterTest extends AbstractModuleTestSu
         }
 
         final String fileExtension = CommonUtil.getFileExtension(fileNameWithExtension);
-        checkerConfig.addAttribute("fileExtensions", fileExtension);
+        checkerConfig.addProperty("fileExtensions", fileExtension);
 
         verify(checkerConfig, getPath(fileNameWithExtension), violationMessages);
     }

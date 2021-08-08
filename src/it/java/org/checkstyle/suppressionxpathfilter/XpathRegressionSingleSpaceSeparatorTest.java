@@ -67,7 +67,7 @@ public class XpathRegressionSingleSpaceSeparatorTest extends AbstractXpathTestSu
 
         final DefaultConfiguration moduleConfig =
                 createModuleConfig(SingleSpaceSeparatorCheck.class);
-        moduleConfig.addAttribute("validateComments", "true");
+        moduleConfig.addProperty("validateComments", "true");
 
         final String[] expectedViolation = {
             "4:17: " + getCheckMessage(SingleSpaceSeparatorCheck.class,
@@ -77,7 +77,8 @@ public class XpathRegressionSingleSpaceSeparatorTest extends AbstractXpathTestSu
         final List<String> expectedXpathQueries = Collections.singletonList(
             "/CLASS_DEF[."
                 + "/IDENT[@text='SuppressionXpathRegressionSingleSpaceSeparatorValidateComments']]"
-                + "/OBJBLOCK/SINGLE_LINE_COMMENT"
+                + "/OBJBLOCK/SINGLE_LINE_COMMENT[./COMMENT_CONTENT"
+                + "[@text=' an invalid comment // warn\\n']]"
         );
 
         runVerifications(moduleConfig, fileToProcess, expectedViolation,

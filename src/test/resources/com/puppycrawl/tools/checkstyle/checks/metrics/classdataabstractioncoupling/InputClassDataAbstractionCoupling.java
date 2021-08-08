@@ -1,10 +1,20 @@
+/*
+ClassDataAbstractionCoupling
+max = 0
+excludedClasses = InnerClass
+excludeClassesRegexps = (default)^$
+excludedPackages = (default)
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.metrics.classdataabstractioncoupling;
 
 import javax.naming.NamingException;
 import java.util.*;
 
-public class InputClassDataAbstractionCoupling {
-    private class InnerClass { //singleline comment
+public class InputClassDataAbstractionCoupling { // violation
+    private class InnerClass { // violation
         public List _list = new ArrayList();
     }
 
@@ -25,7 +35,7 @@ public class InputClassDataAbstractionCoupling {
 }
 
 enum InnerEnum {
-    VALUE1;
+    VALUE1; // violation
 
     private InnerEnum()
     {

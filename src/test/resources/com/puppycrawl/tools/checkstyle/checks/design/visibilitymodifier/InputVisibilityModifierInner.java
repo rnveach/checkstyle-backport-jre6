@@ -1,7 +1,24 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: 2001
-////////////////////////////////////////////////////////////////////////////////
+/*
+VisibilityModifier
+packageAllowed = (default)false
+protectedAllowed = (default)false
+publicMemberPattern = ^f[A-Z][a-zA-Z0-9]*$
+allowPublicFinalFields = (default)false
+allowPublicImmutableFields = (default)false
+immutableClassCanonicalNames = (default)java.io.File, java.lang.Boolean, java.lang.Byte, \
+                               java.lang.Character, java.lang.Double, java.lang.Float, \
+                               java.lang.Integer, java.lang.Long, java.lang.Short, \
+                               java.lang.StackTraceElement, java.lang.String, \
+                               java.math.BigDecimal, java.math.BigInteger, \
+                               java.net.Inet4Address, java.net.Inet6Address, \
+                               java.net.InetSocketAddress, java.net.URI, java.net.URL, \
+                               java.util.Locale, java.util.UUID
+ignoreAnnotationCanonicalNames = (default)com.google.common.annotations.VisibleForTesting, \
+                                 org.junit.ClassRule, org.junit.Rule
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.design.visibilitymodifier;
 
 /**
@@ -27,20 +44,20 @@ class InputVisibilityModifierInner
         class InnerInterfaceInnerClass
         {
             // Ignore - need Javadoc and made private
-            public int rData;
+            public int rData; // violation
 
             /** needs to be made private unless allowProtected. */
-            protected int protectedVariable;
+            protected int protectedVariable; // violation
 
             /** needs to be made private unless allowPackage. */
-            int packageVariable;
+            int packageVariable; // violation
         }
     }
 
     /** demonstrate bug in handling static final **/
-    protected static Object sWeird = new Object();
+    protected static Object sWeird = new Object(); // violation
     /** demonstrate bug in handling static final **/
-    static Object sWeird2 = new Object();
+    static Object sWeird2 = new Object(); // violation
 
     /** demonstrate bug in local final variable */
     public interface Inter
@@ -74,8 +91,8 @@ class InputVisibilityModifierInner
         B;
 
         /** Should be private */
-        public int someValue;
+        public int someValue; // violation
     }
 
-    float fSerialVersionUID = 0x1234567F;
+    float fSerialVersionUID = 0x1234567F; // violation
 }

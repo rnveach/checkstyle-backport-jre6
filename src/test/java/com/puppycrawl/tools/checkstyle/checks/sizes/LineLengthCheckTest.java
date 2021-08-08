@@ -39,8 +39,8 @@ public class LineLengthCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(LineLengthCheck.class);
-        checkConfig.addAttribute("max", "80");
-        checkConfig.addAttribute("ignorePattern", "^.*is OK.*regexp.*$");
+        checkConfig.addProperty("max", "80");
+        checkConfig.addProperty("ignorePattern", "^.*is OK.*regexp.*$");
         final String[] expected = {
             "18: " + getCheckMessage(MSG_KEY, 80, 81),
             "145: " + getCheckMessage(MSG_KEY, 80, 83),
@@ -53,8 +53,8 @@ public class LineLengthCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(LineLengthCheck.class);
-        checkConfig.addAttribute("max", "80");
-        checkConfig.addAttribute("ignorePattern", "^.*is OK.*regexp.*$");
+        checkConfig.addProperty("max", "80");
+        checkConfig.addProperty("ignorePattern", "^.*is OK.*regexp.*$");
         checkConfig.addMessage("maxLineLen", "{0},{1}");
         final String[] expected = {
             "18: 80,81",
@@ -67,7 +67,7 @@ public class LineLengthCheckTest extends AbstractModuleTestSupport {
     public void shouldNotLogLongImportStatements() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(LineLengthCheck.class);
-        checkConfig.addAttribute("max", "80");
+        checkConfig.addProperty("max", "80");
         final String[] expected = {
             "9: " + getCheckMessage(MSG_KEY, 80, 87),
         };
@@ -78,7 +78,7 @@ public class LineLengthCheckTest extends AbstractModuleTestSupport {
     public void shouldNotLogLongPackageStatements() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(LineLengthCheck.class);
-        checkConfig.addAttribute("max", "80");
+        checkConfig.addProperty("max", "80");
         final String[] expected = {
             "7: " + getCheckMessage(MSG_KEY, 80, 88),
         };
@@ -90,8 +90,8 @@ public class LineLengthCheckTest extends AbstractModuleTestSupport {
     public void shouldNotLogLongLinks() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(LineLengthCheck.class);
-        checkConfig.addAttribute("max", "80");
-        checkConfig.addAttribute("ignorePattern",
+        checkConfig.addProperty("max", "80");
+        checkConfig.addProperty("ignorePattern",
             "^ *\\* *([^ ]+|\\{@code .*|<a href=\"[^\"]+\">)$");
         final String[] expected = {
             "4: " + getCheckMessage(MSG_KEY, 80, 98),
@@ -103,10 +103,10 @@ public class LineLengthCheckTest extends AbstractModuleTestSupport {
     public void countUnicodePointsOnce() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(LineLengthCheck.class);
-        checkConfig.addAttribute("max", "100");
+        checkConfig.addProperty("max", "100");
         // we need to set charset to let test pass when default charset is not UTF-8
         final DefaultConfiguration checkerConfig = createRootConfig(checkConfig);
-        checkerConfig.addAttribute("charset", StandardCharsets.UTF_8.name());
+        checkerConfig.addProperty("charset", StandardCharsets.UTF_8.name());
 
         final String[] expected = {
             "6: " + getCheckMessage(MSG_KEY, 100, 136),

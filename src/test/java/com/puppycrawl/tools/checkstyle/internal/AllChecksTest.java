@@ -19,6 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.internal;
 
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -272,7 +273,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
             if (module.equals(ImportControlCheck.class)) {
                 // ImportControlCheck must have the import control configuration file to avoid
                 // violation.
-                moduleConfig.addAttribute("file", getPath(
+                moduleConfig.addProperty("file", getPath(
                         "InputAllChecksImportControl.xml"));
             }
             final Checker checker = createChecker(moduleConfig);
@@ -434,7 +435,7 @@ public class AllChecksTest extends AbstractModuleTestSupport {
                 }
 
                 try {
-                    configTokens.addAll(Arrays.asList(checkConfig.getAttribute("tokens").trim()
+                    configTokens.addAll(Arrays.asList(checkConfig.getProperty("tokens").trim()
                             .split(",\\s*")));
                 }
                 catch (CheckstyleException ex) {
@@ -602,9 +603,10 @@ public class AllChecksTest extends AbstractModuleTestSupport {
 
             assertNotNull(result, module.getSimpleName() + " should have text for the message '"
                     + messageString + "' in locale " + locale.getLanguage() + "'");
-            assertFalse(result.trim().isEmpty(), module.getSimpleName()
-                    + " should have non-empty text for the message '"
-                    + messageString + "' in locale '" + locale.getLanguage() + "'");
+            assertWithMessage("%s should have non-empty text for the message '%s' in locale '%s'",
+                            module.getSimpleName(), messageString, locale.getLanguage())
+                    .that(result.trim())
+                    .isNotEmpty();
             assertFalse(!"todo.match".equals(messageString) && result.trim().startsWith("TODO"),
                     module.getSimpleName()
                     + " should have non-TODO text for the message '"

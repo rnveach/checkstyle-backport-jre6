@@ -1,3 +1,18 @@
+/*
+AbbreviationAsWordInName
+allowedAbbreviationLength = (default)3
+allowedAbbreviations = (default)
+ignoreFinal = (default)true
+ignoreStatic = (default)true
+ignoreStaticFinal = (default)true
+ignoreOverriddenMethods = (default)true
+tokens = (default)CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF, ANNOTATION_FIELD_DEF, \
+         PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF, PATTERN_VARIABLE_DEF, RECORD_DEF, \
+         RECORD_COMPONENT_DEF
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.naming.abbreviationaswordinname;
 
 abstract class InputAbbreviationAsWordInNameType {
@@ -6,10 +21,10 @@ abstract class InputAbbreviationAsWordInNameType {
 abstract class NonAAAAbstractClassName {
 }
 
-abstract class FactoryWithBADNAme {
+abstract class FactoryWithBADNAme { // violation
 }
 
-abstract class AbstractCLASSName {
+abstract class AbstractCLASSName1 { // violation
     abstract class NonAbstractInnerClass {
     }
 }
@@ -28,16 +43,16 @@ class AbstractClass1 {
 class Class1Factory1 {
 }
 
-abstract class AbstractClassName3 {
-    class AbstractINNERRClass {
+abstract class AbstractClassName31 {
+    class AbstractINNERRClass { // violation
     }
 }
 
 abstract class Class3Factory {
-    class WellNamedFACTORY {
-    	public void marazmaticMETHODName() {
-    		int marazmaticVARIABLEName = 2;
-    		int MARAZMATICVariableName = 1;
+    class WellNamedFACTORY { // violation
+    	public void marazmaticMETHODName() { // violation
+    		int marazmaticVARIABLEName = 2; // violation
+    		int MARAZMATICVariableName = 1; // violation
     	}
     }
 }
@@ -54,8 +69,8 @@ interface BadNameForInterface
    void interfaceMethod();
 }
 
-abstract class NonAAAAbstractClassName2 {
-	public int serialNUMBER = 6;
+abstract class NonAAAAbstractClassName21 {
+	public int serialNUMBER = 6; // violation
 	public final int s1erialNUMBER = 6;
 	private static int s2erialNUMBER = 6;
 	private static final int s3erialNUMBER = 6;

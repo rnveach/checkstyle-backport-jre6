@@ -1,3 +1,11 @@
+/*
+BooleanExpressionComplexity
+max = (default)3
+tokens = (default)LAND, BAND, LOR, BOR, BXOR
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.metrics.booleanexpressioncomplexity;
 
 public class InputBooleanExpressionComplexity {
@@ -10,7 +18,7 @@ public class InputBooleanExpressionComplexity {
         if (_a && _b || _c ^ _d) {
         }
 
-        if (((_a && (_b & _c)) || (_c ^ _d))) {
+        if (((_a && (_b & _c)) || (_c ^ _d))) { // violation
         }
 
         if (_a && _b && _c) {
@@ -26,7 +34,8 @@ public class InputBooleanExpressionComplexity {
     public boolean equals(Object object) {
         new NestedClass() {
             public void method() {
-                new Settings(Settings.FALSE || Settings.FALSE || Settings.FALSE || _a || _b);
+                new Settings(Settings.FALSE || Settings.FALSE ||
+                        Settings.FALSE || _a || _b); // violation
             }
             public void method2() {
             }
@@ -36,15 +45,15 @@ public class InputBooleanExpressionComplexity {
 
     public boolean bitwise()
     {
-        return (((_a & (_b & _c)) | (_c ^ _d) | (_a & _d)));
+        return (((_a & (_b & _c)) | (_c ^ _d) | (_a & _d))); // violation
     }
 
     public void notIgnoredMethodParameters()
     {
         new Settings(Settings.FALSE && Settings.FALSE && Settings.FALSE
-                && Settings.TRUE && Settings.TRUE);
+                && Settings.TRUE && Settings.TRUE); // violation
         new Settings(Settings.FALSE || Settings.FALSE || Settings.FALSE
-                || Settings.TRUE || Settings.TRUE);
+                || Settings.TRUE || Settings.TRUE); // violation
     }
 
     public void ignoredMethodParameters()

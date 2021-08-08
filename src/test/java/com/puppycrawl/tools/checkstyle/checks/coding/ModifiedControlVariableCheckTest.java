@@ -71,7 +71,7 @@ public class ModifiedControlVariableCheckTest
     public void testEnhancedForLoopVariableTrue() throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ModifiedControlVariableCheck.class);
-        checkConfig.addAttribute("skipEnhancedForLoopVariable", "true");
+        checkConfig.addProperty("skipEnhancedForLoopVariable", "true");
 
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, getPath("InputModifiedControlVariableEnhancedForLoopVariable.java"),
@@ -94,7 +94,7 @@ public class ModifiedControlVariableCheckTest
     public void testEnhancedForLoopVariable2() throws Exception {
         final DefaultConfiguration checkConfig =
                 createModuleConfig(ModifiedControlVariableCheck.class);
-        checkConfig.addAttribute("skipEnhancedForLoopVariable", "true");
+        checkConfig.addProperty("skipEnhancedForLoopVariable", "true");
 
         final String[] expected = {
             "14:18: " + getCheckMessage(MSG_KEY, "i"),

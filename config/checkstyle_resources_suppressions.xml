@@ -38,8 +38,15 @@
   <suppress checks="PackageDeclarationCheck"
     files="customimportorder[\\/]InputCustomImportOrderSamePackage\.java"/>
   <suppress checks="PackageDeclarationCheck"
+    files="customimportorder[\\/]InputCustomImportOrderSamePackage2\.java"/>
+  <suppress checks="PackageDeclarationCheck"
     files="customimportorder[\\/]InputCustomImportOrderSamePackageDepth25\.java"/>
-
+  <suppress checks="PackageDeclarationCheck"
+    files="customimportorder[\\/]InputCustomImportOrderSamePackageDepth252\.java"/>
+  <suppress checks="PackageDeclarationCheck"
+    files="customimportorder[\\/]InputCustomImportOrderSamePackageDepth253\.java"/>
+  <suppress checks="PackageDeclarationCheck"
+    files="customimportorder[\\/]InputCustomImportOrderSamePackageDepth254\.java"/>
   <!-- intentional problem for testing -->
   <suppress checks="PackageDeclarationCheck"
     files="illegalinstantiation[\\/]InputIllegalInstantiationNoPackage\.java"/>
@@ -104,6 +111,8 @@
   <suppress checks="FileTabCharacter"
     files="[\\/]InputFileTabCharacterSimple\.java"/>
   <suppress checks="FileTabCharacter"
+    files="[\\/]InputFileTabCharacterSimple1\.java"/>
+  <suppress checks="FileTabCharacter"
     files="[\\/]InputIndentationUseTabs\.java"/>
   <suppress checks="FileTabCharacter"
     files="[\\/]InputCheckerTabCharacter\.txt"/>
@@ -121,6 +130,8 @@
     files="[\\/]InputXpathFileGeneratorAstFilter\.java"/>
   <suppress checks="FileTabCharacter"
     files="[\\/]InputNoLineWrapBad\.java"/>
+  <suppress checks="FileTabCharacter"
+    files="[\\/]InputNoLineWrapBad2\.java"/>
   <suppress checks="FileTabCharacter"
     files="[\\/]InputAstTreeStringPrinterFullOfBlockComments\.java"/>
   <suppress checks="FileTabCharacter"

@@ -19,7 +19,7 @@
 
 package com.puppycrawl.tools.checkstyle.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import org.junit.Test;
 
@@ -30,7 +30,9 @@ public class LineColumnTest {
     @Test
     public void testCompareToBothEqual() {
         final int actual = new LineColumn(0, 0).compareTo(new LineColumn(0, 0));
-        assertEquals(0, actual, "Invalid LineColumn comparing result");
+        assertWithMessage("Invalid LineColumn comparing result")
+                .that(actual)
+                .isEqualTo(0);
     }
 
     @Test
@@ -38,9 +40,13 @@ public class LineColumnTest {
         final LineColumn lineColumn = new LineColumn(0, 0);
 
         final int line1column0 = new LineColumn(1, 0).compareTo(lineColumn);
-        assertEquals(1, line1column0, "Invalid LineColumn comparison result");
+        assertWithMessage("Invalid LineColumn comparison result")
+                .that(line1column0)
+                .isEqualTo(1);
         final int line2Column1 = new LineColumn(0, 1).compareTo(lineColumn);
-        assertEquals(1, line2Column1, "Invalid LineColumn comparison result");
+        assertWithMessage("Invalid LineColumn comparison result")
+                .that(line2Column1)
+                .isEqualTo(1);
     }
 
     @Test
@@ -48,9 +54,13 @@ public class LineColumnTest {
         final Comparable<LineColumn> lineColumn = new LineColumn(0, 0);
 
         final int line1Column0 = lineColumn.compareTo(new LineColumn(1, 0));
-        assertEquals(-1, line1Column0, "Invalid LineColumn comparison result");
+        assertWithMessage("Invalid LineColumn comparison result")
+                .that(line1Column0)
+                .isEqualTo(-1);
         final int line0Column1 = lineColumn.compareTo(new LineColumn(0, 1));
-        assertEquals(-1, line0Column1, "Invalid LineColumn comparison result");
+        assertWithMessage("Invalid LineColumn comparison result")
+                .that(line0Column1)
+                .isEqualTo(-1);
     }
 
     @Test
@@ -63,8 +73,12 @@ public class LineColumnTest {
     public void testGetters() {
         final LineColumn lineColumn = new LineColumn(2, 3);
 
-        assertEquals(2, lineColumn.getLine(), "Invalid LineColumn comparison result");
-        assertEquals(3, lineColumn.getColumn(), "Invalid LineColumn comparison result");
+        assertWithMessage("Invalid LineColumn comparison result")
+                .that(lineColumn.getLine())
+                .isEqualTo(2);
+        assertWithMessage("Invalid LineColumn comparison result")
+                .that(lineColumn.getColumn())
+                .isEqualTo(3);
     }
 
 }

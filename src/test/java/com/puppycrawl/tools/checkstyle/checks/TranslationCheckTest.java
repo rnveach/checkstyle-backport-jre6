@@ -165,7 +165,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testFileExtension() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("baseName", "^InputTranslation.*$");
+        checkConfig.addProperty("baseName", "^InputTranslation.*$");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         final File[] propertyFiles = {
             new File(getPath("InputTranslation_de.txt")),
@@ -179,8 +179,8 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testLogOutput() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "ja,de");
-        checkConfig.addAttribute("baseName", "^InputTranslation.*$");
+        checkConfig.addProperty("requiredTranslations", "ja,de");
+        checkConfig.addProperty("baseName", "^InputTranslation.*$");
         final Checker checker = createChecker(checkConfig);
         checker.setBasedir(getPath(""));
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -276,7 +276,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testLogIllegalArgumentException() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("baseName", "^bad.*$");
+        checkConfig.addProperty("baseName", "^bad.*$");
         final String[] expected = {
             "0: " + new Violation(1, Definitions.CHECKSTYLE_BUNDLE, "general.exception",
                 new String[] {"Malformed \\uxxxx encoding." }, null, getClass(),
@@ -296,7 +296,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testDefaultTranslationFileIsMissing() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "ja,,, de, ja");
+        checkConfig.addProperty("requiredTranslations", "ja,,, de, ja");
 
         final File[] propertyFiles = {
             new File(getPath("messages_translation_de.properties")),
@@ -317,7 +317,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testTranslationFilesAreMissing() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "ja, de");
+        checkConfig.addProperty("requiredTranslations", "ja, de");
 
         final File[] propertyFiles = {
             new File(getPath("messages_translation.properties")),
@@ -338,7 +338,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testBaseNameWithSeparatorDefaultTranslationIsMissing() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "fr");
+        checkConfig.addProperty("requiredTranslations", "fr");
 
         final File[] propertyFiles = {
             new File(getPath("messages-translation_fr.properties")),
@@ -358,7 +358,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testBaseNameWithSeparatorTranslationsAreMissing() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "fr, tr");
+        checkConfig.addProperty("requiredTranslations", "fr, tr");
 
         final File[] propertyFiles = {
             new File(getPath("messages-translation.properties")),
@@ -379,7 +379,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testIsNotMessagesBundle() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "de");
+        checkConfig.addProperty("requiredTranslations", "de");
 
         final File[] propertyFiles = {
             new File(getPath("app-dev.properties")),
@@ -397,7 +397,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testTranslationFileWithLanguageCountryVariantIsMissing() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "es, de");
+        checkConfig.addProperty("requiredTranslations", "es, de");
 
         final File[] propertyFiles = {
             new File(getPath("messages_home.properties")),
@@ -419,7 +419,7 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testTranslationFileWithLanguageCountryVariantArePresent() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "es, fr");
+        checkConfig.addProperty("requiredTranslations", "es, fr");
 
         final File[] propertyFiles = {
             new File(getPath("messages_home.properties")),
@@ -438,8 +438,8 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testBaseNameOption() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "de, es, fr, ja");
-        checkConfig.addAttribute("baseName", "^.*Labels$");
+        checkConfig.addProperty("requiredTranslations", "de, es, fr, ja");
+        checkConfig.addProperty("baseName", "^.*Labels$");
 
         final File[] propertyFiles = {
             new File(getPath("ButtonLabels.properties")),
@@ -465,9 +465,9 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testFileExtensions() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "de, es, fr, ja");
-        checkConfig.addAttribute("fileExtensions", "properties,translation");
-        checkConfig.addAttribute("baseName", "^.*(Titles|Labels)$");
+        checkConfig.addProperty("requiredTranslations", "de, es, fr, ja");
+        checkConfig.addProperty("fileExtensions", "properties,translation");
+        checkConfig.addProperty("baseName", "^.*(Titles|Labels)$");
 
         final File[] propertyFiles = {
             new File(getPath("ButtonLabels.properties")),
@@ -496,9 +496,9 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testEqualBaseNamesButDifferentExtensions() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "de, es, fr, ja");
-        checkConfig.addAttribute("fileExtensions", "properties,translations");
-        checkConfig.addAttribute("baseName", "^.*Labels$");
+        checkConfig.addProperty("requiredTranslations", "de, es, fr, ja");
+        checkConfig.addProperty("fileExtensions", "properties,translations");
+        checkConfig.addProperty("baseName", "^.*Labels$");
 
         final File[] propertyFiles = {
             new File(getPath("ButtonLabels.properties")),
@@ -527,9 +527,9 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testEqualBaseNamesButDifferentExtensions2() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "de, es");
-        checkConfig.addAttribute("fileExtensions", "properties, translations");
-        checkConfig.addAttribute("baseName", "^.*Labels$");
+        checkConfig.addProperty("requiredTranslations", "de, es");
+        checkConfig.addProperty("fileExtensions", "properties, translations");
+        checkConfig.addProperty("baseName", "^.*Labels$");
 
         final File[] propertyFiles = {
             new File(getPath("ButtonLabels.properties")),
@@ -557,9 +557,9 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testRegexpToMatchPartOfBaseName() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "de, es, fr, ja");
-        checkConfig.addAttribute("fileExtensions", "properties,translations");
-        checkConfig.addAttribute("baseName", "^.*Labels.*");
+        checkConfig.addProperty("requiredTranslations", "de, es, fr, ja");
+        checkConfig.addProperty("fileExtensions", "properties,translations");
+        checkConfig.addProperty("baseName", "^.*Labels.*");
 
         final File[] propertyFiles = {
             new File(getPath("MyLabelsI18.properties")),
@@ -582,9 +582,9 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     @Test
     public void testBundlesWithSameNameButDifferentPaths() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
-        checkConfig.addAttribute("requiredTranslations", "de");
-        checkConfig.addAttribute("fileExtensions", "properties");
-        checkConfig.addAttribute("baseName", "^.*Labels.*");
+        checkConfig.addProperty("requiredTranslations", "de");
+        checkConfig.addProperty("fileExtensions", "properties");
+        checkConfig.addProperty("baseName", "^.*Labels.*");
 
         final File[] propertyFiles = {
             new File(getPath("MyLabelsI18.properties")),

@@ -264,47 +264,71 @@ public class ViolationTest {
 
     @Test
     public void testEnforceEnglishLanguageBySettingUnitedStatesLocale() {
-        Locale.setDefault(Locale.FRENCH);
-        Violation.setLocale(Locale.US);
-        final Violation violation = createSampleViolation();
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.FRENCH);
+            Violation.setLocale(Locale.US);
+            final Violation violation = createSampleViolation();
 
-        assertEquals("Empty statement.", violation.getViolation(), "Invalid violation");
+            assertEquals("Empty statement.", violation.getViolation(), "Invalid violation");
+        }
+        finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
     @Test
     public void testEnforceEnglishLanguageBySettingRootLocale() {
-        Locale.setDefault(Locale.FRENCH);
-        Violation.setLocale(Locale.ROOT);
-        final Violation violation = createSampleViolation();
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.FRENCH);
+            Violation.setLocale(Locale.ROOT);
+            final Violation violation = createSampleViolation();
 
-        assertEquals("Empty statement.", violation.getViolation(), "Invalid violation");
+            assertEquals("Empty statement.", violation.getViolation(), "Invalid violation");
+        }
+        finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
     @Test
     public void testGetKey() {
-        Locale.setDefault(Locale.FRENCH);
-        Violation.setLocale(Locale.US);
-        final Violation violation = createSampleViolation();
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.FRENCH);
+            Violation.setLocale(Locale.US);
+            final Violation violation = createSampleViolation();
 
-        assertEquals("empty.statement", violation.getKey(), "Invalid violation key");
+            assertEquals("empty.statement", violation.getKey(), "Invalid violation key");
+        }
+        finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
     @Test
     public void testCleatBundleCache() {
-        Locale.setDefault(Locale.FRENCH);
-        Violation.setLocale(Locale.ROOT);
-        final Violation violation = createSampleViolation();
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.FRENCH);
+            Violation.setLocale(Locale.ROOT);
+            final Violation violation = createSampleViolation();
 
-        assertEquals("Empty statement.", violation.getViolation(), "Invalid violation");
+            assertEquals("Empty statement.", violation.getViolation(), "Invalid violation");
 
-        final Map<String, ResourceBundle> bundleCache =
-                Whitebox.getInternalState(Violation.class, "BUNDLE_CACHE");
+            final Map<String, ResourceBundle> bundleCache =
+                    Whitebox.getInternalState(Violation.class, "BUNDLE_CACHE");
 
-        assertEquals(1, bundleCache.size(), "Invalid bundle cache size");
+            assertEquals(1, bundleCache.size(), "Invalid bundle cache size");
 
-        Violation.setLocale(Locale.CHINA);
+            Violation.setLocale(Locale.CHINA);
 
-        assertEquals(0, bundleCache.size(), "Invalid bundle cache size");
+            assertEquals(0, bundleCache.size(), "Invalid bundle cache size");
+        }
+        finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
     @Test

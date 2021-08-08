@@ -155,7 +155,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     private void verifyWarns(Configuration config, String filePath,
                     String... expected)
                     throws Exception {
-        final int tabWidth = Integer.parseInt(config.getAttribute("tabWidth"));
+        final int tabWidth = Integer.parseInt(config.getProperty("tabWidth"));
         final IndentComment[] linesWithWarn =
                         getLinesWithWarnAndCheckComments(filePath, tabWidth);
         verify(config, filePath, expected, linesWithWarn);
@@ -209,14 +209,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testStrictCondition() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "4");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "4");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = {
             "10:29: " + getCheckMessage(MSG_ERROR_MULTI, "method def rcurly", 28, "16, 20, 24"),
             "13:9: " + getCheckMessage(MSG_ERROR, "method def rcurly", 8, 4),
@@ -228,14 +228,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void forbidOldStyle() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = {
             "20:30: " + getCheckMessage(MSG_ERROR, "int", 29, 12),
             "21:30: " + getCheckMessage(MSG_ERROR, "int", 29, 12),
@@ -246,14 +246,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testZeroCaseLevel() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "0");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "0");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationZeroCaseLevel.java"), expected);
     }
@@ -261,14 +261,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testAndroidStyle() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = {
             "42:4: " + getCheckMessage(MSG_ERROR, "extends", 3, 8),
             "44:4: " + getCheckMessage(MSG_ERROR, "member def type", 3, 4),
@@ -287,14 +287,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testMethodCallLineWrap() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "53:19: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 18, 20),
             "54:15: " + getCheckMessage(MSG_ERROR, "method call rparen", 14, 16),
@@ -307,14 +307,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testDifficultAnnotations() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "40:1: " + getCheckMessage(MSG_CHILD_ERROR_MULTI,
                     "annotation array initialization", 0, "4, 23, 25"),
@@ -330,9 +330,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testAnnotationClosingParenthesisEndsInSameIndentationAsOpening() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("tabWidth", "4");
 
         final String[] expected = {
             "34:17: " + getCheckMessage(MSG_ERROR, ")", 16, 0),
@@ -352,14 +352,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testAnonClassesFromGuava() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationFromGuava2.java"), expected);
     }
@@ -368,14 +368,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testAnnotations() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationFromGuava.java"), expected);
     }
@@ -384,14 +384,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testCorrectIfAndParameters() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "33:9: " + getCheckMessage(MSG_ERROR_MULTI, "new", 8, "10, 12"),
             "40:9: " + getCheckMessage(MSG_ERROR_MULTI, "new", 8, "10, 12"),
@@ -407,14 +407,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testAnonymousClasses() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationAnonymousClasses.java"), expected);
     }
@@ -423,14 +423,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testArrays() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "2");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "2");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationArrays.java"), expected);
     }
@@ -439,14 +439,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testLabels() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationLabels.java"), expected);
     }
@@ -455,14 +455,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testClassesAndMethods() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationClassesMethods.java"), expected);
     }
@@ -471,10 +471,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testCtorCall() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "28:5: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 4, 6),
             "29:5: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 6),
@@ -504,14 +504,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testMembers() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "22:6: " + getCheckMessage(MSG_ERROR, "=", 5, 6),
             "57:4: " + getCheckMessage(MSG_ERROR, "class def rcurly", 3, 2),
@@ -524,14 +524,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testAnnotationArrayInit() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "6");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "8");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "6");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "8");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
 
             "17:1: " + getCheckMessage(MSG_CHILD_ERROR_MULTI, "annotation array initialization", 0,
@@ -558,14 +558,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testAnnotationArrayInitTwo() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "0");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "0");
-        checkConfig.addAttribute("tabWidth", "8");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "0");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "0");
+        checkConfig.addProperty("tabWidth", "8");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
 
             "17:5: " + getCheckMessage(MSG_CHILD_ERROR_MULTI,
@@ -588,15 +588,15 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "3");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "3");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
 
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "9");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "9");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationOddLineWrappingAndArrayInit.java");
         final String[] expected = {
             "25:17: " + getCheckMessage(MSG_CHILD_ERROR_MULTI, "annotation array initialization",
@@ -610,14 +610,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "0");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "0");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationZeroArrayInit.java");
 
         final String[] expected = {
@@ -632,14 +632,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationAnnotationArrayInitGood.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -650,14 +650,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "2");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "2");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationAnnotationArrayInitGood.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -667,14 +667,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testInvalidLabel() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "24:11: " + getCheckMessage(MSG_CHILD_ERROR_MULTI, "label", 10, "8, 12"),
             "33:3: " + getCheckMessage(MSG_CHILD_ERROR_MULTI, "label", 2, "4, 8"),
@@ -690,14 +690,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testInvalidLabelWithWhileLoop() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "18:10: " + getCheckMessage(MSG_CHILD_ERROR_MULTI, "label", 9, "4, 8"),
             "19:10: " + getCheckMessage(MSG_CHILD_ERROR_MULTI, "label", 9, "8, 12"),
@@ -710,14 +710,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testValidLabel() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationValidLabelIndent.java"), expected);
     }
@@ -726,14 +726,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testValidIfWithChecker() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidIfIndent.java");
         final String[] expected = {
             "231:9: " + getCheckMessage(MSG_ERROR, "(", 8, 12),
@@ -746,14 +746,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidDotIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -764,14 +764,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidMethodIndent.java");
         final String[] expected = {
             "129:5: " + getCheckMessage(MSG_ERROR, "void", 4, 8),
@@ -785,14 +785,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidMethodIndent.java");
         final String[] expected = {
             "23:7: " + getCheckMessage(MSG_ERROR, "ctor def rcurly", 6, 4),
@@ -839,14 +839,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "2");
-        checkConfig.addAttribute("caseIndent", "2");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "2");
+        checkConfig.addProperty("caseIndent", "2");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationSwitchCasesAndEnums.java");
         final String[] expected = {
             "18:7: " + getCheckMessage(MSG_CHILD_ERROR, "block", 6, 4),
@@ -863,14 +863,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidSwitchIndent.java");
         final String[] expected = {
             "30:7: " + getCheckMessage(MSG_ERROR, "switch", 6, 8),
@@ -911,14 +911,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationIfElseWithNoCurly.java");
         final String[] expected = {
             "20:1: " + getCheckMessage(MSG_CHILD_ERROR, "if", 0, 12),
@@ -936,14 +936,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationWhileNoCurly.java");
         final String[] expected = {
             "21:1: " + getCheckMessage(MSG_CHILD_ERROR, "while", 0, 12),
@@ -960,14 +960,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationForWithoutCurly.java");
         final String[] expected = {
             "21:1: " + getCheckMessage(MSG_CHILD_ERROR, "for", 0, 12),
@@ -986,14 +986,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationDoWhile.java");
         final String[] expected = {
             "23:9: " + getCheckMessage(MSG_CHILD_ERROR, "do..while", 8, 12),
@@ -1008,14 +1008,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidSwitchIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1025,11 +1025,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testNewKeyword() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationNew.java"), expected);
     }
@@ -1038,11 +1038,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testNewKeyword2() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationNew.java"), expected);
     }
@@ -1051,11 +1051,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testValidNewKeywordWithForceStrictCondition() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationNew.java"), expected);
     }
@@ -1064,11 +1064,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testInvalidNewKeywordWithForceStrictCondition() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = {
             "23:17: " + getCheckMessage(MSG_ERROR, "new", 16, 24),
             "24:21: " + getCheckMessage(MSG_CHILD_ERROR_MULTI, "object def", 20, "28, 32, 36"),
@@ -1083,14 +1083,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidArrayInitDefaultIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1101,14 +1101,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "8");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "8");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidArrayInitIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1118,14 +1118,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testValidArrayInitTwoDimensional() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "2");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "4");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "2");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "4");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidArrayInitIndentTwoDimensional.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1135,14 +1135,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testInvalidArrayInitTwoDimensional() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "2");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "4");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "2");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "4");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName =
             getPath("InputIndentationInvalidArrayInitIndentTwoDimensional.java");
         final String[] expected = {
@@ -1166,14 +1166,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "2");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "2");
-        checkConfig.addAttribute("caseIndent", "2");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "2");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "2");
+        checkConfig.addProperty("caseIndent", "2");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidArrayInitIndentTwo.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1184,14 +1184,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidArrayInitIndent.java");
         final String[] expected = {
             "21:3: " + getCheckMessage(MSG_ERROR, "member def type", 2, 4),
@@ -1247,14 +1247,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testChainedMethodCalling() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "2");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "2");
-        checkConfig.addAttribute("caseIndent", "2");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "2");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "2");
+        checkConfig.addProperty("caseIndent", "2");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationChainedMethodCalls.java");
         final String[] expected = {
             "32:5: " + getCheckMessage(IndentationCheck.class,
@@ -1271,14 +1271,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidArrayInitIndent.java");
         final String[] expected = {
             "21:3: " + getCheckMessage(MSG_ERROR, "member def type", 2, 4),
@@ -1335,14 +1335,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidTryIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1353,14 +1353,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidTryIndent.java");
         final String[] expected = {
             "25:10: " + getCheckMessage(MSG_ERROR, "try", 9, 8),
@@ -1400,14 +1400,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidClassDefIndent.java");
         final String[] expected = {
             "22:3: " + getCheckMessage(MSG_ERROR, "class def modifier", 2, 0),
@@ -1453,14 +1453,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidBlockIndent.java");
         final String[] expected = {
             "26:8: " + getCheckMessage(MSG_ERROR, "block lcurly", 7, 8),
@@ -1518,14 +1518,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidIfIndent.java");
         final String[] expected = {
             "55:2: " + getCheckMessage(MSG_ERROR, "if", 1, 8),
@@ -1618,14 +1618,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidWhileIndent.java");
         final String[] expected = {
             "25:10: " + getCheckMessage(MSG_ERROR, "while", 9, 8),
@@ -1668,14 +1668,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testInvalidInvalidAnonymousClass() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidAnonymousClassIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1686,14 +1686,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidForIndent.java");
         final String[] expected = {
             "26:7: " + getCheckMessage(MSG_ERROR, "for", 6, 8),
@@ -1738,14 +1738,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidForIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1756,14 +1756,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidDoWhileIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1774,14 +1774,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationInvalidDoWhileIndent.java");
         final String[] expected = {
             "7:1: " + getCheckMessage(MSG_ERROR, "do..while", 0, 8),
@@ -1810,14 +1810,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidBlockIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1828,14 +1828,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidWhileIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1846,14 +1846,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidClassDefIndent.java");
         final String[] expected = {
             "49:1: " + getCheckMessage(MSG_ERROR, "class", 0, 4),
@@ -1867,14 +1867,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidInterfaceDefIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1885,14 +1885,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
             throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String fileName = getPath("InputIndentationValidCommaIndent.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -1902,14 +1902,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testTabs() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "29:10: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 9, 8),
         };
@@ -1920,14 +1920,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testIndentationLevel() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "2");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "2");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "29:6: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 5, 4),
         };
@@ -1938,14 +1938,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testThrowsIndentationLevel() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationInvalidThrowsIndent.java"), expected);
     }
@@ -1954,11 +1954,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testThrowsIndentationLevel2() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("basicOffset", "1");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("lineWrappingIndentation", "3");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "5");
+        checkConfig.addProperty("basicOffset", "1");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("lineWrappingIndentation", "3");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "5");
         final String[] expected = {
             "7:1: " + getCheckMessage(MSG_ERROR, "Exception", 0, 6),
             "10:1: " + getCheckMessage(MSG_ERROR, "NullPointerException", 0, 6),
@@ -1981,14 +1981,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testCaseLevel() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "0");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "0");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "27:11: " + getCheckMessage(MSG_CHILD_ERROR, "case", 10, 8),
         };
@@ -1999,14 +1999,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testBraceAdjustment() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "2");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "2");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "24:9: " + getCheckMessage(MSG_CHILD_ERROR, "ctor def", 8, 10),
             "25:9: " + getCheckMessage(MSG_ERROR, "if", 8, 10),
@@ -2021,14 +2021,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testInvalidAssignWithChecker() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = {
             "22:11: " + getCheckMessage(MSG_ERROR, "getLineNo", 10, 12),
             "24:11: " + getCheckMessage(MSG_ERROR, "getLine", 10, 12),
@@ -2041,8 +2041,8 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testInvalidImportIndent() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("basicOffset", "8");
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "8");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "4:3: " + getCheckMessage(MSG_ERROR, ".", 2, 4),
             "5:2: " + getCheckMessage(MSG_ERROR, "import", 1, 0),
@@ -2054,14 +2054,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testValidAssignWithChecker() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationValidAssignIndent.java"), expected);
     }
@@ -2070,14 +2070,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void test15Extensions() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentation15Extensions.java"), expected);
     }
@@ -2086,14 +2086,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testTryResources() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationValidTryResourcesIndent.java"),
                expected);
@@ -2103,14 +2103,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testSwitchCustom() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationSwitchCustom.java"),
                expected);
@@ -2119,14 +2119,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSynchronizedStatement() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = {
             "27:1: " + getCheckMessage(MSG_CHILD_ERROR, "synchronized", 0, 12),
             "30:13: " + getCheckMessage(MSG_ERROR, "synchronized lparen", 12, 8),
@@ -2137,14 +2137,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSynchronizedMethod() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("throwsIndent", "8");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationSynchronizedMethod.java"), expected);
     }
@@ -2152,13 +2152,13 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testAnonymousClassInMethod() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "8");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "2");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
-        checkConfig.addAttribute("arrayInitIndent", "2");
+        checkConfig.addProperty("tabWidth", "8");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "2");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "2");
         final String[] expected = {
             "19:9: " + getCheckMessage(MSG_ERROR, "method def modifier", 8, 2),
             "20:17: " + getCheckMessage(MSG_CHILD_ERROR, "method def", 16, 4),
@@ -2173,13 +2173,13 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testAnonymousClassInMethodWithCurlyOnNewLine() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("throwsIndent", "4");
-        checkConfig.addAttribute("arrayInitIndent", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
         final String[] expected = {
             "40:19: " + getCheckMessage(MSG_ERROR_MULTI, "object def rcurly", 18, "16, 20, 24"),
             "42:15: " + getCheckMessage(MSG_ERROR, "new", 14, 16),
@@ -2196,7 +2196,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testAnnotationDefinition() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationAnnotationDefinition.java"), expected);
     }
@@ -2204,7 +2204,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testPackageDeclaration() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "1:2: " + getCheckMessage(MSG_ERROR, "package def", 1, 0),
         };
@@ -2214,7 +2214,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testPackageDeclaration2() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "2:2: " + getCheckMessage(MSG_ERROR, "package def", 1, 0),
         };
@@ -2225,7 +2225,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testPackageDeclaration3() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationPackageDeclaration3.java"), expected);
     }
@@ -2233,7 +2233,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testPackageDeclaration4() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "2:1: " + getCheckMessage(MSG_ERROR, "com", 0, 4),
             "3:1: " + getCheckMessage(MSG_ERROR, "checks", 0, 4),
@@ -2244,9 +2244,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testLambda1() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "2");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "2");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
         final String[] expected = {
             "46:6: " + getCheckMessage(MSG_ERROR_MULTI, "block lcurly", 5, "4, 8"),
             "47:6: " + getCheckMessage(MSG_ERROR_MULTI, "block rcurly", 5, "4, 8"),
@@ -2264,9 +2264,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testLambda2() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationLambda2.java"), expected);
     }
@@ -2274,9 +2274,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testLambda3() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
         final String[] expected = {
             "15:13: " + getCheckMessage(MSG_CHILD_ERROR, "method def", 12, 8),
             "29:13: " + getCheckMessage(MSG_CHILD_ERROR, "method def", 12, 8),
@@ -2291,9 +2291,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testLambda4() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationLambda4.java"), expected);
     }
@@ -2301,10 +2301,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testLambda5() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "3");
-        checkConfig.addAttribute("basicOffset", "3");
-        checkConfig.addAttribute("caseIndent", "0");
-        checkConfig.addAttribute("lineWrappingIndentation", "6");
+        checkConfig.addProperty("tabWidth", "3");
+        checkConfig.addProperty("basicOffset", "3");
+        checkConfig.addProperty("caseIndent", "0");
+        checkConfig.addProperty("lineWrappingIndentation", "6");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationLambda5.java"), expected);
     }
@@ -2312,11 +2312,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testLambdaFalseForceStrictCondition() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "0");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "0");
         final String[] expected = {
             "34:5: " + getCheckMessage(MSG_ERROR, "(", 4, 8),
             "35:5: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 4, 12),
@@ -2331,11 +2331,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testLambdaTrueForceStrictCondition() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
         final String[] expected = {
             "23:17: " + getCheckMessage(MSG_ERROR, "(", 16, 12),
             "24:17: " + getCheckMessage(MSG_ERROR, "->", 16, 12),
@@ -2360,11 +2360,11 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testLambdaOddConditions() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "3");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "7");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "3");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "7");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
         verifyWarns(checkConfig, getPath("InputIndentationLambda8.java"), expected);
@@ -2373,7 +2373,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSeparatedStatements() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String fileName = getPath("InputIndentationSeparatedStatements.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -2382,7 +2382,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testSeparatedLineWithJustSpaces() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String fileName = getPath("InputIndentationSeparatedStatementWithSpaces.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verify(checkConfig, fileName, expected);
@@ -2391,8 +2391,8 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTwoStatementsPerLine() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
         final String fileName = getPath("InputIndentationTwoStatementsPerLine.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -2401,8 +2401,8 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testMethodChaining() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
         final String fileName = getPath("InputIndentationChainedMethods.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, fileName, expected);
@@ -2411,9 +2411,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testMultipleAnnotationsWithWrappedLines() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
         final String fileName =
             getPath("InputIndentationCorrectMultipleAnnotationsWithWrappedLines.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
@@ -2423,13 +2423,13 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testMethodPrecedeByAnnotationsWithParameterOnSeparateLine() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "2");
-        checkConfig.addAttribute("throwsIndent", "4");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("arrayInitIndent", "2");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "2");
+        checkConfig.addProperty("throwsIndent", "4");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("arrayInitIndent", "2");
         final String fileName =
             getPath("InputIndentationMethodPrecededByAnnotationWithParameterOnSeparateLine.java");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
@@ -2439,10 +2439,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testAnnotationIncorrect() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
         final String fileName =
             getPath("InputIndentationAnnotationIncorrect.java");
         final String[] expected = {
@@ -2456,9 +2456,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testInputAnnotationScopeIndentationCheck() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
         final String fileName = getPath("InputIndentationAnnotationScopeIndentationCheck.java");
         final String[] expected = {
             "9:9: " + getCheckMessage(MSG_ERROR_MULTI,
@@ -2470,12 +2470,12 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testInputAnnotationDefIndentationCheck() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
         final String fileName = getPath("InputIndentationCustomAnnotation.java");
         final String[] expected = {
             "14:6: " + getCheckMessage(MSG_ERROR, "annotation def modifier", 5, 0),
@@ -2515,10 +2515,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTryResourcesStrict() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("forceStrictCondition", "true");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("forceStrictCondition", "true");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
         final String fileName = getPath("InputIndentationTryWithResourcesStrict.java");
         final String[] expected = {
             "26:1: " + getCheckMessage(MSG_ERROR, "try resource", 0, 12),
@@ -2550,9 +2550,9 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTryResourcesNotStrict() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
         final String fileName = getPath("InputIndentationTryResourcesNotStrict.java");
         final String[] expected = {
             "27:1: " + getCheckMessage(MSG_ERROR, "try resource", 0, 12),
@@ -2617,7 +2617,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testEmptyArray() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationEmptyArray.java"), expected);
     }
@@ -2625,7 +2625,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testNewHandler() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "10:1: " + getCheckMessage(MSG_ERROR, "Object", 0, 12),
             "12:1: " + getCheckMessage(MSG_ERROR, "(", 0, 12),
@@ -2638,10 +2638,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTryHandler() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("forceStrictCondition", "true");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("forceStrictCondition", "true");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig, getPath("InputIndentationTryBlockWithResources.java"), expected);
     }
@@ -2649,10 +2649,10 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testTryHandler2() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("lineWrappingIndentation", "8");
-        checkConfig.addAttribute("forceStrictCondition", "true");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("lineWrappingIndentation", "8");
+        checkConfig.addProperty("forceStrictCondition", "true");
         final String[] expected = {
             "25:17: " + getCheckMessage(MSG_ERROR, "new", 16, 20),
             "27:13: " + getCheckMessage(MSG_ERROR, "new", 12, 20),
@@ -2664,14 +2664,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     public void testChainedMethodWithBracketOnNewLine() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
 
-        checkConfig.addAttribute("arrayInitIndent", "2");
-        checkConfig.addAttribute("basicOffset", "2");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "2");
-        checkConfig.addAttribute("forceStrictCondition", "false");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("tabWidth", "2");
-        checkConfig.addAttribute("throwsIndent", "2");
+        checkConfig.addProperty("arrayInitIndent", "2");
+        checkConfig.addProperty("basicOffset", "2");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "2");
+        checkConfig.addProperty("forceStrictCondition", "false");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "2");
+        checkConfig.addProperty("throwsIndent", "2");
         final String[] expected = {
             "44:7: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 6, 8),
             "45:9: " + getCheckMessage(MSG_CHILD_ERROR, "method call", 8, 10),
@@ -2687,7 +2687,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationSwitchExpression() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "17:1: " + getCheckMessage(MSG_CHILD_ERROR, "case", 0, 12),
             "18:9: " + getCheckMessage(MSG_CHILD_ERROR, "block", 8, 16),
@@ -2712,7 +2712,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationYieldStatement() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "23:13: " + getCheckMessage(MSG_ERROR, "yield", 12, 16),
             "28:9: " + getCheckMessage(MSG_CHILD_ERROR, "yield", 8, 16),
@@ -2730,7 +2730,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationSwitchExpressionCorrect() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
         verifyWarns(checkConfig,
             getNonCompilablePath("InputIndentationCheckSwitchExpressionCorrect.java"),
@@ -2740,14 +2740,14 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationRecords() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
-        checkConfig.addAttribute("forceStrictCondition", "false");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
+        checkConfig.addProperty("forceStrictCondition", "false");
 
         final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
 
@@ -2759,7 +2759,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationRecordsAndCompactCtors() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "13:1: " + getCheckMessage(MSG_ERROR, "(", 0, 8),
             "25:1: " + getCheckMessage(MSG_ERROR, "String", 0, 12),
@@ -2777,7 +2777,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationSwitchExpressionNewLine() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "30:13: " + getCheckMessage(MSG_ERROR, "lambda", 12, 16),
             "32:13: " + getCheckMessage(MSG_ERROR, "lambda", 12, 16),
@@ -2791,7 +2791,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationMethodParenthesisOnNewLine() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "13:9: " + getCheckMessage(MSG_ERROR, "method def rparen", 8, 4),
             "18:9: " + getCheckMessage(MSG_ERROR, "method def rparen", 8, 4),
@@ -2805,7 +2805,7 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationMethodParenthesisOnNewLine1() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
+        checkConfig.addProperty("tabWidth", "4");
         final String[] expected = {
             "11:10: " + getCheckMessage(MSG_ERROR, "2", 9, 12),
             "17:8: " + getCheckMessage(MSG_ERROR, "int", 7, 8),
@@ -2820,13 +2820,13 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationLineWrappedRecordDeclaration() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("throwsIndent", "4");
-        checkConfig.addAttribute("arrayInitIndent", "4");
-        checkConfig.addAttribute("lineWrappingIndentation", "4");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("throwsIndent", "4");
+        checkConfig.addProperty("arrayInitIndent", "4");
+        checkConfig.addProperty("lineWrappingIndentation", "4");
 
         final String[] expected = {
             "33:1: " + getCheckMessage(MSG_ERROR, ")", 0, 4),
@@ -2858,12 +2858,12 @@ public class IndentationCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIndentationAnnotationFieldDefinition() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(IndentationCheck.class);
-        checkConfig.addAttribute("tabWidth", "4");
-        checkConfig.addAttribute("basicOffset", "4");
-        checkConfig.addAttribute("braceAdjustment", "0");
-        checkConfig.addAttribute("caseIndent", "4");
-        checkConfig.addAttribute("throwsIndent", "8");
-        checkConfig.addAttribute("forceStrictCondition", "true");
+        checkConfig.addProperty("tabWidth", "4");
+        checkConfig.addProperty("basicOffset", "4");
+        checkConfig.addProperty("braceAdjustment", "0");
+        checkConfig.addProperty("caseIndent", "4");
+        checkConfig.addProperty("throwsIndent", "8");
+        checkConfig.addProperty("forceStrictCondition", "true");
 
         final String[] expected = {
             "17:5: " + getCheckMessage(MSG_ERROR, "annotation field def modifier", 4, 8),

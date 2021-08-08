@@ -68,7 +68,7 @@ public class ArrayTypeStyleCheckTest
             throws Exception {
         final DefaultConfiguration checkConfig =
             createModuleConfig(ArrayTypeStyleCheck.class);
-        checkConfig.addAttribute("javaStyle", "false");
+        checkConfig.addProperty("javaStyle", "false");
         final String[] expected = {
             "12:16: " + getCheckMessage(MSG_KEY),
             "16:39: " + getCheckMessage(MSG_KEY),
@@ -81,6 +81,20 @@ public class ArrayTypeStyleCheckTest
             "55:29: " + getCheckMessage(MSG_KEY),
         };
         verify(checkConfig, getPath("InputArrayTypeStyleOff.java"), expected);
+    }
+
+    @Test
+    public void testNestedGenerics()
+            throws Exception {
+        final DefaultConfiguration checkConfig =
+            createModuleConfig(ArrayTypeStyleCheck.class);
+        final String[] expected = {
+            "18:45: " + getCheckMessage(MSG_KEY),
+            "19:61: " + getCheckMessage(MSG_KEY),
+            "20:76: " + getCheckMessage(MSG_KEY),
+            "27:16: " + getCheckMessage(MSG_KEY),
+        };
+        verify(checkConfig, getPath("InputArrayTypeStyleNestedGenerics.java"), expected);
     }
 
     @Test

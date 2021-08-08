@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
@@ -34,8 +35,12 @@ import com.puppycrawl.tools.checkstyle.jre6.file.Paths;
 
 public final class InlineConfigParser {
 
-    /** A pattern matching the symbol: "/". */
+    /** A pattern matching the symbol: "\" or "/". */
     private static final Pattern SLASH_PATTERN = Pattern.compile("[\\\\/]");
+
+    /** A pattern to find the string: "// violation". */
+    private static final Pattern VIOLATION_PATTERN = Pattern
+            .compile(".*//\\s*violation(?:\\W+(.*))?$");
 
     /** Stop instances being created. **/
     private InlineConfigParser() {
@@ -47,12 +52,14 @@ public final class InlineConfigParser {
      * @param inputFilePath the input file path.
      * @throws Exception if unable to read file or file not formatted properly.
      */
-    public static InputConfiguration parse(String inputFilePath) throws Exception {
+    public static TestInputConfiguration parse(String inputFilePath) throws Exception {
         final Path filePath = Paths.get(inputFilePath);
         final List<String> lines = readFile(filePath);
-        final InputConfiguration.Builder inputConfigBuilder = new InputConfiguration.Builder();
+        final TestInputConfiguration.Builder inputConfigBuilder =
+                new TestInputConfiguration.Builder();
         setCheckName(inputConfigBuilder, inputFilePath, lines);
         setCheckProperties(inputConfigBuilder, lines);
+        setViolations(inputConfigBuilder, lines);
         return inputConfigBuilder.build();
     }
 
@@ -73,7 +80,7 @@ public final class InlineConfigParser {
         }
     }
 
-    private static void setCheckName(InputConfiguration.Builder inputConfigBuilder,
+    private static void setCheckName(TestInputConfiguration.Builder inputConfigBuilder,
                                      String filePath, List<String> lines)
                     throws CheckstyleException {
         if (lines.size() < 2) {
@@ -84,7 +91,7 @@ public final class InlineConfigParser {
         inputConfigBuilder.setCheckName(checkPath);
     }
 
-    private static void setCheckProperties(InputConfiguration.Builder inputConfigBuilder,
+    private static void setCheckProperties(TestInputConfiguration.Builder inputConfigBuilder,
                                            List<String> lines)
                     throws Exception {
         final StringBuilder stringBuilder = new StringBuilder(128);
@@ -110,6 +117,16 @@ public final class InlineConfigParser {
             }
             else {
                 inputConfigBuilder.addNonDefaultProperty(key, value);
+            }
+        }
+    }
+
+    private static void setViolations(TestInputConfiguration.Builder inputConfigBuilder,
+                                      List<String> lines) {
+        for (int lineNo = 2; lineNo < lines.size(); lineNo++) {
+            final Matcher violationMatcher = VIOLATION_PATTERN.matcher(lines.get(lineNo));
+            if (violationMatcher.matches()) {
+                inputConfigBuilder.addViolation(lineNo + 1, violationMatcher.group(1));
             }
         }
     }

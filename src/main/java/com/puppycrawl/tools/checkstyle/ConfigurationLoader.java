@@ -538,7 +538,7 @@ public final class ConfigurationLoader {
                 // add to attributes of configuration
                 final DefaultConfiguration top =
                     configStack.peek();
-                top.addAttribute(name, value);
+                top.addProperty(name, value);
             }
             else if (MESSAGE.equals(qName)) {
                 // extract key and value
@@ -568,7 +568,7 @@ public final class ConfigurationLoader {
                 SeverityLevel level = null;
                 if (containsAttribute(recentModule, SEVERITY)) {
                     try {
-                        final String severity = recentModule.getAttribute(SEVERITY);
+                        final String severity = recentModule.getProperty(SEVERITY);
                         level = SeverityLevel.getInstance(severity);
                     }
                     catch (final CheckstyleException ex) {
@@ -601,7 +601,7 @@ public final class ConfigurationLoader {
          * @return true if attribute is present in module
          */
         private boolean containsAttribute(Configuration module, String attributeName) {
-            final String[] names = module.getAttributeNames();
+            final String[] names = module.getPropertyNames();
             boolean result = false;
             for (String name : names) {
                 if (name.equals(attributeName)) {

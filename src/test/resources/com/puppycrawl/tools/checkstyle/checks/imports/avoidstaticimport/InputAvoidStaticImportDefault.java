@@ -1,7 +1,10 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: 2001
-////////////////////////////////////////////////////////////////////////////////
+/*
+AvoidStaticImport
+excludes = (default)
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.imports.avoidstaticimport;
 
 import com.puppycrawl.tools.checkstyle.checks.imports.*;
@@ -20,15 +23,15 @@ import javax.swing.JToolBar;
 import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.BorderFactory;
-import static java.io.File.listRoots;
+import static java.io.File.listRoots; // violation
 
-import static javax.swing.WindowConstants.*;
-import static java.io.File.createTempFile;
-import static java.io.File.pathSeparator;
-import static java.lang.Math.E;
-import static java.lang.Math.sqrt;
-import static com.puppycrawl.tools.checkstyle.checks.imports.avoidstaticimport.InputAvoidStaticImportNestedClass.InnerClass;
-import static com.puppycrawl.tools.checkstyle.checks.imports.avoidstaticimport.InputAvoidStaticImportNestedClass.InnerClass.one;
+import static javax.swing.WindowConstants.*; // violation
+import static java.io.File.createTempFile; // violation
+import static java.io.File.pathSeparator; // violation
+import static java.lang.Math.E; // violation
+import static java.lang.Math.sqrt; // violation
+import static com.puppycrawl.tools.checkstyle.checks.imports.avoidstaticimport.InputAvoidStaticImportNestedClass.InnerClass; // violation
+import static com.puppycrawl.tools.checkstyle.checks.imports.avoidstaticimport.InputAvoidStaticImportNestedClass.InnerClass.one; // violation
 
 import java.awt.Component;
 import java.awt.Graphics2D;
