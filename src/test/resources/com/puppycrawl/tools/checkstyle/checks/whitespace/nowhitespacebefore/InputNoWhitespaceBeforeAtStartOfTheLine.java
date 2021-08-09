@@ -1,5 +1,13 @@
+/*
+NoWhitespaceBefore
+allowLineBreaks = (default)false
+tokens = (default)COMMA, SEMI, POST_INC, POST_DEC, ELLIPSIS, LABELED_STAT
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.whitespace
-.nowhitespacebefore;
+.nowhitespacebefore; // violation
 
 import java.util.function.Supplier;
 

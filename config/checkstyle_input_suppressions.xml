@@ -111,50 +111,6 @@
   <suppress id="ConfigCommentOnTopInputs"
             files="coding[\\/]equalshashcode[\\/]InputEqualsHashCodeSemantic.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableAnonymousClass.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableAssignedInsideAndOutsideSwitch.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableAssignedMultipleTimes.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableBreak.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableEnhancedForLoopVariable.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableFalsePositive.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableFalsePositives.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariable.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableLeavingSlistToken.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableMultiCatch.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableMultipleAndNestedConditions.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableNameLambda.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableNameShadowing.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableNativeMethods.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableReceiverParameter.java"/>
 
   <suppress id="ConfigCommentOnTopInputs"
             files="coding[\\/]hiddenfield[\\/]InputHiddenField.java"/>
@@ -171,11 +127,6 @@
   <suppress id="ConfigCommentOnTopInputs"
             files="coding[\\/]hiddenfield[\\/]InputHiddenFieldStaticVisibility.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]illegalcatch[\\/]InputIllegalCatch2.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]illegalcatch[\\/]InputIllegalCatch.java"/>
 
   <suppress id="ConfigCommentOnTopInputs"
             files="coding[\\/]illegalinstantiation[\\/]InputIllegalInstantiation.java"/>
@@ -192,137 +143,16 @@
   <suppress id="ConfigCommentOnTopInputs"
             files="coding[\\/]illegalinstantiation[\\/]InputIllegalInstantiationSemantic.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]illegaltoken[\\/]InputIllegalTokens.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]illegaltokentext[\\/]InputIllegalTokenTextTokens.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]magicnumber[\\/]InputMagicNumberIntMethodAnnotation.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]modifiedcontrolvariable[\\/]InputModifiedControlVariableBothForLoops.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]modifiedcontrolvariable[\\/]InputModifiedControlVariableEnhancedForLoopVariable2.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]modifiedcontrolvariable[\\/]InputModifiedControlVariableEnhancedForLoopVariable.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]multiplestringliterals[\\/]InputMultipleStringLiterals.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]multiplestringliterals[\\/]InputMultipleStringLiteralsNoWarnings.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationDiffDirectoryAtParent.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationDiffDirectoryAtSubpackage.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationDiffDirectory.java"/>
 
   <suppress id="ConfigCommentOnTopInputs"
             files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationEmptyFile.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationNoPackage.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationPlain.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationWithCommentOnly.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThis15Extensions.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisAllowLambdaParameters.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisAllowLocalVars.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisAnnotationInterface.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisAnonymousEmpty.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisBraceAlone.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisCaseGroup.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisCatchVariables.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisEnumConstant.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisEnumInnerClassesAndBugs.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisExpressions.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisExtendedMethod.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisFor.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisMethodReferences.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisReceiver.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisSimple.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisStatic.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisValidateOnlyOverlappingFalse.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisValidateOnlyOverlappingTrue.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]returncount[\\/]InputReturnCountLambda.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]returncount[\\/]InputReturnCountSwitches.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="coding[\\/]returncount[\\/]InputReturnCountVoid.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="descendanttoken[\\/]InputDescendantTokenEmptyStatement.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="descendanttoken[\\/]InputDescendantTokenIllegalTokens.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="descendanttoken[\\/]InputDescendantTokenLastTokenType.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="descendanttoken[\\/]InputDescendantTokenMissingSwitchDefault.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="descendanttoken[\\/]InputDescendantTokenReturnFromCatch.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="descendanttoken[\\/]InputDescendantTokenReturnFromFinally.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="descendanttoken[\\/]InputDescendantTokenStringLiteralEquality.java"/>
 
 
 
@@ -377,14 +207,6 @@
   <suppress id="ConfigCommentOnTopInputs"
             files="filters[\\/]xpathfilterelement[\\/]InputXpathFilterElementSuppressByXpath.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="finalparameters[\\/]InputFinalParameters.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="finalparameters[\\/]InputFinalParametersPrimitiveTypes.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="finalparameters[\\/]InputFinalParametersReceiver.java"/>
 
   <suppress id="ConfigCommentOnTopInputs"
             files="header[\\/]header[\\/]InputHeaderBlankLines2.java"/>
@@ -459,68 +281,7 @@
 
 
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImports15Extensions.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsAnnotations.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsBug.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsCheckClearState.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsFileInUnnamedPackage.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsFromJavaLang.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImports.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsJavadocQualifiedName.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsSingleWordPackage.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsWithBlockMethodParameters.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsWithNewlinesInsideTags.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsWithoutWarnings.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsWithValueTag.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationAfterAnnotation.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationCommentIsAtTheEndOfBlock.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationInEmptyBlock.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationInMultiblockStructures.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationInSwitchBlock.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationJavadoc.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationNoNpe.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationSurroundingCode.java"/>
 
   <suppress id="ConfigCommentOnTopInputs"
             files="indentation[\\/]indentation[\\/]InputIndentation15Extensions.java"/>
@@ -784,17 +545,6 @@
 
 
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]missingjavadoctype[\\/]InputMissingJavadocTypeInner.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]missingjavadoctype[\\/]InputMissingJavadocTypeNoJavadocOnInterface.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]missingjavadoctype[\\/]InputMissingJavadocTypeTags.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]missingjavadoctype[\\/]InputMissingJavadocTypeUnusedParamInJavadocForClass.java"/>
 
 
   <suppress id="ConfigCommentOnTopInputs"
@@ -815,20 +565,6 @@
   <suppress id="ConfigCommentOnTopInputs"
             files="javadocpropertiesgenerator[\\/]InputJavadocPropertiesGeneratorNotImplementedTag.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocCorrect.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocIncorrect.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocNoPeriod.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocPeriodAtEnd.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocPeriod.java"/>
 
 
 
@@ -845,38 +581,9 @@
 
 
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]membername[\\/]InputMemberNameExtended.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]membername[\\/]InputMemberNameInner.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]membername[\\/]InputMemberName.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]membername[\\/]InputMemberNameSimple.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]methodname[\\/]InputMethodNameEqualClassName.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]methodname[\\/]InputMethodNameExtra.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]methodname[\\/]InputMethodNameOverriddenMethods.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]methodname[\\/]InputMethodNameSimple.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]staticvariablename[\\/]InputStaticVariableName1.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]staticvariablename[\\/]InputStaticVariableName.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="naming[\\/]typename[\\/]InputTypeName.java"/>
 
   <suppress id="ConfigCommentOnTopInputs"
             files="newlineatendoffile[\\/]InputNewlineAtEndOfFileCr.java"/>
@@ -905,32 +612,6 @@
   <suppress id="ConfigCommentOnTopInputs"
             files="nocodeinfile[\\/]InputNoCodeInFile5.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename15Extensions.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename1a.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename1.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename2.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename3.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename5.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilenameCheckPublic.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilenameIllegalTokens.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilenameNoPublic.java"/>
 
   <suppress id="ConfigCommentOnTopInputs"
             files="packagenamesloader[\\/]InputPackageNamesLoaderNotXml.java"/>
@@ -1145,200 +826,13 @@
   <suppress id="ConfigCommentOnTopInputs"
             files="whitespace[\\/]genericwhitespace[\\/]InputGenericWhitespaceNested.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]methodparampad[\\/]InputMethodParamPad.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]methodparampad[\\/]InputMethodParamPadWhitespaceAround.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeAtStartOfTheLine.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeDefault.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeDotAllowLineBreaks.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeDot.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeEmptyForLoop.java"/>
 
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeMethodRef.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]operatorwrap[\\/]InputOperatorWrap.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]operatorwrap[\\/]InputOperatorWrapSeparatorAndInterfaces.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadForWhitespace.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLambda.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLambdaOnly.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLambdaOnlyWithSpace.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLambdaWithSpace.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLeftRightAndNoSpace.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadStartOfTheLine.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadTryWithResources.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadWhitespace.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadWithDisabledLambda.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadWithSpaceAndDisabledLambda.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadWithSpace.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForArrayDeclarator.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForEllipsis.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForInvalidOption.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForTestComma.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForTestDot.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForTestMethodRef.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorChildNodes.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorComments.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorEmpty.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorErrors.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorMinColumnNo.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorNoErrors.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorStartOfTheLine.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterAround.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterBraces.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterDefaultConfig.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterDoWhile.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterFor.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterGenerics.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralDo.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralElse.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralFor.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralIf.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralWhile.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterMultilineCast.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterTypeCast.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundAllowEmptyLambdaExpressions.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundAllowEmptyTypesAndNonEmptyClasses.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundAllTokens.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundArrayInitialization.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundBraces.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundCatch.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundDoubleBraceInitialization.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundDoWhile.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundEmptyTypesAndCycles.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundGenerics.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAround.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundKeywordsAndOperators.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundLambda.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundSimple.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundStartOfTheLine.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundSwitch.java"/>
-
-  <suppress id="ConfigCommentOnTopInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundVarargs.java"/>
 
 
 
@@ -1447,50 +941,6 @@
   <suppress id="StyleValidationCommentInInputs"
             files="coding[\\/]equalshashcode[\\/]InputEqualsHashCodeSemantic.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableAnonymousClass.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableAssignedInsideAndOutsideSwitch.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableAssignedMultipleTimes.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableBreak.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableEnhancedForLoopVariable.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableFalsePositive.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableFalsePositives.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariable.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableLeavingSlistToken.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableMultiCatch.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableMultipleAndNestedConditions.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableNameLambda.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableNameShadowing.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableNativeMethods.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]finallocalvariable[\\/]InputFinalLocalVariableReceiverParameter.java"/>
 
   <suppress id="StyleValidationCommentInInputs"
             files="coding[\\/]hiddenfield[\\/]InputHiddenField.java"/>
@@ -1507,11 +957,6 @@
   <suppress id="StyleValidationCommentInInputs"
             files="coding[\\/]hiddenfield[\\/]InputHiddenFieldStaticVisibility.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]illegalcatch[\\/]InputIllegalCatch2.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]illegalcatch[\\/]InputIllegalCatch.java"/>
 
   <suppress id="StyleValidationCommentInInputs"
             files="coding[\\/]illegalinstantiation[\\/]InputIllegalInstantiation.java"/>
@@ -1528,137 +973,16 @@
   <suppress id="StyleValidationCommentInInputs"
             files="coding[\\/]illegalinstantiation[\\/]InputIllegalInstantiationSemantic.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]illegaltoken[\\/]InputIllegalTokens.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]illegaltokentext[\\/]InputIllegalTokenTextTokens.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]magicnumber[\\/]InputMagicNumberIntMethodAnnotation.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]modifiedcontrolvariable[\\/]InputModifiedControlVariableBothForLoops.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]modifiedcontrolvariable[\\/]InputModifiedControlVariableEnhancedForLoopVariable2.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]modifiedcontrolvariable[\\/]InputModifiedControlVariableEnhancedForLoopVariable.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]multiplestringliterals[\\/]InputMultipleStringLiterals.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]multiplestringliterals[\\/]InputMultipleStringLiteralsNoWarnings.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationDiffDirectoryAtParent.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationDiffDirectoryAtSubpackage.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationDiffDirectory.java"/>
 
   <suppress id="StyleValidationCommentInInputs"
             files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationEmptyFile.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationNoPackage.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationPlain.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]packagedeclaration[\\/]InputPackageDeclarationWithCommentOnly.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThis15Extensions.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisAllowLambdaParameters.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisAllowLocalVars.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisAnnotationInterface.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisAnonymousEmpty.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisBraceAlone.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisCaseGroup.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisCatchVariables.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisEnumConstant.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisEnumInnerClassesAndBugs.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisExpressions.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisExtendedMethod.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisFor.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisMethodReferences.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisReceiver.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisSimple.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisStatic.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisValidateOnlyOverlappingFalse.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]requirethis[\\/]InputRequireThisValidateOnlyOverlappingTrue.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]returncount[\\/]InputReturnCountLambda.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]returncount[\\/]InputReturnCountSwitches.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="coding[\\/]returncount[\\/]InputReturnCountVoid.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="descendanttoken[\\/]InputDescendantTokenEmptyStatement.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="descendanttoken[\\/]InputDescendantTokenIllegalTokens.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="descendanttoken[\\/]InputDescendantTokenLastTokenType.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="descendanttoken[\\/]InputDescendantTokenMissingSwitchDefault.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="descendanttoken[\\/]InputDescendantTokenReturnFromCatch.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="descendanttoken[\\/]InputDescendantTokenReturnFromFinally.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="descendanttoken[\\/]InputDescendantTokenStringLiteralEquality.java"/>
 
 
 
@@ -1713,14 +1037,6 @@
   <suppress id="StyleValidationCommentInInputs"
             files="filters[\\/]xpathfilterelement[\\/]InputXpathFilterElementSuppressByXpath.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="finalparameters[\\/]InputFinalParameters.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="finalparameters[\\/]InputFinalParametersPrimitiveTypes.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="finalparameters[\\/]InputFinalParametersReceiver.java"/>
 
   <suppress id="StyleValidationCommentInInputs"
             files="header[\\/]header[\\/]InputHeaderBlankLines2.java"/>
@@ -1795,68 +1111,7 @@
 
 
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImports15Extensions.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsAnnotations.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsBug.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsCheckClearState.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsFileInUnnamedPackage.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsFromJavaLang.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImports.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsJavadocQualifiedName.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsSingleWordPackage.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsWithBlockMethodParameters.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsWithNewlinesInsideTags.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsWithoutWarnings.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="imports[\\/]unusedimports[\\/]InputUnusedImportsWithValueTag.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationAfterAnnotation.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationCommentIsAtTheEndOfBlock.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationInEmptyBlock.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationInMultiblockStructures.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationInSwitchBlock.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationJavadoc.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationNoNpe.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="indentation[\\/]commentsindentation[\\/]InputCommentsIndentationSurroundingCode.java"/>
   <!-- indentation Inputs have special trailing comments -->
 
   <suppress id="StyleValidationCommentInInputs"
@@ -1932,17 +1187,6 @@
   <suppress id="StyleValidationCommentInInputs"
             files="javadoc[\\/]missingjavadocmethod[\\/]InputMissingJavadocMethodTags.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]missingjavadoctype[\\/]InputMissingJavadocTypeInner.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]missingjavadoctype[\\/]InputMissingJavadocTypeNoJavadocOnInterface.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]missingjavadoctype[\\/]InputMissingJavadocTypeTags.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]missingjavadoctype[\\/]InputMissingJavadocTypeUnusedParamInJavadocForClass.java"/>
 
 
   <suppress id="StyleValidationCommentInInputs"
@@ -1963,20 +1207,6 @@
   <suppress id="StyleValidationCommentInInputs"
             files="javadocpropertiesgenerator[\\/]InputJavadocPropertiesGeneratorNotImplementedTag.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocCorrect.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocIncorrect.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocNoPeriod.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocPeriodAtEnd.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="javadoc[\\/]summaryjavadoc[\\/]InputSummaryJavadocPeriod.java"/>
 
 
 
@@ -1993,38 +1223,9 @@
 
 
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]membername[\\/]InputMemberNameExtended.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]membername[\\/]InputMemberNameInner.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]membername[\\/]InputMemberName.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]membername[\\/]InputMemberNameSimple.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]methodname[\\/]InputMethodNameEqualClassName.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]methodname[\\/]InputMethodNameExtra.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]methodname[\\/]InputMethodNameOverriddenMethods.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]methodname[\\/]InputMethodNameSimple.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]staticvariablename[\\/]InputStaticVariableName1.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]staticvariablename[\\/]InputStaticVariableName.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="naming[\\/]typename[\\/]InputTypeName.java"/>
 
   <suppress id="StyleValidationCommentInInputs"
             files="newlineatendoffile[\\/]InputNewlineAtEndOfFileCr.java"/>
@@ -2053,32 +1254,6 @@
   <suppress id="StyleValidationCommentInInputs"
             files="nocodeinfile[\\/]InputNoCodeInFile5.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename15Extensions.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename1a.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename1.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename2.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename3.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilename5.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilenameCheckPublic.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilenameIllegalTokens.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="outertypefilename[\\/]InputOuterTypeFilenameNoPublic.java"/>
 
   <suppress id="StyleValidationCommentInInputs"
             files="packagenamesloader[\\/]InputPackageNamesLoaderNotXml.java"/>
@@ -2293,199 +1468,12 @@
   <suppress id="StyleValidationCommentInInputs"
             files="whitespace[\\/]genericwhitespace[\\/]InputGenericWhitespaceNested.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]methodparampad[\\/]InputMethodParamPad.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]methodparampad[\\/]InputMethodParamPadWhitespaceAround.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeAtStartOfTheLine.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeDefault.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeDotAllowLineBreaks.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeDot.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeEmptyForLoop.java"/>
 
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]nowhitespacebefore[\\/]InputNoWhitespaceBeforeMethodRef.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]operatorwrap[\\/]InputOperatorWrap.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]operatorwrap[\\/]InputOperatorWrapSeparatorAndInterfaces.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadForWhitespace.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLambda.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLambdaOnly.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLambdaOnlyWithSpace.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLambdaWithSpace.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadLeftRightAndNoSpace.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadStartOfTheLine.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadTryWithResources.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadWhitespace.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadWithDisabledLambda.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadWithSpaceAndDisabledLambda.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]parenpad[\\/]InputParenPadWithSpace.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForArrayDeclarator.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForEllipsis.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForInvalidOption.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForTestComma.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForTestDot.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]separatorwrap[\\/]InputSeparatorWrapForTestMethodRef.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorChildNodes.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorComments.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorEmpty.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorErrors.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorMinColumnNo.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorNoErrors.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]singlespaceseparator[\\/]InputSingleSpaceSeparatorStartOfTheLine.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterAround.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterBraces.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterDefaultConfig.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterDoWhile.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterFor.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterGenerics.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralDo.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralElse.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralFor.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralIf.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterLiteralWhile.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterMultilineCast.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespaceafter[\\/]InputWhitespaceAfterTypeCast.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundAllowEmptyLambdaExpressions.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundAllowEmptyTypesAndNonEmptyClasses.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundAllTokens.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundArrayInitialization.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundBraces.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundCatch.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundDoubleBraceInitialization.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundDoWhile.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundEmptyTypesAndCycles.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundGenerics.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAround.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundKeywordsAndOperators.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundLambda.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundSimple.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundStartOfTheLine.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundSwitch.java"/>
-
-  <suppress id="StyleValidationCommentInInputs"
-            files="whitespace[\\/]whitespacearound[\\/]InputWhitespaceAroundVarargs.java"/>
 
 </suppressions>

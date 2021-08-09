@@ -1,3 +1,12 @@
+/*
+RequireThis
+checkFields = (default)true
+checkMethods = (default)true
+validateOnlyOverlapping = false
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.coding.requirethis;
 
 import java.awt.Toolkit;
@@ -8,7 +17,7 @@ import java.io.InputStream;
 public class InputRequireThisEnumInnerClassesAndBugs {
     int i;
     void method1() {
-        i = 3;
+        i = 3; // violation
     }
 
     void method2(int i) {

@@ -1,3 +1,11 @@
+/*
+FinalLocalVariable
+validateEnhancedForLoopVariable = (default)false
+tokens = (default)VARIABLE_DEF
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.coding.finallocalvariable;
 
 public class InputFinalLocalVariable
@@ -6,7 +14,7 @@ public class InputFinalLocalVariable
     //static block
     static
     {
-        int i, j = 0;
+        int i, j = 0; // violation
         Runnable runnable = new Runnable()
         {
             public void run()

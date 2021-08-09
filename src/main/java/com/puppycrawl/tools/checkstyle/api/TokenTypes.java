@@ -1967,6 +1967,30 @@ public final class TokenTypes {
     /**
      * A left curly brace (<code>{</code>).
      *
+     * <p>For example:</p>
+     *
+     * <pre>
+     * class App {
+     *   int num;
+     * }
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * CLASS_DEF -&gt; CLASS_DEF
+     * |--MODIFIERS -&gt; MODIFIERS
+     * |--LITERAL_CLASS -&gt; class
+     * |--IDENT -&gt; App
+     * `--OBJBLOCK -&gt; OBJBLOCK
+     *     |--LCURLY -&gt; {
+     *     |--VARIABLE_DEF -&gt; VARIABLE_DEF
+     *     |   |--MODIFIERS -&gt; MODIFIERS
+     *     |   |--TYPE -&gt; TYPE
+     *     |   |   `--LITERAL_INT -&gt; int
+     *     |   |--IDENT -&gt; num
+     *     |   `--SEMI -&gt; ;
+     *     `--RCURLY -&gt; }
+     * </pre>
+     *
      * @see #OBJBLOCK
      * @see #ARRAY_INIT
      * @see #SLIST
@@ -2694,6 +2718,49 @@ public final class TokenTypes {
     /**
      * The {@code case} keyword.  The first child is a constant
      * expression that evaluates to an integer.
+     *
+     * <p>For example:</p>
+     * <pre>
+     * switch(num){
+     *    case 0:
+     *      num = 1;
+     * }
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     *
+     * CASE_GROUP -&gt; CASE_GROUP
+     *    |--LITERAL_CASE -&gt; cas
+     *    |   |--EXPR -&gt; EXPR
+     *    |   |   `--NUM_INT -&gt; 0
+     *    |   `--COLON -&gt; :
+     *    `--SLIST -&gt; SLIST
+     *         |--EXPR -&gt; EXPR
+     *         |   `--ASSIGN -&gt; =
+     *         |       |--IDENT -&gt; num
+     *         |       `--NUM_INT -&gt; 1
+     *         `--SEMI -&gt; ;
+     * </pre>
+     * <p>For example:</p>
+     * <pre>
+     * switch(num){
+     *    case 1 -&gt; num = -1
+     * }
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * SWITCH_RULE -&gt; SWITCH_RULE
+     *   |--LITERAL_CASE -&gt; case
+     *   |   `--EXPR -&gt; EXPR
+     *   |       `--NUM_INT -&gt; 1
+     *   |--LAMBDA -&gt; -&gt;
+     *   |--EXPR -&gt; EXPR
+     *   |   `--ASSIGN -&gt; =
+     *   |       |--IDENT -&gt; num
+     *   |       `--UNARY_MINUS -&gt; -
+     *   |           `--NUM_INT -&gt; 1
+     *   `--SEMI -&gt; ;
+     * </pre>
      *
      * @see #CASE_GROUP
      * @see #EXPR
@@ -5029,18 +5096,23 @@ public final class TokenTypes {
     /**
      * Text of single-line or block comment.
      *
+     * <p>For example:</p>
      * <pre>
-     * +--SINGLE_LINE_COMMENT
-     *         |
-     *         +--COMMENT_CONTENT
+     * //this is single line comment
+     *
+     * /&#42;
+     * this is multiline comment
+     * &#42;/
+     * </pre>
+     * <p>parses as:</p>
+     * <pre>
+     * |--SINGLE_LINE_COMMENT -&gt; //
+     * |   `--COMMENT_CONTENT -&gt; this is single line comment\n
+     * |--BLOCK_COMMENT_BEGIN -&gt; /&#42;
+     * |   |--COMMENT_CONTENT -&gt; \n\t\t\tthis is multiline comment\n\t\t
+     * |   `--BLOCK_COMMENT_END -&gt; &#42;/
      * </pre>
      *
-     * <pre>
-     * +--BLOCK_COMMENT_BEGIN
-     *         |
-     *         +--COMMENT_CONTENT
-     *         +--BLOCK_COMMENT_END
-     * </pre>
      */
     public static final int COMMENT_CONTENT =
             GeneratedJavaTokenTypes.COMMENT_CONTENT;
@@ -5361,47 +5433,47 @@ public final class TokenTypes {
      * </pre>
      * <p>parses as:</p>
      * <pre>
-     * |--VARIABLE_DEF
-     * |   |--MODIFIERS
-     * |   |--TYPE
-     * |   |   `--LITERAL_INT (int)
-     * |   |--IDENT (yield)
-     * |   `--ASSIGN (=)
-     * |       `--EXPR
-     * |           `--NUM_INT (0)
-     * |--SEMI (;)
-     * |--LITERAL_RETURN (return)
-     * |   |--EXPR
-     * |   |   `--LITERAL_SWITCH (switch)
-     * |   |       |--LPAREN (()
-     * |   |       |--EXPR
-     * |   |       |   `--IDENT (mode)
-     * |   |       |--RPAREN ())
-     * |   |       |--LCURLY ({)
-     * |   |       |--CASE_GROUP
-     * |   |       |   |--LITERAL_CASE (case)
-     * |   |       |   |   |--EXPR
-     * |   |       |   |   |   `--STRING_LITERAL ("a")
-     * |   |       |   |   |--COMMA (,)
-     * |   |       |   |   |--EXPR
-     * |   |       |   |   |   `--STRING_LITERAL ("b")
-     * |   |       |   |   `--COLON (:)
-     * |   |       |   `--SLIST
-     * |   |       |       `--LITERAL_YIELD (yield)
-     * |   |       |           |--EXPR
-     * |   |       |           |   `--NUM_INT (1)
-     * |   |       |           `--SEMI (;)
-     * |   |       |--CASE_GROUP
-     * |   |       |   |--LITERAL_DEFAULT (default)
-     * |   |       |   |   `--COLON (:)
-     * |   |       |   `--SLIST
-     * |   |       |       `--LITERAL_YIELD (yield)
-     * |   |       |           |--EXPR
-     * |   |       |           |   `--UNARY_MINUS (-)
-     * |   |       |           |       `--NUM_INT (1)
-     * |   |       |           `--SEMI (;)
-     * |   |       `--RCURLY (})
-     * |   `--SEMI (;)
+     * |--VARIABLE_DEF -&gt; VARIABLE_DEF
+     * |   |--MODIFIERS -&gt; MODIFIERS
+     * |   |--TYPE -&gt; TYPE
+     * |   |   `--LITERAL_INT -&gt; int
+     * |   |--IDENT -&gt; yield
+     * |   `--ASSIGN -&gt; =
+     * |       `--EXPR -&gt; EXPR
+     * |           `--NUM_INT -&gt; 0
+     * |--SEMI -&gt; ;
+     * |--LITERAL_RETURN -&gt; return
+     * |   |--EXPR -&gt; EXPR
+     * |   |   `--LITERAL_SWITCH -&gt; switch
+     * |   |       |--LPAREN -&gt; (
+     * |   |       |--EXPR -&gt; EXPR
+     * |   |       |   `--IDENT -&gt; mode
+     * |   |       |--RPAREN -&gt; )
+     * |   |       |--LCURLY -&gt; {
+     * |   |       |--CASE_GROUP -&gt; CASE_GROUP
+     * |   |       |   |--LITERAL_CASE -&gt; case
+     * |   |       |   |   |--EXPR -&gt; EXPR
+     * |   |       |   |   |   `--STRING_LITERAL -&gt; "a"
+     * |   |       |   |   |--COMMA -&gt; ,
+     * |   |       |   |   |--EXPR -&gt; EXPR
+     * |   |       |   |   |   `--STRING_LITERAL -&gt; "b"
+     * |   |       |   |   `--COLON -&gt; :
+     * |   |       |   `--SLIST -&gt; SLIST
+     * |   |       |       `--LITERAL_YIELD -&gt; yield
+     * |   |       |           |--EXPR -&gt; EXPR
+     * |   |       |           |   `--NUM_INT -&gt; 1
+     * |   |       |           `--SEMI -&gt; ;
+     * |   |       |--CASE_GROUP -&gt; CASE_GROUP
+     * |   |       |   |--LITERAL_DEFAULT -&gt; default
+     * |   |       |   |   `--COLON -&gt; :
+     * |   |       |   `--SLIST -&gt; SLIST
+     * |   |       |       `--LITERAL_YIELD -&gt; yield
+     * |   |       |           |--EXPR -&gt; EXPR
+     * |   |       |           |   `--UNARY_MINUS -&gt; -
+     * |   |       |           |       `--NUM_INT -&gt; 1
+     * |   |       |           `--SEMI -&gt; ;
+     * |   |       `--RCURLY -&gt; }
+     * |   `--SEMI -&gt; ;
      * </pre>
      *
      *

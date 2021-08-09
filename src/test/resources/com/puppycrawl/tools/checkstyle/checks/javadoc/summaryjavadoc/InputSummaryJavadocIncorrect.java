@@ -1,3 +1,13 @@
+/*
+SummaryJavadocCheckTest
+violateExecutionOnNonTightHtml = (default)false
+forbiddenSummaryFragments = ^@return the *|^This method returns |^A \
+                            [{]@code [a-zA-Z0-9]+[}]( is a )
+period = (default).
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.javadoc.summaryjavadoc;
 
 /**
@@ -14,7 +24,7 @@ class InputSummaryJavadocIncorrect {
     /**
      * @throws Exception if a problem occurs
      */
-    void foo4() throws Exception {}
+    void foo4() throws Exception {} // violation
 
     /** An especially short bit of Javadoc. */
     void foo5() {}

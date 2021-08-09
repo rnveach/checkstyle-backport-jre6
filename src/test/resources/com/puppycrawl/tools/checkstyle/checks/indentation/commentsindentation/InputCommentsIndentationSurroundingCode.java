@@ -1,3 +1,10 @@
+/*
+CommentsIndentation
+tokens = (default)SINGLE_LINE_COMMENT, BLOCK_COMMENT_BEGIN
+
+
+*/
+
 // comment
 package com.puppycrawl.tools.checkstyle.checks.indentation.commentsindentation;
 

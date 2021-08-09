@@ -1,35 +1,38 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: 2001
-////////////////////////////////////////////////////////////////////////////////
+/*
+UnusedImports
+processJavadoc = (default)true
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.imports.unusedimports;
 
 import com.puppycrawl.tools.checkstyle.checks.imports.*;
-        import com.puppycrawl.tools.checkstyle.checks.imports.unusedimports.InputUnusedImportsBug;
+        import com.puppycrawl.tools.checkstyle.checks.imports.unusedimports.InputUnusedImportsBug; // violation
 import java.io.*;
 import java.lang.*;
-import java.lang.String;
+import java.lang.String; // violation
 
-import java.util.List;
-import java.util.List;
+import java.util.List; // violation
+import java.util.List; // violation
 import java.lang.*;
 import java.util.Iterator;
-import java.util.Enumeration;
+import java.util.Enumeration; // violation
 import java.util.Arrays;
 import javax.swing.JToolBar;
-import javax.swing.JToggleButton;
+import javax.swing.JToggleButton; // violation
 
-import javax.swing.BorderFactory;
+import javax.swing.BorderFactory; // violation
 
 import static java.io.File.listRoots;
 
 import static javax.swing.WindowConstants.*;
-import static java.io.File.
+import static java.io.File. // violation
     createTempFile;
 
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
-import java.awt.Label;
+import java.awt.Label; // violation
 import java.util.Date;
 import java.util.Calendar;
 import java.util.BitSet;
@@ -41,7 +44,7 @@ import com.puppycrawl.tools.checkstyle.checks.imports.unusedimports.InputUnusedI
 import com.puppycrawl.tools.checkstyle.ConfigurationLoaderTest;
 import com.puppycrawl.tools.checkstyle.PackageNamesLoader;
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
-import com.puppycrawl.tools.checkstyle.DefaultLogger;
+import com.puppycrawl.tools.checkstyle.DefaultLogger; // violation
 
 /**
  * Test case for imports

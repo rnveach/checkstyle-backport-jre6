@@ -1,8 +1,15 @@
+/*
+SingleSpaceSeparator
+validateComments = true
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.whitespace.singlespaceseparator;
 
 public class InputSingleSpaceSeparatorComments {
     /* always correct */ int i = 0;
-    int   /* wrong if X is enabled */     j = 0;
+    int   /* wrong if X is enabled */     j = 0; // violation
     int k;   // Multiple whitespaces before comment
 
     /**

@@ -1,3 +1,11 @@
+/*
+FinalLocalVariable
+validateEnhancedForLoopVariable = true
+tokens = VARIABLE_DEF, PARAMETER_DEF
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.coding.finallocalvariable;
 
 public class InputFinalLocalVariableEnhancedForLoopVariable {
@@ -5,7 +13,7 @@ public class InputFinalLocalVariableEnhancedForLoopVariable {
     {
         final java.util.List<Object> list = new java.util.ArrayList<>();
 
-        for(Object a : list){
+        for(Object a : list){ // violation
         }
     }
 

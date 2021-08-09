@@ -1,3 +1,15 @@
+/*
+MethodName
+format = (default)^[a-z][a-zA-Z0-9]*$
+allowClassName = (default)false
+applyToPublic = (default)true
+applyToProtected = (default)true
+applyToPackage = (default)true
+applyToPrivate = (default)true
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.naming.methodname;
 
 /**
@@ -9,7 +21,7 @@ package com.puppycrawl.tools.checkstyle.checks.naming.methodname;
 public class InputMethodNameEqualClassName {
 
         //illegal name
-    public int InputMethodNameEqualClassName() {
+    public int InputMethodNameEqualClassName() { // violation
         return 0;
     }
 

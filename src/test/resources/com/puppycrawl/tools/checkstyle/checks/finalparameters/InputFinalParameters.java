@@ -1,7 +1,11 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: 2003
-////////////////////////////////////////////////////////////////////////////////
+/*
+FinalParameters
+ignorePrimitiveTypes = (default)false
+tokens = (default)METHOD_DEF, CTOR_DEF
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.finalparameters;
 
 import javax.swing.AbstractAction;
@@ -20,7 +24,7 @@ class InputFinalParameters
     }
 
     /** non final param constructor */
-    InputFinalParameters(String s)
+    InputFinalParameters(String s) // violation
     {
     }
 
@@ -30,12 +34,12 @@ class InputFinalParameters
     }
 
     /** final param constructor with annotation */
-    InputFinalParameters(final @MyAnnotation3 Class<Object> i)
+    InputFinalParameters(final @MyAnnotation33 Class<Object> i)
     {
     }
 
     /** non-final param constructor with annotation*/
-    InputFinalParameters(@MyAnnotation3 Boolean i)
+    InputFinalParameters(@MyAnnotation33 Boolean i)
     {
     }
 
@@ -60,13 +64,13 @@ class InputFinalParameters
     }
 
     /** final param method with annotation **/
-    void method(@MyAnnotation3 final Object s)
+    void method(@MyAnnotation33 final Object s)
     {
 
     }
 
     /** non-final param method with annotation **/
-    void method(@MyAnnotation3 Class<Object> s)
+    void method(@MyAnnotation33 Class<Object> s)
     {
 
     }
@@ -90,7 +94,7 @@ class InputFinalParameters
                 public void actionPerformed(ActionEvent e)
                 {
                 }
-                void somethingElse(@MyAnnotation3 ActionEvent e)
+                void somethingElse(@MyAnnotation33 ActionEvent e)
                 {
                 }
             };
@@ -100,7 +104,7 @@ class InputFinalParameters
                 public void actionPerformed(final ActionEvent e)
                 {
                 }
-                void somethingElse(@MyAnnotation3 final ActionEvent e)
+                void somethingElse(@MyAnnotation33 final ActionEvent e)
                 {
                 }
             };
@@ -125,13 +129,13 @@ class InputFinalParameters
         catch (java.lang.NullPointerException npe) {
             npe.getMessage();
         }
-        catch (@MyAnnotation3 final ClassCastException e) {
+        catch (@MyAnnotation33 final ClassCastException e) {
             e.getMessage();
         }
         catch (RuntimeException e) {
             e.getMessage();
         }
-        catch (@MyAnnotation3 NoClassDefFoundError e) {
+        catch (@MyAnnotation33 NoClassDefFoundError e) {
             e.getMessage();
         }
     }
@@ -157,11 +161,11 @@ class Foo
         {
 
         }
-        for(@MyAnnotation3 String s : someExpression())
+        for(@MyAnnotation33 String s : someExpression())
         {
 
         }
-        for(@MyAnnotation3 final String s : someExpression())
+        for(@MyAnnotation33 final String s : someExpression())
         {
 
         }

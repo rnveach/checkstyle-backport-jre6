@@ -1,3 +1,13 @@
+/*
+ReturnCount
+max = (default)2
+maxForVoid = (default)1
+format = (default)^equals$
+tokens = (default)CTOR_DEF, METHOD_DEF, LAMBDA
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.coding.returncount;
 /* комментарий на русском */
 public class InputReturnCountSwitches
@@ -15,7 +25,7 @@ public class InputReturnCountSwitches
         return false;
     }
 
-    void foo(int i) {
+    void foo(int i) { // violation
         switch (i) {
         case 1: return;
         case 2: return;

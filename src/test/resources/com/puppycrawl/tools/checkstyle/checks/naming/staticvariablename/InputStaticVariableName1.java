@@ -1,8 +1,14 @@
-////////////////////////////////////////////////////////////////////////////////
-// Test case file for checkstyle.
-// Created: Feb-2001
-// Ignore violation
-////////////////////////////////////////////////////////////////////////////////
+/*
+StaticVariableName
+format = ^s[A-Z][a-zA-Z0-9]*$
+applyToPublic = (default)true
+applyToProtected = (default)true
+applyToPackage = (default)true
+applyToPrivate = (default)true
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.naming.staticvariablename;
 import java.io.*;
 /**
@@ -27,7 +33,7 @@ final class InputStaticVariableName1
     public static final int MAX_ROWS = 2;
 
     /** Invalid format **/
-    private static int badStatic = 2;
+    private static int badStatic = 2; // violation
     /** Valid format **/
     private static int sNumCreated = 0;
 
@@ -198,7 +204,7 @@ final class InputStaticVariableName1
 }
 
 /** Test class for variable naming in for each clauses. */
-class InputStaticVariableName2
+class InputStaticVariableName3
 {
     /** Some more Javadoc. */
     public void doSomething()

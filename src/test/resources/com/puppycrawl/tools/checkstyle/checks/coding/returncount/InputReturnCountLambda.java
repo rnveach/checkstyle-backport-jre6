@@ -1,3 +1,13 @@
+/*
+ReturnCount
+max = 1
+maxForVoid = (default)1
+format = (default)^equals$
+tokens = (default)CTOR_DEF, METHOD_DEF, LAMBDA
+
+
+*/
+
 package com.puppycrawl.tools.checkstyle.checks.coding.returncount;
 
 import java.lang.Integer;
@@ -12,7 +22,7 @@ public class InputReturnCountLambda {
         return;
     };
 
-    Callable<Integer> fieldWithTwoReturnInLambda = () -> {
+    Callable<Integer> fieldWithTwoReturnInLambda = () -> { // violation
         if (hashCode() == 0) return 0;
         else return 1;
     };
