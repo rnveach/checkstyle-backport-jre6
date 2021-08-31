@@ -115,9 +115,10 @@ public final class TokenUtil {
      *
      * @param map source map
      * @return inverted map
+     * @throws IllegalArgumentException if the map is not safe to invert
      */
     public static Map<Integer, String> invertMap(Map<String, Integer> map) {
-        Map<Integer, String> inv = new HashMap<Integer, String>();
+        final Map<Integer, String> inv = new HashMap<Integer, String>();
 
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             if (inv.put(entry.getValue(), entry.getKey()) != null) {

@@ -418,7 +418,7 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
 
         // We add C style array declarator brackets to TYPE ast
         final DetailAstImpl typeAst = (DetailAstImpl) methodDef.findFirstToken(TokenTypes.TYPE);
-        for (ArrayDeclaratorContext child : ctx.cStyleArrDec ) {
+        for (ArrayDeclaratorContext child : ctx.cStyleArrDec) {
             typeAst.addChild(visit(child));
         }
 

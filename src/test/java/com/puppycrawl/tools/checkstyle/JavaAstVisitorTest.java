@@ -86,7 +86,9 @@ public class JavaAstVisitorTest {
 
         final Set<String> filteredBaseVisitMethodNames = new HashSet<String>();
         for (Method method : baseVisitMethods) {
-            if (!VISIT_METHODS_NOT_OVERRIDDEN.contains(method.getName()) && method.getName().contains("visit") && method.getModifiers() == Modifier.PUBLIC) {
+            if (!VISIT_METHODS_NOT_OVERRIDDEN.contains(method.getName())
+                    && method.getName().contains("visit")
+                    && method.getModifiers() == Modifier.PUBLIC) {
                 filteredBaseVisitMethodNames.add(method.getName());
             }
         }
