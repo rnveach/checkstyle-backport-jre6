@@ -273,6 +273,8 @@ public class AllTestsTest {
                 && !"XpathMapper.java".equals(fileName)
                 // JavadocMetadataScraper and related classes are temporarily hosted in test
                 && !file.getPath().contains("meta")
+                // junit 5 wrapper class
+                && !file.getPath().contains(File.separatorChar + "jupiter" + File.separatorChar)
                 // InlineConfigParser is hosted in test
                 && !file.getPath().contains("bdd")
                 // Annotation to suppress invocation of forbidden apis

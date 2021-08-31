@@ -94,7 +94,7 @@ public class JavaAstVisitorTest {
         final Set<String> filteredVisitMethodNames = new HashSet<String>();
         for (Method method : visitMethods) {
             if (method.getName().contains("visit") && method.getModifiers() == Modifier.PUBLIC) {
-                filteredBaseVisitMethodNames.add(method.getName());
+                filteredVisitMethodNames.add(method.getName());
             }
         }
 
