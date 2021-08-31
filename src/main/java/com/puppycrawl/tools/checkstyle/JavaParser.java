@@ -21,20 +21,18 @@ package com.puppycrawl.tools.checkstyle;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 
-import com.google.common.io.CharStreams;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
@@ -42,6 +40,7 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageLexer;
 import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageParser;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 import com.puppycrawl.tools.checkstyle.utils.ParserUtil;
 
 /**
@@ -82,8 +81,7 @@ public final class JavaParser {
     public static DetailAST parse(FileContents contents)
             throws CheckstyleException {
         final String fullText = contents.getText().getFullText().toString();
-        final CharStream codePointCharStream = CharStreams.fromString(fullText);
-        final JavaLanguageLexer lexer = new JavaLanguageLexer(codePointCharStream, true);
+        final JavaLanguageLexer lexer = new JavaLanguageLexer(new ANTLRInputStream(fullText), true);
         lexer.setCommentListener(contents);
         lexer.removeErrorListeners();
 

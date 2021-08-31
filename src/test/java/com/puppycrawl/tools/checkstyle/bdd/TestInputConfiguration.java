@@ -19,18 +19,16 @@
 
 package com.puppycrawl.tools.checkstyle.bdd;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import com.puppycrawl.tools.checkstyle.DefaultConfiguration;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
+import com.puppycrawl.tools.checkstyle.jre6.charset.StandardCharsets;
 
 public final class TestInputConfiguration {
 
@@ -88,17 +86,15 @@ public final class TestInputConfiguration {
         final DefaultConfiguration treeWalker =
                 new DefaultConfiguration(TreeWalker.class.getName());
         root.addProperty("charset", StandardCharsets.UTF_8.name());
-        childrenModules
-                .stream()
-                .map(ModuleInputConfiguration::createConfiguration)
-                .forEach(moduleConfig -> {
-                    if (CHECKER_CHILDREN.contains(moduleConfig.getName())) {
-                        root.addChild(moduleConfig);
-                    }
-                    else {
-                        treeWalker.addChild(moduleConfig);
-                    }
-                });
+        for (ModuleInputConfiguration inputConfig : childrenModules) {
+            final DefaultConfiguration moduleConfig = inputConfig.createConfiguration();
+            if (CHECKER_CHILDREN.contains(moduleConfig.getName())) {
+                root.addChild(moduleConfig);
+            }
+            else {
+                treeWalker.addChild(moduleConfig);
+            }
+        }
         root.addChild(treeWalker);
         return root;
     }
@@ -108,18 +104,17 @@ public final class TestInputConfiguration {
         final DefaultConfiguration treeWalker =
                 new DefaultConfiguration(TreeWalker.class.getName());
         root.addProperty("charset", StandardCharsets.UTF_8.name());
-        childrenModules
-                .stream()
-                .map(ModuleInputConfiguration::createConfiguration)
-                .filter(moduleConfig -> !moduleConfig.getName().endsWith("Filter"))
-                .forEach(moduleConfig -> {
-                    if (CHECKER_CHILDREN.contains(moduleConfig.getName())) {
-                        root.addChild(moduleConfig);
-                    }
-                    else {
-                        treeWalker.addChild(moduleConfig);
-                    }
-                });
+        for (ModuleInputConfiguration inputConfig : childrenModules) {
+            final DefaultConfiguration moduleConfig = inputConfig.createConfiguration();
+            if (!moduleConfig.getName().endsWith("Filter")) {
+                if (CHECKER_CHILDREN.contains(moduleConfig.getName())) {
+                    root.addChild(moduleConfig);
+                }
+                else {
+                    treeWalker.addChild(moduleConfig);
+                }
+            }
+        }
         root.addChild(treeWalker);
         return root;
     }

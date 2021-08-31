@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.junit.Test;
 
@@ -232,9 +233,13 @@ public class JavaParserTest extends AbstractModuleTestSupport {
         final File file =
                 new File(getPath("InputJavaParserNoStackOverflowOnDeepStringConcat.java"));
 
-        final DetailAST ast = TestUtil.getResultWithLimitedResources(() -> {
-            return JavaParser.parseFile(file, JavaParser.Options.WITH_COMMENTS);
-        });
+        final DetailAST ast = TestUtil.getResultWithLimitedResources(
+            new Callable<DetailAST>() {
+                @Override
+                public DetailAST call() throws Exception {
+                    return JavaParser.parseFile(file, JavaParser.Options.WITH_COMMENTS);
+                }
+            });
 
         assertWithMessage("File parsing should complete successfully.")
                 .that(ast)

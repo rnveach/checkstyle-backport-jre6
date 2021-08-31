@@ -956,39 +956,51 @@ public class MainTest {
     }
 
     @Test
-    public void testRemoveLexerDefaultErrorListener() {
-        assertExitWithStatus(-2, () -> {
-            invokeMain("-t", getNonCompilablePath("InputMainIncorrectClass.java"));
+    public void testRemoveLexerDefaultErrorListener() throws IOException {
+        exit.expectSystemExitWithStatus(-2);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertWithMessage("First line of exception message should not contain lexer error.")
+                .that(systemErr.getLog().startsWith("line 2:2 token recognition error"))
+                    .isFalse();
+            }
         });
-
-        assertWithMessage("First line of exception message should not contain lexer error.")
-            .that(systemErr.getCapturedData().startsWith("line 2:2 token recognition error"))
-                .isFalse();
+        Main.main("-t", getNonCompilablePath("InputMainIncorrectClass.java"));
     }
 
     @Test
-    public void testRemoveParserDefaultErrorListener() {
-        assertExitWithStatus(-2, () -> {
-            invokeMain("-t", getNonCompilablePath("InputMainIncorrectClass.java"));
+    public void testRemoveParserDefaultErrorListener() throws IOException {
+        exit.expectSystemExitWithStatus(-2);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                final String capturedData = systemErr.getLog();
+
+                assertWithMessage("First line of exception message should not contain parser error.")
+                    .that(capturedData.startsWith("line 2:0 no viable alternative"))
+                        .isFalse();
+                assertWithMessage("Second line of exception message should not contain parser error.")
+                    .that(capturedData.startsWith("line 2:0 no viable alternative",
+                            capturedData.indexOf('\n') + 1))
+                        .isFalse();
+            }
         });
-
-        final String capturedData = systemErr.getCapturedData();
-
-        assertWithMessage("First line of exception message should not contain parser error.")
-            .that(capturedData.startsWith("line 2:0 no viable alternative"))
-                .isFalse();
-        assertWithMessage("Second line of exception message should not contain parser error.")
-            .that(capturedData.startsWith("line 2:0 no viable alternative",
-                    capturedData.indexOf('\n') + 1))
-                .isFalse();
+        Main.main("-t", getNonCompilablePath("InputMainIncorrectClass.java"));
     }
 
     @Test
-    public void testPrintTreeOnMoreThanOneFile() {
-        assertExitWithStatus(-1, () -> invokeMain("-t", getPath("")));
-        assertEquals("Printing AST is allowed for only one file."
-            + System.lineSeparator(), systemOut.getCapturedData(), "Unexpected output log");
-        assertEquals("", systemErr.getCapturedData(), "Unexpected system error log");
+    public void testPrintTreeOnMoreThanOneFile() throws IOException {
+        exit.expectSystemExitWithStatus(-1);
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                assertEquals("Printing AST is allowed for only one file."
+                        + System7.lineSeparator(), systemOut.getLog(), "Unexpected output log");
+                    assertEquals("", systemErr.getLog(), "Unexpected system error log");
+            }
+        });
+        Main.main("-t", getPath(""));
     }
 
     @Test
@@ -1035,53 +1047,75 @@ public class MainTest {
 
     @Test
     public void testPrintXpathOption() throws Exception {
-        final String expected = addEndOfLine(
-            "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
-            "|--CLASS_DEF -> CLASS_DEF [3:0]",
-            "|   `--OBJBLOCK -> OBJBLOCK [3:28]",
-            "|       |--METHOD_DEF -> METHOD_DEF [4:4]",
-            "|       |   `--SLIST -> { [4:20]",
-            "|       |       |--VARIABLE_DEF -> VARIABLE_DEF [5:8]",
-            "|       |       |   |--IDENT -> a [5:12]");
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                final String expected = addEndOfLine(
+                        "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
+                        "|--CLASS_DEF -> CLASS_DEF [3:0]",
+                        "|   `--OBJBLOCK -> OBJBLOCK [3:28]",
+                        "|       |--METHOD_DEF -> METHOD_DEF [4:4]",
+                        "|       |   `--SLIST -> { [4:20]",
+                        "|       |       |--VARIABLE_DEF -> VARIABLE_DEF [5:8]",
+                        "|       |       |   |--IDENT -> a [5:12]");
+                assertThat("Unexpected output log", systemOut.getLog(), is(expected));
+                assertThat("Unexpected system error log", systemErr.getLog(), is(""));
+            }
+        });
         Main.main("-b", "/COMPILATION_UNIT/CLASS_DEF//METHOD_DEF[./IDENT[@text='methodOne']]"
                         + "//VARIABLE_DEF/IDENT",
                 getPath("InputMainXPath.java"));
-        assertThat("Unexpected output log", systemOut.getCapturedData(), is(expected));
-        assertThat("Unexpected system error log", systemErr.getCapturedData(), is(""));
     }
 
     @Test
     public void testPrintXpathCommentNode() throws Exception {
-        final String expected = addEndOfLine(
-            "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
-            "`--CLASS_DEF -> CLASS_DEF [17:0]",
-            "    `--OBJBLOCK -> OBJBLOCK [17:19]",
-            "        |--CTOR_DEF -> CTOR_DEF [19:4]",
-            "        |   |--BLOCK_COMMENT_BEGIN -> /* [18:4]");
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                final String expected = addEndOfLine(
+                        "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
+                        "`--CLASS_DEF -> CLASS_DEF [17:0]",
+                        "    `--OBJBLOCK -> OBJBLOCK [17:19]",
+                        "        |--CTOR_DEF -> CTOR_DEF [19:4]",
+                        "        |   |--BLOCK_COMMENT_BEGIN -> /* [18:4]");
+                assertThat("Unexpected output log", systemOut.getLog(), is(expected));
+                assertThat("Unexpected system error log", systemErr.getLog(), is(""));
+            }
+        });
         Main.main("-b", "/COMPILATION_UNIT/CLASS_DEF//BLOCK_COMMENT_BEGIN",
                 getPath("InputMainXPath.java"));
-        assertThat("Unexpected output log", systemOut.getCapturedData(), is(expected));
-        assertThat("Unexpected system error log", systemErr.getCapturedData(), is(""));
     }
 
     @Test
     public void testPrintXpathNodeParentNull() throws IOException {
-        final String expected = addEndOfLine("COMPILATION_UNIT -> COMPILATION_UNIT [1:0]");
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                final String expected = addEndOfLine("COMPILATION_UNIT -> COMPILATION_UNIT [1:0]");
+                assertThat("Unexpected output log", systemOut.getLog(), is(expected));
+                assertThat("Unexpected system error log", systemErr.getLog(), is(""));
+            }
+        });
         Main.main("-b", "/COMPILATION_UNIT", getPath("InputMainXPath.java"));
-        assertThat("Unexpected output log", systemOut.getCapturedData(), is(expected));
-        assertThat("Unexpected system error log", systemErr.getCapturedData(), is(""));
     }
 
     @Test
     public void testPrintXpathFullOption() throws Exception {
-        final String expected = addEndOfLine(
-            "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
-            "|--CLASS_DEF -> CLASS_DEF [3:0]",
-            "|   `--OBJBLOCK -> OBJBLOCK [3:28]",
-            "|       |--METHOD_DEF -> METHOD_DEF [8:4]",
-            "|       |   `--SLIST -> { [8:26]",
-            "|       |       |--VARIABLE_DEF -> VARIABLE_DEF [9:8]",
-            "|       |       |   |--IDENT -> a [9:12]");
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                final String expected = addEndOfLine(
+                        "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
+                        "|--CLASS_DEF -> CLASS_DEF [3:0]",
+                        "|   `--OBJBLOCK -> OBJBLOCK [3:28]",
+                        "|       |--METHOD_DEF -> METHOD_DEF [8:4]",
+                        "|       |   `--SLIST -> { [8:26]",
+                        "|       |       |--VARIABLE_DEF -> VARIABLE_DEF [9:8]",
+                        "|       |       |   |--IDENT -> a [9:12]");
+                assertThat("Unexpected output log", systemOut.getLog(), is(expected));
+                assertThat("Unexpected system error log", systemErr.getLog(), is(""));
+            }
+        });
         final String xpath = "/COMPILATION_UNIT/CLASS_DEF//METHOD_DEF[./IDENT[@text='method']]"
                 + "//VARIABLE_DEF/IDENT";
         Main.main("--branch-matching-xpath", xpath, getPath("InputMainXPath.java"));
@@ -1089,21 +1123,26 @@ public class MainTest {
 
     @Test
     public void testPrintXpathTwoResults() throws Exception {
-        final String expected = addEndOfLine(
-            "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
-            "|--CLASS_DEF -> CLASS_DEF [12:0]",
-            "|   `--OBJBLOCK -> OBJBLOCK [12:10]",
-            "|       |--METHOD_DEF -> METHOD_DEF [13:4]",
-            "---------",
-            "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
-            "|--CLASS_DEF -> CLASS_DEF [12:0]",
-            "|   `--OBJBLOCK -> OBJBLOCK [12:10]",
-            "|       |--METHOD_DEF -> METHOD_DEF [14:4]");
+        exit.checkAssertionAfterwards(new Assertion() {
+            @Override
+            public void checkAssertion() {
+                final String expected = addEndOfLine(
+                        "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
+                        "|--CLASS_DEF -> CLASS_DEF [12:0]",
+                        "|   `--OBJBLOCK -> OBJBLOCK [12:10]",
+                        "|       |--METHOD_DEF -> METHOD_DEF [13:4]",
+                        "---------",
+                        "COMPILATION_UNIT -> COMPILATION_UNIT [1:0]",
+                        "|--CLASS_DEF -> CLASS_DEF [12:0]",
+                        "|   `--OBJBLOCK -> OBJBLOCK [12:10]",
+                        "|       |--METHOD_DEF -> METHOD_DEF [14:4]");
+                assertThat("Unexpected output log", systemOut.getLog(), is(expected));
+                assertThat("Unexpected system error log", systemErr.getLog(), is(""));
+            }
+        });
         Main.main("--branch-matching-xpath", "/COMPILATION_UNIT/CLASS_DEF[./IDENT[@text='Two']]"
                         + "//METHOD_DEF",
                 getPath("InputMainXPath.java"));
-        assertThat("Unexpected output log", systemOut.getCapturedData(), is(expected));
-        assertThat("Unexpected system error log", systemErr.getCapturedData(), is(""));
     }
 
     @Test

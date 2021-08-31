@@ -26,11 +26,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -84,21 +84,22 @@ public class JavaAstVisitorTest {
                 .class.getDeclaredMethods();
         final Method[] visitMethods = JavaAstVisitor.class.getDeclaredMethods();
 
-        final Set<String> filteredBaseVisitMethodNames = Arrays.stream(baseVisitMethods)
-                .filter(method -> !VISIT_METHODS_NOT_OVERRIDDEN.contains(method.getName()))
-                .filter(method -> method.getName().contains("visit"))
-                .filter(method -> method.getModifiers() == Modifier.PUBLIC)
-                .map(Method::getName)
-                .collect(Collectors.toSet());
+        final Set<String> filteredBaseVisitMethodNames = new HashSet<String>();
+        for (Method method : baseVisitMethods) {
+            if (!VISIT_METHODS_NOT_OVERRIDDEN.contains(method.getName()) && method.getName().contains("visit") && method.getModifiers() == Modifier.PUBLIC) {
+                filteredBaseVisitMethodNames.add(method.getName());
+            }
+        }
 
-        final Set<String> filteredVisitMethodNames = Arrays.stream(visitMethods)
-                .filter(method -> method.getName().contains("visit"))
-                .filter(method -> method.getModifiers() == Modifier.PUBLIC)
-                .map(Method::getName)
-                .collect(Collectors.toSet());
+        final Set<String> filteredVisitMethodNames = new HashSet<String>();
+        for (Method method : visitMethods) {
+            if (method.getName().contains("visit") && method.getModifiers() == Modifier.PUBLIC) {
+                filteredBaseVisitMethodNames.add(method.getName());
+            }
+        }
 
         // remove overridden 'visit' method from ParseTreeVisitor interface in JavaAstVisitor
-        filteredVisitMethodNames.removeIf(name -> name.matches("visit"));
+        filteredVisitMethodNames.remove("visit");
 
         final String message = "Visit methods in 'JavaLanguageParserBaseVisitor' generated from "
                 + "production rules and labeled alternatives in 'JavaLanguageParser.g4' should "
@@ -132,7 +133,7 @@ public class JavaAstVisitorTest {
         orderedBaseVisitorMethodNames.removeAll(VISIT_METHODS_NOT_OVERRIDDEN);
 
         // remove overridden 'visit' method from ParseTreeVisitor interface in JavaAstVisitor
-        orderedVisitorMethodNames.removeIf(name -> name.matches("visit"));
+        orderedVisitorMethodNames.remove("visit");
 
         assertWithMessage("Visit methods in 'JavaAstVisitor' should appear in same order as "
                 + "production rules and labeled alternatives in 'JavaLanguageParser.g4'.")

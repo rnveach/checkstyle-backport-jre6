@@ -19,14 +19,12 @@
 
 package com.puppycrawl.tools.checkstyle;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -38,7 +36,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageLexer;
 import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageParser;
+import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageParser.ArrayDeclaratorContext;
+import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageParser.BinOpContext;
+import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageParser.FieldAccessNoIdentContext;
 import com.puppycrawl.tools.checkstyle.grammar.java.JavaLanguageParserBaseVisitor;
+import com.puppycrawl.tools.checkstyle.jre6.util.Optional;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 /**
@@ -177,8 +179,9 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         final DetailAstImpl typeDeclaration;
         if (ctx.type == null) {
             typeDeclaration = create(ctx.semi.get(0));
-            ctx.semi.subList(1, ctx.semi.size())
-                    .forEach(semi -> addLastSibling(typeDeclaration, create(semi)));
+            for (Token semi : ctx.semi.subList(1, ctx.semi.size())) {
+                addLastSibling(typeDeclaration, create(semi));
+            }
         }
         else {
             typeDeclaration = visit(ctx.type);
@@ -308,11 +311,11 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         final DetailAstImpl typeBoundType = visit(ctx.typeBoundType(0));
         final Iterator<JavaLanguageParser.TypeBoundTypeContext> typeBoundTypeIterator =
                 ctx.typeBoundType().listIterator(1);
-        ctx.BAND().forEach(band -> {
+        for (TerminalNode band : ctx.BAND()) {
             addLastSibling(typeBoundType, create(TokenTypes.TYPE_EXTENSION_AND,
-                                (Token) band.getPayload()));
+                    (Token) band.getPayload()));
             addLastSibling(typeBoundType, visit(typeBoundTypeIterator.next()));
-        });
+        }
         return typeBoundType;
     }
 
@@ -405,13 +408,19 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         methodDef.addChild(createModifiers(ctx.mods));
 
         // Process all children except C style array declarators
-        processChildren(methodDef, ctx.children.stream()
-                .filter(child -> !(child instanceof JavaLanguageParser.ArrayDeclaratorContext))
-                .collect(Collectors.toList()));
+        final List<ParseTree> children = new ArrayList<ParseTree>();
+        for (ParseTree child : ctx.children) {
+            if (!(child instanceof JavaLanguageParser.ArrayDeclaratorContext)) {
+                children.add(child);
+            }
+        }
+        processChildren(methodDef, children);
 
         // We add C style array declarator brackets to TYPE ast
         final DetailAstImpl typeAst = (DetailAstImpl) methodDef.findFirstToken(TokenTypes.TYPE);
-        ctx.cStyleArrDec.forEach(child -> typeAst.addChild(visit(child)));
+        for (ArrayDeclaratorContext child : ctx.cStyleArrDec ) {
+            typeAst.addChild(visit(child));
+        }
 
         return methodDef;
     }
@@ -468,15 +477,19 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         methodDef.addChild(createModifiers(ctx.mods));
 
         // Process all children except C style array declarators and modifiers
-        final List<ParseTree> children = ctx.children
-                .stream()
-                .filter(child -> !(child instanceof JavaLanguageParser.ArrayDeclaratorContext))
-                .collect(Collectors.toList());
+        final List<ParseTree> children = new ArrayList<ParseTree>();
+        for (ParseTree child : ctx.children) {
+            if (!(child instanceof JavaLanguageParser.ArrayDeclaratorContext)) {
+                children.add(child);
+            }
+        }
         processChildren(methodDef, children);
 
         // We add C style array declarator brackets to TYPE ast
         final DetailAstImpl typeAst = (DetailAstImpl) methodDef.findFirstToken(TokenTypes.TYPE);
-        ctx.cStyleArrDec.forEach(child -> typeAst.addChild(visit(child)));
+        for (ArrayDeclaratorContext child : ctx.cStyleArrDec) {
+            typeAst.addChild(visit(child));
+        }
 
         return methodDef;
     }
@@ -498,7 +511,9 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         variableDef.addChild(visit(ctx.id()));
 
         // Add C style array declarator brackets to TYPE ast
-        ctx.arrayDeclarator().forEach(child -> type.addChild(visit(child)));
+        for (ArrayDeclaratorContext child : ctx.arrayDeclarator()) {
+            type.addChild(visit(child));
+        }
 
         // If this is an assignment statement, ASSIGN becomes the parent of EXPR
         if (ctx.ASSIGN() != null) {
@@ -531,7 +546,9 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         }
 
         root.addChild(declaratorId);
-        ctx.arrayDeclarator().forEach(child -> type.addChild(visit(child)));
+        for (ArrayDeclaratorContext child : ctx.arrayDeclarator()) {
+            type.addChild(visit(child));
+        }
 
         return root.getFirstChild();
     }
@@ -558,7 +575,9 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
             DetailAstPair.makeAstRoot(currentAST, dot);
             final List<ParseTree> childList = extendedContext
                     .children.subList(1, extendedContext.children.size());
-            childList.forEach(child -> DetailAstPair.addAstChild(currentAST, visit(child)));
+            for (ParseTree child : childList) {
+                DetailAstPair.addAstChild(currentAST, visit(child));
+            }
         }
 
         // Create imaginary 'TYPE' parent if specified
@@ -822,14 +841,19 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         annotationFieldDef.addChild(visit(ctx.type));
 
         // Process all children except C style array declarators
-        processChildren(annotationFieldDef, ctx.children.stream()
-                .filter(child -> !(child instanceof JavaLanguageParser.ArrayDeclaratorContext))
-                .collect(Collectors.toList()));
+        final List<ParseTree> children = new ArrayList<ParseTree>();
+        for (ParseTree child : ctx.children) {
+            if (!(child instanceof JavaLanguageParser.ArrayDeclaratorContext)) {
+                children.add(child);
+            }
+        }
 
         // We add C style array declarator brackets to TYPE ast
         final DetailAstImpl typeAst =
                 (DetailAstImpl) annotationFieldDef.findFirstToken(TokenTypes.TYPE);
-        ctx.cStyleArrDec.forEach(child -> typeAst.addChild(visit(child)));
+        for (ParseTree child : ctx.cStyleArrDec) {
+            typeAst.addChild(visit(child));
+        }
 
         return annotationFieldDef;
     }
@@ -869,9 +893,12 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         final DetailAstImpl primaryCtorCall = create(TokenTypes.SUPER_CTOR_CALL,
                 (Token) ctx.LITERAL_SUPER().getPayload());
         // filter 'LITERAL_SUPER'
-        processChildren(primaryCtorCall, ctx.children.stream()
-                   .filter(child -> !child.equals(ctx.LITERAL_SUPER()))
-                   .collect(Collectors.toList()));
+        final List<ParseTree> children = new ArrayList<ParseTree>();
+        for (ParseTree child : ctx.children) {
+            if (!child.equals(ctx.LITERAL_SUPER())) {
+                children.add(child);
+            }
+        }
         return primaryCtorCall;
     }
 
@@ -1037,25 +1064,29 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
     @Override
     public DetailAstImpl visitSwitchRules(JavaLanguageParser.SwitchRulesContext ctx) {
         final DetailAstImpl dummyRoot = new DetailAstImpl();
-        ctx.switchLabeledRule().forEach(switchLabeledRuleContext -> {
+        for (ParseTree switchLabeledRuleContext : ctx.switchLabeledRule()) {
             final DetailAstImpl switchRule = visit(switchLabeledRuleContext);
             final DetailAstImpl switchRuleParent = createImaginary(TokenTypes.SWITCH_RULE);
             switchRuleParent.addChild(switchRule);
             dummyRoot.addChild(switchRuleParent);
-        });
+        }
         return dummyRoot.getFirstChild();
     }
 
     @Override
     public DetailAstImpl visitSwitchBlocks(JavaLanguageParser.SwitchBlocksContext ctx) {
         final DetailAstImpl dummyRoot = new DetailAstImpl();
-        ctx.groups.forEach(group -> dummyRoot.addChild(visit(group)));
+        for (ParseTree group : ctx.groups) {
+            dummyRoot.addChild(visit(group));
+        }
 
         // Add any empty switch labels to end of statement in one 'CASE_GROUP'
         if (!ctx.emptyLabels.isEmpty()) {
             final DetailAstImpl emptyLabelParent =
                     createImaginary(TokenTypes.CASE_GROUP);
-            ctx.emptyLabels.forEach(label -> emptyLabelParent.addChild(visit(label)));
+            for (ParseTree label : ctx.emptyLabels) {
+                emptyLabelParent.addChild(visit(label));
+            }
             dummyRoot.addChild(emptyLabelParent);
         }
         return dummyRoot.getFirstChild();
@@ -1107,9 +1138,13 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         final DetailAstImpl catchParameterDef = createImaginary(TokenTypes.PARAMETER_DEF);
         catchParameterDef.addChild(createModifiers(ctx.mods));
         // filter mods
-        processChildren(catchParameterDef, ctx.children.stream()
-                .filter(child -> !(child instanceof JavaLanguageParser.VariableModifierContext))
-                .collect(Collectors.toList()));
+        final List<ParseTree> children = new ArrayList<ParseTree>();
+        for (ParseTree child : ctx.children) {
+            if (!(child instanceof JavaLanguageParser.VariableModifierContext)) {
+                children.add(child);
+            }
+        }
+        processChildren(catchParameterDef, children);
         return catchParameterDef;
     }
 
@@ -1167,10 +1202,10 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         }
         else {
             final DetailAstPair currentAst = new DetailAstPair();
-            ctx.accessList.forEach(fieldAccess -> {
+            for (FieldAccessNoIdentContext fieldAccess : ctx.accessList) {
                 DetailAstPair.addAstChild(currentAst, visit(fieldAccess.expr()));
                 DetailAstPair.makeAstRoot(currentAst, create(fieldAccess.DOT()));
-            });
+            }
             resource = createImaginary(TokenTypes.RESOURCE);
             resource.addChild(currentAst.root);
             if (ctx.LITERAL_THIS() == null) {
@@ -1512,9 +1547,12 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
     public DetailAstImpl visitMethodRef(JavaLanguageParser.MethodRefContext ctx) {
         final DetailAstImpl doubleColon = create(TokenTypes.METHOD_REF,
                 (Token) ctx.DOUBLE_COLON().getPayload());
-        final List<ParseTree> children = ctx.children.stream()
-                .filter(child -> !child.equals(ctx.DOUBLE_COLON()))
-                .collect(Collectors.toList());
+        final List<ParseTree> children = new ArrayList<ParseTree>();
+        for (ParseTree child : ctx.children) {
+            if (!child.equals(ctx.DOUBLE_COLON())) {
+                children.add(child);
+            }
+        }
         processChildren(doubleColon, children);
         return doubleColon;
     }
@@ -1522,9 +1560,13 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
     @Override
     public DetailAstImpl visitTernaryOp(JavaLanguageParser.TernaryOpContext ctx) {
         final DetailAstImpl root = create(ctx.QUESTION());
-        processChildren(root, ctx.children.stream()
-                .filter(child -> !child.equals(ctx.QUESTION()))
-                .collect(Collectors.toList()));
+        final List<ParseTree> children = new ArrayList<ParseTree>();
+        for (ParseTree child : ctx.children) {
+            if (!child.equals(ctx.QUESTION())) {
+                children.add(child);
+            }
+        }
+        processChildren(root, children);
         return root;
     }
 
@@ -1549,9 +1591,10 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         else {
             // Map all descendants to individual AST's since we can parallelize this
             // operation
-            final Queue<DetailAstImpl> descendantList = binOpList.parallelStream()
-                    .map(this::getInnerBopAst)
-                    .collect(Collectors.toCollection(ConcurrentLinkedQueue::new));
+            final Queue<DetailAstImpl> descendantList = new ArrayDeque<DetailAstImpl>();
+            for (BinOpContext binOp : binOpList) {
+                descendantList.add(getInnerBopAst(binOp));
+            }
 
             bop.addChild(descendantList.poll());
             DetailAstImpl pointer = bop.getFirstChild();
@@ -1690,12 +1733,14 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         dot.addChild(primaryTypeNoArray);
         if (TokenUtil.isOfType(primaryTypeNoArray, TokenTypes.DOT)) {
             // We append '[]' to the qualified name 'TYPE' `ast
-            ctx.arrayDeclarator()
-                    .forEach(child -> primaryTypeNoArray.addChild(visit(child)));
+            for (ParseTree child : ctx.arrayDeclarator()) {
+                primaryTypeNoArray.addChild(visit(child));
+            }
         }
         else {
-            ctx.arrayDeclarator()
-                    .forEach(child -> addLastSibling(primaryTypeNoArray, visit(child)));
+            for (ParseTree child : ctx.arrayDeclarator()) {
+                addLastSibling(primaryTypeNoArray, visit(child));
+            }
         }
         dot.addChild(create(ctx.LITERAL_CLASS()));
         return dot;
@@ -1706,7 +1751,9 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         final DetailAstImpl dot = create(ctx.DOT());
         final DetailAstImpl primaryTypeNoArray = visit(ctx.type);
         dot.addChild(primaryTypeNoArray);
-        ctx.arrayDeclarator().forEach(child -> dot.addChild(visit(child)));
+        for (ParseTree child : ctx.arrayDeclarator()) {
+            dot.addChild(visit(child));
+        }
         dot.addChild(create(ctx.LITERAL_CLASS()));
         return dot;
     }
@@ -1976,7 +2023,7 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
      * @param children the list of children to add
      */
     private void processChildren(DetailAstImpl parent, List<? extends ParseTree> children) {
-        children.forEach(child -> {
+        for (ParseTree child : children) {
             if (child instanceof TerminalNode) {
                 // Child is a token, create a new DetailAstImpl and add it to parent
                 parent.addChild(create((TerminalNode) child));
@@ -1985,7 +2032,7 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
                 // Child is another rule context; visit it, create token, and add to parent
                 parent.addChild(visit(child));
             }
-        });
+        }
     }
 
     /**
