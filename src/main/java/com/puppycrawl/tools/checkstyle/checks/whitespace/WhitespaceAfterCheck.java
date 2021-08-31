@@ -19,6 +19,9 @@
 
 package com.puppycrawl.tools.checkstyle.checks.whitespace;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -189,15 +192,59 @@ public class WhitespaceAfterCheck
         boolean followedByWhitespace = true;
 
         if (after < line.codePointCount(0, line.length())) {
-            // TODO
-            final int[] codePoints = new int[1];
-            final int codePoint = codePoints[0];
+            final int codePoint = get(codePoints(line), after);
 
             followedByWhitespace = codePoint == ';'
                 || codePoint == ')'
                 || Character.isWhitespace(codePoint);
         }
         return followedByWhitespace;
+    }
+
+    private static int get(Iterator<Integer> points, int position) {
+        int result = 0;
+        for (int i = 0; i <= position; i++) {
+            result = points.next();
+        }
+        return result;
+    }
+
+    private static Iterator<Integer> codePoints(final String line) {
+        return new Iterator<Integer>() {
+            int cur = 0;
+
+            @Override
+            public boolean hasNext() {
+                return cur < line.length();
+            }
+
+            public int nextInt() {
+                final int length = line.length();
+
+                if (cur >= length) {
+                    throw new NoSuchElementException();
+                }
+                char c1 = line.charAt(cur++);
+                if (Character.isHighSurrogate(c1) && cur < length) {
+                    char c2 = line.charAt(cur);
+                    if (Character.isLowSurrogate(c2)) {
+                        cur++;
+                        return Character.toCodePoint(c1, c2);
+                    }
+                }
+                return c1;
+            }
+
+            @Override
+            public Integer next() {
+                return nextInt();
+            }
+
+            @Override
+            public void remove() {
+                // no code is necessary
+            }
+        };
     }
 
 }
