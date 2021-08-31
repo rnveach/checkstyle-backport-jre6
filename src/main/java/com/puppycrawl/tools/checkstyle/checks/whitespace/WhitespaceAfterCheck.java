@@ -189,8 +189,9 @@ public class WhitespaceAfterCheck
         boolean followedByWhitespace = true;
 
         if (after < line.codePointCount(0, line.length())) {
-            final int[] codePoints = line.codePoints().toArray();
-            final int codePoint = codePoints[after];
+            // TODO
+            final int[] codePoints = new int[1];
+            final int codePoint = codePoints[0];
 
             followedByWhitespace = codePoint == ';'
                 || codePoint == ')'
