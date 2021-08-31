@@ -847,6 +847,7 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
                 children.add(child);
             }
         }
+        processChildren(annotationFieldDef, children);
 
         // We add C style array declarator brackets to TYPE ast
         final DetailAstImpl typeAst =
@@ -899,6 +900,7 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
                 children.add(child);
             }
         }
+        processChildren(primaryCtorCall, children);
         return primaryCtorCall;
     }
 
