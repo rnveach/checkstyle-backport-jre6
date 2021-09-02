@@ -22,17 +22,12 @@ package com.puppycrawl.tools.checkstyle.meta;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -76,53 +71,11 @@ public final class XmlMetaReader {
      *                           hint, e.g. for SevNTU it can be com.github.sevntu / com.github)
      * @return list of module details found in the classpath satisfying the above conditions
      * @throws IllegalStateException if there was a problem reading the module metadata files
+     * @throws UnsupportedOperationException since this method isn't support in backport.
      */
     public static List<ModuleDetails> readAllModulesIncludingThirdPartyIfAny(
             String... thirdPartyPackages) {
-        final Set<String> standardModuleFileNames =
-                new Reflections("com.puppycrawl.tools.checkstyle.meta",
-                        new ResourcesScanner()).getResources(Pattern.compile(".*\\.xml"));
-        final Set<String> allMetadataSources = new HashSet<String>(standardModuleFileNames);
-        for (String packageName : thirdPartyPackages) {
-            final Set<String> thirdPartyModuleFileNames =
-                    new Reflections(packageName, new ResourcesScanner())
-                            .getResources(Pattern.compile(".*checkstylemeta-.*\\.xml"));
-            allMetadataSources.addAll(thirdPartyModuleFileNames);
-        }
-
-        final List<ModuleDetails> result = new ArrayList<ModuleDetails>();
-        for (String fileName : allMetadataSources) {
-            final ModuleType moduleType;
-            if (fileName.endsWith("FileFilter.xml")) {
-                moduleType = ModuleType.FILEFILTER;
-            }
-            else if (fileName.endsWith("Filter.xml")) {
-                moduleType = ModuleType.FILTER;
-            }
-            else {
-                moduleType = ModuleType.CHECK;
-            }
-            final ModuleDetails moduleDetails;
-            try {
-                moduleDetails = read(XmlMetaReader.class.getResourceAsStream("/" + fileName),
-                        moduleType);
-            }
-            catch (ParserConfigurationException ex) {
-                throw new IllegalStateException("Problem to read all modules including third "
-                        + "party if any. Problem detected at file: " + fileName, ex);
-            }
-            catch (IOException ex) {
-                throw new IllegalStateException("Problem to read all modules including third "
-                        + "party if any. Problem detected at file: " + fileName, ex);
-            }
-            catch (SAXException ex) {
-                throw new IllegalStateException("Problem to read all modules including third "
-                        + "party if any. Problem detected at file: " + fileName, ex);
-            }
-            result.add(moduleDetails);
-        }
-
-        return result;
+        throw new UnsupportedOperationException("This method is not JRE 6 compliant");
     }
 
     /**
