@@ -201,17 +201,30 @@ public class WhitespaceAfterCheck
         return followedByWhitespace;
     }
 
-    private static int get(Iterator<Integer> points, int position) {
+    /**
+     * Retrieves the item from the {@code iterator} at the exact {@code position}.
+     *
+     * @param iterator The iterator to iterate through.
+     * @param position The index position to look at.
+     * @return The value at the specific {@code position}.
+     */
+    private static int get(Iterator<Integer> iterator, int position) {
         int result = 0;
         for (int i = 0; i <= position; i++) {
-            result = points.next();
+            result = iterator.next();
         }
         return result;
     }
 
+    /**
+     * Retrieves the code points iterator for the {@code line}.
+     *
+     * @param line The line to process.
+     * @return The iterator.
+     */
     private static Iterator<Integer> codePoints(final String line) {
         return new Iterator<Integer>() {
-            int cur = 0;
+            private int cur;
 
             @Override
             public boolean hasNext() {
@@ -222,17 +235,18 @@ public class WhitespaceAfterCheck
                 final int length = line.length();
 
                 if (cur >= length) {
-                    throw new NoSuchElementException();
+                    throw new NoSuchElementException("Past the end of the line");
                 }
-                char c1 = line.charAt(cur++);
-                if (Character.isHighSurrogate(c1) && cur < length) {
-                    char c2 = line.charAt(cur);
-                    if (Character.isLowSurrogate(c2)) {
+                final char char1 = line.charAt(cur++);
+                int result = char1;
+                if (Character.isHighSurrogate(char1) && cur < length) {
+                    final char char2 = line.charAt(cur);
+                    if (Character.isLowSurrogate(char2)) {
                         cur++;
-                        return Character.toCodePoint(c1, c2);
+                        result = Character.toCodePoint(char1, char2);
                     }
                 }
-                return c1;
+                return result;
             }
 
             @Override
