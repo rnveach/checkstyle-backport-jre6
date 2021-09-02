@@ -190,7 +190,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <surefire.options />
     <projectVersion>${project.version}</projectVersion>
-    <antlr4.version>4.5.3</antlr4.version>
+    <antlr4.version.run>4.5.3</antlr4.version.run>
+    <antlr4.version.compile>4.6</antlr4.version.compile>
     <maven.site.plugin.version>3.9.1</maven.site.plugin.version>
     <maven.spotbugs.plugin.version>4.2.3</maven.spotbugs.plugin.version>
     <maven.pmd.plugin.version>3.14.0</maven.pmd.plugin.version>
@@ -229,7 +230,7 @@
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
-      <version>${antlr4.version}</version>
+      <version>${antlr4.version.run}</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
@@ -1116,7 +1117,14 @@
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
-        <version>${antlr4.version}</version>
+        <version>${antlr4.version.compile}</version>
+        <dependencies>
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime</artifactId>
+                <version>${antlr4.version.compile}</version>
+            </dependency>    
+        </dependencies>
         <configuration>
           <visitor>true</visitor>
           <listener>false</listener>
@@ -1134,6 +1142,34 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+         <groupId>com.google.code.maven-replacer-plugin</groupId>
+         <artifactId>replacer</artifactId>
+         <version>1.5.3</version>
+         <executions>
+            <execution>
+               <phase>generate-sources</phase>
+               <goals>
+                  <goal>replace</goal>
+               </goals>
+            </execution>
+         </executions>
+         <configuration>
+            <ignoreMissingFile>true</ignoreMissingFile>
+            <basedir>target/generated-sources/antlr/com/puppycrawl/tools/checkstyle/grammar</basedir>
+            <includes>
+               <include>java/JavaLanguageLexer.java</include>
+               <include>java/JavaLanguageParser.java</include>
+               <include>javadoc/JavadocLexer.java</include>
+               <include>javadoc/JavadocParser.java</include>
+            </includes>
+            <regex>false</regex>
+            <token>checkVersion("4.6"</token>
+            <value>checkVersion("4.5.3"</value>
+            <ignoreMissingFile>false</ignoreMissingFile>
+         </configuration>
       </plugin>
 
       <plugin>
